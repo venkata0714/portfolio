@@ -1,11 +1,11 @@
-// backend/controllers/projectController.js
-const Project = require('../models/Project');
+const { getDB } = require('../config/mongodb');
 
 const getProjects = async (req, res) => {
   try {
-    const projects = await Project.find();
-    console.log(projects); // Log the data to the console as requested
-    res.json(projects); // Send the data back as a JSON response
+    const db = getDB();
+    const projects = await db.collection('projectTable').find().toArray(); // Fetch all documents
+    console.log("Fetched projects from MongoDB:", projects); // Log data to console
+    res.json(projects); // Send data as JSON response
   } catch (error) {
     console.error("Error fetching projects:", error);
     res.status(500).json({ message: "Error fetching projects" });
