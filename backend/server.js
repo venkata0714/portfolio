@@ -14,8 +14,8 @@ app.use(cors());
 connectDB();
 
 // Define routes
-const projectRoutes = require('./routes/projectRoutes');
-app.use('/api', projectRoutes);
+const dataRoutes = require('./routes/dataRoutes');
+app.use('/api', dataRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
