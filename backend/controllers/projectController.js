@@ -1,12 +1,14 @@
+// backend/controllers/projectController.js
 const Project = require('../models/Project');
 
-// Get all projects
 const getProjects = async (req, res) => {
   try {
     const projects = await Project.find();
-    res.json(projects);
+    console.log(projects); // Log the data to the console as requested
+    res.json(projects); // Send the data back as a JSON response
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Error fetching projects:", error);
+    res.status(500).json({ message: "Error fetching projects" });
   }
 };
 
