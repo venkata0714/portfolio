@@ -1,0 +1,557 @@
+/* General reset */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+    overflow-x: hidden;
+    color: #fff;
+    background-color: #000;
+}
+
+/* Container for the whole page */
+.homepage-container {
+    width: 100%;
+    background: #000;
+}
+
+/* Navbar */
+.navbar {
+    background-color: rgba(0, 0, 0, 0.8); /* Slight transparency for background */
+    font-weight: 500;
+}
+
+.navbar .navbar-brand {
+    font-size: 1.5rem;
+    color: #FFC107; /* Gold color for brand */
+    font-weight: bold;
+}
+
+.navbar .navbar-nav .nav-link {
+    color: #fff;
+    font-size: 0.9rem;
+    padding: 0.75rem;
+    transition: color 0.2s ease-in-out;
+}
+
+.navbar .navbar-nav .nav-link:hover {
+    color: #FFC107;
+}
+
+/* Hero Section */
+.hero-section {
+    position: relative;
+    background-image: url('https://i.ibb.co/W0G05qM/bg.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    text-align: center;
+}
+
+.navbar {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 1rem; /* Replace with actual values for $navbar-padding-y and $navbar-padding-x */
+  }
+  
+  .navbar > .container,
+  .navbar > .container-fluid {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+
+.navbar-brand {
+    display: inline-block;
+    padding-top: 0.5rem; /* Replace with actual value for $navbar-brand-padding-y */
+    padding-bottom: 0.5rem; /* Replace with actual value for $navbar-brand-padding-y */
+    margin-right: 1rem; /* Replace with actual value for $navbar-padding-x */
+    font-size: 1.25rem; /* Replace with actual value for $navbar-brand-font-size */
+    line-height: inherit;
+    white-space: nowrap;
+    text-decoration: none; /* To mimic hover-focus behavior */
+}
+
+.navbar-brand:hover,
+.navbar-brand:focus {
+    text-decoration: none;
+}  
+
+.navbar-nav {
+  display: flex;
+  flex-direction: column;
+  padding-left: 0;
+  margin-bottom: 0;
+  list-style: none;
+
+  .nav-link {
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  .dropdown-menu {
+    position: static;
+    float: none;
+  }
+}
+
+.navbar-text {
+    display: inline-block;
+    padding-top: 0.5rem; /* Replace with actual value for $nav-link-padding-y */
+    padding-bottom: 0.5rem; /* Replace with actual value for $nav-link-padding-y */
+}
+  
+
+.navbar-collapse {
+  flex-basis: 100%;
+  flex-grow: 1;
+  align-items: center;
+}
+
+.navbar-toggler {
+    padding: 0.5rem 1rem; /* Replace with actual values for $navbar-toggler-padding-y and $navbar-toggler-padding-x */
+    font-size: 1.25rem; /* Replace with actual value for $navbar-toggler-font-size */
+    line-height: 1;
+    background-color: transparent;
+    border: 1px solid transparent; /* Replace with actual value for $border-width */
+    border-radius: 4px; /* Replace with actual value for $navbar-toggler-border-radius */
+  
+    /* Hover and focus styles */
+    text-decoration: none;
+  }
+  
+  .navbar-toggler:hover,
+  .navbar-toggler:focus {
+    text-decoration: none;
+  }
+  
+  /* Enable pointer on non-disabled elements */
+  .navbar-toggler:not(:disabled):not(.disabled) {
+    cursor: pointer;
+  }  
+
+
+.navbar-toggler-icon {
+  display: inline-block;
+  width: 1.5em;
+  height: 1.5em;
+  vertical-align: middle;
+  content: "";
+  background: no-repeat center center;
+  background-size: 100% 100%;
+}
+
+
+/* Default settings for navbar-expand */
+.navbar-expand {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Small devices (down) */
+@media (max-width: 576px) {
+    .navbar-expand > .container,
+    .navbar-expand > .container-fluid {
+        padding-right: 0;
+        padding-left: 0;
+    }
+}
+
+/* Medium devices (up) */
+@media (min-width: 576px) {
+    .navbar-expand-sm {
+        flex-flow: row nowrap;
+        justify-content: flex-start;
+    }
+
+    .navbar-expand-sm .navbar-nav {
+        flex-direction: row;
+    }
+
+    .navbar-expand-sm .dropdown-menu {
+        position: absolute;
+    }
+
+    .navbar-expand-sm .nav-link {
+        padding-right: 15px; /* Replace with actual padding value */
+        padding-left: 15px; /* Replace with actual padding value */
+    }
+
+    .navbar-expand-sm > .container,
+    .navbar-expand-sm > .container-fluid {
+        flex-wrap: nowrap;
+    }
+
+    .navbar-expand-sm .navbar-collapse {
+        display: flex !important;
+        flex-basis: auto;
+    }
+
+    .navbar-expand-sm .navbar-toggler {
+        display: none;
+    }
+}
+
+/* Large devices (up) */
+@media (min-width: 768px) {
+    .navbar-expand-md {
+        flex-flow: row nowrap;
+        justify-content: flex-start;
+    }
+
+    .navbar-expand-md .navbar-nav {
+        flex-direction: row;
+    }
+
+    .navbar-expand-md .dropdown-menu {
+        position: absolute;
+    }
+
+    .navbar-expand-md .nav-link {
+        padding-right: 15px; /* Replace with actual padding value */
+        padding-left: 15px; /* Replace with actual padding value */
+    }
+
+    .navbar-expand-md > .container,
+    .navbar-expand-md > .container-fluid {
+        flex-wrap: nowrap;
+    }
+
+    .navbar-expand-md .navbar-collapse {
+        display: flex !important;
+        flex-basis: auto;
+    }
+
+    .navbar-expand-md .navbar-toggler {
+        display: none;
+    }
+}
+
+/* Extra large devices (up) */
+@media (min-width: 992px) {
+    .navbar-expand-lg {
+        flex-flow: row nowrap;
+        justify-content: flex-start;
+    }
+
+    .navbar-expand-lg .navbar-nav {
+        flex-direction: row;
+    }
+
+    .navbar-expand-lg .dropdown-menu {
+        position: absolute;
+    }
+
+    .navbar-expand-lg .nav-link {
+        padding-right: 15px; /* Replace with actual padding value */
+        padding-left: 15px; /* Replace with actual padding value */
+    }
+
+    .navbar-expand-lg > .container,
+    .navbar-expand-lg > .container-fluid {
+        flex-wrap: nowrap;
+    }
+
+    .navbar-expand-lg .navbar-collapse {
+        display: flex !important;
+        flex-basis: auto;
+    }
+
+    .navbar-expand-lg .navbar-toggler {
+        display: none;
+    }
+}
+
+/* Extra extra large devices (up) */
+@media (min-width: 1200px) {
+    .navbar-expand-xl {
+        flex-flow: row nowrap;
+        justify-content: flex-start;
+    }
+
+    .navbar-expand-xl .navbar-nav {
+        flex-direction: row;
+    }
+
+    .navbar-expand-xl .dropdown-menu {
+        position: absolute;
+    }
+
+    .navbar-expand-xl .nav-link {
+        padding-right: 15px; /* Replace with actual padding value */
+        padding-left: 15px; /* Replace with actual padding value */
+    }
+
+    .navbar-expand-xl > .container,
+    .navbar-expand-xl > .container-fluid {
+        flex-wrap: nowrap;
+    }
+
+    .navbar-expand-xl .navbar-collapse {
+        display: flex !important;
+        flex-basis: auto;
+    }
+
+    .navbar-expand-xl .navbar-toggler {
+        display: none;
+    }
+}
+
+/* Optional Extra extra large devices (up) for `xxl` */
+@media (min-width: 1400px) {
+    .navbar-expand-xxl {
+        flex-flow: row nowrap;
+        justify-content: flex-start;
+    }
+
+    .navbar-expand-xxl .navbar-nav {
+        flex-direction: row;
+    }
+
+    .navbar-expand-xxl .dropdown-menu {
+        position: absolute;
+    }
+
+    .navbar-expand-xxl .nav-link {
+        padding-right: 15px; /* Replace with actual padding value */
+        padding-left: 15px; /* Replace with actual padding value */
+    }
+
+    .navbar-expand-xxl > .container,
+    .navbar-expand-xxl > .container-fluid {
+        flex-wrap: nowrap;
+    }
+
+    .navbar-expand-xxl .navbar-collapse {
+        display: flex !important;
+        flex-basis: auto;
+    }
+
+    .navbar-expand-xxl .navbar-toggler {
+        display: none;
+    }
+}
+
+.navbar-light .navbar-brand {
+    color: #333333; /* Replace with the actual color value for $navbar-light-active-color */
+}
+
+.navbar-light .navbar-brand:hover,
+.navbar-light .navbar-brand:focus {
+    color: #333333; /* Replace with the actual color value for $navbar-light-active-color */
+}
+
+.navbar-light .navbar-nav .nav-link {
+    color: #555555; /* Replace with the actual color value for $navbar-light-color */
+}
+
+.navbar-light .navbar-nav .nav-link:hover,
+.navbar-light .navbar-nav .nav-link:focus {
+    color: #111111; /* Replace with the actual color value for $navbar-light-hover-color */
+}
+
+.navbar-light .navbar-nav .nav-link.disabled {
+    color: #cccccc; /* Replace with the actual color value for $navbar-light-disabled-color */
+}
+
+.navbar-light .navbar-nav .show > .nav-link,
+.navbar-light .navbar-nav .active > .nav-link,
+.navbar-light .navbar-nav .nav-link.show,
+.navbar-light .navbar-nav .nav-link.active {
+    color: #333333; /* Replace with the actual color value for $navbar-light-active-color */
+}
+
+.navbar-light .navbar-toggler {
+    color: #555555; /* Replace with the actual color value for $navbar-light-color */
+    border-color: #cccccc; /* Replace with the actual color value for $navbar-light-toggler-border-color */
+}
+
+.navbar-light .navbar-toggler-icon {
+    background-image: url('data:image/svg+xml,...'); /* Replace with the actual background image for $navbar-light-toggler-icon-bg */
+}
+
+.navbar-light .navbar-text {
+    color: #555555; /* Replace with the actual color value for $navbar-light-color */
+}
+
+.navbar-light .navbar-text a {
+    color: #333333; /* Replace with the actual color value for $navbar-light-active-color */
+}
+
+.navbar-light .navbar-text a:hover,
+.navbar-light .navbar-text a:focus {
+    color: #333333; /* Replace with the actual color value for $navbar-light-active-color */
+}
+
+.navbar-dark .navbar-brand {
+    color: #ffffff; /* Replace with the equivalent of $navbar-dark-active-color */
+}
+
+.navbar-dark .navbar-brand:hover,
+.navbar-dark .navbar-brand:focus {
+    color: #ffffff; /* Replace with the equivalent of $navbar-dark-active-color */
+}
+
+.navbar-dark .navbar-nav .nav-link {
+    color: #d1d1d1; /* Replace with the equivalent of $navbar-dark-color */
+}
+
+.navbar-dark .navbar-nav .nav-link:hover,
+.navbar-dark .navbar-nav .nav-link:focus {
+    color: #b3b3b3; /* Replace with the equivalent of $navbar-dark-hover-color */
+}
+
+.navbar-dark .navbar-nav .nav-link.disabled {
+    color: #6c757d; /* Replace with the equivalent of $navbar-dark-disabled-color */
+}
+
+.navbar-dark .navbar-nav .show > .nav-link,
+.navbar-dark .navbar-nav .active > .nav-link,
+.navbar-dark .navbar-nav .nav-link.show,
+.navbar-dark .navbar-nav .nav-link.active {
+    color: #ffffff; /* Replace with the equivalent of $navbar-dark-active-color */
+}
+
+.navbar-dark .navbar-toggler {
+    color: #d1d1d1; /* Replace with the equivalent of $navbar-dark-color */
+    border-color: #ffffff; /* Replace with the equivalent of $navbar-dark-toggler-border-color */
+}
+
+.navbar-dark .navbar-toggler-icon {
+    background-image: url('data:image/svg+xml,...'); /* Replace with the equivalent of $navbar-dark-toggler-icon-bg */
+}
+
+.navbar-dark .navbar-text {
+    color: #d1d1d1; /* Replace with the equivalent of $navbar-dark-color */
+}
+
+.navbar-dark .navbar-text a {
+    color: #ffffff; /* Replace with the equivalent of $navbar-dark-active-color */
+}
+
+.navbar-dark .navbar-text a:hover,
+.navbar-dark .navbar-text a:focus {
+    color: #ffffff; /* Replace with the equivalent of $navbar-dark-active-color */
+}
+
+
+/* Overlay to darken the background */
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.45));
+    z-index: -1000;
+}
+
+/* Header content within hero section */
+.masthead {
+    z-index: 2;
+    padding-bottom: 100px;
+}
+
+.masthead h1 {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #fff;
+    margin: 0;
+}
+
+.masthead h3 {
+    font-size: 1.25rem;
+    font-weight: 300;
+    color: #d1d1d1;
+    margin-bottom: 2rem;
+}
+
+/* Profile Picture Styling */
+#profile_pic {
+    border: 8px solid #fff;
+    border-radius: 50%;
+    width: 250px;
+    height: 250px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Button styling in hero section */
+.btn-light {
+    color: #000;
+    background-color: #fff;
+    border: none;
+    font-weight: bold;
+    font-size: 1rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 25px;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+.btn-light:hover {
+    background-color: #FFC107;
+    color: #000;
+}
+
+/* Content sections */
+.content-section {
+    padding: 100px 20px;
+    text-align: center;
+    background: #1a1a1a;
+}
+
+.content-section:nth-of-type(even) {
+    background: #333;
+}
+
+.content-section h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #FFC107;
+}
+
+.content-section p {
+    max-width: 600px;
+    margin: 0 auto;
+    color: #ccc;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+/* Responsive design adjustments */
+@media (max-width: 768px) {
+    .masthead h1 {
+        font-size: 2.5rem;
+    }
+
+    .masthead h3 {
+        font-size: 1rem;
+    }
+
+    #profile_pic {
+        width: 200px;
+        height: 200px;
+    }
+
+    .btn-light {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+}

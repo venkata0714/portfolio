@@ -5,7 +5,7 @@ const getAllDocuments = async (collectionName, res) => {
   try {
     const db = getDB();
     const documents = await db.collection(collectionName).find().toArray();
-    console.log(`Fetched all documents from ${collectionName}:`, documents);
+    // console.log(`Fetched all documents from ${collectionName}:`, documents);
     res.json(documents);
   } catch (error) {
     console.error(`Error fetching documents from ${collectionName}:`, error);
@@ -20,7 +20,7 @@ const getDocumentByLink = async (collectionName, linkField, linkValue, res) => {
     const document = await db.collection(collectionName).findOne({ [linkField]: linkValue });
 
     if (document) {
-      console.log(`Fetched document from ${collectionName}:`, document);
+      // console.log(`Fetched document from ${collectionName}:`, document);
       res.json(document);
     } else {
       res.status(404).json({ message: `${collectionName.slice(0, -5)} not found` });
@@ -32,6 +32,10 @@ const getDocumentByLink = async (collectionName, linkField, linkValue, res) => {
 };
 
 // Controllers for each type
+
+// Projects
+const getProjects = (req, res) => getAllDocuments('projectTable', res);
+const getProjectByLink = (req, res) => getAllDocuments('projectTable', 'projectLink', req.params.projectLink, res);
 
 // Involvements
 const getInvolvements = (req, res) => getAllDocuments('involvementTable', res);
@@ -50,6 +54,8 @@ const getHonorsExperiences = (req, res) => getAllDocuments('honorsExperienceTabl
 const getHonorsExperienceByLink = (req, res) => getDocumentByLink('honorsExperienceTable', 'honorsExperienceLink', req.params.honorsExperienceLink, res);
 
 module.exports = {
+  getProjects,
+  getProjectByLink,
   getInvolvements,
   getInvolvementByLink,
   getExperiences,

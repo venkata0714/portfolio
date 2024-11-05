@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const {
+  getProjects,
+  getProjectByLink,
   getInvolvements,
   getInvolvementByLink,
   getExperiences,
@@ -10,6 +12,10 @@ const {
   getHonorsExperiences,
   getHonorsExperienceByLink
 } = require('../controllers/dataController');
+
+// Routes for Projects
+router.get('/getprojects', getProjects);
+router.get('/getprojects/:projectLink', getProjectByLink);
 
 // Routes for Involvements
 router.get('/getinvolvements', getInvolvements);
