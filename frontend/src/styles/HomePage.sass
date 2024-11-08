@@ -1,0 +1,16 @@
+$bg-image: url('./assets/img/bg.jpg')
+// Gradient Overlay Colors
+$dark-color: rgba(0, 0, 0, 0.8) // Dark color at the top with 65% opacity
+$light-color: rgba(0, 0, 0, 0.1) // Lighter color at the bottom with 35% opacity
+
+// Apply the background style with gradient overlay to the entire app
+.App
+  background: linear-gradient(to bottom, $dark-color, $light-color), $bg-image
+  background-size: cover
+  background-repeat: no-repeat
+  background-attachment: fixed
+  background-position: center
+  min-height: 100vh
+  font-family: 'Montserrat'
+  color: $secondary-color // Base font color; adjust based on bg contrast
+  filter: saturate(0.85) // Increase saturation by 1.5x
