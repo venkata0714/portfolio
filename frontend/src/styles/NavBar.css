@@ -87,7 +87,8 @@ b {
   margin-right: 16px;
   padding: 12px 0;
   font-size: 20px;
-  font-weight: bolder;
+  font-weight: 100;
+  font-weight: bold;
   line-height: inherit;
   white-space: nowrap;
   position: relative;
@@ -95,6 +96,9 @@ b {
 
 .navbar-toggler {
   font-size: 12px;
+  font-weight: bold;
+  border-radius: .25rem;
+  display: none;
   right: 0;
   padding: 13px;
   text-transform: uppercase;
@@ -102,7 +106,15 @@ b {
   border: 0;
   background-color: #fcbc1d;
   font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-}    
+}
+
+.navbar-toggler:not(:disabled):not(.disabled) {
+  cursor: pointer;
+}
+
+#menu-button {
+  color: black;
+}
 
 .navbar-menu {
   font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -127,6 +139,9 @@ b {
 }
 
 .navbar-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
   font-weight: 100;
   padding: 15.84px 10.8px;
   text-decoration: none; /* Removes underline from links */
@@ -135,9 +150,176 @@ b {
 }
 
 i {
-  color: white !important;
+  color: white;
 }
 
 .active, .navbar-link:hover, .navbar-link:hover i {
   color: #fcbc1d;
+}
+
+
+@media (max-width: 992px) {
+  nav {
+    display: block;
+  }
+
+  b {
+    font-family: 'Montserrat', 'Helvetica Neue', Helvetica;
+    font-weight: bold;
+  }
+
+  .navbar-container {
+    padding-right: 0;
+    padding-left: 0;
+    max-width: 720px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+  }
+
+  .navbar-menu-container {
+    padding-right: 0;
+    padding-left: 0;
+    max-width: 720px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+  }
+
+  .navbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 auto;
+    padding: 8px 16px;
+  }
+
+  .scrolled-navbar-brand {
+    display: inline-block;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-right: 1rem;
+    font-size: 1.25rem;
+    line-height: inherit;
+    white-space: nowrap;
+  }
+
+  .nav-item {
+    padding-right: 0;
+    padding-left: 0;
+    max-width: 720px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+  }
+
+  .navbar-links {
+    display: none; /* Initially hidden */
+    flex-direction: column;
+    position: absolute;
+    padding: 10.54px 16px;
+    top: 100%;
+    left: 0;
+    background-color: #212529;
+    width: 100%;
+    z-index: 1000;
+    transition: 500px 0.3s ease; /* Smooth transition */
+    overflow: hidden;
+    max-height: 0;
+  }
+
+  .navbar-link {
+    display: flex;
+    align-items: center;
+    margin: 0 0;
+    padding: 0 0;
+    justify-content: space-around;
+    font-weight: 100;
+    text-decoration: none; /* Removes underline from links */
+    color: #FFFFFF; /* Set your desired color */
+    font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+
+  .navbar-menu.open .navbar-links {
+    display: flex;
+    justify-content: space-between;
+    max-height: max-content;
+  }
+
+  .navbar-menu.open .navbar-links .active{
+    color: #fcbc1d;
+  }
+  
+  .navbar-toggler {
+    display: inline-block;
+    border-radius: .25rem;
+    font-size: 12px;
+    padding: 13px;
+    text-transform: uppercase;
+    color: black;
+    border: 0;
+    background-color: #fcbc1d;
+    font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    margin-left: auto; /* Pushes the toggle button to the right */
+  }
+}
+
+@media (max-width: 768px) {
+  nav {
+    display: block;
+  }
+
+  .navbar-container {
+    padding-right: 0;
+    padding-left: 0;
+    max-width: 540px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+  }
+
+  .navbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+  }
+
+  .scrolled-navbar-brand {
+    display: inline-block;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-right: 1rem;
+    font-size: 1.25rem;
+    line-height: inherit;
+    white-space: nowrap;
+  }
+
+  .nav-item {
+    padding-right: 0;
+    padding-left: 0;
+    max-width: 540px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+  }
+
+  .navbar-links {
+    display: none;
+  }
+  
+  .navbar-toggler {
+    display: inline-block;
+    border-radius: .25rem;
+    font-size: 12px;
+    padding: 13px;
+    text-transform: uppercase;
+    color: black;
+    border: 0;
+    background-color: #fcbc1d;
+    font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    margin-left: auto; /* Pushes the toggle button to the right */
+  }
 }
