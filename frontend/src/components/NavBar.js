@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {Nav, Navbar, Container } from 'react-bootstrap';
-import '../styles/NavBar.sass';
-import ResumeLogo from '../assets/img/ResumeLogo.png'; // Adjust the path if necessary
-import ProfilePicture from '../assets/img/Kartavya-Profile-Photo.jpg'
-import navLinkedin from '../assets/img/linkedin.svg'
-import navGitHub from '../assets/img/github.svg'
-import navInstagram from '../assets/img/instagram.svg'
+import '../styles/NavBar.css';
 
 const NavBar = () => {
   const [activeLink, setActiveLink] = useState("home");
@@ -13,13 +7,12 @@ const NavBar = () => {
 
   useEffect(() => {
     const onScroll = () => {
-      if (window.scrollY > 50) {
+      if (window.scrollY > 100) {
         setScrolled(true);
       } else {
         setScrolled(false);
       }
     };
-
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -29,34 +22,24 @@ const NavBar = () => {
   };
 
   return (
-    <Navbar expand="lg" className={scrolled ? "scrolled" : ""}>
-      <Container>
-        <Navbar.Brand href="#home">
-          <img src={ProfilePicture} alt="Logo" className="brand-logo" /> Kartavya Singh
-        </Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav">
-          <span className="navbar-toggler-icon"></span>
-        </Navbar.Toggle>
-        <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="me-auto">
-            <Nav.Link href="#about" className={activeLink === "home" ? "active navbar-link" : "navbar-link"} onCLick={() => onUpdateActiveLink("home")}>ABOUT</Nav.Link>
-            <Nav.Link href="#skills" className={activeLink === "skills" ? "active navbar-link" : "navbar-link"} onCLick={() => onUpdateActiveLink("skills")}>SKILLS</Nav.Link>
-            <Nav.Link href="#projects" className={activeLink === "projects" ? "active navbar-link" : "navbar-link"} onCLick={() => onUpdateActiveLink("projects")}>PROJECTS</Nav.Link>
-            <Nav.Link href="#experience" className={activeLink === "experience" ? "active navbar-link" : "navbar-link"} onCLick={() => onUpdateActiveLink("experience")}>EXPERIENCE</Nav.Link>
-            <Nav.Link href="#contact" className={activeLink === "contact" ? "active navbar-link" : "navbar-link"} onCLick={() => onUpdateActiveLink("contact")}>CONTACT</Nav.Link>
-          </Nav>
-          <span className="navbar-text">
-            <div className="social-icon">
-              <a href="https://www.linkedin.com/in/kartavya-singh-singhk6/" target="_blank" rel="noopener noreferrer"><img src={navLinkedin} alt="" /></a>
-              <a href="https://github.com/Kartavya904" target="_blank" rel="noopener noreferrer"><img src={navGitHub} alt="" /></a>
-              <a href="https://www.instagram.com/kartavya1710/" target="_blank" rel="noopener noreferrer"><img src={navInstagram} alt="" /></a>
-            </div>
-            <button className="btn btn-primary" onClick={() => console.log("Download Resume...")}><span>Download Resume</span></button>
-          </span>
-        </Navbar.Collapse>
-      </Container>
-    </Navbar>
-  )
+    <div id="mainNav" className={scrolled ? "navbar scrolled fixed-top" : "navbar fixed-top"}>
+      <div className="navbar-container">
+        {/*Name On the Left */}
+        <a href="#home" className={scrolled ? "scrolled-navbar-brand" : "navbar-brand"} onClick={() => onUpdateActiveLink("home")}><b>Kartavya Singh</b></a>
+        {/* Collapsible Navbar Links In the Right, With Space Between */}
+        <div className="navbar-menu">
+          <ul className="navbar-links">
+            <li className='nav-item'><a href="#about" className={activeLink === "about" ? "active navbar-link" : "navbar-link"} onClick={() => onUpdateActiveLink("about")}>ABOUT</a></li>
+            <li className='nav-item'><a href="#skills" className={activeLink === "skills" ? "active navbar-link" : "navbar-link"} onClick={() => onUpdateActiveLink("skills")}>SKILLS</a></li>
+            <li className='nav-item'><a href="#projects" className={activeLink === "projects" ? "active navbar-link" : "navbar-link"} onClick={() => onUpdateActiveLink("projects")}>PROJECTS</a></li>
+            <li className='nav-item'><a href="#experience" className={activeLink === "experience" ? "active navbar-link" : "navbar-link"} onClick={() => onUpdateActiveLink("experience")}>EXPERIENCE</a></li>
+            <li className='nav-item'><a href="#contact" className={activeLink === "contact" ? "active navbar-link" : "navbar-link"} onClick={() => onUpdateActiveLink("contact")}>CONTACT</a></li>
+            <li className='nav-item'><a href="https://mailuc-my.sharepoint.com/:b:/g/personal/singhk6_mail_uc_edu/Efzdo8ozdSpInJYqJzLLqkcBW7n1fw4DKwYT2GdOkuByVg" className="resume-link" target="_blank" rel="noopener noreferrer"><i class="fa fa-file-pdf-o"></i><span className='navbar-link'>RESUME</span></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default NavBar;

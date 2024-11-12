@@ -1,9 +1,46 @@
 // HomePage.js
-import React from 'react';
+import React from 'react'
+import '../styles/HomePage.css';
 function HomePage() {
   return (
     <div id="home" className="homepage-container">
-      </div>
+      <br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br>
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry ...<br></br><br></br>
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry ...<br></br><br></br>
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry ...<br></br><br></br>
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry ...<br></br><br></br>
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry ...<br></br><br></br>
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry ...<br></br><br></br>
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry ...<br></br><br></br>
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry ...<br></br><br></br>
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry ...<br></br><br></br>
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry ...<br></br><br></br>
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry ...<br></br><br></br>
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry ...<br></br><br></br>
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry ...<br></br><br></br>
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry ...<br></br><br></br>
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry ...<br></br><br></br>
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry ...<br></br><br></br>
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry ...<br></br><br></br>
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry ...<br></br><br></br>
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry ...<br></br><br></br>
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry ...<br></br><br></br>
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry ...<br></br><br></br>
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry ...<br></br><br></br>
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry ...<br></br><br></br>
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry ...<br></br><br></br>
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry ...<br></br><br></br>
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry ...<br></br><br></br>
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry ...<br></br><br></br>
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry ...<br></br><br></br>
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry ...<br></br><br></br>
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry ...<br></br><br></br>
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry ...<br></br><br></br>
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry ...<br></br><br></br>
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry ...<br></br><br></br>
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry ...<br></br><br></br>
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry ...<br></br><br></br>
+    </div>
   );
 }
 

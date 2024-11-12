@@ -1,0 +1,143 @@
+
+.navbar {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  padding-top: 25px;
+  padding-bottom: 25px;
+  padding-left: 16px;
+  padding-right: 16px;
+  margin: 0 auto;
+  border: none !important;
+  background: transparent;
+  width: 100%;
+  transition: all 0.3s;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+}
+
+.fixed-top {
+  position: fixed;
+  z-index: 9999;
+  top: 0;
+  right: 0;
+  left: 0;
+}
+
+.scrolled {
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 16px;
+  padding-right: 16px;
+  background-color: #212529;
+}
+
+
+.navbar-container {
+  max-width: 1140px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 15px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Base style for the neon effect */
+.navbar-brand {
+  display: inline-block;
+  background: linear-gradient(135deg, #fcbc1d, #fcae2e, #fcbc1d);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  margin-right: 16px;
+  padding: 5px 0px;
+  background-clip: text;
+  color: transparent;
+  font-size: 28px;
+  font-weight: bolder;
+  line-height: inherit;
+  white-space: nowrap;
+  position: relative;
+}
+  
+b {
+  font-weight: bolder;
+}
+
+.navbar-brand.active, .navbar-brand:active, .navbar-brand:focus, .navbar-brand:hover {
+  color: #fbab25;
+}
+
+.navbar-brand:hover, .navbar-brand:focus {
+  text-decoration: none;
+}
+
+.scrolled-navbar-brand {
+  display: inline-block;
+  color: transparent;
+  background: linear-gradient(135deg, #fcbc1d, #fcae2e, #fcbc1d);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  font-family: 'Kaushan Script', 'Helvetica Neue', Helvetica, Arial, cursive;
+  text-decoration: none !important;
+  margin-right: 16px;
+  padding: 12px 0;
+  font-size: 20px;
+  font-weight: bolder;
+  line-height: inherit;
+  white-space: nowrap;
+  position: relative;
+}
+
+.navbar-toggler {
+  font-size: 12px;
+  right: 0;
+  padding: 13px;
+  text-transform: uppercase;
+  color: black;
+  border: 0;
+  background-color: #fcbc1d;
+  font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}    
+
+.navbar-menu {
+  font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  list-style-type: none; /* Removes bullets */
+  display: flex; /* Arranges items in a row */
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 100;
+}
+
+.navbar-links {
+  display: flex;
+  justify-content: space-between;
+  padding-left: 0;
+  margin-bottom: 0;
+  list-style: none;
+}
+
+.navbar-links li, .navbar-links a {
+  display: inline; /* Ensures each item is inline */
+  text-decoration: none !important;
+}
+
+.navbar-link {
+  font-weight: 100;
+  padding: 15.84px 10.8px;
+  text-decoration: none; /* Removes underline from links */
+  color: #FFFFFF; /* Set your desired color */
+  font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+i {
+  color: white !important;
+}
+
+.active, .navbar-link:hover, .navbar-link:hover i {
+  color: #fcbc1d;
+}

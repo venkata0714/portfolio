@@ -1,0 +1,14 @@
+
+/* Apply the background style with gradient overlay to the entire app */
+.homepage-container {
+  max-width: auto;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.1)), url('../assets/img/bg.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+  min-height: 100vh;
+  font-family: 'Montserrat', sans-serif;
+  color: #FFFFFF; /* Base font color; adjust based on bg contrast */
+  filter: saturate(0.85); /* Increase saturation by 1.5x */
+}
