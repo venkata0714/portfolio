@@ -3,8 +3,8 @@ import '../styles/ContactPage.css';
 
 function ContactPage() {
   return (
-    <div className="contact-container" id="contact">
-    </div>
+    <section className="contact-container" id="contact">
+    </section>
   );
 }
 

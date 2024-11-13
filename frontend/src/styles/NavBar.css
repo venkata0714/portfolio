@@ -1,3 +1,7 @@
+html {
+  scroll-behavior: smooth;
+}
+
 
 .navbar {
   position: relative;
@@ -157,7 +161,6 @@ i {
   color: #fcbc1d;
 }
 
-
 @media (max-width: 992px) {
   nav {
     display: block;
@@ -210,7 +213,7 @@ i {
     padding-left: 0;
     max-width: 720px;
     width: 100%;
-    margin: 0 auto;
+    margin: 10px auto;
     display: flex;
   }
 
@@ -302,7 +305,66 @@ i {
     padding-left: 0;
     max-width: 540px;
     width: 100%;
+    margin: 10px auto;
+    display: flex;
+  }
+
+  .navbar-links {
+    display: none;
+  }
+  
+  .navbar-toggler {
+    display: inline-block;
+    border-radius: .25rem;
+    font-size: 12px;
+    padding: 13px;
+    text-transform: uppercase;
+    color: black;
+    border: 0;
+    background-color: #fcbc1d;
+    font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    margin-left: auto; /* Pushes the toggle button to the right */
+  }
+}
+
+@media (max-width: 576px) {
+  nav {
+    display: block;
+  }
+
+  .navbar-container {
+    padding-right: 0;
+    padding-left: 0;
+    max-width: 100%;
+    width: 90%;
     margin: 0 auto;
+    display: flex;
+  }
+
+  .navbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+  }
+
+  .scrolled-navbar-brand {
+    display: inline-block;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-right: 1rem;
+    font-size: 1.25rem;
+    line-height: inherit;
+    white-space: nowrap;
+  }
+
+  .nav-item {
+    padding-right: 0;
+    padding-left: 0;
+    max-width: 100%;
+    width: 90%;
+    margin: 10px auto;
     display: flex;
   }
 

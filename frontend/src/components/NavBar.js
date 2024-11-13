@@ -7,7 +7,52 @@ const NavBar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null); // Reference to the navbar menu
 
+  useEffect(() => {
+    // Query the sections and navLinks once the component mounts
+    const sections = document.querySelectorAll('section');
+    const navLinks = document.querySelectorAll('nav .navbar-menu .navbar-links .navbar-link');
 
+    console.log("Sections:");
+    sections.forEach(section => {
+      console.log("Class name:", section.className);
+    });
+
+    console.log("navLinks:");
+    navLinks.forEach(link => {
+      console.log("Link:", link);
+    });
+
+    // Active link on scroll
+    const handleScroll = () => {
+      sections.forEach(section => {
+        let top = window.scrollY;
+        let offset = section.offsetTop - 52; // Adjust for header height if needed
+        let height = section.offsetHeight;
+        let id = section.getAttribute('id');
+
+        if (top >= offset && top < offset + height) {
+          navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === `#${id}`) {
+              link.classList.add('active');
+            }
+          });
+        }
+      });
+    };
+
+    // Initial check to set the active link based on the current scroll position
+    handleScroll();
+
+    // Add the scroll event listener
+    window.addEventListener('scroll', handleScroll);
+
+    // Clean up event listener on component unmount
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+  
   useEffect(() => {
     // Initial check on load for screen size
     const initialCheck = () => {

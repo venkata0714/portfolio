@@ -6,8 +6,6 @@ import AboutPage from './components/AboutPage';
 import SkillPage from './components/SkillPage';
 import ExperiencePage from './components/ExperiencePage';
 import ProjectPage from './components/ProjectPage';
-import InvolvementPage from './components/InvolvementPage';
-import HonorsPage from './components/HonorsPage';
 import ContactPage from './components/ContactPage';
 
 function App() {
@@ -17,10 +15,8 @@ function App() {
       <HomePage />
       <AboutPage />
       <SkillPage />
-      <ExperiencePage />
       <ProjectPage />
-      <InvolvementPage />
-      <HonorsPage />
+      <ExperiencePage />
       <ContactPage />
     </div>
   );

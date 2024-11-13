@@ -1,0 +1,15 @@
+.project-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    font-size: 3em;
+    font-weight: bold;
+    color: #fff;
+    background-color: #212529;
+  }
+  
+  .project-container::before {
+    content: "Projects";
+  }
+  

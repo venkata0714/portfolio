@@ -3,8 +3,8 @@ import '../styles/SkillPage.css';
 
 function SkillPage() {
   return (
-    <div className="skill-container" id="skill">
-    </div>
+    <section className="skill-container" id="skills">
+    </section>
   );
 }
 
