@@ -1,14 +1,13 @@
 .skill-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    font-size: 3em;
-    font-weight: bold;
-    color: #333;
-  }
-  
-  .skill-container::before {
-    content: "Skills";
-  }
-  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  font-size: 3em;
+  font-weight: bold;
+  color: #333;
+}
+
+.skill-container::before {
+  content: "Skills";
+}

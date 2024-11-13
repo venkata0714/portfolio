@@ -2,15 +2,16 @@
 .homepage-container {
   padding-top: 120px;
   padding-bottom: 100px;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.1)), url('../assets/img/bg.jpg');
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.1)),
+    url("../assets/img/bg.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: scroll;
   scroll-behavior: smooth;
   background-position: center;
   min-height: 100vh;
-  font-family: 'Montserrat', sans-serif;
-  color: #FFFFFF;
+  font-family: "Montserrat", sans-serif;
+  color: #ffffff;
   text-align: center;
 }
 
@@ -29,8 +30,9 @@
   width: 250px;
   height: 250px;
   border-radius: 100%;
-  border: 8px solid #FFFFFF;
-  filter: grayscale(95%) brightness(0.9) contrast(1) saturate(0.6) hue-rotate(-30deg);
+  border: 8px solid #ffffff;
+  filter: grayscale(95%) brightness(0.9) contrast(1) saturate(0.6)
+    hue-rotate(-30deg);
   position: relative;
   overflow: hidden;
   transition: transform 0.7s ease, filter 0.7s ease;
@@ -46,13 +48,12 @@
   font-size: 5.5rem;
   font-weight: bold;
   margin-bottom: 0.25rem !important;
-  font-family: 'Montserrat', sans-serif;
-  color: #FFFFFF;
+  font-family: "Montserrat", sans-serif;
+  color: #ffffff;
 }
 
 .changing-text-container {
   margin-bottom: 48px;
-
 }
 
 .changing-text {
@@ -60,8 +61,8 @@
   font-weight: 700;
   margin: 0px auto;
   letter-spacing: 1px;
-  color: #FFFFFF;
-  font-family: 'Montserrat', sans-serif;
+  color: #ffffff;
+  font-family: "Montserrat", sans-serif;
   width: 100%;
   white-space: wrap;
   overflow: hidden;
@@ -82,7 +83,8 @@
 }
 
 @keyframes blink {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {
@@ -91,7 +93,7 @@
 }
 
 .enter-portfolio-btn {
-  font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 18px;
   display: fixed;
   padding: 1.25rem 2.5rem;
@@ -112,7 +114,7 @@
 
 @media (max-width: 992px) {
   .name {
-    font-size: 4.0rem;
+    font-size: 4rem;
     font-weight: 500;
     line-height: 1.2;
     color: inherit;
@@ -137,8 +139,7 @@
   }
 }
 
-@media (max-width: 576px) {  
-
+@media (max-width: 576px) {
   .name {
     font-size: 2rem;
     font-weight: 500;
@@ -147,6 +148,6 @@
   }
 
   .changing-text-container {
-    white-space:pre-line;
+    white-space: pre-line;
   }
 }

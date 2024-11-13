@@ -1,11 +1,8 @@
-import React from 'react';
-import '../styles/ExperiencePage.css';
+import React from "react";
+import "../styles/ExperiencePage.css";
 
 function ExperiencePage() {
-  return (
-    <section className="experience-container" id="experience">
-    </section>
-  );
+  return <section className="experience-container" id="experience"></section>;
 }
 
 export default ExperiencePage;

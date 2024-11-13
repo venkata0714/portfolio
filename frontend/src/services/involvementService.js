@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 
 const API_URL = "http://localhost:5000/api";
 
@@ -16,7 +16,9 @@ export const fetchInvolvements = async () => {
 // Fetch a specific involvement by involvementLink
 export const fetchInvolvementByLink = async (involvementLink) => {
   try {
-    const response = await axios.get(`${API_URL}/getinvolvements/${involvementLink}`);
+    const response = await axios.get(
+      `${API_URL}/getinvolvements/${involvementLink}`
+    );
     return response.data;
   } catch (error) {
     console.error("Error fetching involvement by link:", error);

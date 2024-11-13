@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 const {
   getProjects,
@@ -10,27 +10,30 @@ const {
   getYearInReviews,
   getYearInReviewByLink,
   getHonorsExperiences,
-  getHonorsExperienceByLink
-} = require('../controllers/dataController');
+  getHonorsExperienceByLink,
+} = require("../controllers/dataController");
 
 // Routes for Projects
-router.get('/getprojects', getProjects);
-router.get('/getprojects/:projectLink', getProjectByLink);
+router.get("/getprojects", getProjects);
+router.get("/getprojects/:projectLink", getProjectByLink);
 
 // Routes for Involvements
-router.get('/getinvolvements', getInvolvements);
-router.get('/getinvolvements/:involvementLink', getInvolvementByLink);
+router.get("/getinvolvements", getInvolvements);
+router.get("/getinvolvements/:involvementLink", getInvolvementByLink);
 
 // Routes for Experiences
-router.get('/getexperiences', getExperiences);
-router.get('/getexperiences/:experienceLink', getExperienceByLink);
+router.get("/getexperiences", getExperiences);
+router.get("/getexperiences/:experienceLink", getExperienceByLink);
 
 // Routes for Year In Reviews
-router.get('/getyearinreviews', getYearInReviews);
-router.get('/getyearinreviews/:yearInReviewLink', getYearInReviewByLink);
+router.get("/getyearinreviews", getYearInReviews);
+router.get("/getyearinreviews/:yearInReviewLink", getYearInReviewByLink);
 
 // Routes for Honors Experiences
-router.get('/gethonorsexperiences', getHonorsExperiences);
-router.get('/gethonorsexperiences/:honorsExperienceLink', getHonorsExperienceByLink);
+router.get("/gethonorsexperiences", getHonorsExperiences);
+router.get(
+  "/gethonorsexperiences/:honorsExperienceLink",
+  getHonorsExperienceByLink
+);
 
 module.exports = router;

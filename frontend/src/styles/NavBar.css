@@ -2,7 +2,6 @@ html {
   scroll-behavior: smooth;
 }
 
-
 .navbar {
   position: relative;
   display: flex;
@@ -40,7 +39,6 @@ html {
   background-color: #212529;
 }
 
-
 .navbar-container {
   max-width: 1140px;
   width: 100%;
@@ -70,7 +68,8 @@ html {
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
     opacity: 1;
   }
@@ -80,12 +79,14 @@ html {
   }
 }
 
-  
 b {
   font-weight: bolder;
 }
 
-.navbar-brand.active, .navbar-brand:active, .navbar-brand:focus, .navbar-brand:hover {
+.navbar-brand.active,
+.navbar-brand:active,
+.navbar-brand:focus,
+.navbar-brand:hover {
   animation: pulse 2s infinite;
   color: #fbab25;
   text-decoration: none;
@@ -98,7 +99,7 @@ b {
   background-size: 200% 200%;
   -webkit-background-clip: text;
   background-clip: text;
-  font-family: 'Kaushan Script', 'Helvetica Neue', Helvetica, Arial, cursive;
+  font-family: "Kaushan Script", "Helvetica Neue", Helvetica, Arial, cursive;
   text-decoration: none !important;
   margin-right: 16px;
   padding: 12px 0;
@@ -113,7 +114,7 @@ b {
 .navbar-toggler {
   font-size: 12px;
   font-weight: bold;
-  border-radius: .25rem;
+  border-radius: 0.25rem;
   display: none;
   right: 0;
   padding: 13px;
@@ -121,7 +122,7 @@ b {
   color: black;
   border: 0;
   background-color: #fcbc1d;
-  font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .navbar-toggler:not(:disabled):not(.disabled) {
@@ -133,7 +134,7 @@ b {
 }
 
 .navbar-menu {
-  font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
   list-style-type: none; /* Removes bullets */
   display: flex; /* Arranges items in a row */
   align-items: center;
@@ -149,7 +150,8 @@ b {
   list-style: none;
 }
 
-.navbar-links li, .navbar-links a {
+.navbar-links li,
+.navbar-links a {
   display: inline; /* Ensures each item is inline */
   text-decoration: none !important;
 }
@@ -161,15 +163,17 @@ b {
   font-weight: 100;
   padding: 15.84px 10.8px;
   text-decoration: none; /* Removes underline from links */
-  color: #FFFFFF; /* Set your desired color */
-  font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  color: #ffffff; /* Set your desired color */
+  font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 i {
   color: white;
 }
 
-.active, .navbar-link:hover , .navbar-link:hover i {
+.active,
+.navbar-link:hover,
+.navbar-link:hover i {
   color: #fcbc1d;
 }
 
@@ -179,7 +183,7 @@ i {
   }
 
   b {
-    font-family: 'Montserrat', 'Helvetica Neue', Helvetica;
+    font-family: "Montserrat", "Helvetica Neue", Helvetica;
     font-weight: bold;
   }
 
@@ -266,8 +270,8 @@ i {
     justify-content: space-around;
     font-weight: 100;
     text-decoration: none; /* Removes underline from links */
-    color: #FFFFFF; /* Set your desired color */
-    font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: #ffffff; /* Set your desired color */
+    font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
   }
 
   .navbar-menu.open .navbar-links {
@@ -276,20 +280,20 @@ i {
     max-height: max-content;
   }
 
-  .navbar-menu.open .navbar-links .active{
+  .navbar-menu.open .navbar-links .active {
     color: #fcbc1d;
   }
-  
+
   .navbar-toggler {
     display: inline-block;
-    border-radius: .25rem;
+    border-radius: 0.25rem;
     font-size: 12px;
     padding: 13px;
     text-transform: uppercase;
     color: black;
     border: 0;
     background-color: #fcbc1d;
-    font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
     margin-left: auto; /* Pushes the toggle button to the right */
   }
 }
@@ -338,17 +342,17 @@ i {
   .navbar-links {
     display: none;
   }
-  
+
   .navbar-toggler {
     display: inline-block;
-    border-radius: .25rem;
+    border-radius: 0.25rem;
     font-size: 12px;
     padding: 13px;
     text-transform: uppercase;
     color: black;
     border: 0;
     background-color: #fcbc1d;
-    font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
     margin-left: auto; /* Pushes the toggle button to the right */
   }
 }
@@ -397,17 +401,17 @@ i {
   .navbar-links {
     display: none;
   }
-  
+
   .navbar-toggler {
     display: inline-block;
-    border-radius: .25rem;
+    border-radius: 0.25rem;
     font-size: 12px;
     padding: 13px;
     text-transform: uppercase;
     color: black;
     border: 0;
     background-color: #fcbc1d;
-    font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
     margin-left: auto; /* Pushes the toggle button to the right */
   }
 }

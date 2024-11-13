@@ -1,11 +1,11 @@
 .contact-page {
   background-color: #212529;
-  background-image: url('../assets/img/contact-bg.png');
+  background-image: url("../assets/img/contact-bg.png");
   background-repeat: no-repeat;
   background-position: center;
   padding-top: 6rem;
   padding-bottom: 6rem;
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .contact-container {
@@ -44,7 +44,7 @@
 
 .contact-form input,
 .contact-form textarea {
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   width: 100%;
   padding: 12px;
   margin-bottom: 15px;
