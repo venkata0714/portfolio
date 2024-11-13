@@ -30,17 +30,15 @@
   height: 250px;
   border-radius: 100%;
   border: 8px solid #FFFFFF;
-  filter: grayscale(95%);
+  filter: grayscale(95%) brightness(0.9) contrast(1) saturate(0.6) hue-rotate(-30deg);
   position: relative;
   overflow: hidden;
-}
-
-#profile-picture:active, #profile-picture:focus {
-  transform: scale(1.01);
+  transition: transform 0.7s ease, filter 0.7s ease;
 }
 
 #profile-picture:hover {
   filter: grayscale(0%);
+  transform: scale(1.1) rotate(2deg);
   border: 8px solid #fcbc1d;
 }
 
@@ -64,9 +62,19 @@
   letter-spacing: 1px;
   color: #FFFFFF;
   font-family: 'Montserrat', sans-serif;
-  width:100%;
+  width: 100%;
   white-space: wrap;
   overflow: hidden;
+  animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .changing-text-animation .TypeAnimation_cursor {

@@ -17,7 +17,9 @@ html {
   border: none !important;
   background: transparent;
   width: 100%;
-  transition: all 0.3s;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  opacity: 1;
+  transform: translateY(0);
   -webkit-transition: all 0.3s;
   -moz-transition: all 0.3s;
 }
@@ -56,26 +58,36 @@ html {
   background: linear-gradient(135deg, #fcbc1d, #fcae2e, #fcbc1d);
   background-size: 200% 200%;
   -webkit-background-clip: text;
-  margin-right: 16px;
-  padding: 5px 0px;
   background-clip: text;
   color: transparent;
+  margin-right: 16px;
+  padding: 5px 0px;
   font-size: 28px;
   font-weight: bolder;
   line-height: inherit;
   white-space: nowrap;
   position: relative;
 }
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.02);
+    opacity: 0.8;
+  }
+}
+
   
 b {
   font-weight: bolder;
 }
 
 .navbar-brand.active, .navbar-brand:active, .navbar-brand:focus, .navbar-brand:hover {
+  animation: pulse 2s infinite;
   color: #fbab25;
-}
-
-.navbar-brand:hover, .navbar-brand:focus {
   text-decoration: none;
 }
 
@@ -157,7 +169,7 @@ i {
   color: white;
 }
 
-.active, .navbar-link:hover, .navbar-link:hover i {
+.active, .navbar-link:hover , .navbar-link:hover i {
   color: #fcbc1d;
 }
 

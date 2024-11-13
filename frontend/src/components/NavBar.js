@@ -120,12 +120,12 @@ const NavBar = () => {
         {/* Conditionally rendered navbar menu */}
         <div className={`navbar-menu ${menuOpen ? "open" : ""}`}>
           <ul className="navbar-links">
-            <li className={activeLink === "about" ? "active nav-item" : "nav-item"}><a href="#about" className={activeLink === "about" ? "active navbar-link" : "navbar-link"} onClick={() => {onUpdateActiveLink("about"); setScrolled(true);}}>ABOUT</a></li>
-            <li className={activeLink === "skills" ? "active nav-item" : "nav-item"}><a href="#skills" className={activeLink === "skills" ? "active navbar-link" : "navbar-link"} onClick={() => {onUpdateActiveLink("skills"); setScrolled(true);}}>SKILLS</a></li>
-            <li className={activeLink === "projects" ? "active nav-item" : "nav-item"}><a href="#projects" className={activeLink === "projects" ? "active navbar-link" : "navbar-link"} onClick={() => {onUpdateActiveLink("projects"); setScrolled(true);}}>PROJECTS</a></li>
-            <li className={activeLink === "experience" ? "active nav-item" : "nav-item"}><a href="#experience" className={activeLink === "experience" ? "active navbar-link" : "navbar-link"} onClick={() => {onUpdateActiveLink("experience"); setScrolled(true);}}>EXPERIENCE</a></li>
-            <li className={activeLink === "contact" ? "active nav-item" : "nav-item"}><a href="#contact" className={activeLink === "contact" ? "active navbar-link" : "navbar-link"} onClick={() => {onUpdateActiveLink("contact"); setScrolled(true);}}>CONTACT</a></li>
-            <li className='nav-item'><a href="https://mailuc-my.sharepoint.com/:b:/g/personal/singhk6_mail_uc_edu/Efzdo8ozdSpInJYqJzLLqkcBW7n1fw4DKwYT2GdOkuByVg" className="navbar-link" target="_blank" rel="noopener noreferrer"><i className="fa fa-file-pdf-o"></i> RESUME</a></li>
+            <li className={activeLink === "about" ? "active nav-item" : "nav-item"}><a href="#about" className={activeLink === "about" ? "active navbar-link" : "navbar-link"} onClick={() => {onUpdateActiveLink("about"); setScrolled(true);}}><span className='navbar-text'>ABOUT</span></a></li>
+            <li className={activeLink === "skills" ? "active nav-item" : "nav-item"}><a href="#skills" className={activeLink === "skills" ? "active navbar-link" : "navbar-link"} onClick={() => {onUpdateActiveLink("skills"); setScrolled(true);}}><span className='navbar-text'>SKILLS</span></a></li>
+            <li className={activeLink === "projects" ? "active nav-item" : "nav-item"}><a href="#projects" className={activeLink === "projects" ? "active navbar-link" : "navbar-link"} onClick={() => {onUpdateActiveLink("projects"); setScrolled(true);}}><span className='navbar-text'>PROJECTS</span></a></li>
+            <li className={activeLink === "experience" ? "active nav-item" : "nav-item"}><a href="#experience" className={activeLink === "experience" ? "active navbar-link" : "navbar-link"} onClick={() => {onUpdateActiveLink("experience"); setScrolled(true);}}><span className='navbar-text'>EXPERIENCE</span></a></li>
+            <li className={activeLink === "contact" ? "active nav-item" : "nav-item"}><a href="#contact" className={activeLink === "contact" ? "active navbar-link" : "navbar-link"} onClick={() => {onUpdateActiveLink("contact"); setScrolled(true);}}><span className='navbar-text'>CONTACT</span></a></li>
+            <li className='nav-item'><a href="https://mailuc-my.sharepoint.com/:b:/g/personal/singhk6_mail_uc_edu/Efzdo8ozdSpInJYqJzLLqkcBW7n1fw4DKwYT2GdOkuByVg" className="navbar-link" target="_blank" rel="noopener noreferrer"><span className='navbar-text'><i className="fa fa-file-pdf-o"></i> RESUME</span></a></li>
           </ul>
         </div>
       </div>
