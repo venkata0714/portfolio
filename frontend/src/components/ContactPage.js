@@ -1,14 +1,14 @@
-import { React, useState, useRef } from "react";
-import { styled } from "@stitches/react";
+import React, { useState, useRef } from "react";
+import { styled, keyframes } from "@stitches/react";
 import emailjs from "emailjs-com";
 import "../styles/ContactPage.css";
 
 function ContactPage() {
-  const form = useRef(); // Reference for the form
-  const [isSent, setIsSent] = useState(false); // Optional: state to track if the email was sent
+  const form = useRef();
+  const [isSent, setIsSent] = useState(null); // null for no status, true for success, false for error
 
   const sendEmail = (e) => {
-    e.preventDefault(); // Prevents the default form submission behavior
+    e.preventDefault();
 
     emailjs
       .sendForm(
@@ -20,14 +20,17 @@ function ContactPage() {
       .then(
         (result) => {
           console.log(result.text);
-          setIsSent(true); // Optional: Update state to show success message
+          setIsSent(true); // Set success status
+          setTimeout(() => setIsSent(null), 2000); // Reset status after 2 seconds
         },
         (error) => {
           console.log(error.text);
+          setIsSent(false); // Set error status
+          setTimeout(() => setIsSent(null), 2000); // Reset status after 2 seconds
         }
       );
 
-    e.target.reset(); // Clear the form fields after submission
+    e.target.reset();
   };
 
   return (
@@ -84,12 +87,16 @@ function ContactPage() {
               <StyledButton type="submit">
                 <ButtonShadow />
                 <ButtonEdge />
-                <ButtonLabel>Send Message</ButtonLabel>
+                <ButtonLabel isSent={isSent}>
+                  {isSent === true
+                    ? "Message Sent ✔️"
+                    : isSent === false
+                    ? "Failed to Send ❌"
+                    : "Send Message"}
+                </ButtonLabel>
               </StyledButton>
             </div>
           </form>
-          {isSent && <p>Your message has been sent!</p>}{" "}
-          {/* Optional success message */}
         </div>
       </div>
     </section>
@@ -98,7 +105,18 @@ function ContactPage() {
 
 export default ContactPage;
 
-// Styled Components for Button
+// Success and Error Keyframes for the label fill
+const fillGreen = keyframes({
+  "0%": { backgroundColor: "#fcbc1d", color: "#212529" }, // Initial yellow color
+  "100%": { backgroundColor: "#28a745", color: "#FFFFFF" }, // Success green with white text
+});
+
+const fillRed = keyframes({
+  "0%": { backgroundColor: "#fcbc1d", color: "#212529" }, // Initial yellow color
+  "100%": { backgroundColor: "#dc3545", color: "#FFFFFF" }, // Error red with white text
+});
+
+// Styled Components for Button Parts
 const ButtonPart = styled("span", {
   position: "absolute",
   top: 0,
@@ -124,6 +142,7 @@ const ButtonEdge = styled(ButtonPart, {
     )`,
 });
 
+// Label inside the button, with conditional background based on isSent state
 const ButtonLabel = styled("span", {
   fontFamily: "Montserrat",
   fontSize: "18px",
@@ -139,6 +158,18 @@ const ButtonLabel = styled("span", {
   transition:
     "transform 250ms ease-out, background-color 0.3s ease, color 0.3s ease",
 
+  // Conditional animation based on isSent state
+  variants: {
+    isSent: {
+      true: {
+        animation: `${fillGreen} 0.5s forwards`, // Apply green fill on success
+      },
+      false: {
+        animation: `${fillRed} 0.5s forwards`, // Apply red fill on error
+      },
+    },
+  },
+
   "&:hover": {
     backgroundColor: "#fcbc1d",
     color: "#FFFFFF",
@@ -146,6 +177,7 @@ const ButtonLabel = styled("span", {
   },
 });
 
+// Main Styled Button
 const StyledButton = styled("button", {
   border: "none",
   fontWeight: 600,
@@ -179,3 +211,5 @@ const StyledButton = styled("button", {
     },
   },
 });
+
+export { StyledButton, ButtonLabel, ButtonShadow, ButtonEdge };
