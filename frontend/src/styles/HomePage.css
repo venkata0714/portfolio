@@ -6,10 +6,9 @@
     url("../assets/img/bg.jpg");
   background-size: cover;
   background-repeat: no-repeat;
-  background-attachment: scroll;
+  background-attachment: fixed;
   scroll-behavior: smooth;
   background-position: center;
-  min-height: 100vh;
   font-family: "Montserrat", sans-serif;
   color: #ffffff;
   text-align: center;

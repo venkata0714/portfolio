@@ -7,6 +7,18 @@ const NavBar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null); // Reference to the navbar menu
 
+  const scrollToSection = (id) => {
+    const element = document.getElementById(id);
+    const offset = 52; // Adjust based on your navbar height
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.scrollY - offset;
+
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: "smooth",
+    });
+  };
+
   useEffect(() => {
     // Query the sections and navLinks once the component mounts
     const sections = document.querySelectorAll("section");
@@ -28,7 +40,7 @@ const NavBar = () => {
     const handleScroll = () => {
       sections.forEach((section) => {
         let top = window.scrollY;
-        let offset = section.offsetTop - 52; // Adjust for header height if needed
+        let offset = section.offsetTop - 100; // Adjust for header height if needed
         let height = section.offsetHeight;
         let id = section.getAttribute("id");
 
@@ -150,7 +162,9 @@ const NavBar = () => {
                 className={
                   activeLink === "about" ? "active navbar-link" : "navbar-link"
                 }
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToSection("about");
                   onUpdateActiveLink("about");
                   setScrolled(true);
                 }}
@@ -168,7 +182,9 @@ const NavBar = () => {
                 className={
                   activeLink === "skills" ? "active navbar-link" : "navbar-link"
                 }
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToSection("skills");
                   onUpdateActiveLink("skills");
                   setScrolled(true);
                 }}
@@ -188,7 +204,9 @@ const NavBar = () => {
                     ? "active navbar-link"
                     : "navbar-link"
                 }
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToSection("projects");
                   onUpdateActiveLink("projects");
                   setScrolled(true);
                 }}
@@ -208,7 +226,9 @@ const NavBar = () => {
                     ? "active navbar-link"
                     : "navbar-link"
                 }
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToSection("experience");
                   onUpdateActiveLink("experience");
                   setScrolled(true);
                 }}
@@ -228,7 +248,9 @@ const NavBar = () => {
                     ? "active navbar-link"
                     : "navbar-link"
                 }
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToSection("contact");
                   onUpdateActiveLink("contact");
                   setScrolled(true);
                 }}

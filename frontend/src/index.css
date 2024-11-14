@@ -16,8 +16,10 @@
   font-weight: 400;
 }
 
-*,
-html {
+html,
+body,
+#root,
+.App {
   scroll-behavior: smooth;
 }
 
