@@ -10,7 +10,7 @@ function AboutPage() {
       <div className="about-div glass">
         <h2 className="section-title">ABOUT ME</h2>
         <h3 className="section-subtitle">Who I Am & What I Do</h3>
-        <div className="about-container container grid">
+        <div className="about-container  grid">
           <img src={AboutImg} className="about-image" alt="Profile" />
           <div className="about-data">
             <div className="about-info grid">
@@ -41,7 +41,7 @@ function AboutPage() {
               </p>
             </div>
 
-            <a href={Resume} download className="download-cv">
+            <a href={Resume} download="Kartavya-Singh-Resume-2024.pdf" className="download-cv">
               <StyledButton>
                 <ButtonShadow />
                 <ButtonEdge />

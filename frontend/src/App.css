@@ -28,7 +28,7 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding: 10rem 5rem !important;
+  background-color: #212529;
 }
 
 body {
