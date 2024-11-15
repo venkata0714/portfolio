@@ -1,14 +1,187 @@
-.about-container {
+.about-section-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100vh;
-  font-size: 3em;
-  font-weight: bold;
-  color: #333;
-  background-color: #212529;
+  min-height: calc(100vh - 52px);
+  background-image: url("../assets/img/AboutMeBG.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  scroll-behavior: smooth;
+  background-position: center;
+  backdrop-filter: blur(15px); /* Blurs the background for a frosted look */
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); /* Adds a soft shadow for depth */
+  border: 1px solid rgba(255, 255, 255, 0.2); /* Light border to define edges */
+  scroll-behavior: smooth;
+  background-position: center;
+  font-family: "Montserrat", sans-serif;
+  color: #212529;
+  text-align: center;
 }
 
-.about-container::before {
-  content: "About";
+.glass {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0)
+  );
+  color: #212529;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.section-title {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #edeeef;
+  text-align: center;
+}
+
+.section-subtitle {
+  font-size: 1rem;
+  margin-bottom: 2rem;
+  color: #edeeef;
+  text-align: center;
+}
+
+.about-div {
+  max-width: 1140px;
+  width: 90%;
+  max-height: 90%;
+  margin: 100px auto;
+  padding: 45px 15px;
+}
+
+.about-container {
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  grid-template-columns: repeat(2, 1fr);
+  align-items: center;
+  column-gap: 4rem;
+}
+
+.about-image {
+  width: 350px;
+  height: 350px;
+  border-radius: 5%;
+  object-fit: cover;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.about-info {
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  color: #212529;
+}
+
+.about-box {
+  background-color: #edeeef;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 0.75rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  padding: 1rem 1.25rem;
+}
+
+.about-icon {
+  color: #212529;
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.about-title {
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+.about-subtitle {
+  font-size: 0.625rem;
+}
+
+.about-description {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: left;
+  font-size: 0.875rem;
+  /* padding: 1rem 1rem 1rem 1rem; */
+}
+
+@media (max-width: 992px) {
+  .about-container {
+    grid-template-columns: 1fr;
+    row-gap: 2.5rem;
+  }
+
+  .about-image {
+    width: 200px;
+    height: auto;
+    margin: 0 auto;
+  }
+
+  .about-box {
+    padding: 0.25rem 0.1rem;
+  }
+
+  .about-data {
+    text-align: center;
+  }
+
+  .about-info {
+    justify-content: center;
+  }
+
+  .about-div {
+    margin: auto auto;
+    padding: 15px 15px;
+  }
+
+  .about-description {
+    text-align: center;
+    padding: 5px 5px;
+  }
+}
+
+@media (max-width: 576px) {
+  .section-title {
+    font-size: 5.75vw;
+  }
+
+  .section-subtitle {
+    font-size: 2.75vw;
+  }
+
+  .about-info {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .about-description {
+    font-size: 2.2vw;
+    padding: 0;
+  }
+
+  .about-box {
+    padding: auto;
+    margin: 0px 0px 16px;
+  }
+
+  .about-icon {
+    font-size: medium;
+  }
+
+  .about-title {
+    font-size: xx-small;
+  }
+}
+
+@media (max-width: 350px) {
 }

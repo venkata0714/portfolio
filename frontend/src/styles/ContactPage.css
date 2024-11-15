@@ -1,11 +1,17 @@
 .contact-page {
-  padding-top: 6rem;
-  padding-bottom: 6rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background-color: #212529;
+  min-height: calc(100vh - 52px);
+  max-height: calc(100vh - 52px);
   background-image: url("../assets/img/contact-bg.png");
+  background-size: containing-space;
   background-repeat: no-repeat;
+  background-attachment: fixed;
+  scroll-behavior: smooth;
   background-position: center;
-  min-height: 94vh;
+  min-height: calc(100vh - 52px);
   font-family: "Montserrat", sans-serif;
   color: #ffffff;
   text-align: center;
@@ -128,6 +134,12 @@ a:hover {
 .contact-form textarea:focus {
   outline: none;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 992px) {
+  .contact-page {
+    min-height: 100vh;
+  }
 }
 
 @media (max-width: 768px) {

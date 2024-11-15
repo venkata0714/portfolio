@@ -10,25 +10,29 @@ function ContactPage() {
   const sendEmail = (e) => {
     e.preventDefault();
 
-    emailjs
-      .sendForm(
-        process.env.REACT_APP_EMAILJS_SERVICE_ID,
-        process.env.REACT_APP_EMAILJS_TEMPLATE_ID,
-        form.current,
-        process.env.REACT_APP_EMAILJS_USER_ID
-      )
-      .then(
-        (result) => {
-          console.log(result.text);
-          setIsSent(true); // Set success status
-          setTimeout(() => setIsSent(null), 2000); // Reset status after 2 seconds
-        },
-        (error) => {
-          console.log(error.text);
-          setIsSent(false); // Set error status
-          setTimeout(() => setIsSent(null), 2000); // Reset status after 2 seconds
-        }
-      );
+    setTimeout(() => {
+      emailjs
+        .sendForm(
+          process.env.REACT_APP_EMAILJS_SERVICE_ID,
+          process.env.REACT_APP_EMAILJS_TEMPLATE_ID,
+          form.current,
+          process.env.REACT_APP_EMAILJS_USER_ID
+        )
+        .then(
+          (result) => {
+            console.log(result.text);
+            setIsSent(true); // Set success status
+            setTimeout(() => setIsSent(null), 3000); // Reset status after 2 seconds
+          },
+          (error) => {
+            console.log(error.text);
+            setIsSent(false); // Set error status
+            setTimeout(() => setIsSent(null), 3000); // Reset status after 2 seconds
+          }
+        );
+
+      e.target.reset(); // Clear the form fields after submission
+    }, 200);
 
     e.target.reset();
   };
@@ -89,9 +93,9 @@ function ContactPage() {
                 <ButtonEdge />
                 <ButtonLabel isSent={isSent}>
                   {isSent === true
-                    ? "Message Sent ✔️"
+                    ? "Message Sent ☑"
                     : isSent === false
-                    ? "Failed to Send ❌"
+                    ? "Failed to Send ☒"
                     : "Send Message"}
                 </ButtonLabel>
               </StyledButton>
@@ -105,7 +109,6 @@ function ContactPage() {
 
 export default ContactPage;
 
-// Success and Error Keyframes for the label fill
 const fillGreen = keyframes({
   "0%": { backgroundColor: "#fcbc1d", color: "#212529" }, // Initial yellow color
   "100%": { backgroundColor: "#28a745", color: "#FFFFFF" }, // Success green with white text
@@ -162,10 +165,10 @@ const ButtonLabel = styled("span", {
   variants: {
     isSent: {
       true: {
-        animation: `${fillGreen} 0.5s forwards`, // Apply green fill on success
+        animation: `${fillGreen}  1.5s ease-in-out forwards`, // Apply green fill on success
       },
       false: {
-        animation: `${fillRed} 0.5s forwards`, // Apply red fill on error
+        animation: `${fillRed}  1.5s ease-in-out forwards`, // Apply red fill on error
       },
     },
   },

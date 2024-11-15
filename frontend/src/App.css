@@ -28,6 +28,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding: 10rem 5rem !important;
 }
 
 body {
@@ -36,6 +37,36 @@ body {
   position: relative;
   color: #ffffff !important;
   font-family: "Montserrat", sans-serif !important;
+}
+
+/* Scroll to Top Button */
+.scroll-to-top {
+  position: fixed;
+  right: 15px;
+  bottom: 15px;
+  display: none;
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  text-decoration: none !important;
+  font-family: "Source Sans Pro";
+  font-size: 1rem;
+  font-weight: 400;
+  color: white;
+  border-radius: 10%;
+  background: rgba(52, 58, 64, 0.5);
+  line-height: 45px;
+  transition: background 0.1s ease-in-out;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+.scroll-to-top:hover {
+  background: rgba(52, 58, 64, 0.8);
+}
+
+.scroll-to-top.show {
+  display: inline; /* Show the button when 'show' class is applied */
 }
 
 /* h1,

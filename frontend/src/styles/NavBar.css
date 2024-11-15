@@ -284,6 +284,14 @@ i {
     color: #fcbc1d;
   }
 
+  .navbar-menu.open .navbar-menu {
+    transition: all 2s ease-in-out;
+  }
+
+  .navbar-menu.open .navbar-links {
+    transition: all 2s ease-in-out;
+  }
+
   .navbar-toggler {
     display: inline-block;
     border-radius: 0.25rem;

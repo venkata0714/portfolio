@@ -55,6 +55,18 @@ function HomePage() {
     }
   }, [isCooldown]);
 
+  const scrollToSection = (id) => {
+    const element = document.getElementById(id);
+    const offset = 52; // Adjust based on your navbar height
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.scrollY - offset;
+
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: "smooth",
+    });
+  };
+
   return (
     <section className="homepage-container" id="home">
       <div className="container">
@@ -98,11 +110,10 @@ function HomePage() {
 
         {/* Styled "Enter Portfolio" Button */}
         <StyledButton
-          onClick={() =>
-            document
-              .getElementById("about")
-              ?.scrollIntoView({ behavior: "smooth" })
-          }
+          onClick={(e) => {
+            e.preventDefault();
+            scrollToSection("about");
+          }}
         >
           <ButtonShadow />
           <ButtonEdge />
@@ -158,7 +169,7 @@ const ButtonLabel = styled("span", {
 
   "&:hover": {
     backgroundColor: "#fcbc1d",
-    color: "#FFFFFF",
+    color: "#212529",
     transform: "scale(1.05)",
   },
 });

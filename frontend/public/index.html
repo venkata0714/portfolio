@@ -2,7 +2,12 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <link rel="icon" href="./favicon.ico" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
     <meta
@@ -10,24 +15,81 @@
       content="Web site created using create-react-app"
     />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <!-- Calendly badge widget end -->
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+
     <title>Kartavya Singh | Portfolio</title>
+
+    <style>
+      /* Main container styling */
+      .calendly-widget {
+        position: fixed;
+        bottom: 15px;
+        left: 15px;
+        width: 50px;
+        height: 50px;
+        background-color: #f8f9fa;
+        color: #212529;
+        border-radius: 50%;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Montserrat", sans-serif;
+        cursor: pointer;
+        transition: all 0.3s ease-in-out;
+        z-index: 1000;
+        overflow: hidden;
+      }
+
+      /* Default icon styling */
+      .calendly-widget i {
+        font-size: 1.5rem; /* Adjust icon size */
+        color: #212529;
+        transition: opacity 0.3s ease;
+      }
+
+      /* Text to replace icon on hover */
+      .calendly-widget span {
+        font-size: 9px;
+        font-weight: 600;
+        text-transform: uppercase;
+        display: none;
+        transition: all 0.3s ease;
+      }
+
+      /* Hover effect for container */
+      .calendly-widget:hover {
+        background-color: #fcbc1d;
+        width: 180px; /* Expand button width on hover */
+        height: 50px; /* Keep height consistent */
+        border-radius: 8px; /* Change to rounded rectangle */
+      }
+
+      .calendly-widget:hover span {
+        display: inline-block; /* Show text */
+        opacity: 1; /* Fade in text */
+        margin-left: 10px; /* Add space between icon and text */
+      }
+    </style>
   </head>
   <body>
+    <div
+      class="calendly-widget"
+      onclick="window.open('https://calendly.com/singhk6/book-time-with-kartavya', '_blank')"
+    >
+      <i class="fas fa-comments"></i>
+      <span>Book Time with Kartavya</span>
+    </div>
     <div id="root"></div>
   </body>
 </html>
