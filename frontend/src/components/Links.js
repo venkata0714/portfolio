@@ -81,6 +81,7 @@ const Links = () => {
         className={`link-btn ${isOpen ? "active" : ""}`}
         onClick={() => setIsOpen((prev) => !prev)}
         title="Links"
+        whileTap={{ scale: 0.9 }}
       >
         <img
           src={require("../assets/img/icons/links.png")}
@@ -107,7 +108,8 @@ const Links = () => {
                 rel="noopener noreferrer"
                 className="link-item"
                 whileHover={{ scale: 1.1 }}
-                transition={{ duration: 0.3 }}
+                whileTap={{ scale: 0.9 }}
+                transition={{ duration: 0.5 }}
               >
                 <motion.img
                   src={link.icon}

@@ -9,7 +9,7 @@ const responsive = {
   superLargeDesktop: {
     // the naming can be any, depends on you.
     breakpoint: { max: 4000, min: 992 },
-    items: 5,
+    items: 4,
   },
   desktop: {
     breakpoint: { max: 992, min: 768 },
@@ -29,8 +29,32 @@ function SkillPage() {
   return (
     <section className="skill-container" id="skills">
       <div className="skill-div">
-        {/* <motion.img src={SpaceExplorer} alt="" className="space-explorer" /> */}
         <div className="skill-box">
+          <motion.img
+            src={SpaceExplorer}
+            alt="Space Explorer"
+            className="space-explorer"
+            initial={{ opacity: 0 }}
+            animate={{
+              scale: [1, 1.02, 1.05, 1.02, 1], // Subtle pulsating effect
+              rotate: [0, 15, 0, -15, 0], // Gently rotate back and forth
+              translateX: [0, 20, -20, 10, -10, 0], // Smooth drift horizontally
+              translateY: [0, -15, 15, -10, 10, 0], // Smooth drift vertically
+            }}
+            transition={{
+              duration: 8, // Smooth and slow overall animation
+              ease: "easeInOut", // Natural easing for realistic motion
+              repeat: Infinity, // Loop infinitely
+            }}
+            whileInView={{
+              opacity: 1,
+              scale: 1,
+              transition: {
+                duration: 0.8,
+                ease: "easeInOut",
+              },
+            }}
+          />
           <h2 className="skill-heading">Skills</h2>
           <p className="skill-paragraph">Here are my Skills</p>
           <Carousel
