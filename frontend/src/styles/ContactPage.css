@@ -5,7 +5,7 @@
   background-color: #212529;
   min-height: calc(100vh - 52px);
   max-height: calc(100vh - 52px);
-  background-image: url("../assets/img/contact-bg.png");
+  background-image: url("../assets/img/background/contact-bg.png");
   background-size: containing-space;
   background-repeat: no-repeat;
   background-attachment: fixed;

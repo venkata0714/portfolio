@@ -3,7 +3,7 @@ import { styled } from "@stitches/react";
 import { TypeAnimation } from "react-type-animation";
 import { useSpring, animated } from "@react-spring/web";
 import "../styles/HomePage.css";
-import ProfilePhoto from "../assets/img/Kartavya.jpg";
+import ProfilePhoto from "../assets/img/media/Kartavya.jpg";
 
 function HomePage() {
   const [clicked, setClicked] = useState(false);
@@ -18,7 +18,7 @@ function HomePage() {
 
   const { transform, boxShadow } = useSpring({
     transform: clicked
-      ? "scale(1.2) translateY(0px) rotate(2deg)"
+      ? "scale(1.4) translateY(0px) rotate(2deg)"
       : "scale(1) translateY(0px) rotate(0deg)",
     boxShadow: clicked
       ? "0px 15px 30px rgba(0, 0, 0, 0.3)"
@@ -187,11 +187,11 @@ const StyledButton = styled("button", {
     filter: "brightness(110%)",
 
     [`& ${ButtonLabel}`]: {
-      transform: "translateY(-6px)",
+      transform: "translateY(-8px)",
     },
 
     [`& ${ButtonShadow}`]: {
-      transform: "translateY(4px)",
+      transform: "translateY(6px)",
     },
   },
 

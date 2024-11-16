@@ -1,20 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="UTF-8" />
+    <meta name="author" content="Kartavya Singh" />
+    <meta
+      name="description"
+      content="Welcome to Kartavya Singh's personal portfolio website. Showcasing innovative projects, full-stack expertise, AI-powered solutions, and a journey of continuous learning in computer science and technology."
+    />
+    <meta
+      name="keywords"
+      content="Kartavya Singh, Personal Portfolio, Full-Stack Developer, MERN Stack, AI Solutions, React, Node.js, MongoDB, Express, Software Engineer, Innovative Projects, Technology Enthusiast"
+    />
+    <meta name="theme-color" content="#fcbc1d" />
+    <meta name="robots" content="index, follow" />
+    <meta property="og:title" content="Kartavya Singh | Personal Portfolio" />
+    <meta
+      property="og:description"
+      content="Explore Kartavya Singh's portfolio of innovative projects, showcasing expertise in full-stack development and AI-powered solutions, and a passion for learning and problem-solving."
+    />
+    <meta property="og:image" content="URL_to_your_image.jpg" />
+    <meta property="og:url" content="https://yourwebsite.com" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Kartavya Singh | Personal Portfolio" />
+    <meta
+      name="twitter:description"
+      content="Explore Kartavya Singh's journey as a full-stack developer and technology enthusiast, showcasing innovative projects and expertise in the MERN stack."
+    />
+    <meta name="twitter:image" content="URL_to_your_image.jpg" />
     <link rel="website icon" href="./favicon.ico" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
     />
-
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Web site created using create-react-app"
-    />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="apple-touch-icon" href="./favicon.ico" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
@@ -24,72 +44,9 @@
       rel="stylesheet"
     />
     <!-- Calendly badge widget end -->
-
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-
     <title>Kartavya Singh | Portfolio</title>
-
-    <style>
-      /* Main container styling */
-      .calendly-widget {
-        position: fixed;
-        bottom: 15px;
-        left: 15px;
-        width: 50px;
-        height: 50px;
-        background-color: #f8f9fa;
-        color: #212529;
-        border-radius: 50%;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: "Montserrat", sans-serif;
-        cursor: pointer;
-        transition: all 0.3s ease-in-out;
-        z-index: 1000;
-        overflow: hidden;
-      }
-
-      /* Default icon styling */
-      .calendly-widget i {
-        font-size: 1.5rem; /* Adjust icon size */
-        color: #212529;
-        transition: opacity 0.3s ease;
-      }
-
-      /* Text to replace icon on hover */
-      .calendly-widget span {
-        font-size: 9px;
-        font-weight: 600;
-        text-transform: uppercase;
-        display: none;
-        transition: all 0.3s ease;
-      }
-
-      /* Hover effect for container */
-      .calendly-widget:hover {
-        background-color: #fcbc1d;
-        width: 180px; /* Expand button width on hover */
-        height: 50px; /* Keep height consistent */
-        border-radius: 8px; /* Change to rounded rectangle */
-      }
-
-      .calendly-widget:hover span {
-        display: inline-block; /* Show text */
-        opacity: 1; /* Fade in text */
-        margin-left: 10px; /* Add space between icon and text */
-      }
-    </style>
   </head>
   <body>
-    <div
-      class="calendly-widget"
-      onclick="window.open('https://calendly.com/singhk6/book-time-with-kartavya', '_blank')"
-    >
-      <i class="fas fa-comments"></i>
-      <span>Book Time with Kartavya</span>
-    </div>
     <div id="root"></div>
   </body>
 </html>

@@ -1,6 +1,12 @@
 /* Footer Styles */
 .footer {
-  background-color: #1c1c1e;
+  background: url("../assets/img/background/footer-bg.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  scroll-behavior: smooth;
+  background-position: center;
+  font-family: "Montserrat", sans-serif;
   color: #ffffff;
   padding: 2rem 1rem;
   max-height: 32vh;

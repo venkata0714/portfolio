@@ -1,5 +1,6 @@
 import { React, useState, useEffect } from "react";
 import "./App.css";
+import Links from "./components/Links";
 import NavBar from "./components/NavBar";
 import HomePage from "./components/HomePage";
 import AboutPage from "./components/AboutPage";
@@ -43,6 +44,7 @@ function App() {
       <ExperiencePage />
       <ContactPage />
       <Footer />
+      <Links />
       <a
         className={`scroll-to-top ${scrolled ? "show" : ""}`}
         href="#page-top"

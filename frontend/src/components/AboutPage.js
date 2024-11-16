@@ -1,7 +1,7 @@
 import React from "react";
 import { styled } from "@stitches/react";
 import "../styles/AboutPage.css";
-import AboutImg from "../assets/img/Kartavya-Profile-Photo.jpg";
+import AboutImg from "../assets/img/media/Kartavya-Profile-Photo.jpg";
 import Resume from "../assets/Singh_Kartavya_Resume2024.pdf";
 
 function AboutPage() {
@@ -9,7 +9,6 @@ function AboutPage() {
     <section className="about-section-container" id="about">
       <div className="about-div glass">
         <h2 className="section-title">ABOUT ME</h2>
-        <h3 className="section-subtitle">Who I Am & What I Do</h3>
         <div className="about-container  grid">
           <img src={AboutImg} className="about-image" alt="Profile" />
           <div className="about-data">
@@ -41,7 +40,11 @@ function AboutPage() {
               </p>
             </div>
 
-            <a href={Resume} download="Kartavya-Singh-Resume-2024.pdf" className="download-cv">
+            <a
+              href={Resume}
+              download="Kartavya-Singh-Resume-2024.pdf"
+              className="download-cv"
+            >
               <StyledButton>
                 <ButtonShadow />
                 <ButtonEdge />
@@ -64,11 +67,12 @@ const ButtonPart = styled("span", {
   left: 0,
   width: "100%",
   height: "100%",
-  borderRadius: 8,
+  borderRadius: 5,
 });
 
 const ButtonShadow = styled(ButtonPart, {
   background: "hsl(0deg 0% 0% / 0.1)",
+  borderRadius: 5,
   transform: "translateY(2px)",
   transition: "transform 250ms ease-out",
 });
@@ -81,6 +85,7 @@ const ButtonEdge = styled(ButtonPart, {
       hsl(0deg 0% 85%) 92%,
       hsl(0deg 0% 69%) 100%
     )`,
+  borderRadius: 5,
 });
 
 const ButtonLabel = styled("span", {
@@ -109,6 +114,7 @@ const StyledButton = styled("button", {
   border: "none",
   fontWeight: 600,
   cursor: "pointer",
+  borderRadius: 5,
   background: "transparent",
   position: "relative",
   padding: 0,

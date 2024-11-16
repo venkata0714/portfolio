@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import Resume from "../assets/Singh_Kartavya_Resume2024.pdf";
 import "../styles/NavBar.css";
 
 const NavBar = () => {
@@ -260,7 +261,8 @@ const NavBar = () => {
             </li>
             <li className="nav-item">
               <a
-                href="https://mailuc-my.sharepoint.com/:b:/g/personal/singhk6_mail_uc_edu/Efzdo8ozdSpInJYqJzLLqkcBW7n1fw4DKwYT2GdOkuByVg"
+                download="Kartavya-Singh-Resume-2024.pdf"
+                href={Resume}
                 className="navbar-link"
                 target="_blank"
                 rel="noopener noreferrer"

@@ -3,17 +3,26 @@
   padding-top: 120px;
   padding-bottom: 100px;
   min-height: 100vh;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.1)),
-    url("../assets/img/bg.jpg");
+  background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.8),
+      rgba(0, 0, 0, 0.7),
+      rgba(0, 0, 0, 0.6),
+      rgba(0, 0, 0, 0.5),
+      rgba(0, 0, 0, 0.4),
+      rgba(0, 0, 0, 0.8),
+      rgba(0, 0, 0, 0.2),
+      rgba(0, 0, 0, 0.1)
+    ),
+    url("../assets/img/background/home-bg.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed;
   scroll-behavior: smooth;
   background-position: center;
   font-family: "Montserrat", sans-serif;
-  color: #ffffff;
+  color: #edeeef;
   text-align: center;
-  cursor: url("../assets/img/HomeCursor.png"), auto;
 }
 
 .container {
@@ -31,7 +40,7 @@
   width: 250px;
   height: 250px;
   border-radius: 100%;
-  border: 8px solid #ffffff;
+  border: 8px solid #edeeef;
   filter: grayscale(95%) brightness(0.9) contrast(1) saturate(0.6)
     hue-rotate(-30deg);
   position: relative;
@@ -50,7 +59,7 @@
   font-weight: bold;
   margin-bottom: 0.25rem !important;
   font-family: "Montserrat", sans-serif;
-  color: #ffffff;
+  color: #edeeef;
 }
 
 .changing-text-container {
@@ -62,7 +71,7 @@
   font-weight: 700;
   margin: 0px auto;
   letter-spacing: 1px;
-  color: #ffffff;
+  color: #edeeef;
   font-family: "Montserrat", sans-serif;
   width: 100%;
   white-space: wrap;
@@ -114,6 +123,12 @@
 }
 
 @media (max-width: 992px) {
+  .container {
+    max-width: 720px;
+    width: 100%;
+    padding: 0 10px;
+  }
+
   .name {
     font-size: 4rem;
     font-weight: 500;
@@ -128,6 +143,11 @@
 }
 
 @media (max-width: 768px) {
+  .container {
+    max-width: 540px;
+    width: 100%;
+    padding: 0 10px;
+  }
   .name {
     font-size: 2.5rem;
     font-weight: 500;
@@ -136,13 +156,21 @@
   }
 
   .changing-text {
-    font-size: 0.75rem;
+    font-size: 1rem;
+    font-weight: 500;
   }
 }
 
 @media (max-width: 576px) {
+  .container {
+    max-width: 360px;
+    width: 100%;
+    padding: 0 10px;
+  }
+
   .name {
-    font-size: 2rem;
+    font-size: 2.25rem;
+    padding-bottom: 50px;
     font-weight: 500;
     line-height: 1.2;
     color: inherit;
@@ -150,5 +178,10 @@
 
   .changing-text-container {
     white-space: pre-line;
+  }
+
+  .changing-text {
+    font-size: 1.2rem;
+    font-weight: 500;
   }
 }
