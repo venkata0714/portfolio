@@ -67,7 +67,7 @@
   font-size: 18px;
   letter-spacing: 0.8px;
   line-height: 1.5rem;
-  margin: 14px 0 75px 0;
+  margin: 14px 0 14px 0;
 }
 
 .item {
@@ -118,6 +118,29 @@
   font-size: 14px;
   letter-spacing: 0.5px;
   margin: 5px auto;
+}
+
+.custom-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.custom-left-arrow {
+  left: 10px; /* Position the left arrow */
+}
+
+.custom-right-arrow {
+  right: 10px; /* Position the right arrow */
+}
+
+.custom-arrow img {
+  width: 24px; /* Adjust arrow size */
+  height: auto;
 }
 
 @media (max-width: 1200px) {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Resume from "../assets/Singh_Kartavya_Resume2024.pdf";
 import { motion } from "framer-motion";
-import { fadeIn, zoomIn } from "../variants";
+import { fadeIn } from "../variants";
 import "../styles/NavBar.css";
 
 const NavBar = () => {
@@ -18,7 +18,6 @@ const NavBar = () => {
 
     window.scrollTo({
       top: offsetPosition,
-      transitionDuration: "5s",
       behavior: "smooth",
     });
   };
@@ -44,7 +43,7 @@ const NavBar = () => {
     const handleScroll = () => {
       sections.forEach((section) => {
         let top = window.scrollY;
-        let offset = section.offsetTop - 100; // Adjust for header height if needed
+        let offset = section.offsetTop - 53; // Adjust for header height if needed
         let height = section.offsetHeight;
         let id = section.getAttribute("id");
 
@@ -177,14 +176,11 @@ const NavBar = () => {
                 activeLink === "about" ? "active nav-item" : "nav-item"
               }
             >
-              <motion.a
+              <a
                 href="#about"
                 className={
                   activeLink === "about" ? "active navbar-link" : "navbar-link"
                 }
-                whileHover={{ scale: 4 }}
-                whileTap={{ scale: 0.9 }}
-                transition={{ duration: 0.5, type: "transition" }}
                 onClick={(e) => {
                   e.preventDefault();
                   scrollToSection("about");
@@ -193,7 +189,7 @@ const NavBar = () => {
                 }}
               >
                 <span className="navbar-text">ABOUT</span>
-              </motion.a>
+              </a>
             </li>
             <li
               className={

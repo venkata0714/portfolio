@@ -1,6 +1,9 @@
 import { React, useState, useEffect } from "react";
 import "../styles/SkillPage.css";
-// import { motion, AnimatePresence } from "framer-motion";
+import LeftArrow from "../assets/img/icons/arrow1.svg";
+import RightArrow from "../assets/img/icons/arrow2.svg";
+import { motion } from "framer-motion";
+import { fadeIn, zoomIn } from "../variants";
 import Carousel from "react-multi-carousel";
 import { fetchSkills } from "../services/skillService"; // Import the fetchSkills function
 
@@ -14,8 +17,65 @@ import {
   Legend,
 } from "chart.js";
 import { Radar } from "react-chartjs-2";
-// import SpaceExplorer from "../assets/img/media/header-img.svg";
+import SpaceExplorer from "../assets/img/media/header-img.svg";
 import "react-multi-carousel/lib/styles.css";
+
+const FloatingSpaceExplorer = ({ id }) => {
+  const [position, setPosition] = useState({
+    x: Math.random() * window.innerWidth,
+    y: Math.random() * window.innerHeight,
+  });
+
+  useEffect(() => {
+    const updatePosition = () => {
+      setPosition({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+      });
+    };
+
+    const interval = setInterval(updatePosition, 5000); // Update position every 5 seconds
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, []);
+
+  return (
+    <motion.img
+      key={id}
+      src={SpaceExplorer}
+      alt="Space Explorer"
+      className="floating-space-explorer"
+      initial={{ x: position.x, y: position.y, opacity: 0 }}
+      animate={{ x: position.x, y: position.y, opacity: 1 }}
+      transition={{
+        duration: 5, // Smooth movement over 5 seconds
+        ease: "easeInOut",
+        repeat: Infinity,
+      }}
+      style={{
+        position: "absolute",
+        width: "10vw",
+        height: "auto",
+        zIndex: 5,
+      }}
+    />
+  );
+};
+
+const CustomLeftArrow = ({ onClick }) => {
+  return (
+    <button className="custom-arrow custom-left-arrow" onClick={onClick}>
+      <img src={LeftArrow} alt="Left Arrow" />
+    </button>
+  );
+};
+
+const CustomRightArrow = ({ onClick }) => {
+  return (
+    <button className="custom-arrow custom-right-arrow" onClick={onClick}>
+      <img src={RightArrow} alt="Right Arrow" />
+    </button>
+  );
+};
 
 ChartJS.register(
   RadialLinearScale,
@@ -57,7 +117,7 @@ const SkillGraph = ({ givenData }) => {
         min: 4, // Minimum value for the scale
         max: 5, // Maximum value for the scale
         ticks: {
-          stepSize: 1, // Increment steps between the radius levels
+          stepSize: 2, // Increment steps between the radius levels
           color: "#6cbcfc", // Tick color
           display: false, // Hide numbers on the grid
           backdropColor: "transparent", // No background for ticks
@@ -71,8 +131,9 @@ const SkillGraph = ({ givenData }) => {
         pointLabels: {
           color: "#edeeef", // Aspect labels (e.g., Aspect 1)
           font: {
+            weight: 100, // Reduced font weight for lighter text
             size: 8,
-            family: "'Orbitron', sans-serif", // Sci-fi font
+            family: "'Montserrat', sans-serif", // Sci-fi font
           },
         },
       },
@@ -104,14 +165,14 @@ const SkillGraph = ({ givenData }) => {
         id: "customAverage",
         beforeDraw(chart) {
           const { ctx, chartArea } = chart;
-          const x = chartArea.right - 10; // Position near the top-right
+          const x = chartArea.right - 30; // Position near the top-right
           const y = chartArea.top + 10;
 
           ctx.save();
-          ctx.font = "12px Orbitron";
-          ctx.fillStyle = "#edeeef";
-          ctx.textAlign = "right";
-          ctx.fillText(`Avg. ${averageScore.toFixed(2)}`, x, y);
+          ctx.font = "10px 'Montserrat', sans-serif"; // Set Montserrat font
+          ctx.fillStyle = "#edeeef"; // Text color
+          ctx.textAlign = "center"; // Center align the text
+          ctx.fillText(`Avg. ${averageScore.toFixed(2)}`, x, y); // Display the average score
           ctx.restore();
         },
       },
@@ -169,30 +230,75 @@ function SkillPage({ givenData }) {
     loadSkills();
   }, []);
 
-  if (loading) {
-    return <div className="loading">Loading Skills...</div>;
-  }
   return (
     <section className="skill-container" id="skills">
+      {/* Render multiple floating SpaceExplorers
+      {[...Array(10)].map((_, index) => (
+        <FloatingSpaceExplorer key={index} id={index} />
+      ))} */}
+
       <div className="skill-div">
         <div className="skill-box">
-          <h2 className="skill-heading">Skills</h2>
-          <p className="skill-paragraph">Here are my Skills</p>
+          <motion.h2
+            className="skill-heading"
+            variants={fadeIn("right", 200, 1)}
+            initial="hidden"
+            animate="show"
+            whileInView="show"
+            transition={{
+              duration: 0.5,
+              ease: "easeInOut",
+              delay: 0.5,
+              repeat: true,
+            }}
+          >
+            Skills
+          </motion.h2>
+          <motion.p
+            className="skill-paragraph"
+            variants={fadeIn("right", 200, 1)}
+            initial="hidden"
+            animate="show"
+            whileInView="show"
+            transition={{
+              duration: 0.5,
+              ease: "easeInOut",
+              delay: 0.5,
+              repeat: true,
+            }}
+          >
+            Here are my Skills
+          </motion.p>
           <Carousel
             responsive={responsive}
+            autoPlaySpeed={3000}
             infinite={true}
             className="skill-slider"
+            minimumTouchDrag={80}
+            pauseOnHover
+            customLeftArrow={<CustomLeftArrow />}
+            customRightArrow={<CustomRightArrow />}
           >
             {skills.map((eachSkill, index) => (
-              <div className="item" key={index}>
-                <div className="skill-graph">
+              <motion.div
+                className="item"
+                key={index}
+                variants={zoomIn(1)}
+                initial="hidden"
+                whileInView="show"
+              >
+                <motion.div
+                  className="skill-graph"
+                  initial={{ scale: 1 }}
+                  whileHover={{ scale: 1.05 }}
+                >
                   <SkillGraph givenData={eachSkill} />
-                </div>
+                </motion.div>
                 <h5 className="skill-title">{eachSkill.skillTitle}</h5>
                 <p className="skill-description">
                   {eachSkill.skillDescription}
                 </p>
-              </div>
+              </motion.div>
             ))}
           </Carousel>
         </div>
