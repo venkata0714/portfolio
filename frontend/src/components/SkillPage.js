@@ -1,7 +1,9 @@
-import { React, Container, Row, Col } from "react";
+import { React, useState, useEffect } from "react";
 import "../styles/SkillPage.css";
-import { motion, AnimatePresence } from "framer-motion";
+// import { motion, AnimatePresence } from "framer-motion";
 import Carousel from "react-multi-carousel";
+import { fetchSkills } from "../services/skillService"; // Import the fetchSkills function
+
 import {
   Chart as ChartJS,
   RadialLinearScale,
@@ -12,7 +14,7 @@ import {
   Legend,
 } from "chart.js";
 import { Radar } from "react-chartjs-2";
-import SpaceExplorer from "../assets/img/media/header-img.svg";
+// import SpaceExplorer from "../assets/img/media/header-img.svg";
 import "react-multi-carousel/lib/styles.css";
 
 ChartJS.register(
@@ -24,25 +26,25 @@ ChartJS.register(
   Legend
 );
 const SkillGraph = ({ givenData }) => {
+  const averageScore =
+    givenData.Scores.reduce((sum, score) => sum + score, 0) /
+    givenData.Scores.length;
+
   const data = {
-    labels: [
-      "Comfortability",
-      "Confidence",
-      "Experience",
-      "Fluency",
-      "Adaptabilty",
-    ],
+    labels: givenData.Labels, // Dynamically use labels from givenData
     datasets: [
       {
-        label: "Skill Scores",
-        data: givenData,
-        backgroundColor: "rgba(33, 37, 41, 0.7)", // Slight transparency for a sci-fi effect
+        label: givenData.skillTitle,
+        data: givenData.Scores, // Dynamically use scores from givenData
+        backgroundColor: "rgba(252, 188, 29, 0.2)",
         borderColor: "#6cbcfc",
-        borderWidth: 1.5,
+        borderWidth: 2, // Slightly thicker border for better visibility
         pointBackgroundColor: "#6cbcfc",
         pointBorderColor: "#edeeef",
         pointHoverBackgroundColor: "#edeeef",
         pointHoverBorderColor: "#6cbcfc",
+        pointRadius: 4, // Increase point size
+        pointHoverRadius: 6, // Increase hover size
       },
     ],
   };
@@ -52,6 +54,14 @@ const SkillGraph = ({ givenData }) => {
     maintainAspectRatio: false,
     scales: {
       r: {
+        min: 4, // Minimum value for the scale
+        max: 5, // Maximum value for the scale
+        ticks: {
+          stepSize: 1, // Increment steps between the radius levels
+          color: "#6cbcfc", // Tick color
+          display: false, // Hide numbers on the grid
+          backdropColor: "transparent", // No background for ticks
+        },
         angleLines: {
           color: "#edeeef", // Lines radiating from the center
         },
@@ -64,10 +74,6 @@ const SkillGraph = ({ givenData }) => {
             size: 8,
             family: "'Orbitron', sans-serif", // Sci-fi font
           },
-        },
-        ticks: {
-          display: false, // Hides the numbers on the grid
-          backdropColor: "transparent", // Ensures no background color for ticks
         },
       },
     },
@@ -93,12 +99,32 @@ const SkillGraph = ({ givenData }) => {
         borderColor: "#6cbcfc",
         borderWidth: 1,
       },
+      customAverage: {
+        // Custom plugin for displaying average score
+        id: "customAverage",
+        beforeDraw(chart) {
+          const { ctx, chartArea } = chart;
+          const x = chartArea.right - 10; // Position near the top-right
+          const y = chartArea.top + 10;
+
+          ctx.save();
+          ctx.font = "12px Orbitron";
+          ctx.fillStyle = "#edeeef";
+          ctx.textAlign = "right";
+          ctx.fillText(`Avg. ${averageScore.toFixed(2)}`, x, y);
+          ctx.restore();
+        },
+      },
     },
   };
 
   return (
     <div className="skill-image">
-      <Radar data={data} options={options} />
+      <Radar
+        data={data}
+        options={options}
+        plugins={[options.plugins.customAverage]}
+      />
     </div>
   );
 };
@@ -124,35 +150,32 @@ const responsive = {
 };
 
 function SkillPage({ givenData }) {
+  const [skills, setSkills] = useState([]); // State to store fetched skills
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Fetch skills on component load
+    const loadSkills = async () => {
+      try {
+        const fetchedSkills = await fetchSkills();
+        setSkills(fetchedSkills);
+      } catch (error) {
+        console.error("Error fetching skills:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadSkills();
+  }, []);
+
+  if (loading) {
+    return <div className="loading">Loading Skills...</div>;
+  }
   return (
     <section className="skill-container" id="skills">
       <div className="skill-div">
         <div className="skill-box">
-          {/* <motion.img
-            src={SpaceExplorer}
-            alt="Space Explorer"
-            className="space-explorer"
-            initial={{ opacity: 0 }}
-            animate={{
-              scale: [1, 1.02, 1.05, 1.02, 1], // Subtle pulsating effect
-              rotate: [0, 15, 0, -15, 0], // Gently rotate back and forth
-              translateX: [0, 20, -20, 10, -10, 0], // Smooth drift horizontally
-              translateY: [0, -15, 15, -10, 10, 0], // Smooth drift vertically
-            }}
-            transition={{
-              duration: 8, // Smooth and slow overall animation
-              ease: "easeInOut", // Natural easing for realistic motion
-              repeat: Infinity, // Loop infinitely
-            }}
-            whileInView={{
-              opacity: 1,
-              scale: 1,
-              transition: {
-                duration: 0.8,
-                ease: "easeInOut",
-              },
-            }}
-          /> */}
           <h2 className="skill-heading">Skills</h2>
           <p className="skill-paragraph">Here are my Skills</p>
           <Carousel
@@ -160,70 +183,17 @@ function SkillPage({ givenData }) {
             infinite={true}
             className="skill-slider"
           >
-            <div className="item">
-              <img
-                className="skill-image"
-                src="https://via.placeholder.com/150"
-                alt="Skill"
-              />
-              <h5 className="skill-title">Skill 1</h5>
-              <p className="skill-description">
-                This is a Skill Description for a Skilll
-              </p>
-            </div>
-            <div className="item">
-              <div className="skill-graph">
-                <SkillGraph givenData={givenData} />
+            {skills.map((eachSkill, index) => (
+              <div className="item" key={index}>
+                <div className="skill-graph">
+                  <SkillGraph givenData={eachSkill} />
+                </div>
+                <h5 className="skill-title">{eachSkill.skillTitle}</h5>
+                <p className="skill-description">
+                  {eachSkill.skillDescription}
+                </p>
               </div>
-              <h5 className="skill-title">Skill 2</h5>
-              <p className="skill-description">
-                This is a Skill Description for a Skilll
-              </p>
-            </div>
-            <div className="item">
-              <img
-                className="skill-image"
-                src="https://via.placeholder.com/150"
-                alt="Skill"
-              />
-              <h5 className="skill-title">Skill 3</h5>
-              <p className="skill-description">
-                This is a Skill Description for a Skilll
-              </p>
-            </div>
-            <div className="item">
-              <img
-                className="skill-image"
-                src="https://via.placeholder.com/150"
-                alt="Skill"
-              />
-              <h5 className="skill-title">Skill 4</h5>
-              <p className="skill-description">
-                This is a Skill Description for a Skilll
-              </p>
-            </div>
-            <div className="item">
-              <img
-                className="skill-image"
-                src="https://via.placeholder.com/150"
-                alt="Skill"
-              />
-              <h5 className="skill-title">Skill 5</h5>
-              <p className="skill-description">
-                This is a Skill Description for a Skilll
-              </p>
-            </div>
-            <div className="item">
-              <img
-                className="skill-image"
-                src="https://via.placeholder.com/150"
-                alt="Skill"
-              />
-              <h5 className="skill-title">Skill 6</h5>
-              <p className="skill-description">
-                This is a Skill Description for a Skilll
-              </p>
-            </div>
+            ))}
           </Carousel>
         </div>
       </div>

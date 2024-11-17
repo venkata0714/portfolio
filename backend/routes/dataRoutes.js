@@ -11,6 +11,7 @@ const {
   getYearInReviewByLink,
   getHonorsExperiences,
   getHonorsExperienceByLink,
+  getSkills,
 } = require("../controllers/dataController");
 
 // Routes for Projects
@@ -35,5 +36,8 @@ router.get(
   "/gethonorsexperiences/:honorsExperienceLink",
   getHonorsExperienceByLink
 );
+
+// Routes for Skills
+router.get("/getskills", getSkills);
 
 module.exports = router;

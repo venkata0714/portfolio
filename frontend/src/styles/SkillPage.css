@@ -77,6 +77,31 @@
 .skill-image {
   width: 212px;
   height: 212px;
+  background-color: rgba(
+    33,
+    37,
+    41,
+    0.7
+  ); /* Semi-transparent dark background */
+  backdrop-filter: blur(10px); /* Frosted glass effect */
+  -webkit-backdrop-filter: blur(10px); /* Safari support */
+  border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border for the glass effect */
+  border-radius: 16px; /* Rounded corners for a sleek look */
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.5),
+    0px 0px 15px rgba(108, 188, 252, 0.4); /* Dark shadow and glowing blue edge */
+  display: flex;
+  justify-content: center; /* Centers the content */
+  align-items: center; /* Centers the content */
+  margin: auto; /* Centers the container horizontally */
+  overflow: hidden; /* Ensures no content overflows */
+  padding: 5px 5px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover animations */
+}
+
+.skill-image:hover {
+  transform: scale(1.05); /* Slight zoom on hover */
+  box-shadow: 0px 6px 30px rgba(0, 0, 0, 0.7),
+    0px 0px 20px rgba(108, 188, 252, 0.7); /* Stronger glow on hover */
 }
 
 .skill-title {

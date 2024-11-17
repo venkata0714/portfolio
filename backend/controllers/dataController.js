@@ -36,11 +36,9 @@ const getDocumentByLink = async (collectionName, linkField, linkValue, res) => {
       `Error fetching document by link from ${collectionName}:`,
       error
     );
-    res
-      .status(500)
-      .json({
-        message: `Error fetching document by link from ${collectionName}`,
-      });
+    res.status(500).json({
+      message: `Error fetching document by link from ${collectionName}`,
+    });
   }
 };
 
@@ -93,6 +91,8 @@ const getHonorsExperienceByLink = (req, res) =>
     res
   );
 
+const getSkills = (req, res) => getAllDocuments("skillsTable", res);
+
 module.exports = {
   getProjects,
   getProjectByLink,
@@ -104,4 +104,5 @@ module.exports = {
   getYearInReviewByLink,
   getHonorsExperiences,
   getHonorsExperienceByLink,
+  getSkills,
 };
