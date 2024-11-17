@@ -9,7 +9,7 @@
       rgba(0, 0, 0, 0.2),
       rgba(0, 0, 0, 0.1)
     ),
-    url("../assets/img/background/aboutbg.jpg");
+    url("../assets/img/background/test.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed;
@@ -32,7 +32,7 @@
     rgba(255, 255, 255, 0)
   );
   color: #212529;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(10px);
   border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.18);

@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { styled } from "@stitches/react";
 import { TypeAnimation } from "react-type-animation";
 import { useSpring, animated } from "@react-spring/web";
+import { delay, motion } from "framer-motion";
+import { fadeIn, zoomIn } from "../variants";
 import "../styles/HomePage.css";
 import ProfilePhoto from "../assets/img/media/Kartavya.jpg";
 
@@ -70,7 +72,15 @@ function HomePage() {
   return (
     <section className="homepage-container" id="home">
       <div className="container">
-        <div className="profile-picture-container">
+        <motion.div
+          className="profile-picture-container"
+          variants={zoomIn(1)}
+          initial="hidden"
+          drag
+          dragConstraints={{ left: 2, right: 2, top: 2, bottom: 2 }}
+          whileInView={"show"}
+          viewport={{ once: false, amount: 0.7 }}
+        >
           <animated.img
             id="profile-picture"
             src={ProfilePhoto}
@@ -82,13 +92,23 @@ function HomePage() {
             onMouseLeave={() => setClicked(false)}
             onClick={handleClick}
           />
-        </div>
-        <h1 className="name">Kartavya Singh</h1>
+        </motion.div>
+        <motion.h1
+          className="name"
+          variants={zoomIn(1)}
+          initial="hidden"
+          animate="show"
+        >
+          Kartavya Singh
+        </motion.h1>
 
         {/* Changing Text Animation */}
-        <div
+        <motion.div
           className="changing-text-container"
           onClick={() => setKey((prevKey) => prevKey + 1)}
+          variants={zoomIn(1)}
+          initial="hidden"
+          animate="show"
         >
           <em>
             <span className="changing-text">
@@ -96,29 +116,38 @@ function HomePage() {
                 key={key} // Forces the component to re-render on click
                 className="changing-text-animation"
                 sequence={[
+                  1500,
                   ...keywords.map((text) => [text, 4000]), // Typing each keyword with a pause
                   keywords[keywords.length - 1], // Ensures the last phrase displays permanently
                 ].flat()}
                 speed={50} // Typing speed for smooth effect
                 deletionSpeed={50} // Faster deletion for a smoother experience
+                delay={1000}
                 repeat={0} // No repeat
                 cursor={true}
               />
             </span>
           </em>
-        </div>
+        </motion.div>
 
         {/* Styled "Enter Portfolio" Button */}
-        <StyledButton
-          onClick={(e) => {
-            e.preventDefault();
-            scrollToSection("about");
-          }}
+        <motion.div
+          className="enter-button-motioned"
+          variants={zoomIn(1)}
+          initial="hidden"
+          animate="show"
         >
-          <ButtonShadow />
-          <ButtonEdge />
-          <ButtonLabel>Enter Portfolio</ButtonLabel>
-        </StyledButton>
+          <StyledButton
+            onClick={(e) => {
+              e.preventDefault();
+              scrollToSection("about");
+            }}
+          >
+            <ButtonShadow />
+            <ButtonEdge />
+            <ButtonLabel>Enter Portfolio</ButtonLabel>
+          </StyledButton>
+        </motion.div>
       </div>
     </section>
   );

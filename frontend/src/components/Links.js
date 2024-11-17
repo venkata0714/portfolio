@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { zoomIn } from "../variants";
 import "../styles/Links.css";
 
 const Links = () => {
@@ -81,7 +82,14 @@ const Links = () => {
         className={`link-btn ${isOpen ? "active" : ""}`}
         onClick={() => setIsOpen((prev) => !prev)}
         title="Links"
-        whileTap={{ scale: 0.9 }}
+        variants={zoomIn(1)}
+        initial="hidden"
+        drag
+        dragConstraints={{ left: 2, right: 2, top: 2, bottom: 2 }}
+        animate="show"
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9, rotate: 360 }}
+        transition={{ duration: 1, type: "spring" }}
       >
         <img
           src={require("../assets/img/icons/links.png")}

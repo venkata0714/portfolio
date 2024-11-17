@@ -1,4 +1,6 @@
 import { React, useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { AppLoad } from "./variants";
 import "./App.css";
 import Links from "./components/Links";
 import NavBar from "./components/NavBar";
@@ -11,6 +13,7 @@ import ContactPage from "./components/ContactPage";
 import Footer from "./components/Footer";
 
 function App() {
+  const givenData = [3.5, 4.2, 2.8, 4.7, 3.9];
   const [scrolled, setScrolled] = useState(false);
   const scrollToTop = () => {
     window.scrollTo({
@@ -35,11 +38,16 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
+    <motion.div
+      className="App"
+      variants={AppLoad("down")}
+      initial="initial"
+      animate={"show"}
+    >
       <NavBar />
       <HomePage />
       <AboutPage />
-      <SkillPage />
+      <SkillPage givenData={givenData} />
       <ProjectPage />
       <ExperiencePage />
       <ContactPage />
@@ -52,7 +60,7 @@ function App() {
       >
         <i className="fa fa-angle-up"></i>
       </a>
-    </div>
+    </motion.div>
   );
 }
 

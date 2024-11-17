@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Resume from "../assets/Singh_Kartavya_Resume2024.pdf";
+import { motion } from "framer-motion";
+import { fadeIn, zoomIn } from "../variants";
 import "../styles/NavBar.css";
 
 const NavBar = () => {
@@ -16,6 +18,7 @@ const NavBar = () => {
 
     window.scrollTo({
       top: offsetPosition,
+      transitionDuration: "5s",
       behavior: "smooth",
     });
   };
@@ -122,15 +125,21 @@ const NavBar = () => {
   }, [menuOpen]);
 
   return (
-    <nav
+    <motion.nav
       ref={menuRef}
       id="mainNav"
       className={scrolled ? "navbar scrolled fixed-top" : "navbar fixed-top"}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
     >
       <div className="navbar-container">
-        <a
+        <motion.a
           href="#home"
           className={scrolled ? "scrolled-navbar-brand" : "navbar-brand"}
+          variants={fadeIn("right", 40, 1)}
+          initial="hidden"
+          animate="show"
           onClick={() => {
             onUpdateActiveLink("home");
             if (window.innerWidth >= 992) {
@@ -139,30 +148,43 @@ const NavBar = () => {
           }}
         >
           <b>Kartavya Singh</b>
-        </a>
+        </motion.a>
 
         {/* Toggle button for menu */}
-        <button
+        <motion.button
           className="navbar-toggler"
           onClick={() => setMenuOpen(!menuOpen)}
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          transition={{ delay: 1 }}
           aria-expanded={menuOpen}
         >
           Menu <i id="menu-button" className="fa fa-bars"></i>
-        </button>
+        </motion.button>
 
         {/* Conditionally rendered navbar menu */}
         <div className={`navbar-menu ${menuOpen ? "open" : ""}`}>
-          <ul className="navbar-links">
+          <motion.ul
+            className="navbar-links"
+            variants={fadeIn("left", 40, 1)}
+            initial="hidden"
+            animate="show"
+          >
             <li
               className={
                 activeLink === "about" ? "active nav-item" : "nav-item"
               }
             >
-              <a
+              <motion.a
                 href="#about"
                 className={
                   activeLink === "about" ? "active navbar-link" : "navbar-link"
                 }
+                whileHover={{ scale: 4 }}
+                whileTap={{ scale: 0.9 }}
+                transition={{ duration: 0.5, type: "transition" }}
                 onClick={(e) => {
                   e.preventDefault();
                   scrollToSection("about");
@@ -171,7 +193,7 @@ const NavBar = () => {
                 }}
               >
                 <span className="navbar-text">ABOUT</span>
-              </a>
+              </motion.a>
             </li>
             <li
               className={
@@ -272,10 +294,10 @@ const NavBar = () => {
                 </span>
               </a>
             </li>
-          </ul>
+          </motion.ul>
         </div>
       </div>
-    </nav>
+    </motion.nav>
   );
 };
 

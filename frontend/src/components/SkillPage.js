@@ -2,8 +2,106 @@ import { React, Container, Row, Col } from "react";
 import "../styles/SkillPage.css";
 import { motion, AnimatePresence } from "framer-motion";
 import Carousel from "react-multi-carousel";
+import {
+  Chart as ChartJS,
+  RadialLinearScale,
+  PointElement,
+  LineElement,
+  Filler,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import { Radar } from "react-chartjs-2";
 import SpaceExplorer from "../assets/img/media/header-img.svg";
 import "react-multi-carousel/lib/styles.css";
+
+ChartJS.register(
+  RadialLinearScale,
+  PointElement,
+  LineElement,
+  Filler,
+  Tooltip,
+  Legend
+);
+const SkillGraph = ({ givenData }) => {
+  const data = {
+    labels: [
+      "Comfortability",
+      "Confidence",
+      "Experience",
+      "Fluency",
+      "Adaptabilty",
+    ],
+    datasets: [
+      {
+        label: "Skill Scores",
+        data: givenData,
+        backgroundColor: "rgba(33, 37, 41, 0.7)", // Slight transparency for a sci-fi effect
+        borderColor: "#6cbcfc",
+        borderWidth: 1.5,
+        pointBackgroundColor: "#6cbcfc",
+        pointBorderColor: "#edeeef",
+        pointHoverBackgroundColor: "#edeeef",
+        pointHoverBorderColor: "#6cbcfc",
+      },
+    ],
+  };
+
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      r: {
+        angleLines: {
+          color: "#edeeef", // Lines radiating from the center
+        },
+        grid: {
+          color: "rgba(237, 238, 239, 0.1)", // Subtle grid lines
+        },
+        pointLabels: {
+          color: "#edeeef", // Aspect labels (e.g., Aspect 1)
+          font: {
+            size: 8,
+            family: "'Orbitron', sans-serif", // Sci-fi font
+          },
+        },
+        ticks: {
+          display: false, // Hides the numbers on the grid
+          backdropColor: "transparent", // Ensures no background color for ticks
+        },
+      },
+    },
+    plugins: {
+      legend: {
+        position: "top",
+        labels: {
+          color: "#edeeef",
+          font: {
+            family: "'Orbitron', sans-serif", // Sci-fi font
+          },
+        },
+      },
+      tooltip: {
+        callbacks: {
+          label: function (context) {
+            return `Score: ${context.raw}`; // Tooltip for values
+          },
+        },
+        backgroundColor: "#212529",
+        titleColor: "#6cbcfc",
+        bodyColor: "#edeeef",
+        borderColor: "#6cbcfc",
+        borderWidth: 1,
+      },
+    },
+  };
+
+  return (
+    <div className="skill-image">
+      <Radar data={data} options={options} />
+    </div>
+  );
+};
 
 const responsive = {
   superLargeDesktop: {
@@ -25,12 +123,12 @@ const responsive = {
   },
 };
 
-function SkillPage() {
+function SkillPage({ givenData }) {
   return (
     <section className="skill-container" id="skills">
       <div className="skill-div">
         <div className="skill-box">
-          <motion.img
+          {/* <motion.img
             src={SpaceExplorer}
             alt="Space Explorer"
             className="space-explorer"
@@ -54,7 +152,7 @@ function SkillPage() {
                 ease: "easeInOut",
               },
             }}
-          />
+          /> */}
           <h2 className="skill-heading">Skills</h2>
           <p className="skill-paragraph">Here are my Skills</p>
           <Carousel
@@ -74,11 +172,9 @@ function SkillPage() {
               </p>
             </div>
             <div className="item">
-              <img
-                className="skill-image"
-                src="https://via.placeholder.com/150"
-                alt="Skill"
-              />
+              <div className="skill-graph">
+                <SkillGraph givenData={givenData} />
+              </div>
               <h5 className="skill-title">Skill 2</h5>
               <p className="skill-description">
                 This is a Skill Description for a Skilll

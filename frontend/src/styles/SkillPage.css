@@ -15,6 +15,12 @@
   text-align: center;
 }
 
+.skill-graph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .skill-div {
   display: flex;
   align-items: center;
@@ -69,8 +75,8 @@
 }
 
 .skill-image {
-  width: 100%;
-  height: auto;
+  width: 212px;
+  height: 212px;
 }
 
 .skill-title {
@@ -95,6 +101,11 @@
     margin: 0 auto;
     padding: 0 15px;
   }
+
+  .skill-image {
+    width: 172px;
+    height: 172px;
+  }
 }
 
 @media (max-width: 992px) {
@@ -102,6 +113,10 @@
     max-width: 720px;
     margin: 0 auto;
     padding: 0 15px;
+  }
+  .skill-image {
+    width: 156px;
+    height: 156px;
   }
 }
 
@@ -114,6 +129,11 @@
 
   .skill-box {
     padding: 40px 10px;
+  }
+
+  .skill-image {
+    width: 205px;
+    height: 205px;
   }
 }
 
@@ -128,7 +148,8 @@
   }
 
   .skill-image {
-    width: 80%;
+    align-self: center;
+    width: 60%;
     height: auto;
   }
 }
