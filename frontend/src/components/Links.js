@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { zoomIn } from "../variants";
 import "../styles/Links.css";
+import { animated } from "@react-spring/web";
 
 const Links = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -91,10 +92,11 @@ const Links = () => {
         whileTap={{ scale: 0.9, rotate: 360 }}
         transition={{ duration: 1, type: "spring" }}
       >
-        <img
+        <animated.img
           src={require("../assets/img/icons/links.png")}
           alt="Links"
           className="icon-img"
+          draggable="false"
         />
       </motion.div>
 
@@ -119,7 +121,8 @@ const Links = () => {
                 whileTap={{ scale: 0.9 }}
                 transition={{ duration: 0.5 }}
               >
-                <motion.img
+                <animated.img
+                  draggable="false"
                   src={link.icon}
                   alt={link.label}
                   className="icon-img"

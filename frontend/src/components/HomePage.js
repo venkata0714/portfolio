@@ -12,6 +12,12 @@ function HomePage() {
   const [isCooldown, setIsCooldown] = useState(false);
   const clickCount = useRef(0); // Use useRef to keep track of click count across renders
   const [key, setKey] = useState(0); // State to reset the animation on click
+  const [frameIndex, setFrameIndex] = useState(0); // Track current frame index
+  const frames = ["", " frame1", " frame2", " frame3"]; // Define frame styles
+
+  const handleProfileClick = () => {
+    setFrameIndex((prevIndex) => (prevIndex + 1) % frames.length); // Cycle frames
+  };
 
   const keywords = [
     "Developing with Curiosity and Expertise | Always Learning & Innovating",
@@ -73,24 +79,26 @@ function HomePage() {
     <section className="homepage-container" id="home">
       <div className="container">
         <motion.div
-          className="profile-picture-container"
+          className={`profile-picture-container`}
           variants={zoomIn(1)}
           initial="hidden"
           drag
-          dragConstraints={{ left: 2, right: 2, top: 2, bottom: 2 }}
+          dragConstraints={{ left: 1, right: 1, top: 1, bottom: 1 }}
           whileInView={"show"}
           viewport={{ once: false, amount: 0.7 }}
         >
           <animated.img
-            id="profile-picture"
             src={ProfilePhoto}
             alt="Profile"
-            className="img-responsive img-circle"
+            className={`profile-picture img-responsive img-circle${frames[frameIndex]}`}
             draggable="false"
             style={{ transform, boxShadow }}
             onMouseEnter={() => setClicked(true)}
             onMouseLeave={() => setClicked(false)}
-            onClick={handleClick}
+            onClick={() => {
+              handleClick();
+              handleProfileClick();
+            }}
           />
         </motion.div>
         <motion.h1

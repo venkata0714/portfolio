@@ -13,6 +13,7 @@
   font-family: "Montserrat", sans-serif;
   color: #edeeef;
   text-align: center;
+  z-index: 0;
 }
 
 .skill-graph {
@@ -28,15 +29,13 @@
   max-width: 1140px;
   margin: 30px auto 0px auto;
   padding: 0 15px;
+  z-index: 2;
 }
 
 .space-explorer {
-  position: absolute;
-  top: -55px;
-  right: -120px;
   width: 15vw;
   height: auto;
-  z-index: 10; /* Ensure it stays above skill-box */
+  z-index: 1; /* Ensure it stays above skill-box */
   pointer-events: none;
 }
 

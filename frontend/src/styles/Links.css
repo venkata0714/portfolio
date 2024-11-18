@@ -17,6 +17,12 @@
   z-index: 1000;
 }
 
+.links-container {
+  height: auto;
+  max-width: 1140px;
+  margin: 0 auto;
+}
+
 .link-btn:hover {
   background-color: #fcbc1d;
   transform: scale(1.1);

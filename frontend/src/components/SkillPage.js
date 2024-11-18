@@ -29,8 +29,8 @@ const FloatingSpaceExplorer = ({ id }) => {
   useEffect(() => {
     const updatePosition = () => {
       setPosition({
-        x: Math.random() * window.innerWidth,
-        y: Math.random() * window.innerHeight,
+        x: Math.random(0, 1) * window.innerWidth,
+        y: Math.random(0, 1) * window.innerHeight,
       });
     };
 
@@ -55,7 +55,7 @@ const FloatingSpaceExplorer = ({ id }) => {
         position: "absolute",
         width: "10vw",
         height: "auto",
-        zIndex: 5,
+        zIndex: 1,
       }}
     />
   );
@@ -130,8 +130,9 @@ const SkillGraph = ({ givenData }) => {
         },
         pointLabels: {
           color: "#edeeef", // Aspect labels (e.g., Aspect 1)
+          animate: true,
           font: {
-            weight: 100, // Reduced font weight for lighter text
+            weight: 400, // Reduced font weight for lighter text
             size: 8,
             family: "'Montserrat', sans-serif", // Sci-fi font
           },
@@ -232,11 +233,14 @@ function SkillPage({ givenData }) {
 
   return (
     <section className="skill-container" id="skills">
-      {/* Render multiple floating SpaceExplorers
-      {[...Array(10)].map((_, index) => (
-        <FloatingSpaceExplorer key={index} id={index} />
-      ))} */}
-
+      <motion.div
+        className="space-explorer"
+        variants={fadeIn("right", 200, 1)}
+        initial={{ scale: 0, opacity: 0, x: -20, y: -20 }}
+        whileInView={{ scale: 1, opacity: 1, x: 0, y: 0 }}
+      >
+        <FloatingSpaceExplorer />
+      </motion.div>
       <div className="skill-div">
         <div className="skill-box">
           <motion.h2
