@@ -28,7 +28,7 @@
   justify-content: center;
   max-width: 1140px;
   margin: 30px auto 0px auto;
-  padding: 0 15px;
+  padding: 0 0px;
   z-index: 2;
 }
 
@@ -196,8 +196,8 @@
 
   .skill-image {
     align-self: center;
-    width: 60%;
-    height: auto;
+    width: 250px;
+    height: 250px;
   }
 }
 

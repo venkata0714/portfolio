@@ -139,6 +139,8 @@ const NavBar = () => {
           variants={fadeIn("right", 40, 1)}
           initial="hidden"
           animate="show"
+          // drag
+          // dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
           onClick={() => {
             onUpdateActiveLink("home");
             if (window.innerWidth >= 992) {
@@ -158,6 +160,8 @@ const NavBar = () => {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           transition={{ delay: 1 }}
+          drag
+          dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
           aria-expanded={menuOpen}
         >
           Menu <i id="menu-button" className="fa fa-bars"></i>

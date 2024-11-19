@@ -1,95 +1,114 @@
+@import "~slick-carousel/slick/slick.css";
+@import "~slick-carousel/slick/slick-theme.css";
+
 .project-container {
   display: flex;
+  flex-wrap: wrap;
+  flex-direction: column-reverse;
+  gap: 20px;
   align-items: center;
   justify-content: center;
-  min-height: calc(100vh - 52px);
-  font-size: 3em;
-  font-weight: bold;
-  color: #fff;
-  gap: 20px;
   padding: 20px;
-  background-color: #212529;
+  /* background: linear-gradient(145deg, #0b5528, #0a4c25); */
+  background: url("../assets/img/background/about-bg.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  scroll-behavior: smooth;
+  background-position: center;
+  backdrop-filter: blur(15px); /* Blurs the background for a frosted look */
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); /* Adds a soft shadow for depth */
+  border: 1px solid rgba(255, 255, 255, 0.2); /* Light border to define edges */
+  color: #edeeef;
 }
 
-/* Individual project card styling */
 .project-card {
-  width: 300px;
-  height: 200px;
-  background-size: cover;
-  background-position: center;
-  border-radius: 10px;
-  position: relative;
-  overflow: hidden;
-  transition: transform 0.3s ease;
-  cursor: pointer;
+  display: flex;
+  flex-direction: row; /* Arrange children side by side */
+  width: 100%; /* Full container width */
+  max-width: 1140px;
+  height: auto;
+  text-align: left;
+  /* padding: 40px 50px; */
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0)
+  );
+  color: #212529;
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 1);
 }
 
 .project-card:hover {
-  transform: scale(1.05);
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
 }
 
-/* Overlay for project title, subtitle, and date */
-.project-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
-  opacity: 0;
+.project-info {
+  flex: 1; /* Take up half the card */
+  padding: 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
   color: #fff;
-  text-align: center;
-  padding: 15px;
-  transition: opacity 0.3s ease;
 }
 
-.project-card:hover .project-overlay {
-  opacity: 1;
-}
-
-/* Title and subtitle styling */
-.project-title {
-  font-size: 1.2em;
-  margin-bottom: 5px;
-}
-
-.project-subtitle {
-  font-size: 1em;
-  margin-bottom: 10px;
-}
-
-.project-date {
-  position: absolute;
-  top: 10px;
-  right: 10px;
+.project-header {
+  font-family: "Montserrat", sans-serif;
   font-size: 0.9em;
-  background-color: rgba(255, 255, 255, 0.8);
-  color: #333;
-  padding: 2px 8px;
-  border-radius: 5px;
+  color: #edeeef;
 }
 
-/* Read more button styling */
-.read-more-button {
-  background-color: #fff;
-  color: #333;
+.project-title {
+  background: linear-gradient(135deg, #fcbc1d, #fcae2e, #fcbc1d);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-size: 1.5em;
+  font-weight: 700;
+  margin: 10px 0;
+}
+
+.project-tagline {
+  font-size: 1em;
+  margin: 10px 0;
+  color: #edeeef;
+}
+
+.learn-more-button {
+  background-color: #007bff;
+  color: white;
   border: none;
   padding: 8px 12px;
+  border-radius: 5px;
   cursor: pointer;
-  font-size: 0.9em;
-  margin-top: 10px;
   transition: background-color 0.3s ease;
 }
 
-.read-more-button:hover {
-  background-color: #ddd;
+.learn-more-button:hover {
+  background-color: #0056b3;
 }
 
-/* Modal styling */
+.project-image {
+  margin: 20px 20px;
+  flex: 1; /* Take up half the card */
+  background-size: contain;
+  background-repeat: no-repeat;
+  scroll-behavior: smooth;
+  background-position: center;
+}
+
 .project-modal {
   position: fixed;
   top: 0;
@@ -105,52 +124,44 @@
 
 .modal-content {
   background-color: #fff;
-  color: #333;
-  width: 80%;
-  max-width: 800px;
   padding: 20px;
   border-radius: 8px;
-  overflow-y: auto;
-  max-height: 90vh;
+  width: 80%;
+  max-width: 600px;
+  color: #333;
   position: relative;
 }
 
-.modal-content h2 {
-  margin-top: 0;
-}
-
-.modal-date {
-  font-size: 0.9em;
-  color: #666;
-  margin-bottom: 10px;
-}
-
-.modal-content p {
-  margin: 10px 0;
-}
-
-.modal-content a {
-  color: #1e90ff;
-  text-decoration: none;
-}
-
-.modal-content a:hover {
-  text-decoration: underline;
-}
-
-/* Close button styling */
 .close-button {
   position: absolute;
   top: 10px;
   right: 10px;
   font-size: 1.5em;
+  color: #333;
   background: none;
   border: none;
-  color: #333;
   cursor: pointer;
-  transition: color 0.3s ease;
 }
 
-.close-button:hover {
-  color: #ff0000;
+.slick-slider {
+  margin: 20px 0;
+}
+
+.slick-prev,
+.slick-next {
+  color: #333;
+  font-size: 1.5em;
+}
+
+@media (max-width: 768px) {
+  .project-card {
+    flex-direction: column; /* Stack content vertically on small screens */
+    height: auto; /* Adjust height */
+  }
+
+  .project-info,
+  .project-image {
+    flex: 1; /* Remove flex split */
+    width: 100%; /* Full width for both */
+  }
 }

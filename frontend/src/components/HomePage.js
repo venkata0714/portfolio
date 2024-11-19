@@ -82,8 +82,8 @@ function HomePage() {
           className={`profile-picture-container`}
           variants={zoomIn(1)}
           initial="hidden"
-          drag
-          dragConstraints={{ left: 1, right: 1, top: 1, bottom: 1 }}
+          // drag
+          // dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
           whileInView={"show"}
           viewport={{ once: false, amount: 0.7 }}
         >
@@ -91,7 +91,8 @@ function HomePage() {
             src={ProfilePhoto}
             alt="Profile"
             className={`profile-picture img-responsive img-circle${frames[frameIndex]}`}
-            draggable="false"
+            draggable="true"
+            dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
             style={{ transform, boxShadow }}
             onMouseEnter={() => setClicked(true)}
             onMouseLeave={() => setClicked(false)}
@@ -144,6 +145,8 @@ function HomePage() {
           variants={zoomIn(1)}
           initial="hidden"
           animate="show"
+          drag
+          dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
         >
           <StyledButton
             onClick={(e) => {

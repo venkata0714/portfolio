@@ -86,7 +86,7 @@ const Links = () => {
         variants={zoomIn(1)}
         initial="hidden"
         drag
-        dragConstraints={{ left: 2, right: 2, top: 2, bottom: 2 }}
+        dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
         animate="show"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9, rotate: 360 }}

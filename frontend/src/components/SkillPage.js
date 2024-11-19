@@ -233,14 +233,14 @@ function SkillPage({ givenData }) {
 
   return (
     <section className="skill-container" id="skills">
-      <motion.div
+      {/* <motion.div
         className="space-explorer"
         variants={fadeIn("right", 200, 1)}
         initial={{ scale: 0, opacity: 0, x: -20, y: -20 }}
         whileInView={{ scale: 1, opacity: 1, x: 0, y: 0 }}
       >
         <FloatingSpaceExplorer />
-      </motion.div>
+      </motion.div> */}
       <div className="skill-div">
         <div className="skill-box">
           <motion.h2

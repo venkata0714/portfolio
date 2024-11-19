@@ -9,18 +9,31 @@ function ContactPage() {
 
   const sendEmail = (e) => {
     e.preventDefault();
+    const formData = new FormData(form.current);
+    const data = Object.fromEntries(formData.entries());
+
+    console.log("Form Data Object:", data); // Debug: Check the generated object
+
+    // Log all key-value pairs
+    for (let [key, value] of formData.entries()) {
+      console.log(`Name: ${key}, Value: ${value}`);
+    }
+    console.log(form.current.elements.from_name.value);
+    console.log(form.current.elements.from_email.value);
+    console.log(form.current.elements.from_phone.value);
+    console.log(form.current.elements.message.value);
 
     setTimeout(() => {
       emailjs
-        .sendForm(
+        .send(
           process.env.REACT_APP_EMAILJS_SERVICE_ID,
           process.env.REACT_APP_EMAILJS_TEMPLATE_ID,
-          form.current,
+          data,
           process.env.REACT_APP_EMAILJS_USER_ID
         )
         .then(
           (result) => {
-            console.log(result.text);
+            console.log(result);
             setIsSent(true); // Set success status
             setTimeout(() => setIsSent(null), 3000); // Reset status after 2 seconds
           },
