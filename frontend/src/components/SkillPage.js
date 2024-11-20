@@ -211,7 +211,7 @@ const responsive = {
   },
 };
 
-function SkillPage({ givenData }) {
+function SkillPage() {
   const [skills, setSkills] = useState([]); // State to store fetched skills
   const [loading, setLoading] = useState(true);
 

@@ -13,18 +13,6 @@ import ContactPage from "./components/ContactPage";
 import Footer from "./components/Footer";
 
 function App() {
-  const givenData = {
-    Labels: [
-      "Comfortability",
-      "Confidence",
-      "Experience",
-      "Fluency",
-      "Adaptabilty",
-    ],
-    Scores: [4.5, 4.7, 4.8, 4.2, 4.9],
-    skillTitle: "Python",
-    skillDescription: "Some Description About Python",
-  };
   const [scrolled, setScrolled] = useState(false);
   const scrollToTop = () => {
     window.scrollTo({
@@ -58,7 +46,7 @@ function App() {
       <NavBar />
       <HomePage />
       <AboutPage />
-      <SkillPage givenData={givenData} />
+      <SkillPage />
       <ProjectPage />
       <ExperiencePage />
       <ContactPage />
