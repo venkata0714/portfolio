@@ -6,11 +6,13 @@ import { useSpring, animated } from "@react-spring/web";
 import { motion } from "framer-motion";
 import { zoomIn } from "../variants";
 import "../styles/HomePage.css";
-import ProfilePhoto from "../assets/img/media/Kartavya.jpg";
+import ProfilePhotoHover from "../assets/img/media/Kartavya.jpg";
+import ProfilePhoto from "../assets/img/media/KartavyaSketch.jpg";
 import HomeBG from "../assets/img/background/home-bg.jpg";
 
 function HomePage() {
   const [clicked, setClicked] = useState(false);
+  const [isHovered, setIsHovered] = useState(false); // Hover state
   const [isCooldown, setIsCooldown] = useState(false);
   const clickCount = useRef(0); // Use useRef to keep track of click count across renders
   const [key, setKey] = useState(0); // State to reset the animation on click
@@ -79,8 +81,8 @@ function HomePage() {
 
   return (
     <Parallax
-      strength={20}
-      blur={{ min: -5, max: 5 }}
+      strength={0}
+      blur={{ min: -15, max: 15 }}
       // bgClassName="home-background"
       bgImage={HomeBG}
     >
@@ -90,20 +92,55 @@ function HomePage() {
             className={`profile-picture-container`}
             variants={zoomIn(1)}
             initial="hidden"
-            // drag
-            // dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+            drag
+            dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+            dragElastic={0.3}
+            dragTransition={{
+              bounceStiffness: 250,
+              bounceDamping: 15,
+            }}
             whileInView={"show"}
             viewport={{ once: false, amount: 0.7 }}
           >
             <animated.img
-              src={ProfilePhoto}
+              src={ProfilePhoto} // Use hover state
               alt="Profile"
-              className={`profile-picture img-responsive img-circle${frames[frameIndex]}`}
-              draggable="true"
+              className={`profile-picture normal-img  ${
+                isHovered ? "hidden" : "visible"
+              }${frames[frameIndex]}`}
+              draggable="false"
               dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
               style={{ transform, boxShadow }}
-              onMouseEnter={() => setClicked(true)}
-              onMouseLeave={() => setClicked(false)}
+              onMouseEnter={() => {
+                // setClicked(true);
+                setIsHovered(true);
+              }}
+              onMouseLeave={() => {
+                // setClicked(false);
+                setIsHovered(false);
+              }}
+              onClick={() => {
+                handleClick();
+                handleProfileClick();
+              }}
+            />
+            <animated.img
+              src={ProfilePhotoHover} // Use hover state
+              alt="Profile"
+              className={`profile-picture hover-img  ${
+                isHovered ? "visible" : "hidden"
+              }${frames[frameIndex]}`}
+              draggable="false"
+              dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+              style={{ transform, boxShadow }}
+              onMouseEnter={() => {
+                // setClicked(true);
+                setIsHovered(true);
+              }}
+              onMouseLeave={() => {
+                // setClicked(false);
+                setIsHovered(false);
+              }}
               onClick={() => {
                 handleClick();
                 handleProfileClick();
@@ -155,6 +192,11 @@ function HomePage() {
             animate="show"
             drag
             dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+            dragElastic={0.3}
+            dragTransition={{
+              bounceStiffness: 250,
+              bounceDamping: 15,
+            }}
           >
             <StyledButton
               onClick={(e) => {

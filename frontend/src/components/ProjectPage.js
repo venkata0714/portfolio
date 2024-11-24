@@ -8,18 +8,71 @@ function ProjectPage() {
   const [projects, setProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [cardStates, setCardStates] = useState([]);
 
   useEffect(() => {
     async function getProjects() {
       try {
         const data = await fetchProjects();
         setProjects(data);
+        // Initialize card states for each project
+        setCardStates(
+          data.map(() => ({
+            mousePosition: { x: 0, y: 0 },
+            isHovering: false,
+          }))
+        );
       } catch (error) {
         console.error("Error fetching projects:", error);
       }
     }
     getProjects();
   }, []);
+
+  const handleMouseMove = (event, index) => {
+    const { clientX, clientY } = event;
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = (clientX - (rect.left + rect.width / 2)) / 20;
+    const y = (clientY - (rect.top + rect.height / 2)) / 20;
+
+    setCardStates((prevStates) =>
+      prevStates.map((state, i) =>
+        i === index
+          ? {
+              ...state,
+              mousePosition: { x, y },
+            }
+          : state
+      )
+    );
+  };
+
+  const handleMouseEnter = (index) => {
+    setCardStates((prevStates) =>
+      prevStates.map((state, i) =>
+        i === index
+          ? {
+              ...state,
+              isHovering: true,
+            }
+          : state
+      )
+    );
+  };
+
+  const handleMouseLeave = (index) => {
+    setCardStates((prevStates) =>
+      prevStates.map((state, i) =>
+        i === index
+          ? {
+              ...state,
+              isHovering: false,
+              mousePosition: { x: 0, y: 0 },
+            }
+          : state
+      )
+    );
+  };
 
   const handleLearnMore = (index) => {
     setSelectedProject(projects[index]);
@@ -41,46 +94,58 @@ function ProjectPage() {
   };
 
   return (
-    <section className="project-container" id="projects">
-      {projects.map((project, index) => (
-        <motion.div
-          key={index}
-          className="project-card"
-          initial={{ opacity: 0, y: 100 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
-          whileHover={{ scale: 1.02 }}
-        >
-          {/* Left: Project Info */}
-          <div className="project-info" id={project.projectLink}>
-            <div className="project-header">
-              {project.projectSubTitle && (
-                <span>{project.projectSubTitle} | </span>
-              )}
-              <span>{project.projectTimeline}</span>
-            </div>
-            <a className="project-title" href={`#${project.projectLink}`}>
-              {project.projectTitle}
-            </a>
-            <hr />
-            <p className="project-tagline">{project.projectTagline}</p>
-            <button
-              className="learn-more-button"
-              onClick={() => handleLearnMore(index)}
-            >
-              Learn More →
-            </button>
-          </div>
+    <motion.section className="project-container" id="projects">
+      {projects.map((project, index) => {
+        const { mousePosition, isHovering } = cardStates[index] || {
+          mousePosition: { x: 0, y: 0 },
+          isHovering: false,
+        };
 
-          {/* Right: Project Image */}
-          <div
-            className="project-image"
+        return (
+          <motion.div
+            key={index}
+            className="project-card"
+            onMouseMove={(event) => handleMouseMove(event, index)}
+            onMouseEnter={() => handleMouseEnter(index)}
+            onMouseLeave={() => handleMouseLeave(index)}
             style={{
-              backgroundImage: `url(${project.projectImages[0]})`,
+              transform: isHovering
+                ? `translate3d(${mousePosition.x}px, ${mousePosition.y}px, 0) scale3d(1, 1, 1)`
+                : "translate3d(0px, 0px, 0) scale3d(1, 1, 1)",
+              transition: "transform 0.1s ease-out",
             }}
-          ></div>
-        </motion.div>
-      ))}
+          >
+            {/* Project Content */}
+            <div className="project-info" id={project.projectLink}>
+              <div className="project-header">
+                {project.projectSubTitle && (
+                  <span>{project.projectSubTitle} | </span>
+                )}
+                <span>{project.projectTimeline}</span>
+              </div>
+              <a className="project-title" href={`#${project.projectLink}`}>
+                {project.projectTitle}
+              </a>
+              <hr />
+              <p className="project-tagline">{project.projectTagline}</p>
+              <button
+                className="learn-more-button"
+                onClick={() => handleLearnMore(index)}
+              >
+                Learn More →
+              </button>
+            </div>
+
+            {/* Project Image */}
+            <div
+              className="project-image"
+              style={{
+                backgroundImage: `url(${project.projectImages[0]})`,
+              }}
+            ></div>
+          </motion.div>
+        );
+      })}
 
       {showModal && selectedProject && (
         <motion.div
@@ -107,7 +172,7 @@ function ProjectPage() {
           </div>
         </motion.div>
       )}
-    </section>
+    </motion.section>
   );
 }
 

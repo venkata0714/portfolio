@@ -162,6 +162,11 @@ const NavBar = () => {
           transition={{ delay: 1 }}
           drag
           dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+          dragElastic={0.3}
+          dragTransition={{
+            bounceStiffness: 250,
+            bounceDamping: 15,
+          }}
           aria-expanded={menuOpen}
         >
           Menu <i id="menu-button" className="fa fa-bars"></i>

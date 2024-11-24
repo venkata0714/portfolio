@@ -25,8 +25,7 @@
 .project-card {
   display: flex;
   flex-direction: row; /* Arrange children side by side */
-  width: 100%; /* Full container width */
-  max-width: 1140px;
+  width: min(1140px, 90%); /* Full container width */
   height: auto;
   text-align: left;
   /* padding: 40px 50px; */
@@ -35,24 +34,10 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.glass {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.1),
-    rgba(255, 255, 255, 0)
-  );
-  color: #212529;
-  backdrop-filter: blur(30px);
-  -webkit-backdrop-filter: blur(10px);
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 1);
-}
-
-.project-card:hover {
+/* .project-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-}
+} */
 
 .project-info {
   flex: 1; /* Take up half the card */

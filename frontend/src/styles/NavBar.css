@@ -53,7 +53,21 @@ html {
 /* Base style for the neon effect */
 .navbar-brand {
   display: inline-block;
-  background: linear-gradient(135deg, #fcbc1d, #fcae2e, #fcbc1d);
+  background: linear-gradient(
+    90deg,
+    #fcbc1d,
+    #f8c64b,
+    #f5cc70,
+    #f2d294,
+    #efd7b3,
+    #ebdccd,
+    #e8e1e3,
+    #e6e3e9,
+    #e5e5ec,
+    #e4e7ee,
+    #e4e8ef,
+    #edeeef
+  );
   background-size: 200% 200%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -88,14 +102,27 @@ b {
 .navbar-brand:focus,
 .navbar-brand:hover {
   animation: pulse 2s infinite;
-  color: #fbab25;
   text-decoration: none;
 }
 
 .scrolled-navbar-brand {
   display: inline-block;
   color: transparent;
-  background: linear-gradient(135deg, #fcbc1d, #fcae2e, #fcbc1d);
+  background: linear-gradient(
+    90deg,
+    #fcbc1d,
+    #f8c64b,
+    #f5cc70,
+    #f2d294,
+    #efd7b3,
+    #ebdccd,
+    #e8e1e3,
+    #e6e3e9,
+    #e5e5ec,
+    #e4e7ee,
+    #e4e8ef,
+    #edeeef
+  );
   background-size: 200% 200%;
   -webkit-background-clip: text;
   background-clip: text;
