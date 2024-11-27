@@ -12,11 +12,12 @@
   color: #212529;
   text-align: center;
   z-index: 1; /* Ensures content stays above the beams */
+  overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 .gradient-canvas {
   position: absolute;
-  display: fixed;
   top: 0;
   left: 0;
   width: 100%;
