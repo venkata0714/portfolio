@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
+import { Parallax } from "react-parallax";
 import Slider from "react-slick";
 import { zoomIn } from "../variants";
 import { styled } from "@stitches/react";
@@ -12,6 +13,48 @@ function ProjectPage() {
   const [selectedProject, setSelectedProject] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [cardStates, setCardStates] = useState([]);
+  const containerRef = useRef(null);
+  const [isInView, setIsInView] = useState(false);
+
+  useEffect(() => {
+    // Observe when the ProjectPage comes into view
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsInView(entry.isIntersecting);
+      },
+      { threshold: 0.3 } // Trigger when 10% of the section is visible
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => {
+      if (containerRef.current) {
+        observer.unobserve(containerRef.current);
+      }
+    };
+  }, []);
+
+  const handleScroll = (e) => {
+    if (!isInView) return;
+
+    const container = containerRef.current;
+    const scrollTop = container.scrollTop;
+    const scrollHeight = container.scrollHeight;
+    const containerHeight = container.offsetHeight;
+
+    // Prevent overscrolling past the ProjectPage
+    if (
+      (scrollTop + e.deltaY < 0 && e.deltaY < 0) || // Scrolling up at the top
+      (scrollTop + e.deltaY > scrollHeight - containerHeight && e.deltaY > 0) // Scrolling down at the bottom
+    ) {
+      e.preventDefault(); // Prevent scrolling propagation
+    } else {
+      container.scrollTop += e.deltaY; // Scroll within the container
+      e.preventDefault(); // Prevent normal scrolling
+    }
+  };
 
   const scrollToSection = (id) => {
     const element = document.getElementById(id);
@@ -29,7 +72,7 @@ function ProjectPage() {
     async function getProjects() {
       try {
         const data = await fetchProjects();
-        setProjects(data);
+        setProjects(data.reverse());
         // Initialize card states for each project
         setCardStates(
           data.map(() => ({
@@ -89,6 +132,32 @@ function ProjectPage() {
     );
   };
 
+  useEffect(() => {
+    if (!containerRef.current) return; // Ensure containerRef is not null
+    const container = containerRef.current;
+
+    const handleScroll = () => {
+      if (!container) return; // Safety check
+      const cards = container.querySelectorAll(".project-card");
+      if (!cards.length) return; // Ensure cards exist
+      const containerRect = container.getBoundingClientRect();
+
+      cards.forEach((card, index) => {
+        const cardRect = card.getBoundingClientRect();
+        const offset = (index + 1) * 20; // Adjust the offset for stacking
+        const stickyTop = containerRect.top + offset;
+        card.style.top = stickyTop;
+        // card.style.transform = `translateY(${stickyTop - containerRect.top}px)`;
+        // card.style.transform = `translateY(0px)`;
+      });
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   const handleLearnMore = (index) => {
     setSelectedProject(projects[index]);
     setShowModal(true);
@@ -110,24 +179,37 @@ function ProjectPage() {
 
   return (
     <motion.section className="project-page-container" id="projects">
-      <GradientBG />
-      <div className="project-page-div">
-        <h2 className="section-title">My Projects</h2>
+      <div className="gradient-bg-container">
+        <GradientBG />
+      </div>
+      <div
+        ref={containerRef}
+        className="project-page-div"
+        onWheel={handleScroll}
+      >
         <div className="project-container">
+          <h2 className="project-section-title">My Projects</h2>
+
+          {/* Project Cards */}
           {projects.map((project, index) => {
             const { mousePosition, isHovering } = cardStates[index] || {
               mousePosition: { x: 0, y: 0 },
               isHovering: false,
             };
-
+            const totalProjects = projects.length;
+            const isLastProject = index === totalProjects - 1;
             return (
               <motion.div
                 key={index}
-                className="project-card"
+                className={`project-card`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: index * 0.2 }}
                 onMouseMove={(event) => handleMouseMove(event, index)}
                 onMouseEnter={() => handleMouseEnter(index)}
                 onMouseLeave={() => handleMouseLeave(index)}
                 style={{
+                  top: `${90 + index * 30}px`,
                   transform: isHovering
                     ? `translate3d(${mousePosition.x}px, ${mousePosition.y}px, 0) scale3d(1, 1, 1)`
                     : "translate3d(0px, 0px, 0) scale3d(1, 1, 1)",
@@ -160,7 +242,12 @@ function ProjectPage() {
                     initial="hidden"
                     animate="show"
                     drag
-                    dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+                    dragConstraints={{
+                      left: 0,
+                      right: 0,
+                      top: 0,
+                      bottom: 0,
+                    }}
                     dragElastic={0.3}
                     dragTransition={{
                       bounceStiffness: 250,

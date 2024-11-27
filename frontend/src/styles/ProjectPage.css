@@ -2,18 +2,26 @@
 @import "~slick-carousel/slick/slick-theme.css";
 
 .project-page-container {
-  position: relative; /* Establishes a stacking context for child elements */
+  position: relative;
   display: flex;
+  flex-direction: column; /* Ensure vertical stacking of child elements */
   align-items: center;
-  justify-content: center;
-  min-height: calc(100vh - 52px);
-  background: transparent; /* Allow the beams to show through */
+  justify-content: flex-start;
+  height: calc(100vh - 52px);
+  overflow-y: auto;
+  background: transparent;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
   font-family: "Montserrat", sans-serif;
   color: #212529;
   text-align: center;
-  z-index: 1; /* Ensures content stays above the beams */
-  overflow-x: hidden;
-  overflow-y: hidden;
+}
+
+.parallax-gradient-bg {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
 }
 
 .gradient-canvas {
@@ -27,37 +35,89 @@
 
 .project-page-div {
   max-width: 1140px;
+  max-height: 100%;
   margin: 15px auto;
   padding: 45px 0px;
+  flex: 1; /* Allows the container to grow to fill the available space */
+  display: flex;
+  flex-direction: column;
 }
 
 .project-container {
   display: flex;
-  flex-wrap: wrap;
-  flex-direction: column-reverse;
-  gap: 20px;
+  z-index: 1;
+  position: sticky;
+  top: 600px;
+  flex-direction: column;
+  width: 100%;
+  gap: 40px;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   scroll-behavior: smooth;
+}
+
+.project-section-title {
+  font-family: "Montserrat", "Helvetica Neue";
+  font-weight: 700;
+  font-size: 2.5rem;
   color: #edeeef;
+  margin-bottom: 20px;
+  position: sticky;
+  top: 30px;
 }
 
 .project-card {
   display: flex;
-  flex-direction: row; /* Arrange children side by side */
-  width: min(1140px, 90%); /* Full container width */
-  height: auto;
+  position: sticky;
+  top: 60px;
+  z-index: 10;
+  flex-direction: row;
+  width: min(1140px, 90%);
   text-align: left;
-  padding: 0px 50px; /* Adjust padding for spacing */
-  background: rgba(0, 0, 0, 0.3); /* Dark background with transparency */
-  backdrop-filter: blur(10px); /* Adds the frosted blur effect */
-  border-radius: 26px; /* Rounded corners */
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5); /* Stronger shadow for depth */
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  padding: 20px;
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
+.project-card:nth-child(3n + 1) {
+  background: linear-gradient(
+      rgba(139, 69, 90, 0.5),
+      /* Dark Pink */ rgba(139, 69, 90, 0.5)
+    ),
+    url("https://www.transparenttextures.com/patterns/noise-pattern.png");
+  background-size: cover;
+  color: #f8f9fa; /* Light text for readability */
+}
+
+.project-card:nth-child(3n + 2) {
+  background: linear-gradient(
+      rgba(54, 79, 107, 0.5),
+      /* Dark Blue */ rgba(54, 79, 107, 0.5)
+    ),
+    url("https://www.transparenttextures.com/patterns/noise-pattern.png");
+  background-size: cover;
+  color: #f8f9fa; /* Light text for readability */
+}
+
+.project-card:nth-child(3n) {
+  background: linear-gradient(
+      rgba(97, 89, 38, 0.5),
+      /* Dark Yellow */ rgba(97, 89, 38, 0.5)
+    ),
+    url("https://www.transparenttextures.com/patterns/noise-pattern.png");
+  background-size: cover;
+  color: #f8f9fa; /* Light text for readability */
+}
+
+.project-card:last-child {
+  margin-bottom: 60px;
+}
+
+/* Enhance shadow on hover */
 .project-card:hover {
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6); /* Enhance shadow on hover */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
 }
 
 /* .project-card:hover {
@@ -173,6 +233,10 @@
     max-width: 540px;
   }
 
+  .project-container {
+    max-height: 80vh;
+  }
+
   /* .learn-button-motioned {
     margin: 5px auto;
   } */
@@ -181,7 +245,7 @@
     flex-direction: column-reverse;
     width: 100%;
     padding: 30px;
-    margin: 0 auto;
+    margin: 20vh auto;
   }
 
   .project-info {

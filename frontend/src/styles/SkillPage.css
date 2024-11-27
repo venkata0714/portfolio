@@ -1,8 +1,11 @@
 .skill-container {
   display: flex;
   align-items: center;
+  overscroll-behavior-y: contain;
+  scroll-snap-align: center;
+  scroll-snap-type: y mandatory;
   justify-content: center;
-  min-height: calc(100vh - 52px);
+  min-height: 100vh;
   background-image: url("../assets/img/background/about-bg.png");
   background-size: cover;
   background-repeat: no-repeat;

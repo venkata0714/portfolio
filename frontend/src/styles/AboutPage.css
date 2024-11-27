@@ -1,6 +1,7 @@
 /* Canvas styling for animations */
 .background-beams-canvas {
   position: absolute;
+  background-color: #212529;
   display: fixed;
   top: 0;
   left: 0;
@@ -12,9 +13,11 @@
 .about-section-container {
   position: relative; /* Establishes a stacking context for child elements */
   display: flex;
+  overscroll-behavior-y: contain;
+  scroll-snap-type: y mandatory;
   align-items: center;
   justify-content: center;
-  min-height: calc(100vh - 52px);
+  min-height: 100vh;
   background: transparent; /* Allow the beams to show through */
   font-family: "Montserrat", sans-serif;
   color: #212529;

@@ -1,4 +1,5 @@
 import { React, useState, useEffect } from "react";
+import { Parallax } from "react-parallax";
 import { motion } from "framer-motion";
 import { AppLoad } from "./variants";
 import "./App.css";
@@ -10,7 +11,7 @@ import SkillPage from "./components/SkillPage";
 import ExperiencePage from "./components/ExperiencePage";
 import ProjectPage from "./components/ProjectPage";
 import ContactPage from "./components/ContactPage";
-import Footer from "./components/Footer";
+import HomeBG from "./assets/img/background/home-bg.jpg";
 
 function App() {
   const [scrolled, setScrolled] = useState(false);
@@ -50,7 +51,6 @@ function App() {
       <ProjectPage />
       <ExperiencePage />
       <ContactPage />
-      <Footer />
       <Links />
       <a
         className={`scroll-to-top ${scrolled ? "show" : ""}`}

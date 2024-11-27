@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import { styled, keyframes } from "@stitches/react";
+import Footer from "./Footer";
 import emailjs from "emailjs-com";
 import "../styles/ContactPage.css";
 
@@ -116,6 +117,7 @@ function ContactPage() {
           </form>
         </div>
       </div>
+      <Footer />
     </section>
   );
 }

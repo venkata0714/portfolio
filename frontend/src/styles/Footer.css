@@ -8,7 +8,8 @@
   scroll-behavior: smooth; */
   font-family: "Montserrat", sans-serif;
   color: #ffffff;
-  padding: 2rem 1rem;
+  padding: 2rem 3rem;
+  margin: 25px auto;
   max-height: 32vh;
   text-align: center;
 }
