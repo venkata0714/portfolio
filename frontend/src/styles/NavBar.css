@@ -52,26 +52,24 @@ html {
 
 /* Base style for the neon effect */
 .navbar-brand {
-  display: inline-block;
-  background: linear-gradient(
-    90deg,
-    #fcbc1d,
-    #f8c64b,
-    #f5cc70,
-    #f2d294,
-    #efd7b3,
-    #ebdccd,
-    #e8e1e3,
-    #e6e3e9,
-    #e5e5ec,
-    #e4e7ee,
-    #e4e8ef,
-    #edeeef
-  );
+  z-index: 50;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-size: 200% 200%;
-  -webkit-background-clip: text;
+  color: transparent !important;
+  pointer-events: none;
+  text-align: center;
   background-clip: text;
-  color: transparent;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-image: linear-gradient(
+    to bottom,
+    rgba(252, 188, 29, 1),
+    rgba(237, 238, 239, 0.95)
+  );
+  text-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
   margin-right: 16px;
   padding: 5px 0px;
   font-size: 28px;
@@ -106,28 +104,25 @@ b {
 }
 
 .scrolled-navbar-brand {
-  display: inline-block;
-  color: transparent;
-  background: linear-gradient(
-    90deg,
-    #fcbc1d,
-    #f8c64b,
-    #f5cc70,
-    #f2d294,
-    #efd7b3,
-    #ebdccd,
-    #e8e1e3,
-    #e6e3e9,
-    #e5e5ec,
-    #e4e7ee,
-    #e4e8ef,
-    #edeeef
-  );
   background-size: 200% 200%;
-  -webkit-background-clip: text;
-  background-clip: text;
+  z-index: 50;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-family: "Kaushan Script", "Helvetica Neue", Helvetica, Arial, cursive;
   text-decoration: none !important;
+  color: transparent !important;
+  text-align: center;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-image: linear-gradient(
+    to bottom,
+    rgba(252, 188, 29, 1),
+    rgba(237, 238, 239, 0.95)
+  );
+  text-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
   margin-right: 16px;
   padding: 12px 0;
   font-size: 20px;

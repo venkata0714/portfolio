@@ -1,33 +1,56 @@
 import React from "react";
+import { motion } from "framer-motion";
+import { zoomIn, fadeIn } from "../variants";
 import { styled } from "@stitches/react";
 import "../styles/AboutPage.css";
+import { BackgroundBeams } from "./BackgroundBeams";
 import AboutImg from "../assets/img/media/Kartavya-Profile-Photo.jpg";
 import Resume from "../assets/Singh_Kartavya_Resume2024.pdf";
+
+const aboutData = [
+  {
+    icon: "bx bxs-hourglass about-icon",
+    title: "Coding Hours",
+    subtitle: "900+ Hours",
+  },
+  {
+    icon: "bx bx-trophy about-icon",
+    title: "Completed",
+    subtitle: "42+ Projects",
+  },
+  {
+    icon: "bx bx-support about-icon",
+    title: "LeetCode",
+    subtitle: "246+ Solutions",
+  },
+];
 
 function AboutPage() {
   return (
     <section className="about-section-container" id="about">
+      <BackgroundBeams />
       <div className="about-div glass">
         <h2 className="section-title">ABOUT ME</h2>
-        <div className="about-container  grid">
+        <div className="about-container grid">
           <img src={AboutImg} className="about-image" alt="Profile" />
           <div className="about-data">
             <div className="about-info grid">
-              <div className="about-box">
-                <i className="bx bxs-hourglass about-icon"></i>
-                <h3 className="about-title">Coding Hours</h3>
-                <span className="about-subtitle">900+ Hours</span>
-              </div>
-              <div className="about-box">
-                <i className="bx bx-trophy about-icon"></i>
-                <h3 className="about-title">Completed</h3>
-                <span className="about-subtitle">42+ Projects</span>
-              </div>
-              <div className="about-box">
-                <i className="bx bx-support about-icon"></i>
-                <h3 className="about-title">LeetCode</h3>
-                <span className="about-subtitle">246+ Solutions</span>
-              </div>
+              {aboutData.map((item, index) => (
+                <motion.div
+                  className="about-box"
+                  whileHover={{ scale: 1.2 }}
+                  key={index}
+                >
+                  <motion.i
+                    className={item.icon}
+                    variants={fadeIn(index * 0.2)} // Add slight stagger effect
+                    initial="hidden"
+                    animate="show"
+                  ></motion.i>
+                  <h3 className="about-title">{item.title}</h3>
+                  <span className="about-subtitle">{item.subtitle}</span>
+                </motion.div>
+              ))}
             </div>
             <div className="about-box">
               <p className="about-description">
@@ -39,18 +62,32 @@ function AboutPage() {
                 applications.
               </p>
             </div>
-
-            <a
-              href={Resume}
-              download="Kartavya-Singh-Resume-2024.pdf"
-              className="download-cv"
+            <motion.div
+              className="enter-button-motioned"
+              variants={zoomIn(1)}
+              initial="hidden"
+              animate="show"
+              drag="true"
+              dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+              dragElastic={0.3}
+              dragTransition={{
+                bounceStiffness: 250,
+                bounceDamping: 15,
+              }}
             >
-              <StyledButton>
-                <ButtonShadow />
-                <ButtonEdge />
-                <ButtonLabel>Download Resume</ButtonLabel>
-              </StyledButton>
-            </a>
+              <motion.a
+                href={Resume}
+                download="Kartavya-Singh-Resume-2024.pdf"
+                className="download-cv"
+                drag="false"
+              >
+                <StyledButton>
+                  <ButtonShadow />
+                  <ButtonEdge />
+                  <ButtonLabel>Download Resume</ButtonLabel>
+                </StyledButton>
+              </motion.a>
+            </motion.div>
           </div>
         </div>
       </div>

@@ -188,7 +188,7 @@ const ButtonLabel = styled("span", {
 
   "&:hover": {
     backgroundColor: "#fcbc1d",
-    color: "#FFFFFF",
+    color: "#212529",
     transform: "scale(1.05)",
   },
 });

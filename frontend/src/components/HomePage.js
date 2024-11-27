@@ -1,22 +1,22 @@
 import React, { useState, useEffect, useRef } from "react";
 import { styled } from "@stitches/react";
 import { TypeAnimation } from "react-type-animation";
-import { Parallax } from "react-parallax";
+import { Parallax, Background } from "react-parallax";
 import { useSpring, animated } from "@react-spring/web";
 import { motion } from "framer-motion";
 import { zoomIn } from "../variants";
 import "../styles/HomePage.css";
-import ProfilePhotoHover from "../assets/img/media/Kartavya.jpg";
-import ProfilePhoto from "../assets/img/media/KartavyaSketch.jpg";
+import ProfilePhoto from "../assets/img/media/Kartavya.jpg";
 import HomeBG from "../assets/img/background/home-bg.jpg";
 
 function HomePage() {
   const [clicked, setClicked] = useState(false);
-  const [isHovered, setIsHovered] = useState(false); // Hover state
   const [isCooldown, setIsCooldown] = useState(false);
   const clickCount = useRef(0); // Use useRef to keep track of click count across renders
   const [key, setKey] = useState(0); // State to reset the animation on click
   const [frameIndex, setFrameIndex] = useState(0); // Track current frame index
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isHovering, setIsHovering] = useState(false);
   const frames = ["", " frame1", " frame2", " frame3"]; // Define frame styles
 
   const handleProfileClick = () => {
@@ -28,10 +28,21 @@ function HomePage() {
     "Innovating AI-Powered Solutions | Experienced Full Stack Developer",
   ];
 
-  const { transform, boxShadow } = useSpring({
-    transform: clicked
-      ? "scale(1.4) translateY(0px) rotate(2deg)"
-      : "scale(1) translateY(0px) rotate(0deg)",
+  const handleMouseMove = (event) => {
+    const { clientX, clientY } = event;
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = (clientX - (rect.left + rect.width / 2)) / 10;
+    const y = (clientY - (rect.top + rect.height / 2)) / 10;
+    setMousePosition({ x, y });
+  };
+
+  const handleMouseEnter = () => setIsHovering(true);
+  const handleMouseLeave = () => {
+    setIsHovering(false);
+    setMousePosition({ x: 0, y: 0 });
+  };
+
+  const { boxShadow } = useSpring({
     boxShadow: clicked
       ? "0px 15px 30px rgba(0, 0, 0, 0.3)"
       : "0px 8px 15px rgba(0, 0, 0, 0.1)",
@@ -81,10 +92,22 @@ function HomePage() {
 
   return (
     <Parallax
-      strength={0}
-      blur={{ min: -15, max: 15 }}
-      // bgClassName="home-background"
+      strength={-80}
+      blur={{ min: -5, max: 5 }}
+      bgClassName="home-background"
       bgImage={HomeBG}
+      renderLayer={(percentage) => (
+        <div
+          style={{
+            position: "absolute",
+            backgroundImage: HomeBG,
+            left: 0,
+            top: 0,
+            width: "100%",
+            height: "100%",
+          }}
+        />
+      )}
     >
       <section className="homepage-container" id="home">
         <div className="container">
@@ -103,44 +126,21 @@ function HomePage() {
             viewport={{ once: false, amount: 0.7 }}
           >
             <animated.img
-              src={ProfilePhoto} // Use hover state
+              src={ProfilePhoto}
               alt="Profile"
-              className={`profile-picture normal-img  ${
-                isHovered ? "hidden" : "visible"
-              }${frames[frameIndex]}`}
+              className={`profile-picture img-responsive img-circle${frames[frameIndex]}`}
               draggable="false"
               dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-              style={{ transform, boxShadow }}
-              onMouseEnter={() => {
-                // setClicked(true);
-                setIsHovered(true);
+              style={{
+                boxShadow,
+                transform: isHovering
+                  ? `translate3d(${mousePosition.x}px, ${mousePosition.y}px, 0) scale3d(1.03, 1.03, 1.03)`
+                  : "translate3d(0px, 0px, 0) scale3d(1, 1, 1)",
+                transition: "transform 0.1s ease-out",
               }}
-              onMouseLeave={() => {
-                // setClicked(false);
-                setIsHovered(false);
-              }}
-              onClick={() => {
-                handleClick();
-                handleProfileClick();
-              }}
-            />
-            <animated.img
-              src={ProfilePhotoHover} // Use hover state
-              alt="Profile"
-              className={`profile-picture hover-img  ${
-                isHovered ? "visible" : "hidden"
-              }${frames[frameIndex]}`}
-              draggable="false"
-              dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-              style={{ transform, boxShadow }}
-              onMouseEnter={() => {
-                // setClicked(true);
-                setIsHovered(true);
-              }}
-              onMouseLeave={() => {
-                // setClicked(false);
-                setIsHovered(false);
-              }}
+              onMouseMove={handleMouseMove}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
               onClick={() => {
                 handleClick();
                 handleProfileClick();
