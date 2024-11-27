@@ -93,7 +93,7 @@ function HomePage() {
   return (
     <Parallax
       strength={-80}
-      blur={{ min: -5, max: 5 }}
+      blur={{ min: -10, max: 10 }}
       bgClassName="home-background"
       bgImage={HomeBG}
       renderLayer={(percentage) => (

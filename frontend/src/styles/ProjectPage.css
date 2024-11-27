@@ -1,6 +1,35 @@
 @import "~slick-carousel/slick/slick.css";
 @import "~slick-carousel/slick/slick-theme.css";
 
+.project-page-container {
+  position: relative; /* Establishes a stacking context for child elements */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 52px);
+  background: transparent; /* Allow the beams to show through */
+  font-family: "Montserrat", sans-serif;
+  color: #212529;
+  text-align: center;
+  z-index: 1; /* Ensures content stays above the beams */
+}
+
+.gradient-canvas {
+  position: absolute;
+  display: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.project-page-div {
+  max-width: 1140px;
+  margin: 15px auto;
+  padding: 45px 0px;
+}
+
 .project-container {
   display: flex;
   flex-wrap: wrap;
@@ -8,17 +37,7 @@
   gap: 20px;
   align-items: center;
   justify-content: center;
-  padding: 20px;
-  /* background: linear-gradient(145deg, #0b5528, #0a4c25); */
-  background: url("../assets/img/background/about-bg.png");
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
   scroll-behavior: smooth;
-  background-position: center;
-  backdrop-filter: blur(15px); /* Blurs the background for a frosted look */
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); /* Adds a soft shadow for depth */
-  border: 1px solid rgba(255, 255, 255, 0.2); /* Light border to define edges */
   color: #edeeef;
 }
 
@@ -28,10 +47,16 @@
   width: min(1140px, 90%); /* Full container width */
   height: auto;
   text-align: left;
-  /* padding: 40px 50px; */
-  border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  padding: 0px 50px; /* Adjust padding for spacing */
+  background: rgba(0, 0, 0, 0.3); /* Dark background with transparency */
+  backdrop-filter: blur(10px); /* Adds the frosted blur effect */
+  border-radius: 26px; /* Rounded corners */
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5); /* Stronger shadow for depth */
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.project-card:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6); /* Enhance shadow on hover */
 }
 
 /* .project-card:hover {
@@ -40,44 +65,64 @@
 } */
 
 .project-info {
-  flex: 1; /* Take up half the card */
-  padding: 20px;
+  flex: 4; /* Take up two-thirds of the card */
+  padding: 40px 40px 40px 0px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  color: #fff;
+  justify-content: space-evenly;
+  color: #edeeef; /* Light text color for contrast */
 }
 
 .project-header {
   font-family: "Montserrat", sans-serif;
-  font-size: 0.9em;
+  font-size: clamp(0.75rem, 1.1rem, 1.25vw);
   color: #edeeef;
 }
 
 .project-title {
-  background: linear-gradient(135deg, #fcbc1d, #fcae2e, #fcbc1d);
+  z-index: 50;
+  inset: 0;
+  display: flex;
+  align-items: center;
   background-size: 200% 200%;
-  -webkit-background-clip: text;
+  color: transparent !important;
+  text-align: left;
   background-clip: text;
-  color: transparent;
-  font-size: 1.5em;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-image: linear-gradient(
+    to bottom,
+    rgba(252, 188, 29, 1),
+    rgba(237, 238, 239, 0.95)
+  );
+  text-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  font-size: clamp(1.25rem, 2vw, 1.75rem);
   font-weight: 700;
   margin: 10px 0;
 }
 
 .project-tagline {
-  font-size: 1em;
+  z-index: 50;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1em;
+  font-size: clamp(0.75rem, 1.1rem, 1.25vw);
   margin: 10px 0;
   color: #edeeef;
+  font-weight: 500;
 }
 
 .learn-more-button {
   background-color: #007bff;
   color: white;
   border: none;
-  padding: 8px 12px;
-  border-radius: 5px;
+  width: fit-content;
+  padding: 12px 20px; /* Larger button padding */
+  border-radius: 8px;
   cursor: pointer;
+  font-weight: bold;
   transition: background-color 0.3s ease;
 }
 
@@ -86,67 +131,91 @@
 }
 
 .project-image {
-  margin: 20px 20px;
-  flex: 1; /* Take up half the card */
+  margin: 40px 0px;
+  flex: 3; /* Take up half the card */
   background-size: contain;
   background-repeat: no-repeat;
   scroll-behavior: smooth;
   background-position: center;
+  border-radius: 12px; /* Match card's border-radius */
+  aspect-ratio: 16 / 9;
 }
 
-.project-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
+.learn-button-motioned {
+  height: auto;
+  width: fit-content;
+  margin: 5px 0;
 }
 
-.modal-content {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  width: 80%;
-  max-width: 600px;
-  color: #333;
-  position: relative;
-}
+@media (max-width: 992px) {
+  .project-page-div {
+    max-width: 720px;
+  }
 
-.close-button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 1.5em;
-  color: #333;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
+  .project-card {
+    width: min(720px, 100%);
+  }
 
-.slick-slider {
-  margin: 20px 0;
-}
+  .project-info {
+    padding: 20px 20px 20px 0px;
+    flex: 1;
+  }
 
-.slick-prev,
-.slick-next {
-  color: #333;
-  font-size: 1.5em;
+  .project-image {
+    flex: 1; /* Prevent flex shrink issues */
+  }
 }
 
 @media (max-width: 768px) {
-  .project-card {
-    flex-direction: column; /* Stack content vertically on small screens */
-    height: auto; /* Adjust height */
+  /* For screens smaller than 768px */
+  .project-page-div {
+    max-width: 540px;
   }
 
-  .project-info,
+  /* .learn-button-motioned {
+    margin: 5px auto;
+  } */
+
+  .project-card {
+    flex-direction: column-reverse;
+    width: 100%;
+    padding: 30px;
+    margin: 0 auto;
+  }
+
+  .project-info {
+    padding: 20px;
+    flex: 1;
+  }
+
   .project-image {
-    flex: 1; /* Remove flex split */
-    width: 100%; /* Full width for both */
+    flex: none; /* Prevent flex shrink issues */
+    margin: 20px 0 20px 0; /* Add space below the image */
+    width: 100%; /* Make image take full width of parent */
+    aspect-ratio: 16 / 9; /* Consistent aspect ratio */
+    height: auto; /* Fixed height to ensure visibility */
+  }
+}
+
+@media (max-width: 576px) {
+  .project-page-div {
+    padding-right: 0;
+    padding-left: 0;
+    max-width: 100%;
+    width: 90%;
+    margin: 0 auto;
+  }
+
+  .project-card {
+    width: 100%;
+    padding: 20px;
+    margin: 0;
+  }
+  .project-image {
+    flex: none; /* Prevent flex shrink issues */
+    padding: 20px; /* Add space below the image */
+    width: 100%; /* Make image take full width of parent */
+    height: auto; /* Let height adjust dynamically */
+    aspect-ratio: 16 / 9;
   }
 }
