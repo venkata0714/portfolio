@@ -92,22 +92,33 @@ function HomePage() {
 
   return (
     <Parallax
-      strength={-80}
-      blur={{ min: -10, max: 10 }}
-      bgClassName="home-background"
-      bgImage={HomeBG}
-      renderLayer={(percentage) => (
-        <div
-          style={{
-            position: "absolute",
-            backgroundImage: HomeBG,
-            left: 0,
-            top: 0,
-            width: "100%",
-            height: "100%",
-          }}
-        />
-      )}
+      strength={-200} // Positive value for zoom-in effect
+      // blur={{ min: -15, max: 15 }} // Blur range for consistency
+      // bgImage={HomeBG} // Background image
+      bgImageAlt="Background Image"
+      renderLayer={(percentage) => {
+        console.log("Scroll percentage:", percentage); // Debugging to ensure percentage updates
+        const scaleValue = 1 + percentage * 0.15; // Calculate zoom
+        const blurValue = Math.max(0, (percentage - 1) * 10); // Calculate blur, ensuring it doesn't go negative
+
+        return (
+          <div
+            style={{
+              position: "absolute",
+              left: "50%",
+              top: "50%",
+              transform: `translate(-50%, -50%) scale(${scaleValue})`,
+              filter: `blur(${blurValue}px)`, // Apply dynamic blur
+              transition: `transform ease-in-out`,
+              width: "100%",
+              height: "100%",
+              backgroundImage: `url(${HomeBG})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          />
+        );
+      }}
     >
       <section className="homepage-container" id="home">
         <div className="container">
