@@ -28,22 +28,28 @@ const NavBar = () => {
     const navLinks = document.querySelectorAll(
       "nav .navbar-menu .navbar-links .navbar-link"
     );
+    let scrollTimer = null; // Timer to detect scroll end
 
     console.log("Sections:");
     sections.forEach((section) => {
-      console.log("Class name:", section.className);
+      // console.log("Class name:", section.className);
     });
 
     console.log("navLinks:");
     navLinks.forEach((link) => {
-      console.log("Link:", link);
+      // console.log("Link:", link);
     });
 
-    // Active link on scroll
     const handleScroll = () => {
+      // Clear any existing timer
+      if (scrollTimer) {
+        clearTimeout(scrollTimer);
+      }
+
+      // Update active links dynamically during scroll
       sections.forEach((section) => {
         let top = window.scrollY;
-        let offset = section.offsetTop - 53; // Adjust for header height if needed
+        let offset = section.offsetTop - 53; // Adjust for header height
         let height = section.offsetHeight;
         let id = section.getAttribute("id");
 
@@ -56,16 +62,43 @@ const NavBar = () => {
           });
         }
       });
-    };
 
-    // Initial check to set the active link based on the current scroll position
-    handleScroll();
+      // Set a new timer to detect scroll end
+      scrollTimer = setTimeout(() => {
+        let nearestSection = null;
+        let nearestDistance = Infinity;
+
+        sections.forEach((section) => {
+          const offset = section.offsetTop - 52; // Adjust for header height
+          const height = section.offsetHeight;
+          const sectionCenter = offset + height / 2;
+          const viewportCenter = window.scrollY + window.innerHeight / 2;
+          const distance = Math.abs(sectionCenter - viewportCenter);
+
+          if (distance < nearestDistance) {
+            nearestSection = section;
+            nearestDistance = distance;
+          }
+        });
+
+        // Snap to the nearest section if within snapping range
+        if (nearestSection && nearestDistance <= 180) {
+          const id = nearestSection.getAttribute("id");
+          if (id && id !== "contact") {
+            scrollToSection(id);
+          }
+        }
+      }, 1000); // Adjust debounce delay as needed (100ms here)
+    };
 
     // Add the scroll event listener
     window.addEventListener("scroll", handleScroll);
 
     // Clean up event listener on component unmount
     return () => {
+      if (scrollTimer) {
+        clearTimeout(scrollTimer);
+      }
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
