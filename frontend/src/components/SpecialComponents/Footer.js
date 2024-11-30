@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import "../styles/Footer.css";
+import "../../styles/Footer.css";
 
 const Footer = () => {
   return (
@@ -10,12 +10,6 @@ const Footer = () => {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
     >
-      <div class="waves">
-        <div class="wave" id="wave1"></div>
-        <div class="wave" id="wave2"></div>
-        <div class="wave" id="wave3"></div>
-        <div class="wave" id="wave4"></div>
-      </div>
       <div className="footer-container">
         {/* Animated Logo */}
         <motion.div

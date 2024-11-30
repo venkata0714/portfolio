@@ -17,10 +17,11 @@
   scroll-snap-type: y mandatory;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
+  min-height: calc(100vh - 52px);
   background: transparent; /* Allow the beams to show through */
   font-family: "Montserrat", sans-serif;
   color: #212529;
+  background-color: #212529;
   text-align: center;
   z-index: 1; /* Ensures content stays above the beams */
 }

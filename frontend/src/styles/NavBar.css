@@ -4,6 +4,7 @@ html {
 
 .navbar {
   position: relative;
+  height: 52px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;

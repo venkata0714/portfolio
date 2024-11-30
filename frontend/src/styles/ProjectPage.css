@@ -7,8 +7,10 @@
   flex-direction: column; /* Ensure vertical stacking of child elements */
   align-items: center;
   justify-content: flex-start;
-  height: calc(100vh - 52px);
-  overflow-y: auto;
+  overflow: auto; /* Ensure the page scrolls */
+  height: auto;
+  min-height: calc(100vh - 52px);
+  /* max-height: calc(100vh - 52px); */
   background: transparent;
   scroll-behavior: smooth;
   scrollbar-width: none;
@@ -34,26 +36,50 @@
 }
 
 .project-page-div {
-  max-width: 1140px;
-  max-height: 100%;
-  margin: 15px auto;
-  padding: 45px 0px;
+  /* max-height: calc(100vh - 67px); */
+  height: auto;
+  width: 100%;
   flex: 1; /* Allows the container to grow to fill the available space */
   display: flex;
+  justify-content: center;
+  align-items: center;
   flex-direction: column;
 }
 
 .project-container {
+  scroll-snap-type: none; /* Disable snapping */
   display: flex;
-  z-index: 1;
+  z-index: 5;
   position: sticky;
   top: 600px;
   flex-direction: column;
   width: 100%;
+  height: calc(100vh - 52px);
+  /* height: auto; */
+  overflow-y: auto;
+  scrollbar-width: none; /* For Firefox: hide scrollbar */
   gap: 40px;
   align-items: center;
   justify-content: flex-start;
   scroll-behavior: smooth;
+  /* scroll-snap-type: y mandatory; */
+}
+
+.project-container::-webkit-scrollbar {
+  display: none; /* Hides the scrollbar */
+}
+
+.hover-tooltip {
+  position: absolute;
+  top: -30px; /* Adjust as necessary */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  white-space: nowrap;
 }
 
 .project-section-title {
@@ -67,6 +93,9 @@
 }
 
 .project-card {
+  max-width: 1140px;
+  /* scroll-snap-align: center;
+  scroll-snap-stop: always; */
   display: flex;
   position: sticky;
   top: 60px;
@@ -75,6 +104,7 @@
   width: min(1140px, 90%);
   text-align: left;
   padding: 20px;
+  margin: 20px;
   backdrop-filter: blur(10px);
   border-radius: 20px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
@@ -83,8 +113,8 @@
 
 .project-card:nth-child(3n + 1) {
   background: linear-gradient(
-      rgba(139, 69, 90, 0.5),
-      /* Dark Pink */ rgba(139, 69, 90, 0.5)
+      rgba(139, 69, 90, 0.4),
+      /* Dark Pink */ rgba(139, 69, 90, 0.4)
     ),
     url("https://www.transparenttextures.com/patterns/noise-pattern.png");
   background-size: cover;
@@ -93,8 +123,8 @@
 
 .project-card:nth-child(3n + 2) {
   background: linear-gradient(
-      rgba(54, 79, 107, 0.5),
-      /* Dark Blue */ rgba(54, 79, 107, 0.5)
+      rgba(54, 79, 107, 0.4),
+      /* Dark Blue */ rgba(54, 79, 107, 0.4)
     ),
     url("https://www.transparenttextures.com/patterns/noise-pattern.png");
   background-size: cover;
@@ -103,16 +133,12 @@
 
 .project-card:nth-child(3n) {
   background: linear-gradient(
-      rgba(97, 89, 38, 0.5),
-      /* Dark Yellow */ rgba(97, 89, 38, 0.5)
+      rgba(97, 89, 38, 0.4),
+      /* Dark Yellow */ rgba(97, 89, 38, 0.4)
     ),
     url("https://www.transparenttextures.com/patterns/noise-pattern.png");
   background-size: cover;
   color: #f8f9fa; /* Light text for readability */
-}
-
-.project-card:last-child {
-  margin-bottom: 60px;
 }
 
 /* Enhance shadow on hover */
@@ -210,7 +236,9 @@
 
 @media (max-width: 992px) {
   .project-page-div {
-    max-width: 720px;
+    padding: 0;
+    max-width: 100%;
+    margin: 0 auto;
   }
 
   .project-card {
@@ -228,24 +256,14 @@
 }
 
 @media (max-width: 768px) {
-  /* For screens smaller than 768px */
-  .project-page-div {
-    max-width: 540px;
-  }
-
-  .project-container {
-    max-height: 80vh;
-  }
-
   /* .learn-button-motioned {
     margin: 5px auto;
   } */
 
   .project-card {
     flex-direction: column-reverse;
-    width: 100%;
+    max-width: 540px;
     padding: 30px;
-    margin: 20vh auto;
   }
 
   .project-info {
@@ -267,19 +285,17 @@
     padding-right: 0;
     padding-left: 0;
     max-width: 100%;
-    width: 90%;
     margin: 0 auto;
   }
 
   .project-card {
-    width: 100%;
+    width: 90%;
     padding: 20px;
-    margin: 0;
   }
   .project-image {
     flex: none; /* Prevent flex shrink issues */
-    padding: 20px; /* Add space below the image */
-    width: 100%; /* Make image take full width of parent */
+    align-self: center;
+    width: 90%; /* Make image take full width of parent */
     height: auto; /* Let height adjust dynamically */
     aspect-ratio: 16 / 9;
   }

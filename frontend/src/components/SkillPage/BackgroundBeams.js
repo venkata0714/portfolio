@@ -1,14 +1,14 @@
 "use client";
 import React, { useEffect, useRef } from "react";
-import planet1 from "../assets/img/media/planet-1.png";
-import planet2 from "../assets/img/media/planet-2.png";
-import planet3 from "../assets/img/media/planet-3.png";
-import planet4 from "../assets/img/media/planet-4.png";
+import planet1 from "../../assets/img/media/planet-1.png";
+import planet2 from "../../assets/img/media/planet-2.png";
+import planet3 from "../../assets/img/media/planet-3.png";
+import planet4 from "../../assets/img/media/planet-4.png";
+
+const planetImages = [planet1, planet2, planet3, planet4];
 
 export const BackgroundBeams = ({ className = "" }) => {
   const canvasRef = useRef(null);
-  const planetImages = [planet1, planet2, planet3, planet4];
-
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
@@ -17,6 +17,36 @@ export const BackgroundBeams = ({ className = "" }) => {
     const planets = [];
     const nebulas = [];
     const meteors = [];
+
+    const createSolarSystems = (count) => {
+      const solarSystems = [];
+      for (let i = 0; i < count; i++) {
+        const centralPlanet = {
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          size: Math.random() * 4 + 30, // Larger size for central planets
+          image: planetImages[Math.floor(Math.random() * planetImages.length)],
+        };
+
+        const orbitingPlanets = [];
+        const numOrbiting = Math.floor(Math.random() * 4) + 1; // 4 to 7 planets
+        let nextRadius = Math.random() * 7 + 45;
+        for (let j = 0; j < numOrbiting; j++) {
+          orbitingPlanets.push({
+            angle: Math.random() * Math.PI * 2, // Random starting angle
+            radius: nextRadius,
+            speed: Math.random() * 0.002 + 0.001, // Orbiting speed
+            size: Math.random() * 20 + 15,
+            image:
+              planetImages[Math.floor(Math.random() * planetImages.length)],
+          });
+          nextRadius += Math.random() * 2 + 20; // Increase radius for next planet
+        }
+
+        solarSystems.push({ centralPlanet, orbitingPlanets });
+      }
+      return solarSystems;
+    };
 
     // Create Stars
     const createStars = (count, layer) => {
@@ -38,7 +68,7 @@ export const BackgroundBeams = ({ className = "" }) => {
         planets.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          size: Math.random() * 50 + 20, // Slightly bigger than stars
+          size: Math.random() * 5 + 20, // Slightly bigger than stars
           speedX: Math.random() * 0.1 - 0.05 * layer, // Slow horizontal motion
           speedY: Math.random() * 0.1 - 0.05 * layer, // Slow vertical motion
           image: planetImages[Math.floor(Math.random() * planetImages.length)],
@@ -53,10 +83,10 @@ export const BackgroundBeams = ({ className = "" }) => {
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
           size: Math.random() * 150 + 50,
-          //   color: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${
-          //     Math.random() * 255
-          //   }, 0.3)`,
-          color: `#edeeef`,
+          color: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${
+            Math.random() * 255
+          }, 1)`,
+          // color: `#edeeef`,
           opacity: Math.random() * 0.2 + 0.1,
         });
       }
@@ -67,10 +97,42 @@ export const BackgroundBeams = ({ className = "" }) => {
       meteors.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        length: Math.random() * 200 + 100,
-        speed: Math.random() * 5 + 2,
-        opacity: Math.random() * 0.8 + 0.2,
-        angle: -Math.PI / 4, // Diagonal top-left movement
+        length: Math.random() * 2 + 160,
+        speed: Math.random() * 2 + 5,
+        opacity: Math.random() * 0.4 + 0.2,
+        angle: -(3 * Math.PI) / 16, // Diagonal top-left movement
+      });
+    };
+
+    const drawSolarSystems = (solarSystems) => {
+      solarSystems.forEach(({ centralPlanet, orbitingPlanets }) => {
+        // Draw central planet
+        const img = new Image();
+        img.src = centralPlanet.image;
+        ctx.drawImage(
+          img,
+          centralPlanet.x - centralPlanet.size / 2,
+          centralPlanet.y - centralPlanet.size / 2,
+          centralPlanet.size,
+          centralPlanet.size
+        );
+
+        // Draw orbiting planets
+        orbitingPlanets.forEach((orbitingPlanet) => {
+          const angle = (orbitingPlanet.angle += orbitingPlanet.speed);
+          const x = centralPlanet.x + Math.cos(angle) * orbitingPlanet.radius;
+          const y = centralPlanet.y + Math.sin(angle) * orbitingPlanet.radius;
+
+          const img = new Image();
+          img.src = orbitingPlanet.image;
+          ctx.drawImage(
+            img,
+            x - orbitingPlanet.size / 2,
+            y - orbitingPlanet.size / 2,
+            orbitingPlanet.size,
+            orbitingPlanet.size
+          );
+        });
       });
     };
 
@@ -135,7 +197,7 @@ export const BackgroundBeams = ({ className = "" }) => {
           meteor.x + Math.cos(meteor.angle) * meteor.length,
           meteor.y + Math.sin(meteor.angle) * meteor.length
         );
-        ctx.strokeStyle = `rgba(255, 255, 255, ${meteor.opacity})`;
+        ctx.strokeStyle = `rgba(108, 188, 252, ${meteor.opacity})`;
         ctx.lineWidth = 2;
         ctx.stroke();
 
@@ -154,6 +216,7 @@ export const BackgroundBeams = ({ className = "" }) => {
       drawPlanets();
       drawNebulas();
       drawMeteors();
+      drawSolarSystems(solarSystems);
 
       if (Math.random() > 0.995) createMeteor(); // Rare meteor event
       requestAnimationFrame(animate);
@@ -171,7 +234,7 @@ export const BackgroundBeams = ({ className = "" }) => {
       createPlanets(2, 0.9);
       createPlanets(3, 0.3);
     };
-
+    const solarSystems = createSolarSystems(2);
     createStars(40, 1);
     createStars(20, 0.5);
     createStars(20, 0.3);
@@ -183,7 +246,7 @@ export const BackgroundBeams = ({ className = "" }) => {
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [planetImages]);
+  }, []);
 
   return (
     <canvas

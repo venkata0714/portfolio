@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
-import Resume from "../assets/Singh_Kartavya_Resume2024.pdf";
+import Resume from "../../assets/Singh_Kartavya_Resume2024.pdf";
 import { motion } from "framer-motion";
-import { fadeIn } from "../variants";
-import "../styles/NavBar.css";
+import { fadeIn } from "../../services/variants";
+import "../../styles/NavBar.css";
 
 const NavBar = () => {
   const [activeLink, setActiveLink] = useState("home");

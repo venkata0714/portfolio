@@ -1,13 +1,13 @@
 .contact-page {
   display: flex;
+  position: relative;
+  width: 100%;
   flex-direction: column !important;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   background-color: #212529;
-  min-height: 200vh;
-  max-height: 200vh;
   background-image: url("../assets/img/background/contact-bg.png");
-  background-size: containing-space;
+  background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed;
   scroll-behavior: smooth;
@@ -16,10 +16,31 @@
   font-family: "Montserrat", sans-serif;
   color: #ffffff;
   text-align: center;
+  overflow-y: hidden;
+}
+
+/* Glowing Light Effect */
+.mouse-glow {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 235, 59, 0.7) 0%,
+    rgba(255, 235, 59, 0.3) 50%,
+    rgba(255, 235, 59, 0) 100%
+  );
+  border-radius: 50%;
+  pointer-events: none; /* Allow mouse events to pass through */
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 0; /* Keep it behind the content */
 }
 
 .contact-container {
   display: flex;
+  z-index: 1;
   flex-direction: column;
   justify-content: center;
   align-items: center;

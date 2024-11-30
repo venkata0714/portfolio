@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { styled } from "@stitches/react";
 import { TypeAnimation } from "react-type-animation";
-import { Parallax, Background } from "react-parallax";
+import { Parallax } from "react-parallax";
 import { useSpring, animated } from "@react-spring/web";
 import { motion } from "framer-motion";
-import { zoomIn } from "../variants";
-import "../styles/HomePage.css";
-import ProfilePhoto from "../assets/img/media/Kartavya.jpg";
-import HomeBG from "../assets/img/background/home-bg.jpg";
+import { zoomIn } from "../../services/variants";
+import "../../styles/HomePage.css";
+import ProfilePhoto from "../../assets/img/media/Kartavya.jpg";
+import HomeBG from "../../assets/img/background/home-bg.jpg";
 
 function HomePage() {
   const [clicked, setClicked] = useState(false);

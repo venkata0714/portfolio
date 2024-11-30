@@ -1,11 +1,23 @@
+.background-beams-canvas {
+  position: absolute;
+  background-color: transparent !important;
+  display: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
 .skill-container {
+  position: relative;
   display: flex;
   align-items: center;
   overscroll-behavior-y: contain;
   scroll-snap-align: center;
   scroll-snap-type: y mandatory;
   justify-content: center;
-  min-height: 100vh;
+  min-height: calc(100vh - 52px);
   background-image: url("../assets/img/background/about-bg.png");
   background-size: cover;
   background-repeat: no-repeat;

@@ -1,17 +1,15 @@
 import { React, useState, useEffect } from "react";
-import { Parallax } from "react-parallax";
 import { motion } from "framer-motion";
-import { AppLoad } from "./variants";
+import { AppLoad } from "./services/variants";
 import "./App.css";
-import Links from "./components/Links";
-import NavBar from "./components/NavBar";
-import HomePage from "./components/HomePage";
-import AboutPage from "./components/AboutPage";
-import SkillPage from "./components/SkillPage";
-import ExperiencePage from "./components/ExperiencePage";
-import ProjectPage from "./components/ProjectPage";
-import ContactPage from "./components/ContactPage";
-import HomeBG from "./assets/img/background/home-bg.jpg";
+import Links from "./components/SpecialComponents/Links";
+import NavBar from "./components/SpecialComponents/NavBar";
+import HomePage from "./components/HomePage/HomePage";
+import AboutPage from "./components/AboutPage/AboutPage";
+import SkillPage from "./components/SkillPage/SkillPage";
+import ExperiencePage from "./components/ExperiencePage/ExperiencePage";
+import ProjectPage from "./components/ProjectPage/ProjectPage";
+import ContactPage from "./components/ContactPage/ContactPage";
 
 function App() {
   const [scrolled, setScrolled] = useState(false);

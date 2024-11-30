@@ -1,19 +1,20 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { styled, keyframes } from "@stitches/react";
-import Footer from "./Footer";
+import Footer from "../SpecialComponents/Footer";
 import emailjs from "emailjs-com";
-import "../styles/ContactPage.css";
+import "../../styles/ContactPage.css";
 
 function ContactPage() {
   const form = useRef();
   const [isSent, setIsSent] = useState(null); // null for no status, true for success, false for error
-
+  const glowRef = useRef(null);
+  const containerRef = useRef(null);
   const sendEmail = (e) => {
     e.preventDefault();
     const formData = new FormData(form.current);
     const data = Object.fromEntries(formData.entries());
 
-    console.log("Form Data Object:", data); // Debug: Check the generated object
+    // console.log("Form Data Object:", data); // Debug: Check the generated object
 
     // Log all key-value pairs
     for (let [key, value] of formData.entries()) {
@@ -51,8 +52,37 @@ function ContactPage() {
     e.target.reset();
   };
 
+  useEffect(() => {
+    const container = containerRef.current;
+    const glow = glowRef.current;
+
+    const handleMouseMove = (e) => {
+      const rect = container.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      // Move the glowing light
+      glow.style.left = `${x}px`;
+      glow.style.top = `${y}px`;
+      glow.style.opacity = 1; // Ensure the glow is visible
+
+      // Add a timeout to fade out the glow
+      clearTimeout(glow.dataset.timeout);
+      glow.dataset.timeout = setTimeout(() => {
+        glow.style.opacity = 0;
+      }, 300); // Glow fades out after 300ms
+    };
+
+    container.addEventListener("mousemove", handleMouseMove);
+
+    return () => {
+      container.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, []);
+
   return (
-    <section id="contact" className="contact-page">
+    <section id="contact" className="contact-page" ref={containerRef}>
+      <div ref={glowRef} className="mouse-glow"></div>
       <div className="contact-container">
         <div className="contact-div">
           <h2 className="section-header">Contact Me</h2>

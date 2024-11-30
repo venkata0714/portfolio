@@ -1,11 +1,11 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { zoomIn, fadeIn } from "../variants";
+import { zoomIn, fadeIn } from "../../services/variants";
 import { styled } from "@stitches/react";
-import "../styles/AboutPage.css";
-import { BackgroundBeams } from "./BackgroundBeams";
-import AboutImg from "../assets/img/media/Kartavya-Profile-Photo.jpg";
-import Resume from "../assets/Singh_Kartavya_Resume2024.pdf";
+import "../../styles/AboutPage.css";
+import { SpotlightBG } from "./SpotlightBG";
+import AboutImg from "../../assets/img/media/Kartavya-Profile-Photo.jpg";
+import Resume from "../../assets/Singh_Kartavya_Resume2024.pdf";
 
 const aboutData = [
   {
@@ -28,7 +28,7 @@ const aboutData = [
 function AboutPage() {
   return (
     <section className="about-section-container" id="about">
-      <BackgroundBeams />
+      <SpotlightBG />
       <div className="about-div glass">
         <h2 className="section-title">ABOUT ME</h2>
         <div className="about-container grid">

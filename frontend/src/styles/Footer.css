@@ -8,10 +8,11 @@
   scroll-behavior: smooth; */
   font-family: "Montserrat", sans-serif;
   color: #ffffff;
-  padding: 2rem 3rem;
-  margin: 25px auto;
-  max-height: 32vh;
+  padding: 0.5rem 1rem;
+  margin: 20px auto;
+  max-height: 24vh;
   text-align: center;
+  overflow-y: hidden;
 }
 
 .footer-container {
@@ -19,7 +20,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 1rem;
+  gap: 0.25rem;
 }
 
 .footer-logo h2 {
@@ -30,14 +31,14 @@
 
 .footer-logo p {
   font-size: 0.9rem;
-  margin: 0.5rem 0 0;
+  margin: 0.25rem 0 0;
   color: #b5b5b5;
 }
 
 .footer-links {
   list-style: none;
   padding: 0;
-  margin: 1rem 0;
+  margin: 0.25rem 0;
   display: flex;
   gap: 2rem;
 }
@@ -69,11 +70,12 @@
 }
 
 .footer-social a:hover {
+  text-decoration: none;
   color: #ffffff;
 }
 
 .footer-bottom {
-  margin-top: 1.5rem;
+  margin-top: 0.25rem;
   font-size: 0.8rem;
   color: #b5b5b5;
 }

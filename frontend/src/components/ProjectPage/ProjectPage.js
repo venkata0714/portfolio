@@ -1,71 +1,83 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Parallax } from "react-parallax";
-import Slider from "react-slick";
-import { zoomIn } from "../variants";
+import { zoomIn } from "../../services/variants";
 import { styled } from "@stitches/react";
-import "../styles/ProjectPage.css";
+import "../../styles/ProjectPage.css";
 import GradientBG from "./GradientBG"; // Adjust the path as necessary
-import { fetchProjects } from "../services/projectService";
+import { fetchProjects } from "../../services/projectService";
 
 function ProjectPage() {
   const [projects, setProjects] = useState([]);
-  const [selectedProject, setSelectedProject] = useState(null);
-  const [showModal, setShowModal] = useState(false);
+  // const [selectedProject, setSelectedProject] = useState(null);
+  // const [showModal, setShowModal] = useState(false);
   const [cardStates, setCardStates] = useState([]);
-  const containerRef = useRef(null);
-  const [isInView, setIsInView] = useState(false);
+  const parentRef = useRef(null);
+  const [hoveredCard, setHoveredCard] = useState(null);
 
   useEffect(() => {
-    // Observe when the ProjectPage comes into view
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsInView(entry.isIntersecting);
-      },
-      { threshold: 0.3 } // Trigger when 10% of the section is visible
-    );
+    const container = parentRef.current; // Reference to the project-container
 
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
-    }
+    if (!container) return;
+
+    const handleScrollToTop = ([entry]) => {
+      if (!entry.isIntersecting && entry.boundingClientRect.top > 0) {
+        // If the container is not in view from the top direction
+        container.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      }
+    };
+
+    const observer = new IntersectionObserver(handleScrollToTop, {
+      root: null, // Observe relative to the viewport
+      threshold: 0, // Trigge
+    });
+
+    observer.observe(container);
 
     return () => {
-      if (containerRef.current) {
-        observer.unobserve(containerRef.current);
-      }
+      if (container) observer.unobserve(container); // Clean up observer
     };
   }, []);
 
-  const handleScroll = (e) => {
-    if (!isInView) return;
+  const scrollToCard = (clickedIndex) => {
+    const container = parentRef.current;
+    const cards = document.querySelectorAll(".project-card");
 
-    const container = containerRef.current;
-    const scrollTop = container.scrollTop;
-    const scrollHeight = container.scrollHeight;
-    const containerHeight = container.offsetHeight;
+    if (container && cards.length > 0) {
+      // Calculate the height and spacing dynamically
+      const spacing = window.innerWidth <= 768 ? 25 : 40;
 
-    // Prevent overscrolling past the ProjectPage
-    if (
-      (scrollTop + e.deltaY < 0 && e.deltaY < 0) || // Scrolling up at the top
-      (scrollTop + e.deltaY > scrollHeight - containerHeight && e.deltaY > 0) // Scrolling down at the bottom
-    ) {
-      e.preventDefault(); // Prevent scrolling propagation
-    } else {
-      container.scrollTop += e.deltaY; // Scroll within the container
-      e.preventDefault(); // Prevent normal scrolling
+      // Calculate the total scroll offset to bring the clicked card to view
+      let scrollOffset = 0;
+
+      for (let i = 0; i <= clickedIndex - 1; i++) {
+        const cardHeight = cards[i]?.getBoundingClientRect().height || 100; // Fallback for card height
+        scrollOffset += cardHeight + (i < clickedIndex ? spacing : 0);
+      }
+      scrollOffset -= spacing;
+
+      // Scroll to the calculated offset
+      container.scrollTo({
+        top: scrollOffset + (container.getBoundingClientRect().top + 90), // Adjust based on container's offset
+        behavior: "smooth",
+      });
     }
   };
 
-  const scrollToSection = (id) => {
-    const element = document.getElementById(id);
-    const offset = 72; // Adjust based on your navbar height
-    const elementPosition = element.getBoundingClientRect().top;
-    const offsetPosition = elementPosition + window.scrollY - offset;
+  const calculateMarginBottom = (index, totalCards) => {
+    if (index !== totalCards - 1) return "0px"; // No margin for non-last cards
 
-    window.scrollTo({
-      top: offsetPosition,
-      behavior: "smooth",
-    });
+    const cardHeight =
+      document.querySelector(".project-card")?.getBoundingClientRect().height ||
+      100; // Default height fallback
+
+    const screenFactor = window.innerWidth <= 768 ? 5 : 20; // Dynamic spacing based on screen size
+    const marginBottom =
+      window.innerHeight - (142 + index * screenFactor + cardHeight);
+
+    return `${Math.max(marginBottom, 20)}px`; // Ensure marginBottom is not negative
   };
 
   useEffect(() => {
@@ -90,8 +102,8 @@ function ProjectPage() {
   const handleMouseMove = (event, index) => {
     const { clientX, clientY } = event;
     const rect = event.currentTarget.getBoundingClientRect();
-    const x = (clientX - (rect.left + rect.width / 2)) / 20;
-    const y = (clientY - (rect.top + rect.height / 2)) / 20;
+    const x = (clientX - (rect.left + rect.width / 2)) / 15;
+    const y = (clientY - (rect.top + rect.height / 2)) / 15;
 
     setCardStates((prevStates) =>
       prevStates.map((state, i) =>
@@ -106,6 +118,7 @@ function ProjectPage() {
   };
 
   const handleMouseEnter = (index) => {
+    setHoveredCard(index);
     setCardStates((prevStates) =>
       prevStates.map((state, i) =>
         i === index
@@ -119,6 +132,7 @@ function ProjectPage() {
   };
 
   const handleMouseLeave = (index) => {
+    setHoveredCard(null);
     setCardStates((prevStates) =>
       prevStates.map((state, i) =>
         i === index
@@ -132,50 +146,7 @@ function ProjectPage() {
     );
   };
 
-  useEffect(() => {
-    if (!containerRef.current) return; // Ensure containerRef is not null
-    const container = containerRef.current;
-
-    const handleScroll = () => {
-      if (!container) return; // Safety check
-      const cards = container.querySelectorAll(".project-card");
-      if (!cards.length) return; // Ensure cards exist
-      const containerRect = container.getBoundingClientRect();
-
-      cards.forEach((card, index) => {
-        const cardRect = card.getBoundingClientRect();
-        const offset = (index + 1) * 20; // Adjust the offset for stacking
-        const stickyTop = containerRect.top + offset;
-        card.style.top = stickyTop;
-        // card.style.transform = `translateY(${stickyTop - containerRect.top}px)`;
-        // card.style.transform = `translateY(0px)`;
-      });
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-
-  const handleLearnMore = (index) => {
-    setSelectedProject(projects[index]);
-    setShowModal(true);
-  };
-
-  const closeModal = () => {
-    setShowModal(false);
-    setSelectedProject(null);
-  };
-
-  const sliderSettings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    arrows: true,
-  };
+  const totalCards = projects.length;
 
   return (
     <motion.section className="project-page-container" id="projects">
@@ -183,11 +154,11 @@ function ProjectPage() {
         <GradientBG />
       </div>
       <div
-        ref={containerRef}
+        // ref={containerRef}
         className="project-page-div"
-        onWheel={handleScroll}
+        // onWheel={handleScroll}
       >
-        <div className="project-container">
+        <div ref={parentRef} className="project-container">
           <h2 className="project-section-title">My Projects</h2>
 
           {/* Project Cards */}
@@ -196,8 +167,7 @@ function ProjectPage() {
               mousePosition: { x: 0, y: 0 },
               isHovering: false,
             };
-            const totalProjects = projects.length;
-            const isLastProject = index === totalProjects - 1;
+            const topOffset = 90 + index * (window.innerWidth <= 768 ? 5 : 20);
             return (
               <motion.div
                 key={index}
@@ -208,14 +178,20 @@ function ProjectPage() {
                 onMouseMove={(event) => handleMouseMove(event, index)}
                 onMouseEnter={() => handleMouseEnter(index)}
                 onMouseLeave={() => handleMouseLeave(index)}
+                onClick={() => scrollToCard(index)}
                 style={{
-                  top: `${90 + index * 30}px`,
+                  top: `${topOffset}px`,
+                  // top: `${90 + index * 20}px`,
+                  marginBottom: calculateMarginBottom(index, totalCards),
                   transform: isHovering
                     ? `translate3d(${mousePosition.x}px, ${mousePosition.y}px, 0) scale3d(1, 1, 1)`
                     : "translate3d(0px, 0px, 0) scale3d(1, 1, 1)",
                   transition: "transform 0.1s ease-out",
                 }}
               >
+                {hoveredCard === index && (
+                  <div className="hover-tooltip">{project.projectTitle}</div>
+                )}
                 {/* Project Content */}
                 <div className="project-info" id={project.projectLink}>
                   <div className="project-header">
@@ -228,8 +204,8 @@ function ProjectPage() {
                     className="project-title"
                     href={`#${project.projectLink}`}
                     onClick={(e) => {
-                      e.preventDefault(); // Prevent the default anchor tag behavior
-                      scrollToSection(project.projectLink); // Call the function with the project's link ID
+                      e.preventDefault(); // Prevent default anchor behavior
+                      scrollToCard(index);
                     }}
                   >
                     {project.projectTitle}
@@ -257,7 +233,7 @@ function ProjectPage() {
                     <StyledButton
                       onClick={(e) => {
                         e.preventDefault();
-                        handleLearnMore(index);
+                        // handleLearnMore(index);
                       }}
                     >
                       <ButtonShadow />
@@ -277,34 +253,15 @@ function ProjectPage() {
               </motion.div>
             );
           })}
-
+          {/* 
           {showModal && selectedProject && (
             <motion.div
               className="project-modal"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-            >
-              <div className="modal-content">
-                <button className="close-button" onClick={closeModal}>
-                  &times;
-                </button>
-                <h2>{selectedProject.projectTitle}</h2>
-                <p className="modal-date">{selectedProject.projectTimeline}</p>
-                <p className="modal-tagline">
-                  {selectedProject.projectTagline}
-                </p>
-                <Slider {...sliderSettings}>
-                  {selectedProject.projectImages.map((image, i) => (
-                    <img key={i} src={image} alt={`Project ${i + 1}`} />
-                  ))}
-                </Slider>
-                {selectedProject.projectParagraphs.map((paragraph, i) => (
-                  <p key={i}>{paragraph}</p>
-                ))}
-              </div>
-            </motion.div>
-          )}
+            ></motion.div>
+          )} */}
         </div>
       </div>
     </motion.section>

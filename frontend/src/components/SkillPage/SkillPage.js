@@ -1,11 +1,12 @@
 import { React, useState, useEffect } from "react";
-import "../styles/SkillPage.css";
-import LeftArrow from "../assets/img/icons/arrow1.svg";
-import RightArrow from "../assets/img/icons/arrow2.svg";
+import "../../styles/SkillPage.css";
+import LeftArrow from "../../assets/img/icons/arrow1.svg";
+import RightArrow from "../../assets/img/icons/arrow2.svg";
 import { motion } from "framer-motion";
-import { fadeIn, zoomIn } from "../variants";
+import { fadeIn, zoomIn } from "../../services/variants";
+import { BackgroundBeams } from "./BackgroundBeams";
 import Carousel from "react-multi-carousel";
-import { fetchSkills } from "../services/skillService"; // Import the fetchSkills function
+import { fetchSkills } from "../../services/skillService"; // Import the fetchSkills function
 
 import {
   Chart as ChartJS,
@@ -233,6 +234,7 @@ function SkillPage() {
 
   return (
     <section className="skill-container" id="skills">
+      <BackgroundBeams />
       {/* <motion.div
         className="space-explorer"
         variants={fadeIn("right", 200, 1)}

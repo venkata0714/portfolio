@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { zoomIn } from "../variants";
-import "../styles/Links.css";
+import { zoomIn } from "../../services/variants";
+import "../../styles/Links.css";
 import { animated } from "@react-spring/web";
 
 const Links = () => {
@@ -11,37 +11,37 @@ const Links = () => {
   const linksData = [
     {
       href: "https://github.com/Kartavya904",
-      icon: require("../assets/img/icons/github.png"),
+      icon: require("../../assets/img/icons/github.png"),
       label: "GitHub",
     },
     {
       href: "https://devpost.com/Kartavya904",
-      icon: require("../assets/img/icons/devpost.png"),
+      icon: require("../../assets/img/icons/devpost.png"),
       label: "DevPost",
     },
     {
       href: "https://www.linkedin.com/in/kartavya-singh-singhk6",
-      icon: require("../assets/img/icons/linkedin.png"),
+      icon: require("../../assets/img/icons/linkedin.png"),
       label: "LinkedIn",
     },
     {
       href: "https://www.instagram.com/kartavya1710/",
-      icon: require("../assets/img/icons/instagram.png"),
+      icon: require("../../assets/img/icons/instagram.png"),
       label: "Instagram",
     },
     {
       href: "https://discordapp.com/users/439541365580365835",
-      icon: require("../assets/img/icons/discord.png"),
+      icon: require("../../assets/img/icons/discord.png"),
       label: "Discord",
     },
     {
       href: "https://calendly.com/singhk6/book-time-with-kartavya",
-      icon: require("../assets/img/icons/calender.png"),
+      icon: require("../../assets/img/icons/calender.png"),
       label: "Book Time with Kartavya",
     },
     {
       href: "mailto:singhk6@mail.uc.edu",
-      icon: require("../assets/img/icons/email.png"),
+      icon: require("../../assets/img/icons/email.png"),
       label: "Email",
     },
   ];
@@ -98,7 +98,7 @@ const Links = () => {
         transition={{ duration: 1, type: "spring" }}
       >
         <animated.img
-          src={require("../assets/img/icons/links.png")}
+          src={require("../../assets/img/icons/links.png")}
           alt="Links"
           className="icon-img"
           draggable="false"
