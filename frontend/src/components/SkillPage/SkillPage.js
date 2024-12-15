@@ -18,49 +18,7 @@ import {
   Legend,
 } from "chart.js";
 import { Radar } from "react-chartjs-2";
-// import SpaceExplorer from "../assets/img/media/header-img.svg";
 import "react-multi-carousel/lib/styles.css";
-
-// const FloatingSpaceExplorer = ({ id }) => {
-//   const [position, setPosition] = useState({
-//     x: Math.random() * window.innerWidth,
-//     y: Math.random() * window.innerHeight,
-//   });
-
-//   useEffect(() => {
-//     const updatePosition = () => {
-//       setPosition({
-//         x: Math.random(0, 1) * window.innerWidth,
-//         y: Math.random(0, 1) * window.innerHeight,
-//       });
-//     };
-
-//     const interval = setInterval(updatePosition, 5000); // Update position every 5 seconds
-//     return () => clearInterval(interval); // Cleanup on unmount
-//   }, []);
-
-//   return (
-//     <motion.img
-//       key={id}
-//       src={SpaceExplorer}
-//       alt="Space Explorer"
-//       className="floating-space-explorer"
-//       initial={{ x: position.x, y: position.y, opacity: 0 }}
-//       animate={{ x: position.x, y: position.y, opacity: 1 }}
-//       transition={{
-//         duration: 5, // Smooth movement over 5 seconds
-//         ease: "easeInOut",
-//         repeat: Infinity,
-//       }}
-//       style={{
-//         position: "absolute",
-//         width: "10vw",
-//         height: "auto",
-//         zIndex: 1,
-//       }}
-//     />
-//   );
-// };
 
 const CustomLeftArrow = ({ onClick }) => {
   return (

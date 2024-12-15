@@ -1,22 +1,12 @@
-/* Canvas styling for animations */
-.background-beams-canvas {
-  position: absolute;
-  background-color: #212529;
-  display: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-}
-
 .about-section-container {
+  /* cursor: none; */
   position: relative; /* Establishes a stacking context for child elements */
   display: flex;
   overscroll-behavior-y: contain;
   scroll-snap-type: y mandatory;
   align-items: center;
   justify-content: center;
+  max-height: calc(100vh - 52px);
   min-height: calc(100vh - 52px);
   background: transparent; /* Allow the beams to show through */
   font-family: "Montserrat", sans-serif;
@@ -24,6 +14,14 @@
   background-color: #212529;
   text-align: center;
   z-index: 1; /* Ensures content stays above the beams */
+}
+
+.about-div {
+  position: absolute;
+  width: min(1140px, 90%);
+  height: auto;
+  margin: 0 auto;
+  padding: 45px 15px;
 }
 
 .glass {
@@ -41,113 +39,177 @@
 }
 
 .section-title {
-  font-size: 2rem;
-  margin-bottom: 3rem;
+  font-size: clamp(
+    1.5rem,
+    3vw,
+    2.5rem
+  ); /* Scales dynamically with screen width */
   color: #edeeef;
   text-align: center;
-}
-
-.section-subtitle {
-  font-size: 1rem;
-  margin-bottom: 2rem;
-  color: #edeeef;
-  text-align: center;
-}
-
-.about-div {
-  max-width: 1140px;
-  width: 90%;
-  max-height: 90%;
-  margin: 100px auto;
-  padding: 45px 15px;
 }
 
 .about-container {
-  display: grid;
-  width: fit-content;
-  text-align: center;
-  grid-template-columns: repeat(2, 1fr);
+  display: flex;
+  flex-direction: row;
   align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  margin: 10px;
+}
+
+.about-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: max-content;
+  gap: 1rem;
+  margin: 10px;
+}
+.about-row:first-child {
+  flex: 1;
+}
+
+.about-row:last-child {
+  flex: 2;
 }
 
 .about-image {
-  margin: 0 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   align-content: center;
   text-align: center;
-  width: 350px;
-  height: 350px;
+  width: 300px;
+  height: 300px;
   border-radius: 5%;
   object-fit: cover;
   filter: brightness(0.9) saturate(90%);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
-.about-data {
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  margin: 0 20px;
-}
-
 .about-info {
-  display: grid;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
   align-items: center;
-  justify-content: center;
-  text-align: center;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.5rem;
-  color: #212529;
+  gap: 1rem;
+  width: 100%;
+  height: auto;
 }
 
 .about-box {
   background-color: #edeeef;
+  height: max-content;
+  width: max-content;
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 0.75rem;
   text-align: center;
-  margin-bottom: 2rem;
-  padding: 1rem 1.25rem;
+  padding: 0.5rem 0.75rem;
 }
 
 .about-icon {
   color: #212529;
-  font-size: 1.5rem;
-  font-weight: 400;
-  margin-bottom: 0.5rem;
+  font-size: clamp(0.75rem, 1.75vw, 1rem); /* Scales dynamically */
+  font-weight: 500;
 }
 
 .about-title {
-  font-size: 0.7rem;
+  font-size: clamp(
+    0.7rem,
+    1.25vw,
+    0.9rem
+  ); /* Dynamically adjusts for readability */
   font-weight: 700;
 }
 
 .about-subtitle {
-  font-size: 0.625rem;
+  font-size: clamp(0.625rem, 1vw, 0.8rem); /* Responsive to width */
+  font-weight: 400;
+}
+
+.about-description-box {
+  background-color: #edeeef;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 0.75rem;
+  text-align: left;
+  padding: 1rem 1.25rem;
+}
+
+.about-name {
+  font-size: clamp(1.5rem, 2vw, 2.25rem); /* Dynamically adjusts */
+  font-weight: 700;
+  padding: 5px;
+  text-align: left;
+}
+
+.about-role {
+  width: 100%;
+  font-size: clamp(0.675rem, 0.95vw, 1rem); /* Dynamically adjusts font size */
+  padding: 5px;
   font-weight: 500;
+  text-align: left;
 }
 
 .about-description {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   text-align: left;
-  font-size: 0.875rem;
-  font-weight: 700;
-  /* padding: 1rem 1rem 1rem 1rem; */
+  padding: 5px;
+  font-size: clamp(0.675rem, 0.95vw, 1rem); /* Scales dynamically */
+  font-weight: 400;
 }
 
-.enter-button-motioned {
-  height: auto;
-  width: fit-content;
-  margin: 0 auto;
+.about-page-subtitle {
+  font-size: clamp(1rem, 2vw, 1.25rem); /* Scales dynamically */
+  color: #edeeef;
+}
+
+.button-container {
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+  gap: 0.75rem;
 }
 
 @media (max-width: 992px) {
+  .about-div {
+    margin: auto auto;
+    padding: 15px 15px;
+  }
+
+  .about-image {
+    width: 250px;
+    height: auto;
+    margin: 0 auto;
+  }
+
+  .about-description-box {
+    padding: 0.5rem 0.675rem;
+  }
+
+  .about-name {
+    font-size: clamp(1rem, 2vw, 1.25rem); /* Adjusted for smaller screens */
+    padding: 2px;
+  }
+
+  .about-role {
+    font-size: clamp(0.6rem, 1vw, 0.8rem); /* Dynamically adjusts */
+    padding: 2px;
+  }
+
+  .about-description {
+    font-size: clamp(0.6rem, 1vw, 0.8rem); /* Adjusted for smaller screens */
+    padding: 2px;
+  }
+}
+
+@media (max-width: 768px) {
   .about-container {
-    grid-template-columns: 1fr;
-    row-gap: 2.5rem;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
   }
 
   .about-image {
@@ -155,60 +217,9 @@
     height: auto;
     margin: 0 auto;
   }
-
-  .about-box {
-    padding: 0.25rem 0.1rem;
-  }
-
-  .about-data {
-    text-align: center;
-  }
-
-  .about-info {
-    justify-content: center;
-  }
-
-  .about-div {
-    margin: auto auto;
-    padding: 15px 15px;
-  }
-
-  .about-description {
-    text-align: center;
-    padding: 5px 5px;
-  }
 }
 
 @media (max-width: 576px) {
-  .section-title {
-    font-size: 5.75vw;
-  }
-
-  .section-subtitle {
-    font-size: 2.75vw;
-  }
-
-  .about-info {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  .about-description {
-    font-size: 2.2vw;
-    padding: 0;
-  }
-
-  .about-box {
-    padding: auto;
-    margin: 0px 0px 16px;
-  }
-
-  .about-icon {
-    font-size: medium;
-  }
-
-  .about-title {
-    font-size: xx-small;
-  }
 }
 
 @media (max-width: 350px) {

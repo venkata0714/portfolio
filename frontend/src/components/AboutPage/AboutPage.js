@@ -29,51 +29,110 @@ function AboutPage() {
   return (
     <section className="about-section-container" id="about">
       <SpotlightBG />
-      <div className="about-div glass">
+      <motion.div
+        variants={zoomIn(0)}
+        initial="hidden"
+        whileInView="show"
+        exit="hidden"
+        className="about-div glass"
+        drag="false"
+      >
         <h2 className="section-title">ABOUT ME</h2>
-        <div className="about-container grid">
-          <img src={AboutImg} className="about-image" alt="Profile" />
-          <div className="about-data">
-            <div className="about-info grid">
+        <div className="about-container">
+          <motion.div className="about-row" drag="false">
+            <motion.img
+              src={AboutImg}
+              className="about-image"
+              alt="Profile"
+              variants={fadeIn("right", 200, 1)}
+              initial="hidden"
+              whileInView="show"
+              exit="hidden"
+            />
+            <motion.div
+              className="about-info"
+              variants={zoomIn(1)}
+              initial="hidden"
+              whileInView="show"
+              exit="hidden"
+            >
               {aboutData.map((item, index) => (
                 <motion.div
                   className="about-box"
-                  whileHover={{ scale: 1.2 }}
+                  whileHover={{ scale: 1.1 }}
                   key={index}
+                  drag="false"
                 >
-                  <motion.i
-                    className={item.icon}
-                    variants={fadeIn(index * 0.2)} // Add slight stagger effect
-                    initial="hidden"
-                    animate="show"
-                  ></motion.i>
+                  <motion.i className={item.icon}></motion.i>
                   <h3 className="about-title">{item.title}</h3>
                   <span className="about-subtitle">{item.subtitle}</span>
                 </motion.div>
               ))}
-            </div>
-            <div className="about-box">
-              <p className="about-description">
-                I'm Kartavya Singh, a Computer Science student at the University
-                of Cincinnati, passionate about creating impactful solutions
-                with AI and experienced in Full Stack Development. My journey is
-                driven by curiosity and a commitment to continuous learning
-                through hackathons, personal projects, and real-world
-                applications.
-              </p>
-            </div>
+            </motion.div>
+          </motion.div>
+          <motion.div className="about-row" drag="false">
             <motion.div
-              className="enter-button-motioned"
+              className="about-description-box"
+              variants={fadeIn("left", 200, 1)}
+              initial="hidden"
+              whileInView="show"
+              exit="hidden"
+            >
+              <span className="about-name">Kartavya Singh</span>
+              <p className="about-role">
+                UC '26, B.S & M.Eng in Computer Science, Full Stack Software
+                Developer
+              </p>
+              <p className="about-description">
+                I'm Kartavya Singh, a Computer Science senior at the University
+                of Cincinnati, passionate about creating impactful AI solutions,
+                experienced in Full Stack Development. My journey is driven by
+                curiosity and a commitment to continuous learning through
+                hackathons, personal projects, and real-world applications.
+              </p>
+            </motion.div>
+            <motion.h2
+              className="about-page-subtitle"
               variants={zoomIn(1)}
               initial="hidden"
-              animate="show"
-              drag="true"
-              dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-              dragElastic={0.3}
-              dragTransition={{
-                bounceStiffness: 250,
-                bounceDamping: 15,
-              }}
+              whileInView="show"
+              exit="hidden"
+            >
+              Learn More About My
+            </motion.h2>
+            <motion.div
+              className="button-container"
+              variants={zoomIn(1)}
+              initial="hidden"
+              whileInView="show"
+              exit="hidden"
+            >
+              <motion.a drag="false">
+                <StyledButton>
+                  <ButtonShadow />
+                  <ButtonEdge />
+                  <ButtonLabel>Skills</ButtonLabel>
+                </StyledButton>
+              </motion.a>
+              <motion.a
+                href={Resume}
+                download="Kartavya-Singh-Resume-2024.pdf"
+                className="download-cv"
+                drag="false"
+              >
+                <StyledButton>
+                  <ButtonShadow />
+                  <ButtonEdge />
+                  <ButtonLabel>Projects</ButtonLabel>
+                </StyledButton>
+              </motion.a>
+            </motion.div>
+            <motion.div
+              className="button-container"
+              variants={zoomIn(1)}
+              initial="hidden"
+              whileInView="show"
+              exit="hidden"
             >
               <motion.a
                 href={Resume}
@@ -84,13 +143,25 @@ function AboutPage() {
                 <StyledButton>
                   <ButtonShadow />
                   <ButtonEdge />
-                  <ButtonLabel>Download Resume</ButtonLabel>
+                  <ButtonLabel>Experience</ButtonLabel>
+                </StyledButton>
+              </motion.a>
+              <motion.a
+                href={Resume}
+                download="Kartavya-Singh-Resume-2024.pdf"
+                className="download-cv"
+                drag="false"
+              >
+                <StyledButton>
+                  <ButtonShadow />
+                  <ButtonEdge />
+                  <ButtonLabel>Resume</ButtonLabel>
                 </StyledButton>
               </motion.a>
             </motion.div>
-          </div>
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }
@@ -132,7 +203,7 @@ const ButtonLabel = styled("span", {
   position: "relative",
   borderRadius: 5,
   color: "#212529",
-  padding: "1.25rem 2.5rem",
+  padding: "0.75rem 1.5rem",
   background: "#f8f9fa",
   transform: "translateY(-4px)",
   width: "100%",
