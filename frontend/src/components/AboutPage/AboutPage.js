@@ -26,6 +26,17 @@ const aboutData = [
 ];
 
 function AboutPage() {
+  const scrollToSection = (id) => {
+    const element = document.getElementById(id);
+    const offset = 52; // Adjust based on your navbar height
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.scrollY - offset;
+
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: "smooth",
+    });
+  };
   return (
     <section className="about-section-container" id="about">
       <SpotlightBG />
@@ -45,6 +56,8 @@ function AboutPage() {
               className="about-image"
               alt="Profile"
               variants={fadeIn("right", 200, 1)}
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
               initial="hidden"
               whileInView="show"
               exit="hidden"
@@ -60,6 +73,7 @@ function AboutPage() {
                 <motion.div
                   className="about-box"
                   whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.99 }}
                   key={index}
                   drag="false"
                 >
@@ -108,19 +122,24 @@ function AboutPage() {
               exit="hidden"
             >
               <motion.a drag="false">
-                <StyledButton>
+                <StyledButton
+                  onClick={(e) => {
+                    e.preventDefault();
+                    scrollToSection("skills");
+                  }}
+                >
                   <ButtonShadow />
                   <ButtonEdge />
                   <ButtonLabel>Skills</ButtonLabel>
                 </StyledButton>
               </motion.a>
-              <motion.a
-                href={Resume}
-                download="Kartavya-Singh-Resume-2024.pdf"
-                className="download-cv"
-                drag="false"
-              >
-                <StyledButton>
+              <motion.a drag="false">
+                <StyledButton
+                  onClick={(e) => {
+                    e.preventDefault();
+                    scrollToSection("projects");
+                  }}
+                >
                   <ButtonShadow />
                   <ButtonEdge />
                   <ButtonLabel>Projects</ButtonLabel>
@@ -134,13 +153,13 @@ function AboutPage() {
               whileInView="show"
               exit="hidden"
             >
-              <motion.a
-                href={Resume}
-                download="Kartavya-Singh-Resume-2024.pdf"
-                className="download-cv"
-                drag="false"
-              >
-                <StyledButton>
+              <motion.a drag="false">
+                <StyledButton
+                  onClick={(e) => {
+                    e.preventDefault();
+                    scrollToSection("experience");
+                  }}
+                >
                   <ButtonShadow />
                   <ButtonEdge />
                   <ButtonLabel>Experience</ButtonLabel>
