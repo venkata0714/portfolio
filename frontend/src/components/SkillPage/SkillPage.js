@@ -1,272 +1,329 @@
-import { React, useState, useEffect } from "react";
+import React from "react";
 import "../../styles/SkillPage.css";
-import LeftArrow from "../../assets/img/icons/arrow1.svg";
-import RightArrow from "../../assets/img/icons/arrow2.svg";
-import { motion } from "framer-motion";
-import { fadeIn, zoomIn } from "../../services/variants";
-import { BackgroundBeams } from "./BackgroundBeams";
-import Carousel from "react-multi-carousel";
-import { fetchSkills } from "../../services/skillService"; // Import the fetchSkills function
-
+import javascript from "../../assets/img/icons/javascript.svg";
+import python from "../../assets/img/icons/python.svg";
+import react from "../../assets/img/icons/react.svg";
+import mongodb from "../../assets/img/icons/mongodb.svg";
+import cpp from "../../assets/img/icons/c++.svg";
+import c from "../../assets/img/icons/c.svg";
+import html from "../../assets/img/icons/html.svg";
+import css from "../../assets/img/icons/css.svg";
+import flask from "../../assets/img/icons/flask.svg";
+import d3 from "../../assets/img/icons/d3.svg";
+import sql from "../../assets/img/icons/sql.svg";
+import dsa from "../../assets/img/icons/dsa.svg";
+import discord from "../../assets/img/icons/discord.svg";
+import ml from "../../assets/img/icons/machinelearning.svg";
+import dl from "../../assets/img/icons/deeplearning.svg";
+import lr from "../../assets/img/icons/logisticregression.svg";
+import macos from "../../assets/img/icons/macos.svg";
+import windows from "../../assets/img/icons/windows.svg";
+import assembly from "../../assets/img/icons/assembly.svg";
+import selenium from "../../assets/img/icons/selenium.svg";
+import typescript from "../../assets/img/icons/typescript.svg";
+import tensorflow from "../../assets/img/icons/tensorflow.svg";
+import pandas from "../../assets/img/icons/pandas.svg";
+import numpy from "../../assets/img/icons/numpy.svg";
+import tableau from "../../assets/img/icons/tableau.svg";
+import django from "../../assets/img/icons/django.svg";
+import net from "../../assets/img/icons/net.svg";
+import unity from "../../assets/img/icons/unity.svg";
+import hive from "../../assets/img/icons/pyhive.svg";
+import neuralnetwork from "../../assets/img/icons/neuralnetwork.svg";
+import xml from "../../assets/img/icons/xml.svg";
+import vanillajs from "../../assets/img/icons/vanillajs.svg";
+import pyspark from "../../assets/img/icons/pyspark.svg";
+import swift from "../../assets/img/icons/swift.svg";
+import java from "../../assets/img/icons/java.svg";
+import english from "../../assets/img/icons/english.svg";
+import hindi from "../../assets/img/icons/hindi.svg";
+// import french from "../../assets/img/icons/french.svg";
+// import arabic from "../../assets/img/icons/arabic.svg";
+// import japanese from "../../assets/img/icons/japanese.svg";
+import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
-  RadialLinearScale,
-  PointElement,
-  LineElement,
-  Filler,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
   Tooltip,
   Legend,
 } from "chart.js";
-import { Radar } from "react-chartjs-2";
-import "react-multi-carousel/lib/styles.css";
+import { motion } from "framer-motion";
+import { fadeIn } from "../../services/variants";
+import { BackgroundBeams } from "./BackgroundBeams";
 
-const CustomLeftArrow = ({ onClick }) => {
+import SkillGraphCarousel from "./SkillGraph";
+
+const proficientSkills = [
+  { logo: javascript, name: "JavaScript" },
+  { logo: python, name: "Python" },
+  { logo: react, name: "React" },
+  { logo: mongodb, name: "MongoDB" },
+  { logo: cpp, name: "C++" },
+  { logo: c, name: "C" },
+  { logo: html, name: "HTML" },
+  { logo: css, name: "CSS" },
+  { logo: flask, name: "Flask" },
+  { logo: d3, name: "D3.js" },
+  { logo: sql, name: "SQL" },
+  { logo: dsa, name: "Data Structures & Algorithms" },
+  { logo: discord, name: "Discord.js/.py" },
+  { logo: ml, name: "Machine Learning Algorithms" },
+  { logo: dl, name: "Deep Learning Algorithms" },
+  { logo: lr, name: "Logistic Regression" },
+  { logo: macos, name: "MacOS" },
+  { logo: windows, name: "Windows" },
+];
+
+const intermediateSkills = [
+  { logo: assembly, name: "Assembly" },
+  { logo: selenium, name: "Selenium" },
+  { logo: typescript, name: "TypeScript" },
+  { logo: tensorflow, name: "TensorFlow" },
+  { logo: pandas, name: "Pandas" },
+  { logo: numpy, name: "NumPy" },
+  { logo: tableau, name: "Tableau" },
+  { logo: django, name: "Django" },
+  { logo: net, name: ".NET Framework" },
+  { logo: unity, name: "Unity" },
+];
+
+const beginnerSkills = [
+  { logo: hive, name: "Hive" },
+  { logo: neuralnetwork, name: "Neural Network Architecture" },
+  { logo: xml, name: "XML" },
+  { logo: vanillajs, name: "Vanilla JS" },
+  { logo: neuralnetwork, name: "Recurrent Neural Network" },
+  { logo: pyspark, name: "PySpark" },
+  { logo: swift, name: "Swift" },
+  { logo: java, name: "Java" },
+];
+
+const languageSkills = [
+  { logo: english, name: "English" },
+  { logo: hindi, name: "Hindi" },
+  // { logo: french, name: "French" },
+  // { logo: japanese, name: "Japanese" },
+  // { logo: arabic, name: "Arabic" },
+];
+const SkillRibbon = ({ givenSkills }) => {
   return (
-    <button className="custom-arrow custom-left-arrow" onClick={onClick}>
-      <img src={LeftArrow} alt="Left Arrow" />
-    </button>
-  );
-};
-
-const CustomRightArrow = ({ onClick }) => {
-  return (
-    <button className="custom-arrow custom-right-arrow" onClick={onClick}>
-      <img src={RightArrow} alt="Right Arrow" />
-    </button>
-  );
-};
-
-ChartJS.register(
-  RadialLinearScale,
-  PointElement,
-  LineElement,
-  Filler,
-  Tooltip,
-  Legend
-);
-const SkillGraph = ({ givenData }) => {
-  const averageScore =
-    givenData.Scores.reduce((sum, score) => sum + score, 0) /
-    givenData.Scores.length;
-
-  const data = {
-    labels: givenData.Labels, // Dynamically use labels from givenData
-    datasets: [
-      {
-        label: givenData.skillTitle,
-        data: givenData.Scores, // Dynamically use scores from givenData
-        backgroundColor: "rgba(252, 188, 29, 0.2)",
-        borderColor: "#6cbcfc",
-        borderWidth: 2, // Slightly thicker border for better visibility
-        pointBackgroundColor: "#6cbcfc",
-        pointBorderColor: "#edeeef",
-        pointHoverBackgroundColor: "#edeeef",
-        pointHoverBorderColor: "#6cbcfc",
-        pointRadius: 4, // Increase point size
-        pointHoverRadius: 6, // Increase hover size
-      },
-    ],
-  };
-
-  const options = {
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      r: {
-        min: 4, // Minimum value for the scale
-        max: 5, // Maximum value for the scale
-        ticks: {
-          stepSize: 2, // Increment steps between the radius levels
-          color: "#6cbcfc", // Tick color
-          display: false, // Hide numbers on the grid
-          backdropColor: "transparent", // No background for ticks
-        },
-        angleLines: {
-          color: "#edeeef", // Lines radiating from the center
-        },
-        grid: {
-          color: "rgba(237, 238, 239, 0.1)", // Subtle grid lines
-        },
-        pointLabels: {
-          color: "#edeeef", // Aspect labels (e.g., Aspect 1)
-          animate: true,
-          font: {
-            weight: 400, // Reduced font weight for lighter text
-            size: 8,
-            family: "'Montserrat', sans-serif", // Sci-fi font
-          },
-        },
-      },
-    },
-    plugins: {
-      legend: {
-        position: "top",
-        labels: {
-          color: "#edeeef",
-          font: {
-            family: "'Orbitron', sans-serif", // Sci-fi font
-          },
-        },
-      },
-      tooltip: {
-        callbacks: {
-          label: function (context) {
-            return `Score: ${context.raw}`; // Tooltip for values
-          },
-        },
-        backgroundColor: "#212529",
-        titleColor: "#6cbcfc",
-        bodyColor: "#edeeef",
-        borderColor: "#6cbcfc",
-        borderWidth: 1,
-      },
-      customAverage: {
-        // Custom plugin for displaying average score
-        id: "customAverage",
-        beforeDraw(chart) {
-          const { ctx, chartArea } = chart;
-          const x = chartArea.right - 30; // Position near the top-right
-          const y = chartArea.top + 10;
-
-          ctx.save();
-          ctx.font = "10px 'Montserrat', sans-serif"; // Set Montserrat font
-          ctx.fillStyle = "#edeeef"; // Text color
-          ctx.textAlign = "center"; // Center align the text
-          ctx.fillText(`Avg. ${averageScore.toFixed(2)}`, x, y); // Display the average score
-          ctx.restore();
-        },
-      },
-    },
-  };
-
-  return (
-    <div className="skill-image">
-      <Radar
-        data={data}
-        options={options}
-        plugins={[options.plugins.customAverage]}
-      />
+    <div className="ribbon-container">
+      <div className="ribbon-track">
+        {givenSkills.map((skill, index) => (
+          <div key={index} className="ribbon-item">
+            <img className="skill-icon" src={skill.logo} alt="" />
+            <span className="skill-name">{skill.name}</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
 
-const responsive = {
-  superLargeDesktop: {
-    // the naming can be any, depends on you.
-    breakpoint: { max: 4000, min: 992 },
-    items: 4,
-  },
-  desktop: {
-    breakpoint: { max: 992, min: 768 },
-    items: 3,
-  },
-  tablet: {
-    breakpoint: { max: 768, min: 576 },
-    items: 2,
-  },
-  mobile: {
-    breakpoint: { max: 576, min: 0 },
-    items: 1,
-  },
+// Register the required components for Chart.js
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+const BarChart = () => {
+  // Placeholder Data
+  const data = {
+    labels: ["JavaScript", "Python", "C++", "HTML", "CSS", "Flask", "SQL"],
+    datasets: [
+      {
+        label: "Hours of Coding",
+        data: [250, 200, 150, 100, 80, 50, 60], // Hours for each language
+        backgroundColor: [
+          "rgba(75, 192, 192, 0.2)", // JavaScript
+          "rgba(153, 102, 255, 0.2)", // Python
+          "rgba(255, 159, 64, 0.2)", // C++
+          "rgba(255, 99, 132, 0.2)", // HTML
+          "rgba(54, 162, 235, 0.2)", // CSS
+          "rgba(255, 206, 86, 0.2)", // Flask
+          "rgba(75, 192, 192, 0.2)", // SQL
+        ],
+        borderColor: [
+          "rgba(75, 192, 192, 1)", // JavaScript
+          "rgba(153, 102, 255, 1)", // Python
+          "rgba(255, 159, 64, 1)", // C++
+          "rgba(255, 99, 132, 1)", // HTML
+          "rgba(54, 162, 235, 1)", // CSS
+          "rgba(255, 206, 86, 1)", // Flask
+          "rgba(75, 192, 192, 1)", // SQL
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  // Chart Options
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top",
+        labels: {
+          color: "#edeeef", // White labels for legend
+        },
+      },
+      title: {
+        display: true,
+        text: "Coding Hours by Language",
+        color: "#edeeef", // White title
+        font: {
+          size: 18,
+        },
+      },
+    },
+    scales: {
+      x: {
+        ticks: {
+          color: "#edeeef", // White X-axis labels
+        },
+        grid: {
+          display: false, // Hide grid lines on X-axis
+        },
+      },
+      y: {
+        ticks: {
+          color: "#edeeef", // White Y-axis labels
+          callback: function (value) {
+            // Custom Y-axis scale
+            const customTicks = [25, 50, 100, 250, 500];
+            return customTicks.includes(value) ? value : "";
+          },
+        },
+        beginAtZero: true,
+        grid: {
+          color: "rgba(255, 255, 255, 0.1)", // Subtle grid lines
+        },
+        suggestedMax: 500, // Max value on Y-axis
+      },
+    },
+  };
+
+  return (
+    <div className="bar-chart-container">
+      <Bar data={data} options={options} />
+    </div>
+  );
 };
 
 function SkillPage() {
-  const [skills, setSkills] = useState([]); // State to store fetched skills
-  // const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Fetch skills on component load
-    const loadSkills = async () => {
-      try {
-        const fetchedSkills = await fetchSkills();
-        setSkills(fetchedSkills);
-      } catch (error) {
-        console.error("Error fetching skills:", error);
-      } finally {
-        // setLoading(false);
-      }
-    };
-
-    loadSkills();
-  }, []);
-
   return (
     <section className="skill-container" id="skills">
       <BackgroundBeams />
-      {/* <motion.div
-        className="space-explorer"
-        variants={fadeIn("right", 200, 1)}
-        initial={{ scale: 0, opacity: 0, x: -20, y: -20 }}
-        whileInView={{ scale: 1, opacity: 1, x: 0, y: 0 }}
-      >
-        <FloatingSpaceExplorer />
-      </motion.div> */}
-      <div className="skill-div">
+      <motion.div className="skill-div" drag="false">
         <div className="skill-box">
           <motion.h2
             className="skill-heading"
             variants={fadeIn("right", 200, 1)}
             initial="hidden"
-            animate="show"
             whileInView="show"
-            transition={{
-              duration: 0.5,
-              ease: "easeInOut",
-              delay: 0.5,
-              repeat: true,
-            }}
+            exit="hidden"
           >
             Skills
           </motion.h2>
-          <motion.p
-            className="skill-paragraph"
-            variants={fadeIn("right", 200, 1)}
-            initial="hidden"
-            animate="show"
-            whileInView="show"
-            transition={{
-              duration: 0.5,
-              ease: "easeInOut",
-              delay: 0.5,
-              repeat: true,
-            }}
-          >
-            Here are my Skills
-          </motion.p>
-          <Carousel
-            responsive={responsive}
-            autoPlaySpeed={3000}
-            infinite={true}
-            className="skill-slider"
-            minimumTouchDrag={80}
-            pauseOnHover
-            customLeftArrow={<CustomLeftArrow />}
-            customRightArrow={<CustomRightArrow />}
-          >
-            {skills.map((eachSkill, index) => (
-              <motion.div
-                className="item"
-                key={index}
-                variants={zoomIn(1)}
-                initial="hidden"
-                whileInView="show"
-              >
-                <motion.div
-                  className="skill-graph"
-                  initial={{ scale: 1 }}
-                  whileHover={{ scale: 1.05 }}
+          <motion.div className="skill-section">
+            <motion.p
+              className="skill-paragraph"
+              variants={fadeIn("right", 200, 1)}
+              initial="hidden"
+              whileInView="show"
+              exit="hidden"
+            >
+              My TechStack
+            </motion.p>
+            <motion.div className="skill-row">
+              <motion.div className="skill-column">
+                <motion.p
+                  className="skill-paragraph"
+                  variants={fadeIn("right", 200, 1)}
+                  initial="hidden"
+                  whileInView="show"
+                  exit="hidden"
                 >
-                  <SkillGraph givenData={eachSkill} />
-                </motion.div>
-                <h5 className="skill-title">{eachSkill.skillTitle}</h5>
-                <p className="skill-description">
-                  {eachSkill.skillDescription}
-                </p>
+                  Proficient Skills
+                </motion.p>
+                <SkillRibbon
+                  givenSkills={proficientSkills.slice(
+                    0,
+                    Math.floor(proficientSkills.length / 2)
+                  )}
+                />
+                <SkillRibbon
+                  givenSkills={proficientSkills.slice(
+                    Math.floor(proficientSkills.length / 2)
+                  )}
+                />
               </motion.div>
-            ))}
-          </Carousel>
+              <motion.div className="skill-column">
+                <motion.p
+                  className="skill-paragraph"
+                  variants={fadeIn("right", 200, 1)}
+                  initial="hidden"
+                  whileInView="show"
+                  exit="hidden"
+                >
+                  Intermediate Skills
+                </motion.p>
+                <SkillRibbon givenSkills={intermediateSkills} />
+              </motion.div>
+            </motion.div>
+            <motion.div className="skill-row">
+              <motion.div className="skill-column">
+                <motion.p
+                  className="skill-paragraph"
+                  variants={fadeIn("right", 200, 1)}
+                  initial="hidden"
+                  whileInView="show"
+                  exit="hidden"
+                >
+                  Beginners Skills
+                </motion.p>
+                <SkillRibbon givenSkills={beginnerSkills} />
+              </motion.div>
+              <motion.div className="skill-column">
+                <motion.p
+                  className="skill-paragraph"
+                  variants={fadeIn("right", 200, 1)}
+                  initial="hidden"
+                  whileInView="show"
+                  exit="hidden"
+                >
+                  My Languages
+                </motion.p>
+                <SkillRibbon givenSkills={languageSkills} />
+              </motion.div>
+            </motion.div>
+            <motion.p
+              className="skill-paragraph"
+              variants={fadeIn("right", 200, 1)}
+              initial="hidden"
+              whileInView="show"
+              exit="hidden"
+            >
+              My Workspace
+            </motion.p>
+            <motion.div className="skill-row">
+              <motion.div className="skill-column">
+                <BarChart />
+              </motion.div>
+              <motion.div className="skill-column">
+                <SkillGraphCarousel />
+              </motion.div>
+            </motion.div>
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }

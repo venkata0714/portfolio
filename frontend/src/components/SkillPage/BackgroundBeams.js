@@ -7,7 +7,7 @@ import planet4 from "../../assets/img/media/planet-4.png";
 
 const planetImages = [planet1, planet2, planet3, planet4];
 
-export const BackgroundBeams = ({ className = "" }) => {
+export const BackgroundBeams = ({ className = "background-beams-canvas" }) => {
   const canvasRef = useRef(null);
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -248,10 +248,5 @@ export const BackgroundBeams = ({ className = "" }) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  return (
-    <canvas
-      ref={canvasRef}
-      className={`background-beams-canvas ${className}`}
-    />
-  );
+  return <canvas ref={canvasRef} className={`${className}`} />;
 };

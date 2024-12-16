@@ -31,12 +31,6 @@
   z-index: 0;
 }
 
-.skill-graph {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .skill-div {
   display: flex;
   align-items: center;
@@ -45,13 +39,6 @@
   margin: 30px auto 0px auto;
   padding: 0 0px;
   z-index: 2;
-}
-
-.space-explorer {
-  width: 15vw;
-  height: auto;
-  z-index: 1; /* Ensure it stays above skill-box */
-  pointer-events: none;
 }
 
 .skill-box {
@@ -80,81 +67,80 @@
   color: #edeeef;
   font-size: 18px;
   letter-spacing: 0.8px;
-  line-height: 1.5rem;
-  margin: 14px 0 14px 0;
+  line-height: 1rem;
 }
 
-.item {
-  padding: 20px 20px;
-}
-
-.skill-image {
-  width: 212px;
-  height: 212px;
-  background-color: rgba(
-    33,
-    37,
-    41,
-    0.7
-  ); /* Semi-transparent dark background */
-  backdrop-filter: blur(10px); /* Frosted glass effect */
-  -webkit-backdrop-filter: blur(10px); /* Safari support */
-  border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border for the glass effect */
-  border-radius: 16px; /* Rounded corners for a sleek look */
-  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.5),
-    0px 0px 15px rgba(108, 188, 252, 0.4); /* Dark shadow and glowing blue edge */
+.skill-section {
   display: flex;
-  justify-content: center; /* Centers the content */
-  align-items: center; /* Centers the content */
-  margin: auto; /* Centers the container horizontally */
-  overflow: hidden; /* Ensures no content overflows */
-  padding: 5px 5px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover animations */
+  flex-direction: column;
 }
 
-.skill-image:hover {
-  transform: scale(1.05); /* Slight zoom on hover */
-  box-shadow: 0px 6px 30px rgba(0, 0, 0, 0.7),
-    0px 0px 20px rgba(108, 188, 252, 0.7); /* Stronger glow on hover */
+.skill-row {
+  display: flex; /* Flexbox layout */
+  flex-direction: row; /* Arranges items horizontally */
+  flex-wrap: nowrap; /* Prevents wrapping */
+  justify-content: space-between; /* Ensures even spacing */
+  gap: 0; /* Removes any additional gaps */
+  margin: 10px;
+  width: 100%; /* Full width of the container */
 }
 
-.skill-title {
-  color: #edeeef;
+.skill-column {
+  flex: 0 0 50%; /* Each column takes exactly 50% of the row */
+  flex-direction: column;
+  max-width: 50%; /* Prevents any overflow */
+  box-sizing: border-box; /* Includes padding/border in the width */
+  padding: 10px; /* Adds inner spacing */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px; /* Rounded corners */
+  text-align: center;
+}
+
+.ribbon-container {
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+  background-color: transparent; /* Transparent background */
+  padding: 5px 0;
+}
+
+.ribbon-track {
+  display: flex;
+  animation: scroll 15s linear infinite;
+}
+
+.ribbon-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 5px;
   font-size: 18px;
-  font-weight: 700;
-  letter-spacing: 0.8px;
-  margin: 14px auto;
+  font-weight: 600;
+  color: #edeeef; /* Icon and text color */
+  white-space: nowrap;
 }
 
-.skill-description {
-  width: 80%;
+.skill-icon {
+  height: 25px;
+  width: 25px;
   color: #edeeef;
-  font-size: 14px;
-  letter-spacing: 0.5px;
-  margin: 5px auto;
 }
 
-.custom-arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  cursor: pointer;
-  z-index: 10;
+.skill-name {
+  font-size: 16px;
+  text-transform: capitalize;
 }
 
-.custom-left-arrow {
-  left: 10px; /* Position the left arrow */
-}
-
-.custom-right-arrow {
-  right: 10px; /* Position the right arrow */
-}
-
-.custom-arrow img {
-  width: 24px; /* Adjust arrow size */
-  height: auto;
+/* Smooth continuous scrolling */
+@keyframes scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
 }
 
 @media (max-width: 1200px) {
@@ -163,11 +149,6 @@
     margin: 0 auto;
     padding: 0 15px;
   }
-
-  .skill-image {
-    width: 172px;
-    height: 172px;
-  }
 }
 
 @media (max-width: 992px) {
@@ -175,10 +156,6 @@
     max-width: 720px;
     margin: 0 auto;
     padding: 0 15px;
-  }
-  .skill-image {
-    width: 156px;
-    height: 156px;
   }
 }
 
@@ -192,11 +169,6 @@
   .skill-box {
     padding: 40px 10px;
   }
-
-  .skill-image {
-    width: 205px;
-    height: 205px;
-  }
 }
 
 @media (max-width: 576px) {
@@ -207,12 +179,6 @@
 
   .skill-paragraph {
     margin: 14px 0 15px 0;
-  }
-
-  .skill-image {
-    align-self: center;
-    width: 250px;
-    height: 250px;
   }
 }
 
