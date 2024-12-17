@@ -97,17 +97,17 @@ const SkillGraph = ({ givenData }) => {
         grid: { color: "rgba(237, 238, 239, 0.1)" },
         pointLabels: {
           color: "#edeeef",
-          font: { weight: 400, size: 8, family: "'Montserrat', sans-serif" },
+          font: {
+            weight: 400,
+            size: 8,
+            family: "'Montserrat', sans-serif",
+          },
         },
       },
     },
     plugins: {
       legend: {
-        position: "top",
-        labels: {
-          color: "#edeeef",
-          font: { family: "'Orbitron', sans-serif" },
-        },
+        display: false,
       },
       tooltip: {
         callbacks: {
@@ -117,7 +117,7 @@ const SkillGraph = ({ givenData }) => {
         titleColor: "#6cbcfc",
         bodyColor: "#edeeef",
         borderColor: "#6cbcfc",
-        borderWidth: 1,
+        borderWidth: 3,
       },
       customAverage: {
         id: "customAverage",
@@ -155,6 +155,7 @@ const SkillGraphCarousel = () => {
     const loadSkills = async () => {
       try {
         const fetchedSkills = await fetchSkills();
+        console.log("Fetched Skills:", fetchedSkills);
         setSkills(fetchedSkills);
       } catch (error) {
         console.error("Error fetching skills:", error);
@@ -186,7 +187,7 @@ const SkillGraphCarousel = () => {
           <motion.div
             className="skill-graph"
             initial={{ scale: 1 }}
-            whileHover={{ scale: 1.05 }}
+            whileHover={{ scale: 1.001 }}
           >
             <SkillGraph givenData={eachSkill} />
           </motion.div>

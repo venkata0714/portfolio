@@ -18,7 +18,7 @@
 
 .about-div {
   position: absolute;
-  width: min(1140px, 90%);
+  width: min(1140px, 95%);
   height: auto;
   margin: 0 auto;
   padding: 45px 15px;
@@ -170,7 +170,16 @@
 @media (max-width: 992px) {
   .about-div {
     margin: auto auto;
-    padding: 15px 15px;
+    padding: 25px 10px;
+  }
+
+  .about-container {
+    gap: 0.5rem;
+    margin: 5px;
+  }
+
+  .about-row {
+    margin: 5px;
   }
 
   .about-image {
@@ -300,12 +309,12 @@
   }
 
   .about-role {
-    font-size: clamp(0.5rem, 2vw, 2rem); /* Dynamically adjusts */
+    font-size: clamp(0.6rem, 2vw, 2rem); /* Dynamically adjusts */
     padding: 2px;
   }
 
   .about-description {
-    font-size: clamp(0.5rem, 2vw, 2rem); /* Adjusted for smaller screens */
+    font-size: clamp(0.6rem, 2vw, 2rem); /* Adjusted for smaller screens */
     padding: 2px;
   }
 }

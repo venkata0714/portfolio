@@ -18,8 +18,8 @@ export const SpotlightBG = () => {
     let animationFrameId;
 
     const hexSize = 30; // Size of each hexagon
-    const lightRadius = 150; // Radius of the area around the cursor that lights up
-    const clickRadius = 75; // Smaller radius for the click effect
+    const lightRadius = 100; // Radius of the area around the cursor that lights up
+    const clickRadius = 50; // Smaller radius for the click effect
 
     // Resize canvas to fit the window
     const resizeCanvas = () => {
@@ -60,7 +60,7 @@ export const SpotlightBG = () => {
 
       if (isPainted) {
         // Fill painted hexagons with matte gradient
-        ctx.fillStyle = createMatteGradient(0.8); // Slightly opaque
+        ctx.fillStyle = createMatteGradient(0.7); // Slightly opaque
         ctx.fill();
         ctx.strokeStyle = "#212529"; // Dark border for painted hexagons
       } else {
@@ -100,7 +100,7 @@ export const SpotlightBG = () => {
 
           // Add subtle breathing effect to opacity
           if (y <= animationLine) {
-            opacity += 0.05; // Slight increase for breathing effect
+            opacity += 0.1; // Slight increase for breathing effect
           }
 
           // Check if the hexagon is painted

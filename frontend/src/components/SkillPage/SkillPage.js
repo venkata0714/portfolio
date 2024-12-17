@@ -1,4 +1,5 @@
-import React from "react";
+import { React, useState, useEffect } from "react";
+import Marquee from "react-fast-marquee";
 import "../../styles/SkillPage.css";
 import javascript from "../../assets/img/icons/javascript.svg";
 import python from "../../assets/img/icons/python.svg";
@@ -37,9 +38,9 @@ import swift from "../../assets/img/icons/swift.svg";
 import java from "../../assets/img/icons/java.svg";
 import english from "../../assets/img/icons/english.svg";
 import hindi from "../../assets/img/icons/hindi.svg";
-// import french from "../../assets/img/icons/french.svg";
-// import arabic from "../../assets/img/icons/arabic.svg";
-// import japanese from "../../assets/img/icons/japanese.svg";
+import french from "../../assets/img/icons/french.svg";
+import arabic from "../../assets/img/icons/arabic.svg";
+import japanese from "../../assets/img/icons/japanese.svg";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -104,26 +105,79 @@ const beginnerSkills = [
 const languageSkills = [
   { logo: english, name: "English" },
   { logo: hindi, name: "Hindi" },
-  // { logo: french, name: "French" },
-  // { logo: japanese, name: "Japanese" },
-  // { logo: arabic, name: "Arabic" },
+  { logo: french, name: "French" },
+  { logo: japanese, name: "Japanese" },
+  { logo: arabic, name: "Arabic" },
 ];
 const SkillRibbon = ({ givenSkills }) => {
   return (
-    <div className="ribbon-container">
-      <div className="ribbon-track">
+    <motion.div
+      className="ribbon-container"
+      variants={fadeIn("left", 200, 1)}
+      initial="hidden"
+      whileInView="show"
+      exit="hidden"
+    >
+      <Marquee
+        autoFill
+        direction="left"
+        pauseOnClick
+        loop={0}
+        play={1}
+        speed={15}
+      >
         {givenSkills.map((skill, index) => (
           <div key={index} className="ribbon-item">
-            <img className="skill-icon" src={skill.logo} alt="" />
+            <img className="skill-icon" src={skill.logo} alt={skill.name} />
             <span className="skill-name">{skill.name}</span>
           </div>
         ))}
-      </div>
-    </div>
+      </Marquee>
+    </motion.div>
   );
 };
 
-// Register the required components for Chart.js
+function SkillSection({ title, skills }) {
+  const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth > 992);
+
+  // Listen for screen resizing
+  useEffect(() => {
+    const handleResize = () => {
+      setIsLargeScreen(window.innerWidth > 992);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  return (
+    <motion.div className="skill-column">
+      <motion.p
+        className="skill-paragraph"
+        variants={fadeIn("right", 200, 1)}
+        initial="hidden"
+        whileInView="show"
+        exit="hidden"
+      >
+        {title}
+      </motion.p>
+      {isLargeScreen && skills.length > 6 ? (
+        <>
+          <SkillRibbon
+            givenSkills={skills.slice(0, Math.floor(skills.length / 2))}
+          />
+          <SkillRibbon
+            givenSkills={skills.slice(Math.floor(skills.length / 2))}
+          />
+        </>
+      ) : (
+        <SkillRibbon givenSkills={skills} />
+      )}
+    </motion.div>
+  );
+}
+
+// Register necessary components for Chart.js
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -134,78 +188,89 @@ ChartJS.register(
 );
 
 const BarChart = () => {
-  // Placeholder Data
+  const [titleFontSize, setTitleFontSize] = useState(
+    window.innerHeight > 992 ? 12 : 18
+  );
+
+  useEffect(() => {
+    const handleResize = () => {
+      setTitleFontSize(window.innerHeight > 992 ? 12 : 18);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  // Enhanced Data
   const data = {
     labels: ["JavaScript", "Python", "C++", "HTML", "CSS", "Flask", "SQL"],
     datasets: [
       {
         label: "Hours of Coding",
-        data: [250, 200, 150, 100, 80, 50, 60], // Hours for each language
+        data: [250, 200, 150, 100, 80, 50, 60],
         backgroundColor: [
-          "rgba(75, 192, 192, 0.2)", // JavaScript
-          "rgba(153, 102, 255, 0.2)", // Python
-          "rgba(255, 159, 64, 0.2)", // C++
-          "rgba(255, 99, 132, 0.2)", // HTML
-          "rgba(54, 162, 235, 0.2)", // CSS
-          "rgba(255, 206, 86, 0.2)", // Flask
-          "rgba(75, 192, 192, 0.2)", // SQL
+          "rgba(75, 192, 192, 0.6)",
+          "rgba(153, 102, 255, 0.6)",
+          "rgba(255, 159, 64, 0.6)",
+          "rgba(255, 99, 132, 0.6)",
+          "rgba(54, 162, 235, 0.6)",
+          "rgba(255, 206, 86, 0.6)",
+          "rgba(75, 192, 192, 0.6)",
         ],
         borderColor: [
-          "rgba(75, 192, 192, 1)", // JavaScript
-          "rgba(153, 102, 255, 1)", // Python
-          "rgba(255, 159, 64, 1)", // C++
-          "rgba(255, 99, 132, 1)", // HTML
-          "rgba(54, 162, 235, 1)", // CSS
-          "rgba(255, 206, 86, 1)", // Flask
-          "rgba(75, 192, 192, 1)", // SQL
+          "rgba(75, 192, 192, 1)",
+          "rgba(153, 102, 255, 1)",
+          "rgba(255, 159, 64, 1)",
+          "rgba(255, 99, 132, 1)",
+          "rgba(54, 162, 235, 1)",
+          "rgba(255, 206, 86, 1)",
+          "rgba(75, 192, 192, 1)",
         ],
-        borderWidth: 1,
+        borderWidth: 2,
+        borderRadius: 6, // Rounded bars
       },
     ],
   };
 
-  // Chart Options
+  // Responsive Chart Options
   const options = {
     responsive: true,
+    maintainAspectRatio: false, // Allow dynamic sizing
     plugins: {
       legend: {
-        position: "top",
-        labels: {
-          color: "#edeeef", // White labels for legend
-        },
+        display: false,
       },
       title: {
         display: true,
+        className: "skill-paragraph",
         text: "Coding Hours by Language",
-        color: "#edeeef", // White title
-        font: {
-          size: 18,
-        },
+        color: "#edeeef",
       },
     },
     scales: {
       x: {
         ticks: {
-          color: "#edeeef", // White X-axis labels
+          color: "#edeeef",
+          font: {
+            size: 12,
+          },
         },
         grid: {
-          display: false, // Hide grid lines on X-axis
+          display: true,
         },
       },
       y: {
+        beginAtZero: true,
+        suggestedMax: 250,
         ticks: {
-          color: "#edeeef", // White Y-axis labels
-          callback: function (value) {
-            // Custom Y-axis scale
-            const customTicks = [25, 50, 100, 250, 500];
-            return customTicks.includes(value) ? value : "";
+          color: "#edeeef",
+          stepSize: 50,
+          font: {
+            size: 12,
           },
         },
-        beginAtZero: true,
         grid: {
-          color: "rgba(255, 255, 255, 0.1)", // Subtle grid lines
+          color: "rgba(255, 255, 255, 0.1)",
         },
-        suggestedMax: 500, // Max value on Y-axis
       },
     },
   };
@@ -240,69 +305,21 @@ function SkillPage() {
               whileInView="show"
               exit="hidden"
             >
-              My TechStack
+              <strong>My TechStack</strong>
             </motion.p>
             <motion.div className="skill-row">
-              <motion.div className="skill-column">
-                <motion.p
-                  className="skill-paragraph"
-                  variants={fadeIn("right", 200, 1)}
-                  initial="hidden"
-                  whileInView="show"
-                  exit="hidden"
-                >
-                  Proficient Skills
-                </motion.p>
-                <SkillRibbon
-                  givenSkills={proficientSkills.slice(
-                    0,
-                    Math.floor(proficientSkills.length / 2)
-                  )}
-                />
-                <SkillRibbon
-                  givenSkills={proficientSkills.slice(
-                    Math.floor(proficientSkills.length / 2)
-                  )}
-                />
-              </motion.div>
-              <motion.div className="skill-column">
-                <motion.p
-                  className="skill-paragraph"
-                  variants={fadeIn("right", 200, 1)}
-                  initial="hidden"
-                  whileInView="show"
-                  exit="hidden"
-                >
-                  Intermediate Skills
-                </motion.p>
-                <SkillRibbon givenSkills={intermediateSkills} />
-              </motion.div>
+              <SkillSection
+                title="Proficient Skills"
+                skills={proficientSkills}
+              />
+              <SkillSection
+                title="Intermediate Skills"
+                skills={intermediateSkills}
+              />
             </motion.div>
             <motion.div className="skill-row">
-              <motion.div className="skill-column">
-                <motion.p
-                  className="skill-paragraph"
-                  variants={fadeIn("right", 200, 1)}
-                  initial="hidden"
-                  whileInView="show"
-                  exit="hidden"
-                >
-                  Beginners Skills
-                </motion.p>
-                <SkillRibbon givenSkills={beginnerSkills} />
-              </motion.div>
-              <motion.div className="skill-column">
-                <motion.p
-                  className="skill-paragraph"
-                  variants={fadeIn("right", 200, 1)}
-                  initial="hidden"
-                  whileInView="show"
-                  exit="hidden"
-                >
-                  My Languages
-                </motion.p>
-                <SkillRibbon givenSkills={languageSkills} />
-              </motion.div>
+              <SkillSection title="Beginners Skills" skills={beginnerSkills} />
+              <SkillSection title="My Languages" skills={languageSkills} />
             </motion.div>
             <motion.p
               className="skill-paragraph"
@@ -311,14 +328,16 @@ function SkillPage() {
               whileInView="show"
               exit="hidden"
             >
-              My Workspace
+              <strong>My Workspace</strong>
             </motion.p>
-            <motion.div className="skill-row">
-              <motion.div className="skill-column">
+            <motion.div className="last-skill-row">
+              <motion.div className="last-skill-column">
                 <BarChart />
               </motion.div>
-              <motion.div className="skill-column">
-                <SkillGraphCarousel />
+              <motion.div className="last-skill-column">
+                <div className="skill-graph-carousel">
+                  <SkillGraphCarousel />
+                </div>
               </motion.div>
             </motion.div>
           </motion.div>
