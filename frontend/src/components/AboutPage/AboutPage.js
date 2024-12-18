@@ -46,16 +46,15 @@ function AboutPage() {
         whileInView="show"
         exit="hidden"
         className="about-div glass"
-        drag="false"
       >
         <h2 className="section-title">ABOUT ME</h2>
         <div className="about-container">
-          <motion.div className="about-row" drag="false">
+          <motion.div className="about-row">
             <motion.img
               src={AboutImg}
               className="about-image"
               alt="Profile"
-              variants={fadeIn("right", 200, 1)}
+              variants={fadeIn("right", 200, 0)}
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.99 }}
               initial="hidden"
@@ -64,7 +63,7 @@ function AboutPage() {
             />
             <motion.div
               className="about-info"
-              variants={zoomIn(1)}
+              variants={zoomIn(0)}
               initial="hidden"
               whileInView="show"
               exit="hidden"
@@ -84,10 +83,10 @@ function AboutPage() {
               ))}
             </motion.div>
           </motion.div>
-          <motion.div className="about-row" drag="false">
+          <motion.div className="about-row">
             <motion.div
               className="about-description-box"
-              variants={fadeIn("left", 200, 1)}
+              variants={fadeIn("left", 200, 0)}
               initial="hidden"
               whileInView="show"
               exit="hidden"
@@ -107,7 +106,7 @@ function AboutPage() {
             </motion.div>
             <motion.h2
               className="about-page-subtitle"
-              variants={zoomIn(1)}
+              variants={zoomIn(0)}
               initial="hidden"
               whileInView="show"
               exit="hidden"
@@ -116,7 +115,7 @@ function AboutPage() {
             </motion.h2>
             <motion.div
               className="button-container"
-              variants={zoomIn(1)}
+              variants={zoomIn(0)}
               initial="hidden"
               whileInView="show"
               exit="hidden"
@@ -148,7 +147,7 @@ function AboutPage() {
             </motion.div>
             <motion.div
               className="button-container"
-              variants={zoomIn(1)}
+              variants={zoomIn(0)}
               initial="hidden"
               whileInView="show"
               exit="hidden"

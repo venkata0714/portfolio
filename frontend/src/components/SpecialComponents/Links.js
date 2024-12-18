@@ -83,8 +83,7 @@ const Links = () => {
         className={`link-btn ${isOpen ? "active" : ""}`}
         onClick={() => setIsOpen((prev) => !prev)}
         title="Links"
-        variants={zoomIn(1)}
-        initial="hidden"
+        initial={{ opacity: 0, scale: 0 }}
         drag
         dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
         dragElastic={0.3}
@@ -92,10 +91,10 @@ const Links = () => {
           bounceStiffness: 250,
           bounceDamping: 15,
         }}
-        animate="show"
+        whileInView={{ opacity: 1, scale: 1 }}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9, rotate: 360 }}
-        transition={{ duration: 1, type: "spring" }}
+        transition={{ delay: 0, type: "spring" }}
       >
         <animated.img
           src={require("../../assets/img/icons/links.png")}

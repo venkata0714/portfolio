@@ -3,7 +3,7 @@ import { styled } from "@stitches/react";
 import { TypeAnimation } from "react-type-animation";
 import { Parallax } from "react-parallax";
 import { useSpring, animated } from "@react-spring/web";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { zoomIn } from "../../services/variants";
 import "../../styles/HomePage.css";
 import ProfilePhoto from "../../assets/img/media/Kartavya.jpg";
@@ -92,14 +92,13 @@ function HomePage() {
 
   return (
     <Parallax
-      strength={-200} // Positive value for zoom-in effect
+      strength={-20} // Positive value for zoom-in effect
       // blur={{ min: -15, max: 15 }} // Blur range for consistency
       // bgImage={HomeBG} // Background image
       bgImageAlt="Background Image"
       renderLayer={(percentage) => {
-        console.log("Scroll percentage:", percentage); // Debugging to ensure percentage updates
         const scaleValue = 1 + percentage * 0.15; // Calculate zoom
-        const blurValue = Math.max(0, (percentage - 1) * 10); // Calculate blur, ensuring it doesn't go negative
+        const blurValue = Math.max(0, (percentage - 1) * 12); // Calculate blur, ensuring it doesn't go negative
 
         return (
           <div
@@ -120,108 +119,114 @@ function HomePage() {
         );
       }}
     >
-      <section className="homepage-container" id="home">
-        <div className="container">
-          <motion.div
-            className={`profile-picture-container`}
-            variants={zoomIn(1)}
-            initial="hidden"
-            drag
-            dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-            dragElastic={0.3}
-            dragTransition={{
-              bounceStiffness: 250,
-              bounceDamping: 15,
-            }}
-            whileInView={"show"}
-            viewport={{ once: false, amount: 0.7 }}
-          >
-            <animated.img
-              src={ProfilePhoto}
-              alt="Profile"
-              className={`profile-picture img-responsive img-circle${frames[frameIndex]}`}
-              draggable="false"
-              dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-              style={{
-                boxShadow,
-                transform: isHovering
-                  ? `translate3d(${mousePosition.x}px, ${mousePosition.y}px, 0) scale3d(1.03, 1.03, 1.03)`
-                  : "translate3d(0px, 0px, 0) scale3d(1, 1, 1)",
-                transition: "transform 0.1s ease-out",
-              }}
-              onMouseMove={handleMouseMove}
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-              onClick={() => {
-                handleClick();
-                handleProfileClick();
-              }}
-            />
-          </motion.div>
-          <motion.h1
-            className="name"
-            variants={zoomIn(1)}
-            initial="hidden"
-            animate="show"
-          >
-            Kartavya Singh
-          </motion.h1>
-
-          {/* Changing Text Animation */}
-          <motion.div
-            className="changing-text-container"
-            onClick={() => setKey((prevKey) => prevKey + 1)}
-            variants={zoomIn(1)}
-            initial="hidden"
-            animate="show"
-          >
-            <em>
-              <span className="changing-text">
-                <TypeAnimation
-                  key={key} // Forces the component to re-render on click
-                  className="changing-text-animation"
-                  sequence={[
-                    1500,
-                    ...keywords.map((text) => [text, 4000]), // Typing each keyword with a pause
-                    keywords[keywords.length - 1], // Ensures the last phrase displays permanently
-                  ].flat()}
-                  speed={50} // Typing speed for smooth effect
-                  deletionSpeed={50} // Faster deletion for a smoother experience
-                  delay={1000}
-                  repeat={0} // No repeat
-                  cursor={true}
+      <AnimatePresence>
+        <section className="homepage-container" id="home">
+          <div className="container">
+            <div className="home-row">
+              <motion.div
+                className={`profile-picture-container`}
+                variants={zoomIn(0)}
+                initial="hidden"
+                drag
+                dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+                dragElastic={0.3}
+                dragTransition={{
+                  bounceStiffness: 250,
+                  bounceDamping: 15,
+                }}
+                whileTap={{ scale: 1.1 }}
+                whileInView={"show"}
+              >
+                <animated.img
+                  src={ProfilePhoto}
+                  alt="Profile"
+                  className={`profile-picture img-responsive img-circle${frames[frameIndex]}`}
+                  draggable="false"
+                  dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+                  style={{
+                    boxShadow,
+                    transform: isHovering
+                      ? `translate3d(${mousePosition.x}px, ${mousePosition.y}px, 0) scale3d(1.03, 1.03, 1.03)`
+                      : "translate3d(0px, 0px, 0) scale3d(1, 1, 1)",
+                    transition: "transform 0.1s ease-out",
+                  }}
+                  onMouseMove={handleMouseMove}
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
+                  onClick={() => {
+                    handleClick();
+                    handleProfileClick();
+                  }}
                 />
-              </span>
-            </em>
-          </motion.div>
+              </motion.div>
+            </div>
+            <div className="home-row">
+              <motion.h1
+                className="name"
+                variants={zoomIn(0)}
+                initial="hidden"
+                animate="show"
+              >
+                Kartavya Singh
+              </motion.h1>
 
-          {/* Styled "Enter Portfolio" Button */}
-          <motion.div
-            className="enter-button-motioned"
-            variants={zoomIn(1)}
-            initial="hidden"
-            animate="show"
-            drag
-            dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-            dragElastic={0.3}
-            dragTransition={{
-              bounceStiffness: 250,
-              bounceDamping: 15,
-            }}
-          >
-            <StyledButton
-              onClick={(e) => {
-                e.preventDefault();
-                scrollToSection("about");
-              }}
-            >
-              <ButtonShadow />
-              <ButtonEdge />
-              <ButtonLabel>Enter Portfolio</ButtonLabel>
-            </StyledButton>
-          </motion.div>
-        </div>
-      </section>
+              {/* Changing Text Animation */}
+              <motion.div
+                className="changing-text-container"
+                onClick={() => setKey((prevKey) => prevKey + 1)}
+                variants={zoomIn(0)}
+                initial="hidden"
+                animate="show"
+              >
+                <em>
+                  <span className="changing-text">
+                    <TypeAnimation
+                      key={key} // Forces the component to re-render on click
+                      className="changing-text-animation"
+                      sequence={[
+                        1500,
+                        ...keywords.map((text) => [text, 4000]), // Typing each keyword with a pause
+                        keywords[keywords.length - 1], // Ensures the last phrase displays permanently
+                      ].flat()}
+                      speed={50} // Typing speed for smooth effect
+                      deletionSpeed={50} // Faster deletion for a smoother experience
+                      delay={1000}
+                      repeat={0} // No repeat
+                      cursor={true}
+                    />
+                  </span>
+                </em>
+              </motion.div>
+
+              {/* Styled "Enter Portfolio" Button */}
+              <motion.div
+                className="enter-button-motioned"
+                variants={zoomIn(0)}
+                initial="hidden"
+                animate="show"
+                drag
+                dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+                dragElastic={0.3}
+                dragTransition={{
+                  bounceStiffness: 250,
+                  bounceDamping: 15,
+                }}
+              >
+                <StyledButton
+                  onClick={(e) => {
+                    e.preventDefault();
+                    scrollToSection("about");
+                  }}
+                >
+                  <ButtonShadow />
+                  <ButtonEdge />
+                  <ButtonLabel>Enter Portfolio</ButtonLabel>
+                </StyledButton>
+              </motion.div>
+            </div>
+          </div>
+        </section>
+      </AnimatePresence>
     </Parallax>
   );
 }

@@ -1,8 +1,11 @@
 /************ HomePage CSS ************/
 .homepage-container {
-  padding-top: 120px;
-  padding-bottom: 100px;
-  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  height: calc(100vh);
   /* background: linear-gradient(
       to bottom,
       rgba(0, 0, 0, 0.8),
@@ -25,47 +28,28 @@
   text-align: center;
 }
 
-.home-background {
-  min-height: 100vh;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  scroll-behavior: smooth;
-  background-position: center;
-}
-
-.gradient-overlay {
-  background: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0.8),
-    rgba(0, 0, 0, 0.7),
-    rgba(0, 0, 0, 0.6),
-    rgba(0, 0, 0, 0.5),
-    rgba(0, 0, 0, 0.4),
-    rgba(0, 0, 0, 0.8),
-    rgba(0, 0, 0, 0.2),
-    rgba(0, 0, 0, 0.1)
-  );
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1; /* Ensure it overlays the background image */
-}
-
 .container {
-  max-width: 1140px;
+  max-width: min(1140px, 95%);
+  height: calc(80vh - 52px);
   margin: 0 auto;
-  padding: 0 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
 }
 
-.profile-picture-container {
-  padding-top: 96px;
-  padding-bottom: 32px;
+.home-row {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-evenly;
+  margin: 0 auto;
+  flex-direction: column;
+  flex: 1 1 100%;
 }
 
 .profile-picture {
+  background-clip: content-box;
   width: 250px;
   height: 250px;
   border-radius: 100%;
@@ -119,29 +103,27 @@
 .name {
   z-index: 50;
   inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   font-size: 5.5rem;
   font-weight: bold;
-  margin-bottom: 0.25rem !important;
   font-family: "Montserrat", sans-serif;
   color: #edeeef !important;
 }
 
-.changing-text-container {
-  margin-bottom: 48px;
+.name:hover {
+  cursor: default !important;
 }
 
+.changing-text-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .changing-text {
   z-index: 50;
   inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   font-size: 1.4rem;
   font-weight: 700;
-  margin: 0px auto;
+  margin: 0 auto;
   letter-spacing: 1px;
   color: transparent !important;
   pointer-events: none;
@@ -159,16 +141,6 @@
   width: 100%;
   white-space: wrap;
   overflow: hidden;
-  animation: fadeIn 0.5s ease forwards;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
 }
 
 .changing-text-animation .TypeAnimation_cursor {
@@ -185,38 +157,10 @@
   }
 }
 
-.enter-portfolio-btn {
-  font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 18px;
-  display: fixed;
-  padding: 1.25rem 2.5rem;
-  background-color: #f8f9fa;
-  border-color: #f8f9fa;
-  box-shadow: 0px 3px 3px 0px rgba(0, 0, 0, 0.1);
-  font-weight: 700;
-  color: #212529;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.enter-portfolio-btn:hover {
-  background-color: #f0f0f0;
-}
-
 @media (max-width: 992px) {
-  .container {
-    max-width: 720px;
-    width: 100%;
-    padding: 0 10px;
-  }
-
   .name {
     font-size: 4rem;
     font-weight: 500;
-    line-height: 1.2;
-    color: inherit;
   }
 
   .changing-text {
@@ -226,45 +170,17 @@
 }
 
 @media (max-width: 768px) {
-  .container {
-    max-width: 540px;
-    width: 100%;
-    padding: 0 10px;
-  }
   .name {
     font-size: 2.5rem;
-    font-weight: 500;
-    line-height: 1.2;
-    color: inherit;
   }
 
   .changing-text {
     font-size: 1rem;
-    font-weight: 500;
   }
 }
 
 @media (max-width: 576px) {
-  .container {
-    max-width: 360px;
-    width: 100%;
-    padding: 0 10px;
-  }
-
   .name {
     font-size: 2.25rem;
-    padding-bottom: 50px;
-    font-weight: 500;
-    line-height: 1.2;
-    color: inherit;
-  }
-
-  .changing-text-container {
-    white-space: pre-line;
-  }
-
-  .changing-text {
-    font-size: 1.2rem;
-    font-weight: 500;
   }
 }

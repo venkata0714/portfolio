@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Carousel from "react-multi-carousel";
 import "../../styles/SkilllGraph.css";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import LeftArrow from "../../assets/img/icons/arrow1.svg";
 import RightArrow from "../../assets/img/icons/arrow2.svg";
 import { zoomIn } from "../../services/variants";
@@ -92,16 +92,17 @@ const SkillGraph = ({ givenData }) => {
       r: {
         min: 4,
         max: 5,
-        ticks: { stepSize: 2, color: "#6cbcfc", display: false },
+        ticks: { stepSize: 0.1, color: "#6cbcfc", display: false },
         angleLines: { color: "#edeeef" },
-        grid: { color: "rgba(237, 238, 239, 0.1)" },
+        grid: { color: "rgba(237, 238, 239, 0.3)" },
         pointLabels: {
           color: "#edeeef",
           font: {
             weight: 400,
-            size: 8,
+            size: 10,
             family: "'Montserrat', sans-serif",
           },
+          callbacks: {},
         },
       },
     },
@@ -118,6 +119,7 @@ const SkillGraph = ({ givenData }) => {
         bodyColor: "#edeeef",
         borderColor: "#6cbcfc",
         borderWidth: 3,
+        padding: 10,
       },
       customAverage: {
         id: "customAverage",
@@ -127,7 +129,7 @@ const SkillGraph = ({ givenData }) => {
           const y = chartArea.top + 10;
 
           ctx.save();
-          ctx.font = "10px 'Montserrat', sans-serif";
+          ctx.font = `10px 'Montserrat', sans-serif`;
           ctx.fillStyle = "#edeeef";
           ctx.textAlign = "center";
           ctx.fillText(`Avg. ${averageScore.toFixed(2)}`, x, y);
@@ -150,6 +152,7 @@ const SkillGraph = ({ givenData }) => {
 
 const SkillGraphCarousel = () => {
   const [skills, setSkills] = useState([]);
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
 
   useEffect(() => {
     const loadSkills = async () => {
@@ -165,8 +168,17 @@ const SkillGraphCarousel = () => {
     loadSkills();
   }, []);
 
+  useEffect(() => {
+    const handleResize = () => {
+      setScreenWidth(window.innerWidth);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <Carousel
+      key={screenWidth}
       responsive={responsive}
       autoPlaySpeed={3000}
       infinite
@@ -180,14 +192,15 @@ const SkillGraphCarousel = () => {
         <motion.div
           className="item"
           key={index}
-          variants={zoomIn(1)}
+          variants={zoomIn(0)}
           initial="hidden"
           whileInView="show"
+          exit="hidden"
         >
           <motion.div
             className="skill-graph"
             initial={{ scale: 1 }}
-            whileHover={{ scale: 1.001 }}
+            whileHover={{ scale: 1.01 }}
           >
             <SkillGraph givenData={eachSkill} />
           </motion.div>

@@ -29,6 +29,7 @@
   color: #edeeef;
   text-align: center;
   z-index: 0;
+  overflow-x: hidden;
 }
 
 .skill-div {
@@ -51,6 +52,7 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   z-index: 1; /* Lower than .space-explorer */
   width: 100%;
+  margin: 0 auto;
   text-align: center;
   padding: 40px 50px;
   color: #ffffff;
@@ -65,6 +67,7 @@
 
 .skill-paragraph {
   color: #edeeef;
+  font-weight: 500;
   font-size: 18px;
   letter-spacing: 0.8px;
   margin: 5px;
@@ -74,6 +77,8 @@
 .skill-section {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .skill-row,
@@ -81,7 +86,8 @@
   display: flex; /* Flexbox layout */
   flex-direction: row; /* Arranges items horizontally */
   flex-wrap: nowrap; /* Prevents wrapping */
-  justify-content: space-between; /* Ensures even spacing */
+  justify-content: space-evenly; /* Ensures even spacing */
+  align-items: space-around;
   gap: 0; /* Removes any additional gaps */
   width: 100%; /* Full width of the container */
 }
@@ -94,10 +100,17 @@
   box-sizing: border-box; /* Includes padding/border in the width */
   padding: 10px; /* Adds inner spacing */
   display: flex;
+  margin: 0 auto;
   align-items: center;
   justify-content: space-evenly;
   border-radius: 8px; /* Rounded corners */
   text-align: center;
+}
+
+.last-skill-column {
+  flex: 0 0 100%;
+  justify-content: center;
+  align-items: center;
 }
 
 .ribbon-container {
@@ -130,7 +143,7 @@
 
 .bar-chart-container {
   width: min(100%, 600px);
-  height: 100%;
+  height: auto;
   aspect-ratio: 16 / 9; /* Keeps a good aspect ratio for the chart */
   background-color: rgba(33, 37, 41, 0.8); /* Slightly transparent background */
   border-radius: 12px; /* Rounded corners */
@@ -141,17 +154,25 @@
   -webkit-backdrop-filter: blur(6px); /* Safari support */
 }
 
+.bar {
+  transition: fill 0.3s ease, height 0.3s ease;
+}
+
 .skill-graph-carousel {
   width: min(100%, 600px);
   height: auto;
   aspect-ratio: 16 / 9; /* Keeps a good aspect ratio for the chart */
   background-color: transparent; /* Slightly transparent background */
-  margin: 0 auto; /* Center the chart */
 }
 
 @media (max-width: 992px) {
   .skill-box {
-    padding: 40px 10px;
+    padding: 25px 10px;
+  }
+
+  .bar-chart-container {
+    padding: 2px;
+    margin: 2px auto;
   }
   .skill-heading {
     font-size: 35px;
@@ -178,9 +199,7 @@
   }
 
   .last-skill-column {
-    padding: 2px;
     max-width: 50%;
-    margin: 0;
   }
 
   .skill-column {
@@ -193,11 +212,26 @@
 }
 
 @media (max-width: 768px) {
-  .last-skill-row:first-child {
-    flex: 2 0 60%;
+  .last-skill-row {
+    flex-direction: column;
+    height: calc(50vh - 52px);
   }
-  .last-skill-row:last-child {
-    flex: 1 0 40%;
+
+  .last-skill-column {
+    flex: 1;
+    margin: 0 auto;
+    padding: 0;
+    max-width: 100%;
+    height: auto;
+    width: 100%;
+  }
+
+  .bar-chart-container {
+    max-height: calc((45vh - 52px) / 2);
+  }
+
+  .skill-graph-carousel {
+    max-height: calc((45vh - 52px) / 2);
   }
 }
 

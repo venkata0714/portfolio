@@ -205,7 +205,7 @@ function ProjectsListView() {
               <p className="project-tagline">{project.projectTagline}</p>
               <motion.div
                 className="learn-button-motioned"
-                variants={zoomIn(1)}
+                variants={zoomIn(0)}
                 initial="hidden"
                 animate="show"
                 drag

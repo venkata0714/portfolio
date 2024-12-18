@@ -169,7 +169,7 @@ const NavBar = () => {
         <motion.a
           href="#home"
           className={scrolled ? "scrolled-navbar-brand" : "navbar-brand"}
-          variants={fadeIn("right", 40, 1)}
+          variants={fadeIn("right", 40, 0)}
           initial="hidden"
           animate="show"
           // drag
@@ -192,7 +192,7 @@ const NavBar = () => {
           animate={{ opacity: 1, scale: 1 }}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
-          transition={{ delay: 1 }}
+          transition={{ duration: 1 }}
           drag
           dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
           dragElastic={0.3}
@@ -209,7 +209,7 @@ const NavBar = () => {
         <div className={`navbar-menu ${menuOpen ? "open" : ""}`}>
           <motion.ul
             className="navbar-links"
-            variants={fadeIn("left", 40, 1)}
+            variants={fadeIn("left", 40, 0)}
             initial="hidden"
             animate="show"
           >

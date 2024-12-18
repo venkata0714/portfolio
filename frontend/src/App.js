@@ -1,5 +1,5 @@
 import { React, useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { AppLoad } from "./services/variants";
 import "./App.css";
 import Links from "./components/SpecialComponents/Links";
@@ -36,28 +36,30 @@ function App() {
   }, []);
 
   return (
-    <motion.div
-      className="App"
-      variants={AppLoad("down")}
-      initial="initial"
-      animate={"show"}
-    >
-      <NavBar />
-      <HomePage />
-      <AboutPage />
-      <SkillPage />
-      <ProjectPage />
-      <ExperiencePage />
-      <ContactPage />
-      <Links />
-      <a
-        className={`scroll-to-top ${scrolled ? "show" : ""}`}
-        href="#page-top"
-        onClick={scrollToTop}
+    <AnimatePresence>
+      <motion.div
+        className="App"
+        variants={AppLoad("down")}
+        initial="initial"
+        animate={"show"}
       >
-        <i className="fa fa-angle-up"></i>
-      </a>
-    </motion.div>
+        <NavBar />
+        <HomePage />
+        <AboutPage />
+        <SkillPage />
+        <ProjectPage />
+        <ExperiencePage />
+        <ContactPage />
+        <Links />
+        <a
+          className={`scroll-to-top ${scrolled ? "show" : ""}`}
+          href="#page-top"
+          onClick={scrollToTop}
+        >
+          <i className="fa fa-angle-up"></i>
+        </a>
+      </motion.div>
+    </AnimatePresence>
   );
 }
 

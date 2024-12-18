@@ -1,4 +1,5 @@
 import { React, useState, useEffect } from "react";
+import { zoomIn } from "../../services/variants";
 import Marquee from "react-fast-marquee";
 import "../../styles/SkillPage.css";
 import javascript from "../../assets/img/icons/javascript.svg";
@@ -51,7 +52,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { fadeIn } from "../../services/variants";
 import { BackgroundBeams } from "./BackgroundBeams";
 
@@ -113,7 +114,7 @@ const SkillRibbon = ({ givenSkills }) => {
   return (
     <motion.div
       className="ribbon-container"
-      variants={fadeIn("left", 200, 1)}
+      variants={fadeIn("left", 200, 0)}
       initial="hidden"
       whileInView="show"
       exit="hidden"
@@ -125,6 +126,7 @@ const SkillRibbon = ({ givenSkills }) => {
         loop={0}
         play={1}
         speed={15}
+        style={{ maxWidth: "100%", overflow: "hidden" }}
       >
         {givenSkills.map((skill, index) => (
           <div key={index} className="ribbon-item">
@@ -154,7 +156,7 @@ function SkillSection({ title, skills }) {
     <motion.div className="skill-column">
       <motion.p
         className="skill-paragraph"
-        variants={fadeIn("right", 200, 1)}
+        variants={fadeIn("right", 200, 0)}
         initial="hidden"
         whileInView="show"
         exit="hidden"
@@ -188,13 +190,11 @@ ChartJS.register(
 );
 
 const BarChart = () => {
-  const [titleFontSize, setTitleFontSize] = useState(
-    window.innerHeight > 992 ? 12 : 18
-  );
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
 
   useEffect(() => {
     const handleResize = () => {
-      setTitleFontSize(window.innerHeight > 992 ? 12 : 18);
+      setScreenWidth(window.innerWidth);
     };
 
     window.addEventListener("resize", handleResize);
@@ -276,73 +276,101 @@ const BarChart = () => {
   };
 
   return (
-    <div className="bar-chart-container">
-      <Bar data={data} options={options} />
-    </div>
+    <motion.div
+      className="bar-chart-container"
+      variants={zoomIn(0)}
+      initial="hidden"
+      whileInView="show"
+      exit="hidden"
+    >
+      <Bar
+        className="bar-chart"
+        key={screenWidth}
+        data={data}
+        options={options}
+      />
+    </motion.div>
   );
 };
 
 function SkillPage() {
   return (
     <section className="skill-container" id="skills">
-      <BackgroundBeams />
-      <motion.div className="skill-div" drag="false">
-        <div className="skill-box">
-          <motion.h2
-            className="skill-heading"
-            variants={fadeIn("right", 200, 1)}
-            initial="hidden"
-            whileInView="show"
-            exit="hidden"
-          >
-            Skills
-          </motion.h2>
-          <motion.div className="skill-section">
-            <motion.p
-              className="skill-paragraph"
-              variants={fadeIn("right", 200, 1)}
+      <AnimatePresence>
+        <BackgroundBeams />
+        <motion.div
+          className="skill-div"
+          variants={zoomIn(0)}
+          initial="hidden"
+          whileInView="show"
+          exit="hidden"
+        >
+          <div className="skill-box">
+            <motion.h2
+              className="skill-heading"
+              variants={fadeIn("right", 200, 0)}
               initial="hidden"
               whileInView="show"
               exit="hidden"
             >
-              <strong>My TechStack</strong>
-            </motion.p>
-            <motion.div className="skill-row">
-              <SkillSection
-                title="Proficient Skills"
-                skills={proficientSkills}
-              />
-              <SkillSection
-                title="Intermediate Skills"
-                skills={intermediateSkills}
-              />
-            </motion.div>
-            <motion.div className="skill-row">
-              <SkillSection title="Beginners Skills" skills={beginnerSkills} />
-              <SkillSection title="My Languages" skills={languageSkills} />
-            </motion.div>
-            <motion.p
-              className="skill-paragraph"
-              variants={fadeIn("right", 200, 1)}
-              initial="hidden"
-              whileInView="show"
-              exit="hidden"
-            >
-              <strong>My Workspace</strong>
-            </motion.p>
-            <motion.div className="last-skill-row">
-              <motion.div className="last-skill-column">
-                <BarChart />
+              Skills
+            </motion.h2>
+            <motion.div className="skill-section">
+              <motion.p
+                className="skill-paragraph"
+                variants={fadeIn("right", 200, 0)}
+                initial="hidden"
+                whileInView="show"
+                exit="hidden"
+              >
+                <strong>My TechStack</strong>
+              </motion.p>
+              <motion.div className="skill-row">
+                <SkillSection
+                  title="Proficient Skills"
+                  skills={proficientSkills}
+                />
+                <SkillSection
+                  title="Intermediate Skills"
+                  skills={intermediateSkills}
+                />
               </motion.div>
-              <motion.div className="last-skill-column">
-                <div className="skill-graph-carousel">
-                  <SkillGraphCarousel />
-                </div>
+              <motion.div className="skill-row">
+                <SkillSection
+                  title="Beginners Skills"
+                  skills={beginnerSkills}
+                />
+                <SkillSection title="My Languages" skills={languageSkills} />
+              </motion.div>
+              <motion.p
+                className="skill-paragraph"
+                variants={fadeIn("right", 200, 0)}
+                initial="hidden"
+                whileInView="show"
+                exit="hidden"
+              >
+                <strong>My Workspace</strong>
+              </motion.p>
+              <motion.div className="last-skill-row">
+                <motion.div className="last-skill-column column1">
+                  <BarChart />
+                </motion.div>
+                <motion.div className="last-skill-column column2">
+                  <motion.div
+                    className="skill-graph-carousel"
+                    variants={zoomIn(0)}
+                    initial="hidden"
+                    whileInView="show"
+                    exit="hidden"
+                  >
+                    <SkillGraphCarousel />
+                  </motion.div>
+                </motion.div>
               </motion.div>
             </motion.div>
-          </motion.div>
-        </div>
-      </motion.div>
+          </div>
+        </motion.div>
+      </AnimatePresence>
     </section>
   );
 }
