@@ -10,9 +10,18 @@ import SkillPage from "./components/SkillPage/SkillPage";
 import ExperiencePage from "./components/ExperiencePage/ExperiencePage";
 import ProjectPage from "./components/ProjectPage/ProjectPage";
 import ContactPage from "./components/ContactPage/ContactPage";
+import WindowModal from "./components/WindowModal/WindowModal";
+
+const sampleTabsData = [
+  { type: "Project", label: "Project 1", data: { title: "My Project", description: "A sample project.", link: "#" } },
+  { type: "Experience", label: "Experience 1", data: { company: "My Company", role: "Developer", duration: "2021-2023" } },
+  
+];
 
 function App() {
   const [scrolled, setScrolled] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
@@ -58,6 +67,15 @@ function App() {
         >
           <i className="fa fa-angle-up"></i>
         </a>
+        <button className="open-modal-btn" onClick={() => setShowModal(true)}>
+          Open WindowModal
+        </button>
+        {showModal && (
+          <WindowModal
+            tabsData={sampleTabsData}
+            onClose={() => setShowModal(false)}
+          />
+        )}
       </motion.div>
     </AnimatePresence>
   );

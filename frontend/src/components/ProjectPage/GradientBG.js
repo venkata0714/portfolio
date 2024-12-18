@@ -295,7 +295,7 @@ const GradientBG = () => {
         0,
         mouse.current.x,
         mouse.current.y,
-        150
+        75
       );
       mouseGradient.addColorStop(0, "rgba(255, 255, 255, 0.3)");
       mouseGradient.addColorStop(1, "rgba(255, 255, 255, 0)");
