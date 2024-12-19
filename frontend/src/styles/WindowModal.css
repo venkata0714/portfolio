@@ -19,6 +19,7 @@
 .window-content {
   display: flex;
   flex-direction: column;
+  overflow: auto;
 }
 
 .header-bar {
@@ -172,7 +173,7 @@
   padding: 1rem;
   background-color: #343a40;
   background-blend-mode: hard-light;
-  overflow-y: auto;
+  overflow: auto;
   border: 1px solid #343a40;
   border-radius: 5px;
   scrollbar-width: auto;
