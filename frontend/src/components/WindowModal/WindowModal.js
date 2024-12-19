@@ -172,6 +172,8 @@ const WindowModal = ({
               opacity: [1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0],
             }}
             transition={{ duration: 0.7, type: "spring", delay: 0 }}
+            drag="x"
+            dragConstraints={{ left: 0, right: window.innerWidth , top: 0, bottom: 0 }}
             onLoad={handleRestore}
             onClick={(e) => e.stopPropagation()}
           >

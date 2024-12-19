@@ -187,8 +187,8 @@
 .minimized-icon {
   position: fixed;
   top: 65px !important;
-  right: 15px;
-  width: 50px;
+  right: 15px !important;
+  width: 50px !important;
   height: 50px !important;
   background-color: #edeeef;
   color: #212529;
@@ -237,11 +237,11 @@
 
   .minimized-icon {
     height: 40px !important;
-    width: 40px;
+    width: 40px !important;
   }
 
   .minimized-icon-image {
-    width: 20px;
-    height: 20px;
+    width: 20px !important;
+    height: 20px !important;
   }
 }
