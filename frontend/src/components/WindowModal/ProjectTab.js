@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { styled } from "@stitches/react";
+// import { styled } from "@stitches/react";
 import { fadeIn, zoomIn } from "../../services/variants";
 import "../../styles/ProjectTab.css";
 

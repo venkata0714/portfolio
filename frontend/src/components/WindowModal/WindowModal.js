@@ -19,6 +19,11 @@ const WindowModal = ({
   scrolled,
 }) => {
   const modalRef = useRef(null);
+  const [totalTabs, setTotalTabs] = useState(0);
+
+  useEffect(() => {
+    setTotalTabs(tabs.length);
+  }, [tabs]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -34,11 +39,10 @@ const WindowModal = ({
       // Cleanup event listeners
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [modalRef]);
+  }, [modalRef, setIsMinimized]);
 
   useEffect(() => {
     const modalElement = document.querySelector(".window-modal");
-    const minimizedIcom = document.querySelector(".minimized-icon");
     // Disable/enable scrolling
     if (!isClosed && !isMinimized) {
       document.body.style.overflow = "hidden"; // Disable scrolling
@@ -172,12 +176,12 @@ const WindowModal = ({
             onClick={(e) => e.stopPropagation()}
           >
             <div className="window-content">
-              <div className="header-bar">
+              <motion.div className="header-bar" drag="false">
                 <div className="header-text">
-                  Portfolio Explorer | Max Items: 3
+                  Portfolio Explorer | Items: {totalTabs}/3
                 </div>
-              </div>
-              <div className="title-bar">
+              </motion.div>
+              <motion.div className="title-bar" drag="false">
                 <div className="tabs">
                   {tabs.map((tab) => (
                     <div
@@ -215,7 +219,7 @@ const WindowModal = ({
                     ✕
                   </button>
                 </div>
-              </div>
+              </motion.div>
               <motion.div
                 className="content"
                 // key={lastActiveIndex}
