@@ -200,7 +200,7 @@
   justify-content: center;
   cursor: pointer;
   z-index: 1000;
-  transition: transform 0.3s ease, background-color 0.3s ease;
+  transition: transform 0.3s steps(300), background-color 0.3s ease;
 }
 
 .minimized-icon-image {

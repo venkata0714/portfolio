@@ -48,7 +48,7 @@ const ProjectTab = ({ data }) => {
                     key={imgIndex}
                     src={img}
                     alt={`Project Image ${imgIndex + 1}`}
-                    className="project-image"
+                    className="project-image2"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   />

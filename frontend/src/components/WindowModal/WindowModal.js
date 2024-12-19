@@ -172,6 +172,11 @@ const WindowModal = ({
             onClick={(e) => e.stopPropagation()}
           >
             <div className="window-content">
+              <div className="header-bar">
+                <div className="header-text">
+                  Portfolio Explorer | Max Items: 3
+                </div>
+              </div>
               <div className="title-bar">
                 <div className="tabs">
                   {tabs.map((tab) => (
