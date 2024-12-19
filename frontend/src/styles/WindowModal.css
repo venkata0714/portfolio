@@ -170,7 +170,6 @@
 
 .content {
   flex: 1;
-  padding: 1rem;
   background-color: #343a40;
   background-blend-mode: hard-light;
   overflow: auto;
