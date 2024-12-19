@@ -2,7 +2,7 @@
   position: fixed;
   top: 52px;
   left: 0;
-  width: 100%;
+  max-width: calc(100%);
   height: calc(100vh - 52px);
   margin: 0 auto;
   background-color: #212529;
@@ -18,9 +18,30 @@
 
 .window-content {
   display: flex;
-  margin: 0 auto;
   flex-direction: column;
-  flex-grow: 1;
+}
+
+.header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #212529;
+  border-top: 1px solid #343a40;
+  background-blend-mode: hard-light;
+}
+
+.header-text {
+  font-size: 0.8rem;
+  color: transparent; /* Hide the default text color */
+  background: linear-gradient(
+    to bottom,
+    #edeeef,
+    /* Lightest shade */ #dcdfe0,
+    /* Slightly darker */ #c9cccd /* Even darker, but not too dark */
+  );
+  -webkit-background-clip: text; /* Clip the gradient to the text for WebKit browsers */
+  background-clip: text; /* Standard background clip */
+  opacity: 0.85; /* Slightly more opaque */
 }
 
 .title-bar {
@@ -29,16 +50,20 @@
   justify-content: space-evenly;
   background: #212529;
   background-blend-mode: hard-light;
-  border-top: 1px solid #343a40;
   border-bottom: 1px solid #343a40;
 }
 
 .tabs {
   display: flex;
+  align-items: center;
+  justify-content: space-between;
   flex-grow: 1;
   padding: 2px 10px 0px 10px;
   overflow: hidden;
   white-space: nowrap;
+}
+.tabs > .tab:nth-child(n + 3) {
+  max-width: unset; /* Remove the 50% rule for tabs beyond 2 */
 }
 
 .tab {
@@ -46,7 +71,7 @@
   padding: 0.5rem;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   border-radius: 0;
   background-color: #212529;
   background-blend-mode: hard-light;
@@ -55,6 +80,11 @@
   cursor: pointer;
   transition: background-color 0.3s ease, box-shadow 0.3s ease,
     border-radius 0.3s ease;
+  flex: 1 1 80%; /* Allow the tab to grow and shrink */
+  max-width: calc(
+    100% / 2
+  ); /* Each tab takes up 50% width if there are 2 or fewer */
+  min-width: 120px; /* Ensure the tab doesn't get too narrow */
 }
 
 .tab:hover {
@@ -156,10 +186,10 @@
 
 .minimized-icon {
   position: fixed;
-  bottom: 15px;
+  top: 65px !important;
   right: 15px;
   width: 50px;
-  height: 50px;
+  height: 50px !important;
   background-color: #edeeef;
   color: #212529;
   border-radius: 50%;
@@ -198,5 +228,20 @@
 
   .tab-title {
     font-size: xx-small;
+  }
+
+  .tab {
+    font-size: xx-small;
+    padding: 0.2rem;
+  }
+
+  .minimized-icon {
+    height: 40px !important;
+    width: 40px;
+  }
+
+  .minimized-icon-image {
+    width: 20px;
+    height: 20px;
   }
 }

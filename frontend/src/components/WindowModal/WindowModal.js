@@ -7,10 +7,17 @@ import ExperienceTab from "./ExperienceTab";
 import InvolvementTab from "./InvolvementTab";
 import HonorsTab from "./HonorsTab";
 
-const WindowModal = ({ tabs, setTabs, isClosed, setIsClosed, scrolled }) => {
-  const [lastActiveIndex, setLastActiveIndex] = useState(0);
-  const [isMinimized, setIsMinimized] = useState(false); // State for minimization
-  const [currentTabContent, setCurrentTabContent] = useState(null); // State for current tab content
+const WindowModal = ({
+  tabs,
+  setTabs,
+  isClosed,
+  setIsClosed,
+  isMinimized,
+  setIsMinimized,
+  lastActiveIndex,
+  setLastActiveIndex,
+  scrolled,
+}) => {
   const modalRef = useRef(null);
 
   useEffect(() => {
@@ -48,12 +55,6 @@ const WindowModal = ({ tabs, setTabs, isClosed, setIsClosed, scrolled }) => {
           modalElement.style.height = "calc(100vh - 65px)";
         }
       }
-    } else {
-      if (minimizedIcom) {
-        minimizedIcom.style.top = "";
-        minimizedIcom.style.height = "50px";
-        minimizedIcom.style.bottom = "20px";
-      }
     }
 
     return () => {
@@ -75,19 +76,6 @@ const WindowModal = ({ tabs, setTabs, isClosed, setIsClosed, scrolled }) => {
         return null;
     }
   };
-
-  const updateCurrentTabContent = () => {
-    if (tabs.length > 0 && tabs[lastActiveIndex]) {
-      const activeTab = tabs[lastActiveIndex];
-      setCurrentTabContent(renderTabContent(activeTab.type, activeTab.data));
-    } else {
-      setCurrentTabContent(null); // Clear content if no tabs are available
-    }
-  };
-
-  useEffect(() => {
-    updateCurrentTabContent();
-  }, [lastActiveIndex, isClosed, isMinimized, tabs]);
 
   const closeTab = (index) => {
     const updatedTabs = tabs
@@ -157,7 +145,16 @@ const WindowModal = ({ tabs, setTabs, isClosed, setIsClosed, scrolled }) => {
             transition={{ duration: 0, delay: 0, type: "spring" }}
           >
             <motion.div className="minimized-icon-image">
-              <img className="icon-image" src={windowIcon} alt="" />
+              <motion.img
+                className="icon-image"
+                initial={{ opacity: 0, scale: 0, rotate: 0 }}
+                animate={{ opacity: 1, scale: 1, rotate: 360 }}
+                exit={{ opacity: 0, scale: 0, rotate: 0 }}
+                transition={{ duration: 0.5, delay: 0, type: "spring" }}
+                src={windowIcon}
+                drag="false"
+                alt=""
+              />
             </motion.div>
           </motion.div>
         ) : (

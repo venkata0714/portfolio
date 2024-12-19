@@ -2,9 +2,9 @@ import React from "react";
 
 const ProjectTab = ({ data }) => {
   return (
-    <div style={{ height: "100vh", padding: "20px" }}>
+    <div style={{ fontSize: "0.5rem", minHeight: "100vh" }}>
       {Object.keys(data).map((key) => (
-        <div key={key} style={{ marginBottom: "10px" }}>
+        <div key={key}>
           <h4 style={{ marginBottom: "5px", color: "#555" }}>{key}</h4>
           <div>
             {key === "link" ? (

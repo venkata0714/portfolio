@@ -16,6 +16,8 @@ function App() {
   const [scrolled, setScrolled] = useState(false);
   const [tabs, setTabs] = useState([]); // Tabs state for WindowModal
   const [isClosed, setIsClosed] = useState(true);
+  const [isMinimized, setIsMinimized] = useState(false); // Track if modal is minimized
+  const [lastActiveIndex, setLastActiveIndex] = useState(0); // Track active tab index
 
   const addTab = (type, data) => {
     if (!data || typeof data !== "object") {
@@ -24,6 +26,22 @@ function App() {
     }
 
     setTabs((prev) => {
+      const existingTabIndex = prev.findIndex(
+        (tab) => tab.name === (data.title || data.projectTitle)
+      );
+
+      if (existingTabIndex !== -1) {
+        // If the tab exists, set the active index and return the unchanged array
+        setIsClosed(false); // Ensure the modal is visible
+        setIsMinimized(false); // Ensure the modal is not minimized
+        setLastActiveIndex(existingTabIndex);
+        console.log(
+          "Tab already exists, switching to existing tab:",
+          prev[existingTabIndex]
+        );
+        return prev;
+      }
+
       if (prev.length === 3) {
         // Shift all tabs forward
         const updatedTabs = prev
@@ -103,9 +121,13 @@ function App() {
         </a>
         <WindowModal
           tabs={tabs}
+          setTabs={setTabs}
           isClosed={isClosed}
           setIsClosed={setIsClosed}
-          setTabs={setTabs}
+          isMinimized={isMinimized}
+          setIsMinimized={setIsMinimized}
+          lastActiveIndex={lastActiveIndex}
+          setLastActiveIndex={setLastActiveIndex}
           scrolled={scrolled}
         />
       </motion.div>
