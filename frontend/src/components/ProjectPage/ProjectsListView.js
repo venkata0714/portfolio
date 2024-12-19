@@ -5,7 +5,7 @@ import { styled } from "@stitches/react";
 import { fetchProjects } from "../../services/projectService";
 import "../../styles/ProjectsListView.css";
 
-function ProjectsListView() {
+function ProjectsListView({ addTab }) {
   const parentRef = useRef(null);
   const [projects, setProjects] = useState([]);
   const [cardStates, setCardStates] = useState([]);
@@ -205,6 +205,7 @@ function ProjectsListView() {
               <p className="project-tagline">{project.projectTagline}</p>
               <motion.div
                 className="learn-button-motioned"
+                onClick={() => addTab("Project", project)}
                 variants={zoomIn(1)}
                 initial="hidden"
                 animate="show"
@@ -224,7 +225,6 @@ function ProjectsListView() {
                 <StyledButton
                   onClick={(e) => {
                     e.preventDefault();
-                    // handleLearnMore(index);
                   }}
                 >
                   <ButtonShadow />

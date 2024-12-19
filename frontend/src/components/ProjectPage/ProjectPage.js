@@ -4,7 +4,7 @@ import "../../styles/ProjectPage.css";
 import GradientBG from "./GradientBG"; // Adjust the path as necessary
 import ProjectsListView from "./ProjectsListView";
 
-function ProjectPage() {
+function ProjectPage({ addTab }) {
   return (
     <motion.section className="project-page-container" id="projects">
       <div className="gradient-bg-container">
@@ -12,7 +12,7 @@ function ProjectPage() {
       </div>
       <div className="project-page-div">
         <h2 className="project-section-title">My Projects</h2>
-        <ProjectsListView />
+        <ProjectsListView addTab={addTab} />
       </div>
     </motion.section>
   );

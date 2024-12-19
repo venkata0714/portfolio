@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AppLoad } from "./services/variants";
 import "./App.css";
@@ -12,15 +12,53 @@ import ProjectPage from "./components/ProjectPage/ProjectPage";
 import ContactPage from "./components/ContactPage/ContactPage";
 import WindowModal from "./components/WindowModal/WindowModal";
 
-const sampleTabsData = [
-  { type: "Project", label: "Project 1", data: { title: "My Project", description: "A sample project.", link: "#" } },
-  { type: "Experience", label: "Experience 1", data: { company: "My Company", role: "Developer", duration: "2021-2023" } },
-  
-];
-
 function App() {
   const [scrolled, setScrolled] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+  const [tabs, setTabs] = useState([]); // Tabs state for WindowModal
+  const [isClosed, setIsClosed] = useState(true);
+
+  const addTab = (type, data) => {
+    if (!data || typeof data !== "object") {
+      console.error("Invalid data passed to addTab:", data);
+      return;
+    }
+
+    setTabs((prev) => {
+      if (prev.length === 3) {
+        // Shift all tabs forward
+        const updatedTabs = prev
+          .map((tab, idx) => {
+            if (idx === 0) return null; // Drop the first tab
+            return { ...tab, index: idx - 1 }; // Adjust the index of the rest
+          })
+          .filter(Boolean); // Remove the null first element
+
+        const newTab = {
+          index: updatedTabs.length,
+          type,
+          data,
+          name:
+            data.title || data.projectTitle || `Tab ${updatedTabs.length + 1}`,
+        };
+
+        const result = [...updatedTabs, newTab];
+        console.log("Tabs after addition (3 tabs max):", result);
+        return result;
+      }
+
+      const newTab = {
+        index: prev.length,
+        type,
+        data,
+        name: data.title || data.projectTitle || `Tab ${prev.length + 1}`,
+      };
+      const result = [...prev, newTab];
+      console.log("Tabs after addition:", result);
+      return result;
+    });
+
+    setIsClosed(false);
+  };
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -31,11 +69,7 @@ function App() {
 
   useEffect(() => {
     const onScroll = () => {
-      if (window.scrollY > 100) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
+      setScrolled(window.scrollY > 100);
     };
 
     window.addEventListener("scroll", onScroll);
@@ -56,7 +90,7 @@ function App() {
         <HomePage />
         <AboutPage />
         <SkillPage />
-        <ProjectPage />
+        <ProjectPage addTab={addTab} />
         <ExperiencePage />
         <ContactPage />
         <Links />
@@ -67,15 +101,13 @@ function App() {
         >
           <i className="fa fa-angle-up"></i>
         </a>
-        <button className="open-modal-btn" onClick={() => setShowModal(true)}>
-          Open WindowModal
-        </button>
-        {showModal && (
-          <WindowModal
-            tabsData={sampleTabsData}
-            onClose={() => setShowModal(false)}
-          />
-        )}
+        <WindowModal
+          tabs={tabs}
+          isClosed={isClosed}
+          setIsClosed={setIsClosed}
+          setTabs={setTabs}
+          scrolled={scrolled}
+        />
       </motion.div>
     </AnimatePresence>
   );
