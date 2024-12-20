@@ -186,7 +186,7 @@ b {
   font-weight: 100;
   padding: 15.84px 10.8px;
   text-decoration: none; /* Removes underline from links */
-  color: #ffffff; /* Set your desired color */
+  color: #edeeef; /* Set your desired color */
   font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
@@ -293,7 +293,7 @@ i {
     justify-content: space-around;
     font-weight: 100;
     text-decoration: none; /* Removes underline from links */
-    color: #ffffff; /* Set your desired color */
+    color: #edeeef; /* Set your desired color */
     font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
   }
 

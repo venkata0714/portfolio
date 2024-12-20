@@ -156,12 +156,12 @@ export default ContactPage;
 
 const fillGreen = keyframes({
   "0%": { backgroundColor: "#fcbc1d", color: "#212529" }, // Initial yellow color
-  "100%": { backgroundColor: "#28a745", color: "#FFFFFF" }, // Success green with white text
+  "100%": { backgroundColor: "#28a745", color: "#edeeef" }, // Success green with white text
 });
 
 const fillRed = keyframes({
   "0%": { backgroundColor: "#fcbc1d", color: "#212529" }, // Initial yellow color
-  "100%": { backgroundColor: "#dc3545", color: "#FFFFFF" }, // Error red with white text
+  "100%": { backgroundColor: "#dc3545", color: "#edeeef" }, // Error red with white text
 });
 
 // Styled Components for Button Parts

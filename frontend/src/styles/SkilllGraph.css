@@ -10,16 +10,7 @@
 .skill-image {
   width: 90%;
   height: auto;
-  background-color: rgba(
-    33,
-    37,
-    41,
-    0.7
-  ); /* Semi-transparent dark background */
-  border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border for the glass effect */
   border-radius: 16px; /* Rounded corners for a sleek look */
-  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.5),
-    0px 0px 7.5px rgba(108, 188, 252, 0.4); /* Dark shadow and glowing blue edge */
   display: flex;
   justify-content: center; /* Centers the content */
   align-items: center; /* Centers the content */
@@ -33,6 +24,9 @@
 .skill-image:hover {
   box-shadow: 0px 6px 30px rgba(0, 0, 0, 0.7),
     0px 0px 10px rgba(108, 188, 252, 0.7); /* Stronger glow on hover */
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border for the glass effect */
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.5),
+    0px 0px 7.5px rgba(108, 188, 252, 0.4);
 }
 
 .skill-title {
@@ -107,6 +101,11 @@
   }
 
   .skill-image {
+    box-shadow: 0px 6px 30px rgba(0, 0, 0, 0.7),
+    0px 0px 10px rgba(108, 188, 252, 0.7); /* Stronger glow on hover */
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border for the glass effect */
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.5),
+    0px 0px 7.5px rgba(108, 188, 252, 0.4);
     max-height: calc((40vh - 52px) / 2);
     max-width: 90%;
   }

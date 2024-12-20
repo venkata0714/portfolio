@@ -7,7 +7,7 @@
   background-position: left center;
   scroll-behavior: smooth; */
   font-family: "Montserrat", sans-serif;
-  color: #ffffff;
+  color: #edeeef;
   padding: 0.5rem 1rem;
   margin: 5px auto;
   max-height: 24vh;
@@ -55,7 +55,7 @@
 }
 
 .footer-links a:hover {
-  color: #ffffff;
+  color: #edeeef;
 }
 
 .footer-social {
@@ -71,7 +71,7 @@
 
 .footer-social a:hover {
   text-decoration: none;
-  color: #ffffff;
+  color: #edeeef;
 }
 
 .footer-bottom {
