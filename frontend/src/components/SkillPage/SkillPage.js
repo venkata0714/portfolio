@@ -2,6 +2,7 @@ import { React, useState, useEffect } from "react";
 import { zoomIn } from "../../services/variants";
 import Marquee from "react-fast-marquee";
 import "../../styles/SkillPage.css";
+import { SpotlightBG } from "../AboutPage/SpotlightBG";
 import javascript from "../../assets/img/icons/javascript.svg";
 import python from "../../assets/img/icons/python.svg";
 import react from "../../assets/img/icons/react.svg";
@@ -297,7 +298,8 @@ function SkillPage() {
   return (
     <section className="skill-container" id="skills">
       <AnimatePresence>
-        <BackgroundBeams />
+        {/* <BackgroundBeams /> */}
+        <SpotlightBG />
         <motion.div
           className="skill-div"
           variants={zoomIn(0)}
