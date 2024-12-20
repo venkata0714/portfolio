@@ -12,7 +12,7 @@
   background-attachment: fixed;
   scroll-behavior: smooth;
   background-position: center;
-  min-height: calc(100vh - 52px);
+  height: calc(100vh - 52px);
   font-family: "Montserrat", sans-serif;
   color: #ffffff;
   text-align: center;
@@ -158,22 +158,23 @@ a:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-@media (max-width: 992px) {
+/* @media (max-width: 992px) {
   .contact-page {
     min-height: 100vh;
   }
-}
+} */
 
 @media (max-width: 768px) {
   .contact-form-container {
     display: flex;
     justify-content: center;
     width: 100%;
+    margin-top: 1rem;
   }
 
   .contact-form {
     grid-template-columns: 1fr 1fr;
-    width: 95%; /* Ensures the form takes up 95% of the container */
+    width: 100%; /* Ensures the form takes up 95% of the container */
     max-width: 600px; /* Optional: set a max width to keep it centered and smaller */
     margin: 0 auto; /* Centers the form within the container */
   }

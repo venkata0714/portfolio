@@ -18,7 +18,7 @@
   scroll-snap-type: y mandatory;
   justify-content: center;
   height: calc(100vh - 52px);
-  background-image: url("../assets/img/background/about-bg.png");
+  /* background-image: url("../assets/img/background/about-bg.png"); */
   background-size: cover;
   background-repeat: no-repeat;
   background-position: left center;

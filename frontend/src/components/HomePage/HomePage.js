@@ -1,9 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import { styled } from "@stitches/react";
 import { TypeAnimation } from "react-type-animation";
-import { Parallax } from "react-parallax";
+// import { Parallax } from "react-parallax";
 import { useSpring, animated } from "@react-spring/web";
-import { motion, AnimatePresence } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 import { zoomIn } from "../../services/variants";
 import "../../styles/HomePage.css";
 import ProfilePhoto from "../../assets/img/media/Kartavya.jpg";
@@ -18,6 +23,13 @@ function HomePage() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
   const frames = ["", " frame1", " frame2", " frame3"]; // Define frame styles
+  const HomeBGRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: HomeBGRef,
+    offset: ["start start", "end start"], // Trigger effects as the element enters and exits the viewport
+  });
+  const blur = useTransform(scrollYProgress, [0, 1], [2, 5]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.6]);
 
   const handleProfileClick = () => {
     setFrameIndex((prevIndex) => (prevIndex + 1) % frames.length); // Cycle frames
@@ -87,39 +99,22 @@ function HomePage() {
     window.scrollTo({
       top: offsetPosition,
       behavior: "smooth",
+      duration: 10000,
     });
   };
 
   return (
-    <Parallax
-      strength={-20} // Positive value for zoom-in effect
-      // blur={{ min: -15, max: 15 }} // Blur range for consistency
-      // bgImage={HomeBG} // Background image
-      bgImageAlt="Background Image"
-      renderLayer={(percentage) => {
-        const scaleValue = 1 + percentage * 0.15; // Calculate zoom
-        const blurValue = Math.max(0, (percentage - 1) * 12); // Calculate blur, ensuring it doesn't go negative
-
-        return (
-          <div
-            style={{
-              position: "absolute",
-              left: "50%",
-              top: "50%",
-              transform: `translate(-50%, -50%) scale(${scaleValue})`,
-              filter: `blur(${blurValue}px)`, // Apply dynamic blur
-              transition: `transform ease-in-out`,
-              width: "100%",
-              height: "100%",
-              backgroundImage: `url(${HomeBG})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          />
-        );
-      }}
-    >
-      <AnimatePresence>
+    <AnimatePresence>
+      <div>
+        <motion.div
+          className="homepage-bg"
+          key={scrollYProgress}
+          ref={HomeBGRef}
+          style={{
+            scale,
+            filter: `blur(${blur.current > 2.3 ? blur.current : 0}px)`,
+          }}
+        />
         <section className="homepage-container" id="home">
           <div className="container">
             <div className="home-row">
@@ -226,8 +221,8 @@ function HomePage() {
             </div>
           </div>
         </section>
-      </AnimatePresence>
-    </Parallax>
+      </div>
+    </AnimatePresence>
   );
 }
 
