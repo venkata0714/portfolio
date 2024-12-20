@@ -35,7 +35,7 @@
   background-size: cover; /* Default size */
   scroll-behavior: smooth;
   scale: 1;
-  transition: scale 1ms ease-in-out, filter 1ms ease-in-out;
+  transition: scale 1ms ease-in-out, filter 1ms linear;
 }
 
 .container {

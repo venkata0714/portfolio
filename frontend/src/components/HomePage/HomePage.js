@@ -12,7 +12,6 @@ import {
 import { zoomIn } from "../../services/variants";
 import "../../styles/HomePage.css";
 import ProfilePhoto from "../../assets/img/media/Kartavya.jpg";
-import HomeBG from "../../assets/img/background/home-bg.jpg";
 
 function HomePage() {
   const [clicked, setClicked] = useState(false);
@@ -26,10 +25,13 @@ function HomePage() {
   const HomeBGRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: HomeBGRef,
-    offset: ["start start", "end start"], // Trigger effects as the element enters and exits the viewport
+    offset: ["start start", "end start"],
+    axis: "y",
+    smooth: true,
   });
   const blur = useTransform(scrollYProgress, [0, 1], [2, 5]);
   const scale = useTransform(scrollYProgress, [0, 1], [1, 1.6]);
+  const opacity = useTransform(scrollYProgress, [0.25, 1], [0.85, 1]);
 
   const handleProfileClick = () => {
     setFrameIndex((prevIndex) => (prevIndex + 1) % frames.length); // Cycle frames
@@ -111,6 +113,7 @@ function HomePage() {
           key={scrollYProgress}
           ref={HomeBGRef}
           style={{
+            opacity,
             scale,
             filter: `blur(${blur.current > 2.3 ? blur.current : 0}px)`,
           }}

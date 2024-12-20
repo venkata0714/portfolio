@@ -2,7 +2,7 @@ import { React, useState, useEffect } from "react";
 import { zoomIn } from "../../services/variants";
 import Marquee from "react-fast-marquee";
 import "../../styles/SkillPage.css";
-import { SpotlightBG } from "../AboutPage/SpotlightBG";
+import { BackgroundBeams } from "./BackgroundBeams";
 import javascript from "../../assets/img/icons/javascript.svg";
 import python from "../../assets/img/icons/python.svg";
 import react from "../../assets/img/icons/react.svg";
@@ -55,7 +55,6 @@ import {
 } from "chart.js";
 import { motion, AnimatePresence } from "framer-motion";
 import { fadeIn } from "../../services/variants";
-import { BackgroundBeams } from "./BackgroundBeams";
 
 import SkillGraphCarousel from "./SkillGraph";
 
@@ -298,8 +297,8 @@ function SkillPage() {
   return (
     <section className="skill-container" id="skills">
       <AnimatePresence>
-        {/* <BackgroundBeams /> */}
-        <SpotlightBG />
+        <BackgroundBeams />
+        {/* <SpotlightBG /> */}
         <motion.div
           className="skill-div"
           variants={zoomIn(0)}
