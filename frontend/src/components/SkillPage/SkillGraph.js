@@ -80,7 +80,8 @@ const SkillGraph = ({ givenData }) => {
         pointHoverBackgroundColor: "#edeeef",
         pointHoverBorderColor: "#6cbcfc",
         pointRadius: 4,
-        pointHoverRadius: 6,
+        pointHoverRadius: 8,
+        hoverOffset: 10,
       },
     ],
   };
@@ -93,8 +94,14 @@ const SkillGraph = ({ givenData }) => {
         min: 4,
         max: 5,
         ticks: { stepSize: 0.1, color: "#6cbcfc", display: false },
-        angleLines: { color: "#edeeef" },
-        grid: { color: "rgba(237, 238, 239, 0.3)" },
+        angleLines: {
+          color: "#edeeef",
+          lineWidth: 0.5,
+        },
+        grid: {
+          color: "rgba(237, 238, 239, 0.3)",
+          circular: true, // Add a circular grid effect
+        },
         pointLabels: {
           color: "#edeeef",
           font: {
@@ -102,7 +109,6 @@ const SkillGraph = ({ givenData }) => {
             size: 10,
             family: "'Montserrat', sans-serif",
           },
-          callbacks: {},
         },
       },
     },
@@ -121,6 +127,11 @@ const SkillGraph = ({ givenData }) => {
         borderWidth: 3,
         padding: 10,
       },
+      animation: {
+        duration: 2000, // 2 seconds for a full animation
+        easing: "easeInOutQuad",
+        onComplete: () => console.log("Animation Complete!"),
+      },
       customAverage: {
         id: "customAverage",
         beforeDraw(chart) {
@@ -136,17 +147,32 @@ const SkillGraph = ({ givenData }) => {
           ctx.restore();
         },
       },
+      filler: {
+        propagate: true, // Smooth fill effect for the dataset
+      },
+    },
+    animation: {
+      duration: 1500,
+      easing: "easeInOutQuart",
+    },
+    hover: {
+      animationDuration: 500, // Animate data points on hover
     },
   };
 
   return (
-    <div className="skill-image">
+    <motion.div
+      className="skill-image"
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 1.5, ease: "easeInOut" }}
+    >
       <Radar
         data={data}
         options={options}
         plugins={[options.plugins.customAverage]}
       />
-    </div>
+    </motion.div>
   );
 };
 

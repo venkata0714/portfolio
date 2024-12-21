@@ -1,48 +1,10 @@
 import { React, useState, useEffect } from "react";
-import { zoomIn } from "../../services/variants";
-import Marquee from "react-fast-marquee";
+import { zoomIn, fadeIn } from "../../services/variants";
 import "../../styles/SkillPage.css";
-import { BackgroundBeams } from "./BackgroundBeams";
-import javascript from "../../assets/img/icons/javascript.svg";
-import python from "../../assets/img/icons/python.svg";
-import react from "../../assets/img/icons/react.svg";
-import mongodb from "../../assets/img/icons/mongodb.svg";
-import cpp from "../../assets/img/icons/c++.svg";
-import c from "../../assets/img/icons/c.svg";
-import html from "../../assets/img/icons/html.svg";
-import css from "../../assets/img/icons/css.svg";
-import flask from "../../assets/img/icons/flask.svg";
-import d3 from "../../assets/img/icons/d3.svg";
-import sql from "../../assets/img/icons/sql.svg";
-import dsa from "../../assets/img/icons/dsa.svg";
-import discord from "../../assets/img/icons/discord.svg";
-import ml from "../../assets/img/icons/machinelearning.svg";
-import dl from "../../assets/img/icons/deeplearning.svg";
-import lr from "../../assets/img/icons/logisticregression.svg";
-import macos from "../../assets/img/icons/macos.svg";
-import windows from "../../assets/img/icons/windows.svg";
-import assembly from "../../assets/img/icons/assembly.svg";
-import selenium from "../../assets/img/icons/selenium.svg";
-import typescript from "../../assets/img/icons/typescript.svg";
-import tensorflow from "../../assets/img/icons/tensorflow.svg";
-import pandas from "../../assets/img/icons/pandas.svg";
-import numpy from "../../assets/img/icons/numpy.svg";
-import tableau from "../../assets/img/icons/tableau.svg";
-import django from "../../assets/img/icons/django.svg";
-import net from "../../assets/img/icons/net.svg";
-import unity from "../../assets/img/icons/unity.svg";
-import hive from "../../assets/img/icons/pyhive.svg";
-import neuralnetwork from "../../assets/img/icons/neuralnetwork.svg";
-import xml from "../../assets/img/icons/xml.svg";
-import vanillajs from "../../assets/img/icons/vanillajs.svg";
-import pyspark from "../../assets/img/icons/pyspark.svg";
-import swift from "../../assets/img/icons/swift.svg";
-import java from "../../assets/img/icons/java.svg";
-import english from "../../assets/img/icons/english.svg";
-import hindi from "../../assets/img/icons/hindi.svg";
-import french from "../../assets/img/icons/french.svg";
-import arabic from "../../assets/img/icons/arabic.svg";
-import japanese from "../../assets/img/icons/japanese.svg";
+import github from "../../assets/img/icons/github.png";
+import SkillBG from "./SkillBG.js";
+import SkillGraphCarousel from "./SkillGraph";
+import SkillSection from "./SkillSection";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -54,130 +16,6 @@ import {
   Legend,
 } from "chart.js";
 import { motion, AnimatePresence } from "framer-motion";
-import { fadeIn } from "../../services/variants";
-
-import SkillGraphCarousel from "./SkillGraph";
-
-const proficientSkills = [
-  { logo: javascript, name: "JavaScript" },
-  { logo: python, name: "Python" },
-  { logo: react, name: "React" },
-  { logo: mongodb, name: "MongoDB" },
-  { logo: cpp, name: "C++" },
-  { logo: c, name: "C" },
-  { logo: html, name: "HTML" },
-  { logo: css, name: "CSS" },
-  { logo: flask, name: "Flask" },
-  { logo: d3, name: "D3.js" },
-  { logo: sql, name: "SQL" },
-  { logo: dsa, name: "Data Structures & Algorithms" },
-  { logo: discord, name: "Discord.js/.py" },
-  { logo: ml, name: "Machine Learning Algorithms" },
-  { logo: dl, name: "Deep Learning Algorithms" },
-  { logo: lr, name: "Logistic Regression" },
-  { logo: macos, name: "MacOS" },
-  { logo: windows, name: "Windows" },
-];
-
-const intermediateSkills = [
-  { logo: assembly, name: "Assembly" },
-  { logo: selenium, name: "Selenium" },
-  { logo: typescript, name: "TypeScript" },
-  { logo: tensorflow, name: "TensorFlow" },
-  { logo: pandas, name: "Pandas" },
-  { logo: numpy, name: "NumPy" },
-  { logo: tableau, name: "Tableau" },
-  { logo: django, name: "Django" },
-  { logo: net, name: ".NET Framework" },
-  { logo: unity, name: "Unity" },
-];
-
-const beginnerSkills = [
-  { logo: hive, name: "Hive" },
-  { logo: neuralnetwork, name: "Neural Network Architecture" },
-  { logo: xml, name: "XML" },
-  { logo: vanillajs, name: "Vanilla JS" },
-  { logo: neuralnetwork, name: "Recurrent Neural Network" },
-  { logo: pyspark, name: "PySpark" },
-  { logo: swift, name: "Swift" },
-  { logo: java, name: "Java" },
-];
-
-const languageSkills = [
-  { logo: english, name: "English" },
-  { logo: hindi, name: "Hindi" },
-  { logo: french, name: "French" },
-  { logo: japanese, name: "Japanese" },
-  { logo: arabic, name: "Arabic" },
-];
-const SkillRibbon = ({ givenSkills }) => {
-  return (
-    <motion.div
-      className="ribbon-container"
-      variants={fadeIn("left", 200, 0)}
-      initial="hidden"
-      whileInView="show"
-      exit="hidden"
-    >
-      <Marquee
-        autoFill
-        direction="left"
-        pauseOnClick
-        loop={0}
-        play={1}
-        speed={15}
-        style={{ maxWidth: "100%", overflow: "hidden" }}
-      >
-        {givenSkills.map((skill, index) => (
-          <div key={index} className="ribbon-item">
-            <img className="skill-icon" src={skill.logo} alt={skill.name} />
-            <span className="skill-name">{skill.name}</span>
-          </div>
-        ))}
-      </Marquee>
-    </motion.div>
-  );
-};
-
-function SkillSection({ title, skills }) {
-  const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth > 992);
-
-  // Listen for screen resizing
-  useEffect(() => {
-    const handleResize = () => {
-      setIsLargeScreen(window.innerWidth > 992);
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  return (
-    <motion.div className="skill-column">
-      <motion.p
-        className="skill-paragraph"
-        variants={fadeIn("right", 200, 0)}
-        initial="hidden"
-        whileInView="show"
-        exit="hidden"
-      >
-        {title}
-      </motion.p>
-      {isLargeScreen && skills.length > 6 ? (
-        <>
-          <SkillRibbon
-            givenSkills={skills.slice(0, Math.floor(skills.length / 2))}
-          />
-          <SkillRibbon
-            givenSkills={skills.slice(Math.floor(skills.length / 2))}
-          />
-        </>
-      ) : (
-        <SkillRibbon givenSkills={skills} />
-      )}
-    </motion.div>
-  );
-}
 
 // Register necessary components for Chart.js
 ChartJS.register(
@@ -189,7 +27,7 @@ ChartJS.register(
   Legend
 );
 
-const BarChart = () => {
+const BarChart = ({ topLangs }) => {
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
 
   useEffect(() => {
@@ -200,13 +38,14 @@ const BarChart = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
   // Enhanced Data
   const data = {
-    labels: ["JavaScript", "Python", "C++", "HTML", "CSS", "Flask", "SQL"],
+    labels: topLangs.labels,
     datasets: [
       {
         label: "Hours of Coding",
-        data: [250, 200, 150, 100, 80, 50, 60],
+        data: topLangs.data,
         backgroundColor: [
           "rgba(75, 192, 192, 0.6)",
           "rgba(153, 102, 255, 0.6)",
@@ -260,7 +99,7 @@ const BarChart = () => {
       },
       y: {
         beginAtZero: true,
-        suggestedMax: 250,
+        suggestedMax: 300,
         ticks: {
           color: "#edeeef",
           stepSize: 50,
@@ -270,6 +109,10 @@ const BarChart = () => {
         },
         grid: {
           color: "rgba(255, 255, 255, 0.1)",
+        },
+        animation: {
+          duration: 5000, // 2 seconds for the animation
+          easing: "easeOutQuart", // Smooth easing for the animation
         },
       },
     },
@@ -294,10 +137,97 @@ const BarChart = () => {
 };
 
 function SkillPage() {
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+  const [topLangs, setTopLangs] = useState({ labels: [], data: [] });
+
+  useEffect(() => {
+    const fetchTopLangData = async () => {
+      const url = "http://localhost:5000/api/top-langs";
+
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const svgData = await response.text();
+
+        // Parse the SVG data to extract lang-name innerHTML
+        const parser = new DOMParser();
+        const svgDoc = parser.parseFromString(svgData, "image/svg+xml");
+        const langNames = svgDoc.querySelectorAll(".lang-name");
+
+        const extractedLangNames = Array.from(langNames).map((el) =>
+          el.innerHTML.trim()
+        );
+
+        // Process the first 5 elements to create the topLangs dictionary
+        let processedData = extractedLangNames.slice(0, 5).reduce(
+          (acc, lang) => {
+            const parts = lang.split(" ");
+            const name = parts.slice(0, -1).join(" "); // All but the last word
+            const value =
+              parseFloat(parts[parts.length - 1].replace("%", "")) * 7; // Convert percentage to float and multiply by 6
+
+            acc.labels.push(name);
+            acc.data.push(parseFloat(value.toFixed(2)));
+            return acc;
+          },
+          { labels: [], data: [] }
+        );
+
+        // Calculate the total hours and assign remaining hours to C++
+        const totalHours = processedData.data.reduce(
+          (sum, hours) => sum + hours,
+          0
+        );
+        const remainingHours = 900 - totalHours;
+        const cppIndex = processedData.labels.indexOf("C++");
+
+        if (cppIndex !== -1) {
+          processedData.data[cppIndex] = parseFloat(remainingHours.toFixed(2));
+        } else {
+          processedData.labels.push("C++");
+          processedData.data.push(parseFloat(remainingHours.toFixed(2)));
+        }
+
+        // Sort the processedData by data in descending order
+        const sortedIndices = [...processedData.data.keys()].sort(
+          (a, b) => processedData.data[b] - processedData.data[a]
+        );
+
+        processedData = {
+          labels: sortedIndices.map((index) => processedData.labels[index]),
+          data: sortedIndices.map((index) => processedData.data[index]),
+        };
+
+        setTopLangs(processedData);
+
+        console.log("Extracted Lang Names: ", extractedLangNames);
+        console.log("Top Langs Processed Data: ", processedData);
+      } catch (error) {
+        console.error("Error fetching TopLangData:", error);
+      }
+    };
+
+    fetchTopLangData();
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setScreenWidth(window.innerWidth);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   return (
-    <section className="skill-container" id="skills">
+    <section
+      className="skill-container"
+      id="skills"
+      style={{ overflow: "hidden" }}
+    >
       <AnimatePresence>
-        <BackgroundBeams />
+        <SkillBG />
+        {/* <EnhancedHexagonalGrid /> */}
         {/* <SpotlightBG /> */}
         <motion.div
           className="skill-div"
@@ -326,22 +256,15 @@ function SkillPage() {
               >
                 <strong>My TechStack</strong>
               </motion.p>
-              <motion.div className="skill-row">
-                <SkillSection
-                  title="Proficient Skills"
-                  skills={proficientSkills}
-                />
-                <SkillSection
-                  title="Intermediate Skills"
-                  skills={intermediateSkills}
-                />
-              </motion.div>
-              <motion.div className="skill-row">
-                <SkillSection
-                  title="Beginners Skills"
-                  skills={beginnerSkills}
-                />
-                <SkillSection title="My Languages" skills={languageSkills} />
+              <motion.div
+                className="skill-carousel-container"
+                key={screenWidth}
+                variants={zoomIn(0)}
+                initial="hidden"
+                whileInView="show"
+                exit="hidden"
+              >
+                <SkillSection />
               </motion.div>
               <motion.p
                 className="skill-paragraph"
@@ -354,7 +277,16 @@ function SkillPage() {
               </motion.p>
               <motion.div className="last-skill-row">
                 <motion.div className="last-skill-column column1">
-                  <BarChart />
+                  <a
+                    href="https://github.com/Kartavya904/#topLang"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="github-icon"
+                  >
+                    <img src={github} alt="GitHub" />
+                  </a>
+
+                  <BarChart key={topLangs} topLangs={topLangs} />
                 </motion.div>
                 <motion.div className="last-skill-column column2">
                   <motion.div

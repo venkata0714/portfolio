@@ -93,6 +93,9 @@ const getHonorsExperienceByLink = (req, res) =>
 
 const getSkills = (req, res) => getAllDocuments("skillsTable", res);
 
+const getSkillComponents = (req, res) =>
+  getAllDocuments("skillsCollection", res);
+
 module.exports = {
   getProjects,
   getProjectByLink,
@@ -105,4 +108,5 @@ module.exports = {
   getHonorsExperiences,
   getHonorsExperienceByLink,
   getSkills,
+  getSkillComponents,
 };

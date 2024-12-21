@@ -15,7 +15,7 @@ export const AppLoad = (direction) => {
   };
 };
 
-export const fadeIn = (direction, size, delay) => {
+export const fadeIn = (direction, size, delay, duration = 1) => {
   return {
     hidden: {
       y: direction === "up" ? size : direction === "down" ? -size : 0,
@@ -27,7 +27,7 @@ export const fadeIn = (direction, size, delay) => {
       x: 0,
       opacity: 1,
       transition: {
-        duration: 1,
+        duration: duration,
         delay: delay,
         ease: [0.25, 0.25, 0.25, 0.75],
       },
