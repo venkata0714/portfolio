@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import Background from "./Background";
 import InvolvementTabPage from "./InvolvementTabPage";
 import CareerTabPage from "./CareerTabPage";
@@ -10,16 +10,19 @@ const tabs = [
   {
     title: "Involvement",
     icon: <i className="tab-icon fa-solid fa-handshake"></i>,
+    component: InvolvementTabPage,
   },
-  { title: "Career", icon: <i className="tab-icon fa-solid fa-briefcase"></i> },
-  { title: "Honors", icon: <i className="tab-icon fa-solid fa-trophy"></i> },
+  {
+    title: "Career",
+    icon: <i className="tab-icon fa-solid fa-briefcase"></i>,
+    component: CareerTabPage,
+  },
+  {
+    title: "Honors",
+    icon: <i className="tab-icon fa-solid fa-trophy"></i>,
+    component: HonorsTabPage,
+  },
 ];
-
-const tabComponents = {
-  Involvement: InvolvementTabPage,
-  Career: CareerTabPage,
-  Honors: HonorsTabPage,
-};
 
 const scrollToSection = (id) => {
   const element = document.getElementById(id);
@@ -55,8 +58,11 @@ const tabHighlightVariants = {
 };
 
 const ExperiencePage = () => {
-  const [selectedTab, setSelectedTab] = useState(1); // Default tab is "Involvement"
-  const ActiveTabComponent = tabComponents[tabs[selectedTab].title];
+  const [selectedTab, setSelectedTab] = useState(tabs[1]); // Default tab is "Career"
+  const [ActiveComponent, setActiveComponent] = useState(
+    () => selectedTab.component
+  );
+
   return (
     <section className="experience-container" id="experience">
       <Background />
@@ -64,48 +70,32 @@ const ExperiencePage = () => {
         <div className="tabs-wrapper">
           <motion.div
             className="tab-highlight"
-            custom={selectedTab}
+            custom={tabs.indexOf(selectedTab)}
             variants={tabHighlightVariants}
             animate="animate"
             initial="initial"
           />
-          {tabs.map((tab, index) => (
+          {tabs.map((tab) => (
             <motion.button
               key={tab.title}
-              className={`tab-button ${selectedTab === index ? "active" : ""}`}
+              className={`tab-button ${
+                selectedTab.title === tab.title ? "active" : ""
+              }`}
               onClick={() => {
-                setSelectedTab(index);
+                setSelectedTab(tab);
+                setActiveComponent(() => tab.component);
                 scrollToSection("experience");
               }}
             >
               {tab.icon}
-              <AnimatePresence>
-                {selectedTab === index && (
-                  <motion.span
-                    initial={{ width: 0, opacity: 0, scale: 0 }}
-                    animate={{ width: "auto", opacity: 1, scale: 1 }}
-                    whileHover={{ width: "auto", opacity: 1, scale: 1 }}
-                    exit={{ width: 0, opacity: 0, scale: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="tab-text"
-                  >
-                    {tab.title}
-                  </motion.span>
-                )}
-              </AnimatePresence>
+              {selectedTab.title === tab.title && (
+                <span className="tab-text">{tab.title}</span>
+              )}
             </motion.button>
           ))}
         </div>
         <div className="content-container">
-          <motion.div
-            key={selectedTab}
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <ActiveTabComponent />
-          </motion.div>
+          <ActiveComponent />
         </div>
       </div>
     </section>
