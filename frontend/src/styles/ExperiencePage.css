@@ -118,11 +118,6 @@
   height: 100%;
   margin-bottom: 20px;
   z-index: 3; /* Ensure content container is at the top */
-  pointer-events: none; /* Let pointer events pass through */
-}
-
-.content-container > * {
-  pointer-events: auto; /* Allow interaction with child elements */
 }
 
 @media (max-width: 768px) {

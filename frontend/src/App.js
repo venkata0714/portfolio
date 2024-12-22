@@ -68,7 +68,11 @@ function App() {
         index: prev.length,
         type,
         data,
-        name: data.title || data.projectTitle || `Tab ${prev.length + 1}`,
+        name:
+          data.title ||
+          data.projectTitle ||
+          data.experienceTitle ||
+          `Tab ${prev.length + 1}`,
       };
       const result = [...prev, newTab];
       console.log("Tabs after addition:", result);
@@ -109,7 +113,7 @@ function App() {
         <AboutPage />
         <SkillPage />
         <ProjectPage addTab={addTab} />
-        <ExperiencePage />
+        <ExperiencePage addTab={addTab} />
         <ContactPage />
         <Links />
         <a

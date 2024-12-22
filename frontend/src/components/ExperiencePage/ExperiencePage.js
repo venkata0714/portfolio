@@ -57,7 +57,7 @@ const tabHighlightVariants = {
   }),
 };
 
-const ExperiencePage = () => {
+const ExperiencePage = ({ addTab }) => {
   const [selectedTab, setSelectedTab] = useState(tabs[1]); // Default tab is "Career"
   const [ActiveComponent, setActiveComponent] = useState(
     () => selectedTab.component
@@ -95,7 +95,7 @@ const ExperiencePage = () => {
           ))}
         </div>
         <div className="content-container">
-          <ActiveComponent />
+          <ActiveComponent addTab={addTab} />
         </div>
       </div>
     </section>

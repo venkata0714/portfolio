@@ -1,0 +1,109 @@
+.career-tab-page {
+  display: flex;
+  height: 95%; /* Adjusted to take the appointed height */
+  width: max(1140px, 95%);
+  flex-direction: column;
+  align-items: center;
+  justify-content: stretch; /* Allow children to stretch fully */
+  font-family: "Montserrat", sans-serif;
+  color: #edeeef;
+}
+
+.career-tab-header {
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  color: #edeeef;
+  text-align: center;
+  flex: 0 0 auto; /* Prevent the header from shrinking or stretching */
+  margin: 0;
+  padding: 20px 0; /* Add spacing around the header */
+}
+
+.career-grid-container {
+  display: flex;
+  height: 100%;
+  flex-wrap: nowrap; /* Prevent wrapping */
+  gap: 20px; /* Optional spacing between cards */
+  justify-content: center; /* Center the cards horizontally */
+  align-items: stretch; /* Ensure cards stretch vertically to match container */
+  overflow-x: auto; /* Enable horizontal scrolling if needed */
+}
+
+.career-card {
+  flex: 1 1 auto; /* Allow cards to grow and shrink dynamically */
+  display: flex;
+  flex-direction: column; /* Stack image and content vertically */
+  align-items: flex-start; /* Align content to the left */
+  justify-content: flex-start; /* Prevent centering, align at the top */
+  background: #1b1e22; /* Dark translucent background */
+  border-radius: 10px; /* Smooth rounded corners */
+  box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.4); /* Subtle shadow */
+  overflow: hidden; /* Prevent content overflow */
+  transition: transform 0.3s ease-in-out; /* Smooth hover effect */
+}
+
+.career-card:hover {
+  transform: translateY(-10px); /* Slight lift on hover */
+  box-shadow: 6px 6px 15px rgba(0, 0, 0, 0.6); /* Enhanced shadow on hover */
+}
+
+.career-card-image {
+  width: 100%; /* Full width of the card */
+  height: 60%; /* Occupy 60% of the card height */
+  background-size: contain; /* Ensure the image covers the area */
+  background-repeat: no-repeat;
+  background-position: center; /* Center the image */
+  aspect-ratio: 16 / 9;
+}
+
+.career-card-content {
+  height: 40%; /* Occupy the remaining 40% of the card height */
+  width: 100%; /* Ensure full width */
+  padding: 15px; /* Add padding for spacing */
+  display: flex;
+  flex-direction: column; /* Stack title, subtitle, and description */
+  justify-content: flex-start; /* Align items at the top */
+  gap: 10px; /* Add spacing between elements */
+  box-sizing: border-box; /* Ensure padding doesn't affect dimensions */
+}
+
+.experience-title {
+  font-size: 1.2rem; /* Bold and slightly larger text */
+  color: #fcbc1d; /* Golden yellow color for emphasis */
+  margin: 0; /* Remove default margin */
+  font-weight: 600;
+  text-align: left; /* Align text to the left */
+}
+
+.experience-subtitle {
+  font-size: 0.9rem; /* Smaller subtitle text */
+  color: #edeeef; /* Light gray text for contrast */
+  margin: 0; /* Remove default margin */
+  text-align: left;
+}
+
+.experience-tagline {
+  font-size: 0.85rem; /* Regular size for additional details */
+  color: #b0b3b8; /* Lighter gray for secondary text */
+  margin: 0; /* Remove default margin */
+  text-align: left;
+  line-height: 1.5; /* Improve readability */
+}
+
+.learn-more-button {
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.learn-more-button:hover {
+  background-color: #0056b3;
+}
+
+.learn-more-button:active {
+  transform: scale(0.95);
+}

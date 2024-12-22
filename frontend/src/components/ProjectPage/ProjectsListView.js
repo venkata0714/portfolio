@@ -244,15 +244,6 @@ function ProjectsListView({ addTab }) {
           </motion.div>
         );
       })}
-      {/* 
-          {showModal && selectedProject && (
-            <motion.div
-              className="project-modal"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            ></motion.div>
-          )} */}
     </div>
   );
 }
