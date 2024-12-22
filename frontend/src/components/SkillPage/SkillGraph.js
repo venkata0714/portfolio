@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Carousel from "react-multi-carousel";
 import "../../styles/SkilllGraph.css";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import LeftArrow from "../../assets/img/icons/arrow1.svg";
 import RightArrow from "../../assets/img/icons/arrow2.svg";
 import { zoomIn } from "../../services/variants";
@@ -184,7 +184,7 @@ const SkillGraphCarousel = () => {
     const loadSkills = async () => {
       try {
         const fetchedSkills = await fetchSkills();
-        console.log("Fetched Skills:", fetchedSkills);
+        // console.log("Fetched Skills:", fetchedSkills);
         setSkills(fetchedSkills);
       } catch (error) {
         console.error("Error fetching skills:", error);
@@ -204,7 +204,7 @@ const SkillGraphCarousel = () => {
 
   return (
     <Carousel
-      key={screenWidth}
+      key={`skill-graph-${screenWidth}`}
       responsive={responsive}
       autoPlaySpeed={3000}
       infinite
@@ -214,10 +214,10 @@ const SkillGraphCarousel = () => {
       customLeftArrow={<CustomLeftArrow />}
       customRightArrow={<CustomRightArrow />}
     >
-      {skills.map((eachSkill, index) => (
+      {skills.map((eachSkill) => (
         <motion.div
           className="item"
-          key={index}
+          key={eachSkill.id || eachSkill.skillTitle}
           variants={zoomIn(0)}
           initial="hidden"
           whileInView="show"

@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Background from "./Background";
+import InvolvementTabPage from "./InvolvementTabPage";
+import CareerTabPage from "./CareerTabPage";
+import HonorsTabPage from "./HonorsTabPage";
 import "../../styles/ExperiencePage.css";
 
 const tabs = [
@@ -11,6 +14,12 @@ const tabs = [
   { title: "Career", icon: <i className="tab-icon fa-solid fa-briefcase"></i> },
   { title: "Honors", icon: <i className="tab-icon fa-solid fa-trophy"></i> },
 ];
+
+const tabComponents = {
+  Involvement: InvolvementTabPage,
+  Career: CareerTabPage,
+  Honors: HonorsTabPage,
+};
 
 const scrollToSection = (id) => {
   const element = document.getElementById(id);
@@ -46,22 +55,20 @@ const tabHighlightVariants = {
 };
 
 const ExperiencePage = () => {
-  const [selectedTab, setSelectedTab] = useState(0); // Default tab is "Involvement"
-
+  const [selectedTab, setSelectedTab] = useState(1); // Default tab is "Involvement"
+  const ActiveTabComponent = tabComponents[tabs[selectedTab].title];
   return (
     <section className="experience-container" id="experience">
       <Background />
       <div className="experience-div">
         <div className="tabs-wrapper">
-          {/* Highlight element */}
           <motion.div
             className="tab-highlight"
             custom={selectedTab}
             variants={tabHighlightVariants}
             animate="animate"
             initial="initial"
-          ></motion.div>
-
+          />
           {tabs.map((tab, index) => (
             <motion.button
               key={tab.title}
@@ -90,7 +97,15 @@ const ExperiencePage = () => {
           ))}
         </div>
         <div className="content-container">
-          <p>Currently viewing: {tabs[selectedTab].title}</p>
+          <motion.div
+            key={selectedTab}
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <ActiveTabComponent />
+          </motion.div>
         </div>
       </div>
     </section>

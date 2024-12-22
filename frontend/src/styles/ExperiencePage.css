@@ -6,9 +6,9 @@
   justify-content: center;
   height: calc(100vh - 52px);
   background: linear-gradient(145deg, #212529, #181a1d);
-
   color: #edeeef;
   font-family: "Montserrat", sans-serif;
+  z-index: 2;
 }
 
 .experience-div {
@@ -104,6 +104,7 @@
 }
 
 .content-container {
+  display: block;
   text-align: center;
   font-size: 1.2rem;
   padding: 1rem;

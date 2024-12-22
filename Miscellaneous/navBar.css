@@ -1,156 +1,162 @@
 /************ Navbar Css ************/
 .navbar {
-    position: relative;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    padding: 15.84px, 10.8px;
-    width: 100%;
-    background: transparent;
-    -webkit-transition: all 0.3s;
-    -moz-transition: all 0.3s;
-    transition: all 0.3s;
-  }
-  
-  .fixed-top {
-    position: fixed;
-    top: 0;
-    right: 0;
-    left: 0;
-    z-index: 1030;
-  }
-  
-  .scrolled {
-    padding-top: 0;
-    padding-bottom: 0;
-    padding-left: 16px;
-    padding-right: 16px;
-    background-color: #212529;
-  }
-    
-  .navbar-container {
-    max-width: 1200px;
-    width: 100%;
-    margin: 0 auto;
-    padding: 0 15px;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-  }
-  
-  .navbar-toggler {
-    font-size: 12px;
-    right: 0;
-    padding: 13px;
-    text-transform: uppercase;
-    color: black;
-    border: 0;
-    background-color: #fcbc1d;
-    font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  }
-  
-  .navbar-brand {
-    color: transparent;
-    background: linear-gradient(135deg, #fcbc1d, #fcae2e, #fcbc1d);
-    background-size: 200% 200%;
-    -webkit-background-clip: text;
-    background-clip: text;
-    font-family: 'Kaushan Script', 'Helvetica Neue', Helvetica, Arial, cursive;
-    text-decoration: none !important;
-    display: inline-block;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    margin-right: 16px;
-    font-size: 28px;
-    line-height: inherit;
-    white-space: nowrap;
-    -webkit-transition: all 0.3s;
-    -moz-transition: all 0.3s;
-    transition: all 0.3s;
-  }
-  
-  .navbar-brand.active, .navbar-brand:active, .navbar-brand:focus, .navbar-brand:hover {
-    color: #fbab25;
-  }
-  
-  .navbar-brand:hover, .navbar-brand:focus {
-    text-decoration: none;
-  }
-  
-  .scrolled-navbar-brand {
-    color: transparent;
-    background: linear-gradient(135deg, #fcbc1d, #fcae2e, #fcbc1d);
-    background-size: 200% 200%;
-    -webkit-background-clip: text;
-    background-clip: text;
-    font-family: 'Kaushan Script', 'Helvetica Neue', Helvetica, Arial, cursive;
-    text-decoration: none !important;
-    display: inline-block;
-    margin-right: 16px;
-    font-size: 20px;
-    line-height: inherit;
-    white-space: nowrap;
-    padding: 12px 0;
-  }
-  
-  .navbar-menu {
-    font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    list-style-type: none; /* Removes bullets */
-    display: flex; /* Arranges items in a row */
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.75em 0;
-    font-weight: 100;
-  }
-  
-  .navbar-links {
-    display: flex;
-    padding-left: 0;
-    margin-bottom: 0;
-    list-style: none;
-  }
-  
-  .navbar-links li, .navbar-links a{
-    display: inline; /* Ensures each item is inline */
-    padding: 0.75em 0;
-    text-decoration: none !important;
-    font-weight: 400;
-  }
-  
-  
-  .navbar-link {
-    padding-right: 0;
-    padding-left: 0;
-  }
-  
-  .dropdown-menu {
-    position: static;
-    float: none;
-  }
-  
-  i {
-    color: white !important;
-  }
-  
-  .navbar-link {
-    font-size: 90%;
-    font-weight: 400;
-    padding: 0.75em 0;
-    padding: 1.1em 0.75em !important;
-    transition: all 0.3s;
-    letter-spacing: 1px;
-    color: white;
-    font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  }
-  
-  .active, .navbar-link:hover, .navbar-link:hover i {
-    color: #fcbc1d;
-  }
-  
-  .navbar-text {
-    display: inline-block;
-    padding-top: 15.84px;
-    padding-bottom: 15.84px;
-  }
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15.84px, 10.8px;
+  width: 100%;
+  background: transparent;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  transition: all 0.3s;
+}
+
+.fixed-top {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 1030;
+}
+
+.scrolled {
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 16px;
+  padding-right: 16px;
+  background-color: #212529;
+}
+
+.navbar-container {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 15px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar-toggler {
+  font-size: 12px;
+  right: 0;
+  padding: 13px;
+  text-transform: uppercase;
+  color: black;
+  border: 0;
+  background-color: #fcbc1d;
+  font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.navbar-brand {
+  color: transparent;
+  background: linear-gradient(135deg, #fcbc1d, #fcae2e, #fcbc1d);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  font-family: "Montserrat";
+  text-decoration: none !important;
+  display: inline-block;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-right: 16px;
+  font-size: 28px;
+  line-height: inherit;
+  white-space: nowrap;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  transition: all 0.3s;
+}
+
+.navbar-brand.active,
+.navbar-brand:active,
+.navbar-brand:focus,
+.navbar-brand:hover {
+  color: #fbab25;
+}
+
+.navbar-brand:hover,
+.navbar-brand:focus {
+  text-decoration: none;
+}
+
+.scrolled-navbar-brand {
+  color: transparent;
+  background: linear-gradient(135deg, #fcbc1d, #fcae2e, #fcbc1d);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  font-family: "Montserrat";
+  text-decoration: none !important;
+  display: inline-block;
+  margin-right: 16px;
+  font-size: 20px;
+  line-height: inherit;
+  white-space: nowrap;
+  padding: 12px 0;
+}
+
+.navbar-menu {
+  font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  list-style-type: none; /* Removes bullets */
+  display: flex; /* Arranges items in a row */
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75em 0;
+  font-weight: 100;
+}
+
+.navbar-links {
+  display: flex;
+  padding-left: 0;
+  margin-bottom: 0;
+  list-style: none;
+}
+
+.navbar-links li,
+.navbar-links a {
+  display: inline; /* Ensures each item is inline */
+  padding: 0.75em 0;
+  text-decoration: none !important;
+  font-weight: 400;
+}
+
+.navbar-link {
+  padding-right: 0;
+  padding-left: 0;
+}
+
+.dropdown-menu {
+  position: static;
+  float: none;
+}
+
+i {
+  color: white !important;
+}
+
+.navbar-link {
+  font-size: 90%;
+  font-weight: 400;
+  padding: 0.75em 0;
+  padding: 1.1em 0.75em !important;
+  transition: all 0.3s;
+  letter-spacing: 1px;
+  color: white;
+  font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.active,
+.navbar-link:hover,
+.navbar-link:hover i {
+  color: #fcbc1d;
+}
+
+.navbar-text {
+  display: inline-block;
+  padding-top: 15.84px;
+  padding-bottom: 15.84px;
+}

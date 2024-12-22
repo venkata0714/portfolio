@@ -30,15 +30,15 @@ const NavBar = () => {
     );
     let scrollTimer = null; // Timer to detect scroll end
 
-    console.log("Sections:");
-    sections.forEach((section) => {
-      // console.log("Class name:", section.className);
-    });
+    // console.log("Sections:");
+    // sections.forEach((section) => {
+    //   // console.log("Class name:", section.className);
+    // });
 
-    console.log("navLinks:");
-    navLinks.forEach((link) => {
-      // console.log("Link:", link);
-    });
+    // console.log("navLinks:");
+    // navLinks.forEach((link) => {
+    //   // console.log("Link:", link);
+    // });
 
     const handleScroll = () => {
       // Clear any existing timer

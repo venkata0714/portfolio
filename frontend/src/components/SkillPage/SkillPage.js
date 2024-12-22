@@ -128,7 +128,7 @@ const BarChart = ({ topLangs }) => {
     >
       <Bar
         className="bar-chart"
-        key={screenWidth}
+        key={`bar-chart-${screenWidth}`}
         data={data}
         options={options}
       />
@@ -137,7 +137,7 @@ const BarChart = ({ topLangs }) => {
 };
 
 function SkillPage() {
-  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+  const [skillScreenWidth, setSkillScreenWidth] = useState(window.innerWidth);
   const [topLangs, setTopLangs] = useState({ labels: [], data: [] });
 
   useEffect(() => {
@@ -202,8 +202,8 @@ function SkillPage() {
 
         setTopLangs(processedData);
 
-        console.log("Extracted Lang Names: ", extractedLangNames);
-        console.log("Top Langs Processed Data: ", processedData);
+        // console.log("Extracted Lang Names: ", extractedLangNames);
+        // console.log("Top Langs Processed Data: ", processedData);
       } catch (error) {
         console.error("Error fetching TopLangData:", error);
       }
@@ -214,7 +214,7 @@ function SkillPage() {
 
   useEffect(() => {
     const handleResize = () => {
-      setScreenWidth(window.innerWidth);
+      setSkillScreenWidth(window.innerWidth);
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
@@ -225,85 +225,83 @@ function SkillPage() {
       id="skills"
       style={{ overflow: "hidden" }}
     >
-      <AnimatePresence>
-        <SkillBG />
-        {/* <EnhancedHexagonalGrid /> */}
-        {/* <SpotlightBG /> */}
-        <motion.div
-          className="skill-div"
-          variants={zoomIn(0)}
-          initial="hidden"
-          whileInView="show"
-          exit="hidden"
-        >
-          <div className="skill-box">
-            <motion.h2
-              className="skill-heading"
+      <SkillBG />
+      {/* <EnhancedHexagonalGrid /> */}
+      {/* <SpotlightBG /> */}
+      <motion.div
+        className="skill-div"
+        variants={zoomIn(0)}
+        initial="hidden"
+        whileInView="show"
+        exit="hidden"
+      >
+        <div className="skill-box">
+          <motion.h2
+            className="skill-heading"
+            variants={fadeIn("right", 200, 0)}
+            initial="hidden"
+            whileInView="show"
+            exit="hidden"
+          >
+            Skills
+          </motion.h2>
+          <motion.div className="skill-section">
+            <motion.p
+              className="skill-paragraph"
               variants={fadeIn("right", 200, 0)}
               initial="hidden"
               whileInView="show"
               exit="hidden"
             >
-              Skills
-            </motion.h2>
-            <motion.div className="skill-section">
-              <motion.p
-                className="skill-paragraph"
-                variants={fadeIn("right", 200, 0)}
-                initial="hidden"
-                whileInView="show"
-                exit="hidden"
-              >
-                <strong>My TechStack</strong>
-              </motion.p>
-              <motion.div
-                className="skill-carousel-container"
-                key={screenWidth}
-                variants={zoomIn(0)}
-                initial="hidden"
-                whileInView="show"
-                exit="hidden"
-              >
-                <SkillSection />
-              </motion.div>
-              <motion.p
-                className="skill-paragraph"
-                variants={fadeIn("right", 200, 0)}
-                initial="hidden"
-                whileInView="show"
-                exit="hidden"
-              >
-                <strong>My Workspace</strong>
-              </motion.p>
-              <motion.div className="last-skill-row">
-                <motion.div className="last-skill-column column1">
-                  <a
-                    href="https://github.com/Kartavya904/#topLang"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="github-icon"
-                  >
-                    <img src={github} alt="GitHub" />
-                  </a>
+              <strong>My TechStack</strong>
+            </motion.p>
+            <motion.div
+              className="skill-carousel-container"
+              key={`skill-carousel-${skillScreenWidth}`}
+              variants={zoomIn(0)}
+              initial="hidden"
+              whileInView="show"
+              exit="hidden"
+            >
+              <SkillSection />
+            </motion.div>
+            <motion.p
+              className="skill-paragraph"
+              variants={fadeIn("right", 200, 0)}
+              initial="hidden"
+              whileInView="show"
+              exit="hidden"
+            >
+              <strong>My Workspace</strong>
+            </motion.p>
+            <motion.div className="last-skill-row">
+              <motion.div className="last-skill-column column1">
+                <a
+                  href="https://github.com/Kartavya904/#topLang"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="github-icon"
+                >
+                  <img src={github} alt="GitHub" />
+                </a>
 
-                  <BarChart key={topLangs} topLangs={topLangs} />
-                </motion.div>
-                <motion.div className="last-skill-column column2">
-                  <motion.div
-                    className="skill-graph-carousel"
-                    variants={zoomIn(0)}
-                    initial="hidden"
-                    whileInView="show"
-                    exit="hidden"
-                  >
-                    <SkillGraphCarousel />
-                  </motion.div>
+                <BarChart key={topLangs} topLangs={topLangs} />
+              </motion.div>
+              <motion.div className="last-skill-column column2">
+                <motion.div
+                  className="skill-graph-carousel"
+                  variants={zoomIn(0)}
+                  initial="hidden"
+                  whileInView="show"
+                  exit="hidden"
+                >
+                  <SkillGraphCarousel />
                 </motion.div>
               </motion.div>
             </motion.div>
-          </div>
-        </motion.div>
-      </AnimatePresence>
+          </motion.div>
+        </div>
+      </motion.div>
     </section>
   );
 }

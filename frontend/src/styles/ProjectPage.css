@@ -21,7 +21,7 @@
 
 .project-page-div {
   /* max-height: calc(100vh - 67px); */
-  height: auto;
+  height: 100%;
   width: 100%;
   flex: 1; /* Allows the container to grow to fill the available space */
   display: flex;

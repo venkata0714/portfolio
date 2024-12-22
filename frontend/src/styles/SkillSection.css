@@ -24,6 +24,27 @@
   opacity: 0.7;
 }
 
+.proficiency-table {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  top: 0;
+  left: 0;
+  padding: 2px 5px;
+  z-index: 100;
+  opacity: 1;
+  font-size: 12px;
+  background: rgba(27, 30, 34, 0.8);
+  backdrop-filter: blur(5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(0, 255, 255, 0.1);
+  border-radius: 16px;
+  transform: translateZ(10px);
+  transition: all 0.3s ease-in-out;
+}
+
 .pause-button {
   border: none;
   background: none;
@@ -170,11 +191,11 @@
 .beginner {
   background: linear-gradient(
     135deg,
-    #5a3724,
-    /* Dark bronze */ #6e472c,
-    /* Muted bronze */ #8a5d38,
-    /* Medium bronze */ #a97142,
-    /* Light bronze */ #5a3724 /* Repeat dark bronze for matte finish */
+    #70422c,
+    #8b5b38,
+    #a77242,
+    #c48c56,
+    #70422c
   );
   background-clip: text;
   -webkit-background-clip: text;

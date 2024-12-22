@@ -1,7 +1,5 @@
-.background-beams-canvas {
+.skill-bg-canvas {
   position: absolute;
-  background-color: transparent !important;
-  display: fixed;
   top: 0;
   left: 0;
   width: 100%;

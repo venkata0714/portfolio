@@ -203,7 +203,7 @@ const SkillSection = () => {
   }, [skillCategories, autoplay, isMediumWidth, isSmallWidth]);
 
   return (
-    <AnimatePresence>
+    <>
       <div>
         <PauseTimer
           autoplay={autoplay}
@@ -212,13 +212,24 @@ const SkillSection = () => {
           setCountdown={setCountdown}
           glideRef={glideRef}
         />
+        <motion.div
+          className="proficiency-table"
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0 }}
+          transition={{ ease: "easeInOut", delay: 2 }}
+        >
+          <p className="proficient">Proficient</p>
+          <p className="intermediate">Intermediate</p>
+          <p className="beginner">Beginner</p>
+        </motion.div>
       </div>
       <div className="skill-carousel">
         <div className="glide">
           <div className="glide__track" data-glide-el="track">
             <ul className="glide__slides">
-              {skillCategories.map((category, index) => (
-                <li key={index} className="glide__slide">
+              {skillCategories.map((category) => (
+                <li className="glide__slide" key={`${category.title}-${1}`}>
                   <motion.div
                     className="skill-card"
                     viewport={{ amount: "all" }}
@@ -251,7 +262,7 @@ const SkillSection = () => {
                     >
                       {category.skills.map((skill, skillIndex) => (
                         <motion.div
-                          key={skillIndex}
+                          key={`${category.title}-${skillIndex}`}
                           className="skill-item"
                           variants={zoomIn(skillIndex * 0.2)} // Add consistent stagger effect
                           initial="hidden"
@@ -334,7 +345,7 @@ const SkillSection = () => {
           </div>
         </div>
       </div>
-    </AnimatePresence>
+    </>
   );
 };
 

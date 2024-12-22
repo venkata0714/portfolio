@@ -116,6 +116,7 @@ function HomePage() {
             opacity,
             scale,
             filter: `blur(${blur.current > 2.3 ? blur.current : 0}px)`,
+            zIndex: -1,
           }}
         />
         <section className="homepage-container" id="home">
@@ -140,7 +141,6 @@ function HomePage() {
                   alt="Profile"
                   className={`profile-picture img-responsive img-circle${frames[frameIndex]}`}
                   draggable="false"
-                  dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
                   style={{
                     boxShadow,
                     transform: isHovering
