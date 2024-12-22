@@ -115,7 +115,7 @@
   position: relative;
   align-items: center;
   justify-content: center;
-  height: 100%;
+  height: auto;
   margin-bottom: 20px;
   z-index: 3; /* Ensure content container is at the top */
 }

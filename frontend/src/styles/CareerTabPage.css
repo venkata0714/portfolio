@@ -1,94 +1,136 @@
+/* CareerTabPage.css */
+
+/* Base container for your page */
 .career-tab-page {
   display: flex;
-  height: 95%; /* Adjusted to take the appointed height */
-  width: max(1140px, 95%);
   flex-direction: column;
   align-items: center;
-  justify-content: stretch; /* Allow children to stretch fully */
+  justify-content: stretch;
+  height: 95%;
+  width: max(1140px, 95%);
   font-family: "Montserrat", sans-serif;
   color: #edeeef;
+  margin: 0 auto;
+  padding: 0;
 }
 
+/* Page header */
 .career-tab-header {
   font-size: clamp(1.5rem, 3vw, 2.5rem);
   color: #edeeef;
   text-align: center;
-  flex: 0 0 auto; /* Prevent the header from shrinking or stretching */
   margin: 0;
-  padding: 20px 0; /* Add spacing around the header */
+  padding: 20px 0;
+  flex: 0 0 auto;
 }
 
+/* 
+     Grid container:
+     - At smaller widths, "auto-fit" will ensure 1 or 2 columns as space allows.
+     - We cap columns at 3 using a media query, so if there are more than 3 items, it won’t exceed 3 columns.
+  */
 .career-grid-container {
-  display: flex;
-  height: 100%;
-  flex-wrap: nowrap; /* Prevent wrapping */
-  gap: 20px; /* Optional spacing between cards */
-  justify-content: center; /* Center the cards horizontally */
-  align-items: stretch; /* Ensure cards stretch vertically to match container */
-  overflow-x: auto; /* Enable horizontal scrolling if needed */
+  display: grid;
+  gap: 5px;
+  justify-content: center;
+  align-items: start;
+  width: 100%;
+  padding: 20px 0;
+  overflow-y: auto;
+  box-sizing: border-box;
+  /* minmax(300px, 1fr) ensures each card is at least 300px wide but will stretch as needed. */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 }
 
+/* 
+     Once the container’s width is large enough (e.g., 1024px),
+     we limit it to 3 columns maximum. Feel free to adjust this breakpoint.
+  */
+@media (min-width: 1024px) {
+  .career-grid-container {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+}
+
+/* Individual cards */
 .career-card {
-  flex: 1 1 auto; /* Allow cards to grow and shrink dynamically */
   display: flex;
-  flex-direction: column; /* Stack image and content vertically */
-  align-items: flex-start; /* Align content to the left */
-  justify-content: flex-start; /* Prevent centering, align at the top */
-  background: #1b1e22; /* Dark translucent background */
-  border-radius: 10px; /* Smooth rounded corners */
-  box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.4); /* Subtle shadow */
-  overflow: hidden; /* Prevent content overflow */
-  transition: transform 0.3s ease-in-out; /* Smooth hover effect */
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  background: #1b1e22;
+  border-radius: 10px;
+  box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
 }
 
 .career-card:hover {
-  transform: translateY(-10px); /* Slight lift on hover */
-  box-shadow: 6px 6px 15px rgba(0, 0, 0, 0.6); /* Enhanced shadow on hover */
+  transform: translateY(-10px);
+  box-shadow: 6px 6px 15px rgba(0, 0, 0, 0.6);
 }
 
+/* Top portion for the background image */
 .career-card-image {
-  width: 100%; /* Full width of the card */
-  height: 60%; /* Occupy 60% of the card height */
-  background-size: contain; /* Ensure the image covers the area */
+  width: 100%;
+  background-size: cover; /* Fill area */
   background-repeat: no-repeat;
-  background-position: center; /* Center the image */
-  aspect-ratio: 16 / 9;
+  background-position: center;
+  position: relative; /* For overlay timeline */
+  padding-top: 60%; /* Maintains a responsive aspect ratio */
 }
 
+/* Timeline overlay in the image section */
+.experience-timeline {
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  color: #edeeef;
+}
+
+/* Card content: title, subtitle, etc. */
 .career-card-content {
-  height: 40%; /* Occupy the remaining 40% of the card height */
-  width: 100%; /* Ensure full width */
-  padding: 15px; /* Add padding for spacing */
+  flex: 1;
+  width: 100%;
   display: flex;
-  flex-direction: column; /* Stack title, subtitle, and description */
-  justify-content: flex-start; /* Align items at the top */
-  gap: 10px; /* Add spacing between elements */
-  box-sizing: border-box; /* Ensure padding doesn't affect dimensions */
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-evenly;
+  padding: 30px;
+  box-sizing: border-box;
 }
 
+/* Title */
 .experience-title {
-  font-size: 1.2rem; /* Bold and slightly larger text */
-  color: #fcbc1d; /* Golden yellow color for emphasis */
-  margin: 0; /* Remove default margin */
+  font-size: 1rem;
   font-weight: 600;
-  text-align: left; /* Align text to the left */
+  color: #fcbc1d;
+  margin: 0;
 }
 
+/* Subtitle */
 .experience-subtitle {
-  font-size: 0.9rem; /* Smaller subtitle text */
-  color: #edeeef; /* Light gray text for contrast */
-  margin: 0; /* Remove default margin */
-  text-align: left;
+  font-size: 0.85rem;
+  color: #edeeef;
+  margin: 5px 0 0 0;
 }
 
+/* Optional tagline or description */
 .experience-tagline {
-  font-size: 0.85rem; /* Regular size for additional details */
-  color: #b0b3b8; /* Lighter gray for secondary text */
-  margin: 0; /* Remove default margin */
-  text-align: left;
-  line-height: 1.5; /* Improve readability */
+  font-size: 0.8rem;
+  color: #b0b3b8;
+  margin: 5px 0 0 0;
+  line-height: 1.4;
 }
 
+/* Example button (if needed) */
 .learn-more-button {
   background-color: #007bff;
   color: #ffffff;
@@ -98,6 +140,7 @@
   font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.3s ease;
+  margin-top: 10px;
 }
 
 .learn-more-button:hover {

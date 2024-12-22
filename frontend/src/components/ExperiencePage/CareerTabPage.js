@@ -10,7 +10,11 @@ function CareerTabPage({ addTab }) {
     const getExperiences = async () => {
       try {
         const data = await fetchExperiences();
-        // setExperiences([...data.reverse(), ...data.reverse()]);
+        // setExperiences([
+        //   ...data.reverse(),
+        //   ...data.reverse(),
+        //   ...data.reverse(),
+        // ]);
         setExperiences(data.reverse());
       } catch (error) {
         console.error("Error fetching experiences:", error);
@@ -61,17 +65,6 @@ function CareerTabPage({ addTab }) {
               <h3 className="experience-subtitle">
                 {experience.experienceSubTitle}
               </h3>
-              <p className="experience-tagline">
-                {experience.experienceTagline}
-              </p>
-              <motion.button
-                className="learn-more-button"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => addTab("Experience", experience)}
-              >
-                Learn More
-              </motion.button>
             </div>
           </motion.div>
         ))}
