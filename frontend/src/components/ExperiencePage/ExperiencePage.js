@@ -38,7 +38,7 @@ const scrollToSection = (id) => {
 
 const tabHighlightVariants = {
   initial: (currentIndex) => ({
-    x: `${currentIndex * 120}px`,
+    x: `${currentIndex * 12}px`,
     width: 0,
     opacity: 0,
     scale: 0,
@@ -67,9 +67,10 @@ const ExperiencePage = ({ addTab }) => {
     <section className="experience-container" id="experience">
       <Background />
       <div className="experience-div">
-        <div className="tabs-wrapper">
+        <motion.div className="tabs-wrapper">
           <motion.div
             className="tab-highlight"
+            key={`tab-${selectedTab}`}
             custom={tabs.indexOf(selectedTab)}
             variants={tabHighlightVariants}
             animate="animate"
@@ -86,6 +87,17 @@ const ExperiencePage = ({ addTab }) => {
                 setActiveComponent(() => tab.component);
                 scrollToSection("experience");
               }}
+              drag
+              dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+              dragElastic={0.3}
+              dragTransition={{
+                bounceStiffness: 250,
+                bounceDamping: 17,
+              }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              transition={{ delay: 0, type: "spring" }}
             >
               {tab.icon}
               {selectedTab.title === tab.title && (
@@ -93,7 +105,7 @@ const ExperiencePage = ({ addTab }) => {
               )}
             </motion.button>
           ))}
-        </div>
+        </motion.div>
         <div className="content-container">
           <ActiveComponent addTab={addTab} />
         </div>
