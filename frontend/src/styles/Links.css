@@ -32,11 +32,12 @@
   height: 50%;
   width: 50%;
   transition: transform 0.3s ease; /* Smooth transition for unhover */
+  animation: rotate-backward 0.5s ease-in-out;
 }
 
 .link-btn:hover .icon-img {
   transform: scale(1.1);
-  /* animation: rotate 0.3s linear; */
+  animation: rotate 0.5s ease-in-out;
 }
 @keyframes rotate {
   0% {
@@ -57,11 +58,12 @@
 }
 
 .link-item .icon-img {
-  transition: transform 0.5s ease; /* Smooth transition for unhover */
+  transition: transform 0.5s ease-in-out; /* Smooth transition for unhover */
+  animation: rotate-backward 0.5s ease-in-out;
 }
 
 .link-item:hover .icon-img {
-  animation: rotate 0.3s ease;
+  animation: rotate 0.5s ease-in-out;
 }
 
 .link-btn:hover {

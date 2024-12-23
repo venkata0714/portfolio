@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { zoomIn } from "../../services/variants";
 import { styled } from "@stitches/react";
 import { fetchProjects } from "../../services/projectService";
@@ -10,6 +10,34 @@ function ProjectsListView({ addTab }) {
   const [projects, setProjects] = useState([]);
   const [cardStates, setCardStates] = useState([]);
   const [hoveredCard, setHoveredCard] = useState(null);
+
+  // useEffect(() => {
+  //   const container = parentRef.current;
+
+  //   if (!container) return;
+
+  //   const handleScroll = () => {
+  //     scrollToSection("projects");
+  //   };
+
+  //   container.addEventListener("scroll", handleScroll);
+
+  //   return () => {
+  //     container.removeEventListener("scroll", handleScroll);
+  //   };
+  // }, [parentRef]);
+
+  const scrollToSection = (id) => {
+    const element = document.getElementById(id);
+    const offset = 52; // Adjust based on your navbar height
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.scrollY - offset;
+
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: "smooth",
+    });
+  };
 
   useEffect(() => {
     async function getProjects() {
@@ -160,88 +188,97 @@ function ProjectsListView({ addTab }) {
         };
         const topOffset = 48 + index * (window.innerWidth <= 768 ? 5 : 20);
         return (
-          <motion.div
-            key={index}
-            className={`project-card`}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: index * 0.2 }}
-            onMouseMove={(event) => handleMouseMove(event, index)}
-            onMouseEnter={() => handleMouseEnter(index)}
-            onMouseLeave={() => handleMouseLeave(index)}
-            onClick={() => scrollToCard(index)}
-            style={{
-              top: `${topOffset}px`,
-              // top: `${90 + index * 20}px`,
-              marginBottom: calculateMarginBottom(index, totalCards),
-              transform: isHovering
-                ? `translate3d(${mousePosition.x}px, ${mousePosition.y}px, 0) scale3d(1, 1, 1)`
-                : "translate3d(0px, 0px, 0) scale3d(1, 1, 1)",
-              transition: "transform 0.1s ease-out",
-            }}
-          >
-            {hoveredCard === index && (
-              <div className="hover-tooltip">{project.projectTitle}</div>
-            )}
-            {/* Project Content */}
-            <div className="project-info" id={project.projectLink}>
-              <div className="project-header">
-                {project.projectSubTitle && (
-                  <span>{project.projectSubTitle} | </span>
-                )}
-                <span>{project.projectTimeline}</span>
-              </div>
-              <a
-                className="project-title"
-                href={`#${project.projectLink}`}
-                onClick={(e) => {
-                  e.preventDefault(); // Prevent default anchor behavior
-                  scrollToCard(index);
-                }}
-              >
-                {project.projectTitle}
-              </a>
-              <hr />
-              <p className="project-tagline">{project.projectTagline}</p>
+          <>
+            <AnimatePresence>
               <motion.div
-                className="learn-button-motioned"
-                onClick={() => addTab("Project", project)}
-                variants={zoomIn(1)}
-                initial="hidden"
-                animate="show"
-                drag
-                dragConstraints={{
-                  left: 0,
-                  right: 0,
-                  top: 0,
-                  bottom: 0,
+                key={index}
+                className={`project-card`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ delay: 0 }}
+                onMouseMove={(event) => handleMouseMove(event, index)}
+                onMouseEnter={() => handleMouseEnter(index)}
+                onMouseLeave={() => handleMouseLeave(index)}
+                onClick={() => {
+                  scrollToCard(index);
+                  scrollToSection("projects");
                 }}
-                dragElastic={0.3}
-                dragTransition={{
-                  bounceStiffness: 250,
-                  bounceDamping: 15,
+                style={{
+                  top: `${topOffset}px`,
+                  // top: `${90 + index * 20}px`,
+                  marginBottom: calculateMarginBottom(index, totalCards),
+                  transform: isHovering
+                    ? `translate3d(${mousePosition.x}px, ${mousePosition.y}px, 0) scale3d(1, 1, 1)`
+                    : "translate3d(0px, 0px, 0) scale3d(1, 1, 1)",
+                  transition: "transform 0.1s ease-out",
                 }}
+                viewport={{ amount: "50%", once: true }}
               >
-                <StyledButton
-                  onClick={(e) => {
-                    e.preventDefault();
-                  }}
-                >
-                  <ButtonShadow />
-                  <ButtonEdge />
-                  <ButtonLabel>Learn More →</ButtonLabel>
-                </StyledButton>
-              </motion.div>
-            </div>
+                {hoveredCard === index && (
+                  <div className="hover-tooltip">{project.projectTitle}</div>
+                )}
+                {/* Project Content */}
+                <div className="project-info" id={project.projectLink}>
+                  <div className="project-header">
+                    {project.projectSubTitle && (
+                      <span>{project.projectSubTitle} | </span>
+                    )}
+                    <span>{project.projectTimeline}</span>
+                  </div>
+                  <a
+                    className="project-title"
+                    href={`#${project.projectLink}`}
+                    onClick={(e) => {
+                      e.preventDefault(); // Prevent default anchor behavior
+                      scrollToCard(index);
+                    }}
+                  >
+                    {project.projectTitle}
+                  </a>
+                  <hr />
+                  <p className="project-tagline">{project.projectTagline}</p>
+                  <motion.div
+                    className="learn-button-motioned"
+                    onClick={() => addTab("Project", project)}
+                    variants={zoomIn(1)}
+                    initial="hidden"
+                    animate="show"
+                    drag
+                    dragConstraints={{
+                      left: 0,
+                      right: 0,
+                      top: 0,
+                      bottom: 0,
+                    }}
+                    dragElastic={0.3}
+                    dragTransition={{
+                      bounceStiffness: 250,
+                      bounceDamping: 15,
+                    }}
+                  >
+                    <StyledButton
+                      onClick={(e) => {
+                        e.preventDefault();
+                      }}
+                    >
+                      <ButtonShadow />
+                      <ButtonEdge />
+                      <ButtonLabel>Learn More →</ButtonLabel>
+                    </StyledButton>
+                  </motion.div>
+                </div>
 
-            {/* Project Image */}
-            <div
-              className="project-image"
-              style={{
-                backgroundImage: `url(${project.projectImages[0]})`,
-              }}
-            ></div>
-          </motion.div>
+                {/* Project Image */}
+                <div
+                  className="project-image"
+                  style={{
+                    backgroundImage: `url(${project.projectImages[0]})`,
+                  }}
+                ></div>
+              </motion.div>
+            </AnimatePresence>
+          </>
         );
       })}
     </div>

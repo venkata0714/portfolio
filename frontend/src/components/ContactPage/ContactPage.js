@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
+import { zoomIn, fadeIn } from "../../services/variants";
+import { motion, AnimatePresence } from "framer-motion";
 import { styled, keyframes } from "@stitches/react";
 import Footer from "../SpecialComponents/Footer";
 import emailjs from "emailjs-com";
@@ -81,87 +83,198 @@ function ContactPage() {
   }, []);
 
   return (
-    <section id="contact" className="contact-page" ref={containerRef}>
-      <div ref={glowRef} className="mouse-glow"></div>
-      <div className="contact-container">
-        <div className="contact-div">
-          <h2 className="section-header">Contact Me</h2>
-          <h5 className="contact-info">
-            Email:{" "}
-            <a href="mailto:singhk6@mail.uc.edu" className="lead">
-              singhk6@mail.uc.edu
-            </a>{" "}
-            ||{" "}
-            <a href="mailto:kartavya.singh17@yahoo.com" className="lead">
-              kartavya.singh17@yahoo.com
-            </a>
-          </h5>
-          <h5 className="contact-info">
-            Phone:{" "}
-            <a href="tel:5138377683" className="lead">
-              513-837-7683
-            </a>
-          </h5>
-          <br />
-          <h5 className="form-subheading">
-            ...or feel free to get in touch with me by filling the form.
-          </h5>
-        </div>
-        <div className="contact-form-container">
-          <form ref={form} onSubmit={sendEmail} className="contact-form">
-            <div className="input-group">
-              <input
-                type="text"
-                name="from_name"
-                placeholder="Your Name *"
-                required
-              />
-              <input
-                type="email"
-                name="from_email"
-                placeholder="Your Email *"
-                required
-              />
-              <input type="tel" name="from_phone" placeholder="Your Phone" />
+    <>
+      <AnimatePresence>
+        <motion.section
+          id="contact"
+          className="contact-page"
+          ref={containerRef}
+        >
+          <div ref={glowRef} className="mouse-glow"></div>
+          <div className="contact-container">
+            <div className="contact-div">
+              <motion.h2
+                className="section-header"
+                initial={{ opacity: 0, scale: 0 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0, type: "spring" }}
+              >
+                Contact Me
+              </motion.h2>
+              <motion.h5
+                className="contact-info"
+                initial={{ opacity: 0, scale: 0 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0, type: "spring" }}
+              >
+                Email:{" "}
+                <a href="mailto:singhk6@mail.uc.edu" className="lead">
+                  singhk6@mail.uc.edu
+                </a>{" "}
+                ||{" "}
+                <a href="mailto:kartavya.singh17@yahoo.com" className="lead">
+                  kartavya.singh17@yahoo.com
+                </a>
+              </motion.h5>
+              <motion.h5
+                className="contact-info"
+                initial={{ opacity: 0, scale: 0 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0, type: "spring" }}
+              >
+                Phone:{" "}
+                <a href="tel:5138377683" className="lead">
+                  513-837-7683
+                </a>
+              </motion.h5>
+              <br />
+              <motion.h5
+                className="form-subheading"
+                initial={{ opacity: 0, scale: 0 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0, type: "spring" }}
+              >
+                ...or feel free to get in touch with me by filling the form.
+              </motion.h5>
             </div>
-            <div className="textarea-group">
-              <textarea
-                name="message"
-                placeholder="Your Message *"
-                required
-              ></textarea>
-            </div>
-            <div className="button-group">
-              <StyledButton type="submit">
-                <ButtonShadow />
-                <ButtonEdge />
-                <ButtonLabel isSent={isSent}>
-                  {isSent === true
-                    ? "Message Sent ☑"
-                    : isSent === false
-                    ? "Failed to Send ☒"
-                    : "Send Message"}
-                </ButtonLabel>
-              </StyledButton>
-            </div>
-          </form>
-        </div>
-      </div>
-      <Footer />
-    </section>
+            <motion.div className="contact-form-container">
+              <form ref={form} onSubmit={sendEmail} className="contact-form">
+                <motion.div
+                  className="input-group"
+                  variants={fadeIn("right", 200, 0)}
+                  initial="hidden"
+                  whileInView="show"
+                >
+                  <motion.input
+                    type="text"
+                    name="from_name"
+                    placeholder="Your Name *"
+                    required
+                    initial={{ opacity: 0, scale: 0 }}
+                    drag
+                    dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+                    dragElastic={0.3}
+                    dragTransition={{
+                      bounceStiffness: 250,
+                      bounceDamping: 15,
+                    }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.99 }}
+                    transition={{ delay: 0, type: "spring" }}
+                  />
+                  <motion.input
+                    type="email"
+                    name="from_email"
+                    placeholder="Your Email *"
+                    required
+                    initial={{ opacity: 0, scale: 0 }}
+                    drag
+                    dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+                    dragElastic={0.3}
+                    dragTransition={{
+                      bounceStiffness: 250,
+                      bounceDamping: 15,
+                    }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.99 }}
+                    transition={{ delay: 0, type: "spring" }}
+                  />
+                  <motion.input
+                    type="tel"
+                    name="from_phone"
+                    placeholder="Your Phone"
+                    initial={{ opacity: 0, scale: 0 }}
+                    drag
+                    dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+                    dragElastic={0.3}
+                    dragTransition={{
+                      bounceStiffness: 250,
+                      bounceDamping: 15,
+                    }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.99 }}
+                    transition={{ delay: 0, type: "spring" }}
+                  />
+                </motion.div>
+                <motion.div
+                  className="textarea-group"
+                  variants={fadeIn("left", 200, 0)}
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.99 }}
+                  initial="hidden"
+                  whileInView="show"
+                  exit="hidden"
+                >
+                  <motion.textarea
+                    name="message"
+                    placeholder="Your Message *"
+                    required
+                    initial={{ opacity: 0, scale: 0 }}
+                    drag
+                    dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+                    dragElastic={0.3}
+                    dragTransition={{
+                      bounceStiffness: 250,
+                      bounceDamping: 15,
+                    }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.99 }}
+                    transition={{ delay: 0, type: "spring" }}
+                  ></motion.textarea>
+                </motion.div>
+                <motion.div
+                  className="button-group"
+                  initial={{ opacity: 0, scale: 0 }}
+                  drag
+                  dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+                  dragElastic={0.3}
+                  dragTransition={{
+                    bounceStiffness: 250,
+                    bounceDamping: 15,
+                  }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  transition={{ delay: 0, type: "spring" }}
+                >
+                  <StyledButton type="submit">
+                    <ButtonShadow />
+                    <ButtonEdge />
+                    <ButtonLabel isSent={isSent}>
+                      {isSent === true
+                        ? "Message Sent ☑"
+                        : isSent === false
+                        ? "Failed to Send ☒"
+                        : "Send Message"}
+                    </ButtonLabel>
+                  </StyledButton>
+                </motion.div>
+              </form>
+            </motion.div>
+          </div>
+          <Footer />
+        </motion.section>
+      </AnimatePresence>
+    </>
   );
 }
 
 export default ContactPage;
 
 const fillGreen = keyframes({
-  "0%": { backgroundColor: "#fcbc1d", color: "#212529" }, // Initial yellow color
-  "100%": { backgroundColor: "#28a745", color: "#edeeef" }, // Success green with white text
+  "0%": { backgroundColor: "#edeeef", color: "#212529" }, // Initial yellow color
+  "50%": { backgroundColor: "lightseagreen", color: "#212529" }, // Success green with white text
+  "100%": { backgroundColor: "#edeeef", color: "#212529" },
 });
 
 const fillRed = keyframes({
-  "0%": { backgroundColor: "#fcbc1d", color: "#212529" }, // Initial yellow color
-  "100%": { backgroundColor: "#dc3545", color: "#edeeef" }, // Error red with white text
+  "0%": { backgroundColor: "#edeeef", color: "#212529" }, // Initial yellow color
+  "50%": { backgroundColor: "lightcoral", color: "#212529" }, // Error red with white text
+  "100%": { backgroundColor: "#edeeef", color: "#212529" }, // Initial yellow color
 });
 
 // Styled Components for Button Parts
@@ -210,10 +323,10 @@ const ButtonLabel = styled("span", {
   variants: {
     isSent: {
       true: {
-        animation: `${fillGreen}  1.5s ease-in-out forwards`, // Apply green fill on success
+        animation: `${fillGreen}  3s ease-in-out forwards`, // Apply green fill on success
       },
       false: {
-        animation: `${fillRed}  1.5s ease-in-out forwards`, // Apply red fill on error
+        animation: `${fillRed}  3s ease-in-out forwards`, // Apply red fill on error
       },
     },
   },

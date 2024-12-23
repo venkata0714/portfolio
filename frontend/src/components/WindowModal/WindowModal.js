@@ -6,6 +6,7 @@ import ProjectTab from "./ProjectTab";
 import ExperienceTab from "./ExperienceTab";
 import InvolvementTab from "./InvolvementTab";
 import HonorsTab from "./HonorsTab";
+import YearInReviewTab from "./YearInReviewTab";
 
 const WindowModal = ({
   tabs,
@@ -76,6 +77,8 @@ const WindowModal = ({
         return <InvolvementTab data={data} />;
       case "Honors":
         return <HonorsTab data={data} />;
+      case "YearInReview":
+        return <YearInReviewTab data={data} />;
       default:
         return null;
     }
@@ -173,7 +176,12 @@ const WindowModal = ({
             }}
             transition={{ duration: 0.7, type: "spring", delay: 0 }}
             drag="x"
-            dragConstraints={{ left: 0, right: window.innerWidth , top: 0, bottom: 0 }}
+            dragConstraints={{
+              left: 0,
+              right: window.innerWidth,
+              top: 0,
+              bottom: 0,
+            }}
             onLoad={handleRestore}
             onClick={(e) => e.stopPropagation()}
           >

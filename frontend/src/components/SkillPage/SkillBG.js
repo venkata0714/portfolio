@@ -1,175 +1,167 @@
 import React, { useEffect, useRef } from "react";
-import anime from "animejs/lib/anime.es.js";
+import p5 from "p5";
 
 const SkillBG = () => {
   const canvasRef = useRef(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-    let cW, cH;
-    let bgColor = "#212529";
-    let animations = [];
-    let circles = [];
-
-    const colorPicker = (() => {
-      const colors = [
-        "#FF6138", // Bright orange
-        "#FFBE53", // Yellow-orange
-        "#2980B9", // Blue
-        "#282741", // Dark grayish-blue
-      ];
-      let index = 0;
-      return {
-        next: () => {
-          index = index++ < colors.length - 1 ? index : 0;
-          return colors[index];
-        },
-        current: () => colors[index],
+    const sketch = (p) => {
+      /*--------------------
+      Vars
+      --------------------*/
+      const deg = (a) => (Math.PI / 180) * a;
+      const rand = (v1, v2) => Math.floor(v1 + Math.random() * (v2 - v1));
+      const opt = {
+        particles: window.innerWidth / 500 ? 1000 : 500,
+        noiseScale: 0.009,
+        angle: (Math.PI / 180) * -90,
+        h1: rand(0, 360),
+        h2: rand(0, 360),
+        s1: rand(20, 90),
+        s2: rand(20, 90),
+        l1: rand(30, 80),
+        l2: rand(30, 80),
+        strokeWeight: 1.7,
+        tail: 82,
       };
-    })();
+      const Particles = [];
+      let time = 0;
 
-    const resizeCanvas = () => {
-      cW = window.innerWidth;
-      cH = window.innerHeight;
-      canvas.width = cW * window.devicePixelRatio;
-      canvas.height = cH * window.devicePixelRatio;
-      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-    };
+      document.body.addEventListener("click", () => {
+        opt.h1 = rand(0, 360);
+        opt.h2 = rand(0, 360);
+        opt.s1 = rand(20, 90);
+        opt.s2 = rand(20, 90);
+        opt.l1 = rand(30, 80);
+        opt.l2 = rand(30, 80);
+        opt.angle += deg(Math.random() * 60) * (Math.random() > 0.5 ? 1 : -1);
 
-    const calcPageFillRadius = (x, y) => {
-      const l = Math.max(x - 0, cW - x);
-      const h = Math.max(y - 0, cH - y);
-      return Math.sqrt(l * l + h * h);
-    };
-
-    const Circle = function (opts) {
-      Object.assign(this, opts);
-    };
-
-    Circle.prototype.draw = function () {
-      ctx.globalAlpha = this.opacity || 1;
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI, false);
-      if (this.stroke) {
-        ctx.strokeStyle = this.stroke.color;
-        ctx.lineWidth = this.stroke.width;
-        ctx.stroke();
-      }
-      if (this.fill) {
-        ctx.fillStyle = this.fill;
-        ctx.fill();
-      }
-      ctx.closePath();
-      ctx.globalAlpha = 1;
-    };
-
-    const removeAnimation = (animation) => {
-      const index = animations.indexOf(animation);
-      if (index > -1) animations.splice(index, 1);
-    };
-
-    const handleEvent = (e) => {
-      const x = e.pageX || e.touches[0].pageX;
-      const y = e.pageY || e.touches[0].pageY;
-      const currentColor = colorPicker.current();
-      const nextColor = colorPicker.next();
-      const targetR = calcPageFillRadius(x, y);
-      const rippleSize = Math.min(200, cW * 0.4);
-
-      const pageFill = new Circle({
-        x,
-        y,
-        r: 0,
-        fill: nextColor,
+        for (let p of Particles) {
+          p.randomize();
+        }
       });
-      animations.push(
-        anime({
-          targets: pageFill,
-          r: targetR,
-          duration: Math.max(targetR / 2, 750),
-          easing: "easeOutQuart",
-          update: () => pageFill.draw(),
-          complete: () => {
-            bgColor = pageFill.fill;
-            removeAnimation(pageFill);
-          },
-        })
-      );
 
-      const ripple = new Circle({
-        x,
-        y,
-        r: 0,
-        fill: currentColor,
-        stroke: { width: 3, color: currentColor },
-        opacity: 1,
-      });
-      animations.push(
-        anime({
-          targets: ripple,
-          r: rippleSize,
-          opacity: 0,
-          easing: "easeOutExpo",
-          duration: 900,
-          update: () => ripple.draw(),
-          complete: () => removeAnimation(ripple),
-        })
-      );
+      class Particle {
+        constructor(x, y) {
+          this.x = x;
+          this.y = y;
+          this.lx = x;
+          this.ly = y;
+          this.vx = 0;
+          this.vy = 0;
+          this.ax = 0;
+          this.ay = 0;
+          this.hueSemen = Math.random();
+          this.hue = this.hueSemen > 0.5 ? 20 + opt.h1 : 20 + opt.h2;
+          this.sat = this.hueSemen > 0.5 ? opt.s1 : opt.s2;
+          this.light = this.hueSemen > 0.5 ? opt.l1 : opt.l2;
+          this.maxSpeed = this.hueSemen > 0.5 ? 3 : 2;
+        }
 
-      const particles = [];
-      for (let i = 0; i < 32; i++) {
-        const particle = new Circle({
-          x,
-          y,
-          r: anime.random(24, 48),
-          fill: currentColor,
-        });
-        particles.push(particle);
+        randomize() {
+          this.hueSemen = Math.random();
+          this.hue = this.hueSemen > 0.5 ? 20 + opt.h1 : 20 + opt.h2;
+          this.sat = this.hueSemen > 0.5 ? opt.s1 : opt.s2;
+          this.light = this.hueSemen > 0.5 ? opt.l1 : opt.l2;
+          this.maxSpeed = this.hueSemen > 0.5 ? 3 : 2;
+        }
+
+        update() {
+          this.follow();
+
+          this.vx += this.ax;
+          this.vy += this.ay;
+
+          const p = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+          const a = Math.atan2(this.vy, this.vx);
+          const m = Math.min(this.maxSpeed, p);
+          this.vx = Math.cos(a) * m;
+          this.vy = Math.sin(a) * m;
+
+          this.x += this.vx;
+          this.y += this.vy;
+          this.ax = 0;
+          this.ay = 0;
+
+          this.edges();
+        }
+
+        follow() {
+          const angle =
+            p.noise(
+              this.x * opt.noiseScale,
+              this.y * opt.noiseScale,
+              time * opt.noiseScale
+            ) *
+              Math.PI *
+              0.5 +
+            opt.angle;
+
+          this.ax += Math.cos(angle);
+          this.ay += Math.sin(angle);
+        }
+
+        updatePrev() {
+          this.lx = this.x;
+          this.ly = this.y;
+        }
+
+        edges() {
+          if (this.x < 0) {
+            this.x = p.width;
+            this.updatePrev();
+          }
+          if (this.x > p.width) {
+            this.x = 0;
+            this.updatePrev();
+          }
+          if (this.y < 0) {
+            this.y = p.height;
+            this.updatePrev();
+          }
+          if (this.y > p.height) {
+            this.y = 0;
+            this.updatePrev();
+          }
+        }
+
+        render() {
+          p.stroke(`hsla(${this.hue}, ${this.sat}%, ${this.light}%, .5)`);
+          p.line(this.x, this.y, this.lx, this.ly);
+          this.updatePrev();
+        }
       }
 
-      animations.push(
-        anime({
-          targets: particles,
-          x: (particle) => particle.x + anime.random(rippleSize, -rippleSize),
-          y: (particle) =>
-            particle.y + anime.random(rippleSize * 1.15, -rippleSize * 1.15),
-          r: 0,
-          easing: "easeOutExpo",
-          duration: anime.random(1000, 1300),
-          update: () => particles.forEach((p) => p.draw()),
-          complete: () => removeAnimation(particles),
-        })
-      );
+      p.setup = () => {
+        p.createCanvas(p.windowWidth, p.windowHeight);
+        for (let i = 0; i < opt.particles; i++) {
+          Particles.push(
+            new Particle(Math.random() * p.width, Math.random() * p.height)
+          );
+        }
+        p.strokeWeight(opt.strokeWeight);
+      };
+
+      p.draw = () => {
+        time++;
+        p.background(0, 100 - opt.tail);
+
+        for (let p of Particles) {
+          p.update();
+          p.render();
+        }
+      };
+
+      p.windowResized = () => {
+        p.resizeCanvas(p.windowWidth, p.windowHeight);
+      };
     };
 
-    const animate = anime({
-      duration: Infinity,
-      update: () => {
-        ctx.fillStyle = bgColor;
-        ctx.fillRect(0, 0, cW, cH);
-        animations.forEach((anim) =>
-          anim.animatables.forEach((a) => a.target.draw())
-        );
-      },
-    });
-
-    const init = () => {
-      resizeCanvas();
-      window.addEventListener("resize", resizeCanvas);
-      document.addEventListener("mousedown", handleEvent);
-      document.addEventListener("touchstart", handleEvent);
-    };
-
-    init();
-    return () => {
-      window.removeEventListener("resize", resizeCanvas);
-      document.removeEventListener("mousedown", handleEvent);
-      document.removeEventListener("touchstart", handleEvent);
-    };
+    const p5Instance = new p5(sketch, canvasRef.current);
+    return () => p5Instance.remove();
   }, []);
 
-  return <canvas ref={canvasRef} className="skill-bg-canvas" />;
+  return <div ref={canvasRef} className="skill-bg-canvas" />;
 };
 
 export default SkillBG;

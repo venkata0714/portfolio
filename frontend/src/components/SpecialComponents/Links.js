@@ -93,7 +93,7 @@ const Links = () => {
         }}
         whileInView={{ opacity: 1, scale: 1 }}
         whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9, rotate: 360 }}
+        whileTap={{ scale: 0.9 }}
         transition={{ delay: 0, type: "spring" }}
       >
         <animated.img
@@ -130,12 +130,14 @@ const Links = () => {
                   src={link.icon}
                   alt={link.label}
                   className="icon-img"
+                  loading="eager"
                 />
                 <motion.span
                   className="link-label"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -20 }}
+                  transition={{ delay: 0.3 * index }}
                 >
                   {link.label}
                 </motion.span>

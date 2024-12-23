@@ -171,6 +171,7 @@ b {
   padding-left: 0;
   margin-bottom: 0;
   list-style: none;
+  transition: all 0.5s ease-in-out;
 }
 
 .navbar-links li,
@@ -397,7 +398,7 @@ i {
     padding-right: 0;
     padding-left: 0;
     max-width: 100%;
-    width: 90%;
+    width: 95%;
     margin: 0 auto;
     display: flex;
   }

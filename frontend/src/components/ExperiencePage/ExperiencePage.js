@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import Background from "./Background";
 import InvolvementTabPage from "./InvolvementTabPage";
 import CareerTabPage from "./CareerTabPage";
@@ -64,53 +64,67 @@ const ExperiencePage = ({ addTab }) => {
   );
 
   return (
-    <section className="experience-container" id="experience">
-      <Background />
-      <div className="experience-div">
-        <motion.div className="tabs-wrapper">
-          <motion.div
-            className="tab-highlight"
-            key={`tab-${selectedTab}`}
-            custom={tabs.indexOf(selectedTab)}
-            variants={tabHighlightVariants}
-            animate="animate"
-            initial="initial"
-          />
-          {tabs.map((tab) => (
-            <motion.button
-              key={tab.title}
-              className={`tab-button ${
-                selectedTab.title === tab.title ? "active" : ""
-              }`}
-              onClick={() => {
-                setSelectedTab(tab);
-                setActiveComponent(() => tab.component);
-                scrollToSection("experience");
-              }}
-              drag
-              dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-              dragElastic={0.3}
-              dragTransition={{
-                bounceStiffness: 250,
-                bounceDamping: 17,
-              }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
+    <>
+      <AnimatePresence>
+        <section className="experience-container" id="experience">
+          <Background />
+          <div className="experience-div">
+            <motion.div
+              className="tabs-wrapper"
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0, type: "spring" }}
             >
-              {tab.icon}
-              {selectedTab.title === tab.title && (
-                <span className="tab-text">{tab.title}</span>
-              )}
-            </motion.button>
-          ))}
-        </motion.div>
-        <div className="content-container">
-          <ActiveComponent addTab={addTab} />
-        </div>
-      </div>
-    </section>
+              <motion.div
+                className="tab-highlight"
+                key={`tab-${selectedTab}`}
+                custom={tabs.indexOf(selectedTab)}
+                variants={tabHighlightVariants}
+                animate="animate"
+                initial="initial"
+              />
+              {tabs.map((tab) => (
+                <motion.button
+                  key={tab.title}
+                  className={`tab-button ${
+                    selectedTab.title === tab.title ? "active" : ""
+                  }`}
+                  onClick={() => {
+                    setSelectedTab(tab);
+                    setActiveComponent(() => tab.component);
+                    scrollToSection("experience");
+                  }}
+                  drag
+                  dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+                  dragElastic={0.3}
+                  dragTransition={{
+                    bounceStiffness: 250,
+                    bounceDamping: 17,
+                  }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  transition={{ delay: 0, type: "spring" }}
+                >
+                  {tab.icon}
+                  {selectedTab.title === tab.title && (
+                    <span className="tab-text">{tab.title}</span>
+                  )}
+                </motion.button>
+              ))}
+            </motion.div>
+            <motion.div
+              className="content-container"
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0, type: "spring" }}
+            >
+              <ActiveComponent addTab={addTab} />
+            </motion.div>
+          </div>
+        </section>
+      </AnimatePresence>
+    </>
   );
 };
 
