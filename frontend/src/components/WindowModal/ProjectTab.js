@@ -1,69 +1,97 @@
 import React from "react";
 import { motion } from "framer-motion";
-// import { styled } from "@stitches/react";
-import { fadeIn, zoomIn } from "../../services/variants";
+import { fadeIn, zoomIn, staggerContainer } from "../../services/variants";
 import "../../styles/ProjectTab.css";
+import github from "../../assets/img/icons/github.svg";
+import youtube from "../../assets/img/icons/youtube.svg";
+import devpost from "../../assets/img/icons/devpost.png";
+import web from "../../assets/img/icons/web.svg";
 
 const ProjectTab = ({ data }) => {
+  const getIconForLink = (link) => {
+    if (link.includes("github")) return github;
+    if (link.includes("youtube")) return youtube;
+    if (link.includes("devpost")) return devpost;
+    return web;
+  };
+
+  const renderLogos = (urls) =>
+    Object.entries(urls).map(([key, value]) => {
+      const iconName = getIconForLink(value);
+      return (
+        <a key={key} href={value} target="_blank" rel="noopener noreferrer">
+          <img
+            src={`${iconName}`}
+            alt={`${iconName} logo`}
+            className="project-window-logo"
+          />
+        </a>
+      );
+    });
+
   return (
     <motion.div
-      className="project-tab-container"
-      variants={zoomIn(0.2)}
+      className="project-window-tab-container"
+      variants={staggerContainer(0.2, 0.1)}
       initial="hidden"
       animate="show"
     >
-      <motion.h1 className="project-title" variants={fadeIn("up", 20, 0.3)}>
+      {/* Images Section */}
+      <motion.div
+        className="project-window-images"
+        variants={zoomIn(0.3)}
+        style={{ height: "40vh", overflow: "hidden" }}
+      >
+        {data.projectImages.map((img, index) => (
+          <img
+            key={index}
+            src={img}
+            alt={`Project ${index + 1}`}
+            className="project-window-image"
+          />
+        ))}
+      </motion.div>
+
+      {/* Title and Subtitle */}
+      <motion.h1
+        className="project-window-title"
+        variants={fadeIn("up", 20, 0.3)}
+      >
         {data.projectTitle}
       </motion.h1>
-      <motion.h3 className="project-subtitle" variants={fadeIn("up", 20, 0.4)}>
-        {data.projectSubTitle} | {data.projectTimeline}
-      </motion.h3>
-      <motion.p
-        className="project-description"
+      {data.projectSubTitle && (
+        <motion.h3
+          className="project-window-subtitle"
+          variants={fadeIn("up", 20, 0.4)}
+        >
+          {data.projectSubTitle}
+        </motion.h3>
+      )}
+      <motion.h4
+        className="project-window-timeline"
         variants={fadeIn("up", 20, 0.5)}
       >
-        {data.projectTagline}
-      </motion.p>
-      <motion.div className="project-details" variants={fadeIn("up", 20, 0.6)}>
-        {Object.keys(data).map((key, index) => {
-          if (key === "projectLink") {
-            return (
-              <div key={index} className="project-detail">
-                <span className="detail-key">Project Link: </span>
-                <a
-                  href={data[key]}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="detail-value"
-                >
-                  {data[key]}
-                </a>
-              </div>
-            );
-          } else if (key === "projectImages") {
-            return (
-              <div key={index} className="project-images">
-                {data[key].map((img, imgIndex) => (
-                  <motion.img
-                    key={imgIndex}
-                    src={img}
-                    alt={`Project Image ${imgIndex + 1}`}
-                    className="project-image2"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  />
-                ))}
-              </div>
-            );
-          } else {
-            return (
-              <div key={index} className="project-detail">
-                <span className="detail-key">{key}: </span>
-                <span className="detail-value">{data[key]}</span>
-              </div>
-            );
-          }
-        })}
+        {data.projectTimeline}
+      </motion.h4>
+
+      {/* URLs Section */}
+      <motion.div
+        className="project-window-urls"
+        variants={fadeIn("up", 20, 0.6)}
+      >
+        {renderLogos(data.projectURLs)}
+      </motion.div>
+
+      {/* Paragraphs Section */}
+      <motion.div
+        className="project-window-paragraphs"
+        variants={fadeIn("up", 20, 0.7)}
+      >
+        {data.projectParagraphs.map((para, index) => (
+          <p key={index} className="project-window-paragraph">
+            {para}
+          </p>
+        ))}
       </motion.div>
     </motion.div>
   );
