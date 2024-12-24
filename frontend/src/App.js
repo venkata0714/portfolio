@@ -27,7 +27,14 @@ function App() {
 
     setTabs((prev) => {
       const existingTabIndex = prev.findIndex(
-        (tab) => tab.name === (data.title || data.projectTitle)
+        (tab) =>
+          tab.name ===
+          (data.title ||
+            data.projectTitle ||
+            data.experienceTitle ||
+            data.honorsExperienceTitle ||
+            data.involvementTitle ||
+            data.yearInReviewTitle)
       );
 
       if (existingTabIndex !== -1) {
@@ -56,7 +63,13 @@ function App() {
           type,
           data,
           name:
-            data.title || data.projectTitle || `Tab ${updatedTabs.length + 1}`,
+            data.title ||
+            data.projectTitle ||
+            data.experienceTitle ||
+            data.honorsExperienceTitle ||
+            data.involvementTitle ||
+            data.yearInReviewTitle ||
+            `Tab ${updatedTabs.length + 1}`,
         };
 
         const result = [...updatedTabs, newTab];
@@ -72,6 +85,9 @@ function App() {
           data.title ||
           data.projectTitle ||
           data.experienceTitle ||
+          data.honorsExperienceTitle ||
+          data.involvementTitle ||
+          data.yearInReviewTitle ||
           `Tab ${prev.length + 1}`,
       };
       const result = [...prev, newTab];

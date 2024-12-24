@@ -153,7 +153,7 @@ const Background = () => {
     const onTouchMove = (event) => {
       touchInput = true;
       movePointer(event.touches[0].clientX, event.touches[0].clientY);
-      event.preventDefault();
+      // event.preventDefault();
     };
 
     const onMouseLeave = () => {

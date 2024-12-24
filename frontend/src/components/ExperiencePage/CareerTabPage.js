@@ -6,24 +6,23 @@ import RightArrow from "../../assets/img/icons/arrow2.svg";
 import { fetchExperiences } from "../../services/experienceService";
 import { styled } from "@stitches/react";
 
+const scrollToSection = (id) => {
+  const element = document.getElementById(id);
+  if (element) {
+    const offset = 52; // Adjust based on your navbar height
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.scrollY - offset;
+
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: "smooth",
+    });
+  }
+};
 const CustomArrow = ({ direction, onClick, imgSrc, label }) => {
-  const scrollToSection = (id) => {
-    const element = document.getElementById(id);
-    if (element) {
-      const offset = 52; // Adjust based on your navbar height
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.scrollY - offset;
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: "smooth",
-      });
-    }
-  };
-
   const handleClick = () => {
-    if (onClick) onClick(); // Call the passed onClick function if it exists
     scrollToSection("experience"); // Correct capitalization here
+    if (onClick) onClick(); // Call the passed onClick function if it exists
   };
 
   return (
@@ -149,7 +148,10 @@ const CareerTabPage = ({ addTab }) => {
                     </p>
                     <motion.div
                       className="career-learn-button-motioned"
-                      onClick={() => addTab("Experience", experience)}
+                      onClick={() => {
+                        addTab("Experience", experience);
+                        scrollToSection("experience");
+                      }}
                       variants={zoomIn(0)}
                       initial="hidden"
                       animate="show"

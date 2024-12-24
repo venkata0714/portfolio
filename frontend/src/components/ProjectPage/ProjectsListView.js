@@ -75,7 +75,7 @@ function ProjectsListView({ addTab }) {
 
     const observer = new IntersectionObserver(handleScrollToTop, {
       root: null, // Observe relative to the viewport
-      threshold: 0, // Trigge
+      threshold: 0, // Trigger as soon as element is not visible at all
     });
 
     observer.observe(container);
@@ -111,12 +111,12 @@ function ProjectsListView({ addTab }) {
           top: window.innerWidth <= 768 ? 52 + scrollOffset : scrollOffset, // Adjust based on container's offset
           behavior: "smooth",
         });
-      }, 5); // Add a delay (500ms) to ensure the first scroll completes
+      }, 5); // A small delay so the first scroll completes
     }
   };
 
   const calculateMarginBottom = (index, totalCards) => {
-    if (index !== totalCards - 1) return "20px"; // No margin for non-last cards
+    if (index !== totalCards - 1) return "20px"; // No special margin for non-last cards
 
     const cardHeight =
       document.querySelector(".project-card")?.getBoundingClientRect().height ||
@@ -187,98 +187,103 @@ function ProjectsListView({ addTab }) {
           isHovering: false,
         };
         const topOffset = 48 + index * (window.innerWidth <= 768 ? 5 : 20);
-        return (
-          <>
-            <AnimatePresence>
-              <motion.div
-                key={index}
-                className={`project-card`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ delay: 0 }}
-                onMouseMove={(event) => handleMouseMove(event, index)}
-                onMouseEnter={() => handleMouseEnter(index)}
-                onMouseLeave={() => handleMouseLeave(index)}
-                onClick={() => {
-                  scrollToCard(index);
-                  scrollToSection("projects");
-                }}
-                style={{
-                  top: `${topOffset}px`,
-                  // top: `${90 + index * 20}px`,
-                  marginBottom: calculateMarginBottom(index, totalCards),
-                  transform: isHovering
-                    ? `translate3d(${mousePosition.x}px, ${mousePosition.y}px, 0) scale3d(1, 1, 1)`
-                    : "translate3d(0px, 0px, 0) scale3d(1, 1, 1)",
-                  transition: "transform 0.1s ease-out",
-                }}
-                viewport={{ amount: "50%", once: true }}
-              >
-                {hoveredCard === index && (
-                  <div className="hover-tooltip">{project.projectTitle}</div>
-                )}
-                {/* Project Content */}
-                <div className="project-info" id={project.projectLink}>
-                  <div className="project-header">
-                    {project.projectSubTitle && (
-                      <span>{project.projectSubTitle} | </span>
-                    )}
-                    <span>{project.projectTimeline}</span>
-                  </div>
-                  <a
-                    className="project-title"
-                    href={`#${project.projectLink}`}
-                    onClick={(e) => {
-                      e.preventDefault(); // Prevent default anchor behavior
-                      scrollToCard(index);
-                    }}
-                  >
-                    {project.projectTitle}
-                  </a>
-                  <hr />
-                  <p className="project-tagline">{project.projectTagline}</p>
-                  <motion.div
-                    className="learn-button-motioned"
-                    onClick={() => addTab("Project", project)}
-                    variants={zoomIn(1)}
-                    initial="hidden"
-                    animate="show"
-                    drag
-                    dragConstraints={{
-                      left: 0,
-                      right: 0,
-                      top: 0,
-                      bottom: 0,
-                    }}
-                    dragElastic={0.3}
-                    dragTransition={{
-                      bounceStiffness: 250,
-                      bounceDamping: 15,
-                    }}
-                  >
-                    <StyledButton
-                      onClick={(e) => {
-                        e.preventDefault();
-                      }}
-                    >
-                      <ButtonShadow />
-                      <ButtonEdge />
-                      <ButtonLabel>Learn More →</ButtonLabel>
-                    </StyledButton>
-                  </motion.div>
-                </div>
 
-                {/* Project Image */}
-                <div
-                  className="project-image"
-                  style={{
-                    backgroundImage: `url(${project.projectImages[0]})`,
+        return (
+          // FIX for unique key warning:
+          // We moved the key to the <AnimatePresence> or the top-level element
+          // so that React identifies each block in the .map() properly.
+          <AnimatePresence
+            key={`animatePresence-${project.projectTitle}-${index}`}
+          >
+            <motion.div
+              key={`project-${project.projectTitle}-${index}`}
+              className="project-card"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ delay: 0 }}
+              onMouseMove={(event) => handleMouseMove(event, index)}
+              onMouseEnter={() => handleMouseEnter(index)}
+              onMouseLeave={() => handleMouseLeave(index)}
+              onClick={() => {
+                scrollToCard(index);
+                scrollToSection("projects");
+              }}
+              style={{
+                top: `${topOffset}px`,
+                marginBottom: calculateMarginBottom(index, totalCards),
+                transform: isHovering
+                  ? `translate3d(${mousePosition.x}px, ${mousePosition.y}px, 0) scale3d(1, 1, 1)`
+                  : "translate3d(0px, 0px, 0) scale3d(1, 1, 1)",
+                transition: "transform 0.1s ease-out",
+              }}
+              viewport={{ amount: "50%", once: true }}
+            >
+              {hoveredCard === index && (
+                <div className="hover-tooltip">{project.projectTitle}</div>
+              )}
+
+              {/* Project Content */}
+              <div className="project-info" id={project.projectLink}>
+                <div className="project-header">
+                  {project.projectSubTitle && (
+                    <span>{project.projectSubTitle} | </span>
+                  )}
+                  <span>{project.projectTimeline}</span>
+                </div>
+                <a
+                  className="project-title"
+                  href={`#${project.projectLink}`}
+                  onClick={(e) => {
+                    e.preventDefault(); // Prevent default anchor behavior
+                    scrollToCard(index);
                   }}
-                ></div>
-              </motion.div>
-            </AnimatePresence>
-          </>
+                >
+                  {project.projectTitle}
+                </a>
+                <hr />
+                <p className="project-tagline">{project.projectTagline}</p>
+                <motion.div
+                  className="learn-button-motioned"
+                  onClick={() => addTab("Project", project)}
+                  variants={zoomIn(1)}
+                  initial="hidden"
+                  animate="show"
+                  drag
+                  dragConstraints={{
+                    left: 0,
+                    right: 0,
+                    top: 0,
+                    bottom: 0,
+                  }}
+                  dragElastic={0.3}
+                  dragTransition={{
+                    bounceStiffness: 250,
+                    bounceDamping: 15,
+                  }}
+                >
+                  <StyledButton
+                    onClick={(e) => {
+                      e.preventDefault();
+                    }}
+                  >
+                    <ButtonShadow />
+                    <ButtonEdge />
+                    <ButtonLabel>Learn More →</ButtonLabel>
+                  </StyledButton>
+                </motion.div>
+              </div>
+
+              {/* Project Image */}
+              <div
+                className="project-image"
+                key={`project-image-${project.projectTitle}-${index}`}
+                style={{
+                  backgroundImage: `url(${project.projectImages[0]})`,
+                }}
+              ></div>
+            </motion.div>
+          </AnimatePresence>
         );
       })}
     </div>

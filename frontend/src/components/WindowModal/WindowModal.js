@@ -175,7 +175,7 @@ const WindowModal = ({
               opacity: [1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0],
             }}
             transition={{ duration: 0.7, type: "spring", delay: 0 }}
-            drag="x"
+            drag="false"
             dragConstraints={{
               left: 0,
               right: window.innerWidth,

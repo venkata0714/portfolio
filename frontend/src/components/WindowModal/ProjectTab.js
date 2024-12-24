@@ -2,98 +2,167 @@ import React from "react";
 import { motion } from "framer-motion";
 import { fadeIn, zoomIn, staggerContainer } from "../../services/variants";
 import "../../styles/ProjectTab.css";
-import github from "../../assets/img/icons/github.svg";
-import youtube from "../../assets/img/icons/youtube.svg";
+import github from "../../assets/img/icons/github.png";
+import youtube from "../../assets/img/icons/youtube.png";
 import devpost from "../../assets/img/icons/devpost.png";
-import web from "../../assets/img/icons/web.svg";
+import web from "../../assets/img/icons/web.png";
+import ImagesCarousel from "./ImageCarousel"; // Import ImageCarousel component
 
 const ProjectTab = ({ data }) => {
-  const getIconForLink = (link) => {
-    if (link.includes("github")) return github;
-    if (link.includes("youtube")) return youtube;
-    if (link.includes("devpost")) return devpost;
-    return web;
-  };
+  const renderLogos = (urls) => {
+    if (!urls) return null; // Check if URLs exist
 
-  const renderLogos = (urls) =>
-    Object.entries(urls).map(([key, value]) => {
+    return Object.entries(urls).map(([key, value]) => {
       const iconName = getIconForLink(value);
       return (
-        <a key={key} href={value} target="_blank" rel="noopener noreferrer">
+        <motion.a
+          key={key}
+          href={value}
+          target="_blank"
+          rel="noopener noreferrer"
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{
+            duration: 0.6,
+            initialDelay: 0.5 + 0.2 * key,
+            type: "spring",
+          }}
+          whileHover={{
+            scale: 1.1,
+            rotate: 360,
+          }}
+          whileTap={{
+            scale: 0.9,
+            rotate: 0,
+          }}
+        >
           <img
             src={`${iconName}`}
             alt={`${iconName} logo`}
             className="project-window-logo"
           />
-        </a>
+        </motion.a>
       );
     });
+  };
+
+  const getIconForLink = (link) => {
+    if (link.includes("github")) return github;
+    if (link.includes("youtube") || link.includes("youtu")) return youtube;
+    if (link.includes("devpost")) return devpost;
+    return web;
+  };
 
   return (
-    <motion.div
-      className="project-window-tab-container"
-      variants={staggerContainer(0.2, 0.1)}
-      initial="hidden"
-      animate="show"
-    >
-      {/* Images Section */}
-      <motion.div
-        className="project-window-images"
-        variants={zoomIn(0.3)}
-        style={{ height: "40vh", overflow: "hidden" }}
-      >
-        {data.projectImages.map((img, index) => (
-          <img
-            key={index}
-            src={img}
-            alt={`Project ${index + 1}`}
-            className="project-window-image"
-          />
-        ))}
-      </motion.div>
+    <>
+      <motion.div className="project-window-tab-container">
+        {/* Images Section */}
+        {data.projectImages && (
+          <div className="project-image-container">
+            <ImagesCarousel
+              data={Array(9).fill(data.projectImages).flat()} // Repeat images 9 times
+              title={data.projectTitle || "Project"}
+            />
+          </div>
+        )}
 
-      {/* Title and Subtitle */}
-      <motion.h1
-        className="project-window-title"
-        variants={fadeIn("up", 20, 0.3)}
-      >
-        {data.projectTitle}
-      </motion.h1>
-      {data.projectSubTitle && (
-        <motion.h3
-          className="project-window-subtitle"
-          variants={fadeIn("up", 20, 0.4)}
+        <motion.div
+          className="project-window-content"
+          initial={{ opacity: 0, scale: 0 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1, delay: 0, type: "spring" }}
         >
-          {data.projectSubTitle}
-        </motion.h3>
-      )}
-      <motion.h4
-        className="project-window-timeline"
-        variants={fadeIn("up", 20, 0.5)}
-      >
-        {data.projectTimeline}
-      </motion.h4>
+          {data.projectTitle && (
+            <motion.h2 className="project-window-title">
+              {data.projectTitle}
+            </motion.h2>
+          )}
 
-      {/* URLs Section */}
-      <motion.div
-        className="project-window-urls"
-        variants={fadeIn("up", 20, 0.6)}
-      >
-        {renderLogos(data.projectURLs)}
-      </motion.div>
+          {data.projectSubTitle && (
+            <motion.h3
+              className="project-window-subtitle"
+              initial={{ opacity: 0, scale: 0 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1, delay: 0, type: "spring" }}
+            >
+              {data.projectSubTitle}
+            </motion.h3>
+          )}
 
-      {/* Paragraphs Section */}
-      <motion.div
-        className="project-window-paragraphs"
-        variants={fadeIn("up", 20, 0.7)}
-      >
-        {data.projectParagraphs.map((para, index) => (
-          <p key={index} className="project-window-paragraph">
-            {para}
-          </p>
-        ))}
+          {data.projectTimeline && (
+            <motion.h4
+              className="project-window-timeline"
+              initial={{ opacity: 0, scale: 0 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1, delay: 0, type: "spring" }}
+            >
+              {data.projectTimeline}
+            </motion.h4>
+          )}
+
+          {data.projectTagline && (
+            <motion.h4
+              className="project-window-tagline"
+              initial={{ opacity: 0, scale: 0 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              drag
+              dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+              dragElastic={0.3}
+              dragTransition={{
+                bounceStiffness: 250,
+                bounceDamping: 15,
+              }}
+              whileHover={{ scale: 1.01 }}
+              whileTap={{
+                scale: 0.98,
+                boxsizing: "border-box",
+                outline: "1px solid limegreen !important",
+              }}
+              transition={{ delay: 0, type: "spring" }}
+            >
+              {data.projectTagline}
+            </motion.h4>
+          )}
+
+          {data.projectURLs.length > 0 && (
+            <motion.div
+              className="project-window-urls"
+              initial={{ opacity: 0, scale: 0 }}
+              drag
+              dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+              dragElastic={0.3}
+              dragTransition={{
+                bounceStiffness: 250,
+                bounceDamping: 15,
+              }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ delay: 0, type: "spring" }}
+            >
+              {renderLogos(data.projectURLs)}
+            </motion.div>
+          )}
+
+          {data.projectParagraphs && data.projectParagraphs.length > 0 && (
+            <motion.div
+              className="project-window-paragraphs glass"
+              variants={staggerContainer(0.2, 0.1)}
+            >
+              {data.projectParagraphs.map((para, index) => (
+                <motion.p
+                  key={index}
+                  className="project-window-paragraph"
+                  variants={fadeIn("up", 20, index * 0.1)}
+                >
+                  {para}
+                </motion.p>
+              ))}
+            </motion.div>
+          )}
+        </motion.div>
       </motion.div>
-    </motion.div>
+    </>
   );
 };
 

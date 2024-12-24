@@ -47,7 +47,7 @@
   text-align: left;
   padding: 20px;
   margin: 20px;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(9px);
   border-radius: 20px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
   transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
