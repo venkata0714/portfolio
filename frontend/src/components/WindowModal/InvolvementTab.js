@@ -60,7 +60,7 @@ const InvolvementTab = ({ data }) => {
         {data.involvementImages && (
           <div className="project-image-container">
             <ImagesCarousel
-              data={data.involvementImages.length} // Repeat images 9 times
+              data={data.involvementImages} // Repeat images 9 times
               title={data.involvementTitle || "Involvement"}
             />
           </div>

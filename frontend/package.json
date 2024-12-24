@@ -4,52 +4,22 @@
   "private": true,
   "proxy": "http://localhost:5000",
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^6.6.0",
-    "@fortawesome/fontawesome-svg-core": "^6.6.0",
-    "@fortawesome/react-fontawesome": "^0.2.2",
     "@glidejs/glide": "^3.7.1",
-    "@radix-ui/react-dialog": "^1.1.2",
     "@react-spring/web": "^9.7.5",
     "@stitches/react": "^1.2.8",
-    "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
-    "ambient-cbg": "^1.0.4",
-    "animejs": "^3.2.2",
     "axios": "^1.7.7",
-    "bootstrap": "^5.3.3",
-    "boxicons": "^2.1.4",
     "chart.js": "^4.4.6",
-    "clsx": "^2.1.1",
-    "d3": "^7.9.0",
-    "dotted-map": "^2.2.3",
     "emailjs-com": "^3.2.0",
     "framer-motion": "^11.11.17",
-    "lucide-react": "^0.468.0",
-    "motion": "^12.0.0-alpha.2",
     "p5": "^1.11.2",
     "react": "^18.3.1",
-    "react-bootstrap": "^2.10.5",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.3.1",
-    "react-fast-marquee": "^1.6.5",
-    "react-icons": "^5.4.0",
-    "react-intersection-observer": "^9.13.1",
     "react-multi-carousel": "^2.8.5",
-    "react-parallax": "^3.5.1",
-    "react-router-dom": "^6.27.0",
     "react-scripts": "5.0.1",
-    "react-scroll": "^1.9.0",
-    "react-slick": "^0.30.2",
-    "react-spring": "^9.7.4",
-    "react-transition-group": "^4.4.5",
     "react-type-animation": "^3.2.0",
-    "sass": "^1.80.6",
     "slick-carousel": "^1.8.1",
-    "smoothscroll-polyfill": "^0.4.4",
-    "swiper": "^11.1.15",
-    "tailwind-merge": "^2.6.0",
-    "web-vitals": "^2.1.4"
+    "swiper": "^11.1.15"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -74,5 +44,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "eslint-config-react-app": "^7.0.1"
   }
 }
