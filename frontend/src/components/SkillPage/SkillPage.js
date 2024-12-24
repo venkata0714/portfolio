@@ -142,7 +142,7 @@ function SkillPage() {
 
   useEffect(() => {
     const fetchTopLangData = async () => {
-      const url = "http://localhost:5000/api/top-langs";
+      const url = `${process.env.REACT_APP_API_URI}/top-langs`;
 
       try {
         const response = await fetch(url);

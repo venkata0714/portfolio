@@ -151,7 +151,7 @@ const Background = () => {
     };
 
     const onTouchMove = (event) => {
-      touchInput = true;
+      touchInput = false;
       movePointer(event.touches[0].clientX, event.touches[0].clientY);
       // event.preventDefault();
     };

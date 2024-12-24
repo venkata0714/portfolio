@@ -91,7 +91,7 @@ function App() {
           `Tab ${prev.length + 1}`,
       };
       const result = [...prev, newTab];
-      console.log("Tabs after addition:", result);
+      // console.log("Tabs after addition:", result);
       return result;
     });
 

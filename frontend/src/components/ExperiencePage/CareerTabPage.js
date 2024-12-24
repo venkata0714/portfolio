@@ -43,7 +43,7 @@ const CareerTabPage = ({ addTab }) => {
     const getExperiences = async () => {
       try {
         const data = await fetchExperiences();
-        setExperiences([...data.reverse(), ...data.reverse()]);
+        setExperiences(data.reverse());
       } catch (error) {
         console.error("Error fetching experiences:", error);
       }
