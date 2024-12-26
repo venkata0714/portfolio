@@ -27,17 +27,29 @@ const SkillBG = () => {
       const Particles = [];
       let time = 0;
 
-      document.body.addEventListener("click", () => {
-        opt.h1 = rand(0, 360);
-        opt.h2 = rand(0, 360);
-        opt.s1 = rand(20, 90);
-        opt.s2 = rand(20, 90);
-        opt.l1 = rand(30, 80);
-        opt.l2 = rand(30, 80);
-        opt.angle += deg(Math.random() * 60) * (Math.random() > 0.5 ? 1 : -1);
+      document.body.addEventListener("click", (e) => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
 
-        for (let p of Particles) {
-          p.randomize();
+        const rect = canvas.getBoundingClientRect();
+        const isInsideCanvas =
+          e.clientX >= rect.left &&
+          e.clientX <= rect.right &&
+          e.clientY >= rect.top &&
+          e.clientY <= rect.bottom;
+
+        if (isInsideCanvas) {
+          opt.h1 = rand(0, 360);
+          opt.h2 = rand(0, 360);
+          opt.s1 = rand(20, 90);
+          opt.s2 = rand(20, 90);
+          opt.l1 = rand(30, 80);
+          opt.l2 = rand(30, 80);
+          opt.angle += deg(Math.random() * 60) * (Math.random() > 0.5 ? 1 : -1);
+
+          for (let p of Particles) {
+            p.randomize();
+          }
         }
       });
 

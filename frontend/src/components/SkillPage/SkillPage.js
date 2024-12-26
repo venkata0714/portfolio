@@ -5,6 +5,7 @@ import github from "../../assets/img/icons/github.png";
 import SkillBG from "./SkillBG.js";
 import SkillGraphCarousel from "./SkillGraph";
 import SkillSection from "./SkillSection";
+import { fetchSkills } from "../../services/skillService";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -131,6 +132,7 @@ const BarChart = ({ topLangs }) => {
         key={`bar-chart-${screenWidth}`}
         data={data}
         options={options}
+        aria-label="Bar chart displaying coding hours by language"
       />
     </motion.div>
   );
@@ -139,6 +141,20 @@ const BarChart = ({ topLangs }) => {
 function SkillPage() {
   const [skillScreenWidth, setSkillScreenWidth] = useState(window.innerWidth);
   const [topLangs, setTopLangs] = useState({ labels: [], data: [] });
+  const [skills, setSkills] = useState([]);
+
+  useEffect(() => {
+    const loadSkills = async () => {
+      try {
+        const fetchedSkills = await fetchSkills();
+        setSkills(fetchedSkills);
+      } catch (error) {
+        console.error("Error fetching skills:", error);
+      }
+    };
+
+    loadSkills();
+  }, []);
 
   useEffect(() => {
     const fetchTopLangData = async () => {
@@ -295,7 +311,7 @@ function SkillPage() {
                   whileInView="show"
                   exit="hidden"
                 >
-                  <SkillGraphCarousel />
+                  <SkillGraphCarousel skills={skills} />
                 </motion.div>
               </motion.div>
             </motion.div>

@@ -101,6 +101,7 @@ const Links = () => {
           alt="Links"
           className="icon-img"
           draggable="false"
+          loading="eager"
         />
       </motion.div>
 

@@ -10,7 +10,6 @@
   background-blend-mode: hard-light;
   border-bottom: 1px solid #343a40;
   border-radius: 12px;
-  transition: height 0.3s ease-in-out;
 }
 
 .project-image-container {
@@ -18,7 +17,6 @@
   height: auto;
   overflow: hidden;
   border-radius: 12px;
-  margin-bottom: 20px;
 }
 
 .project-window-images {
@@ -27,7 +25,6 @@
   align-items: center;
   width: auto;
   height: auto;
-  padding: 20px;
 }
 
 .project-window-content {
@@ -154,7 +151,7 @@
   align-items: center;
   justify-content: space-evenly;
   width: min(75%, 1140px);
-  margin: 20px auto;
+  margin: 0px auto 20px auto;
   padding: 15px;
   border-radius: 100px;
   background: rgba(
@@ -239,6 +236,15 @@
     padding: 1rem;
     gap: 0.5rem;
   }
+
+  .project-window-tagline {
+    margin: 16px auto;
+  }
+
+  .project-window-urls {
+    margin-bottom: 16px;
+  }
+
   .project-window-urls,
   .project-window-tagline {
     font-size: clamp(1rem, 3vw, 1.5rem);

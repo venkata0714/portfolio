@@ -63,7 +63,11 @@ const WindowModal = ({
     }
 
     return () => {
-      document.body.style.overflow = ""; // Cleanup on unmount
+      if (!isClosed && !isMinimized) {
+        document.body.style.overflow = "hidden"; // Disable scrolling
+      } else {
+        document.body.style.overflow = ""; // Enable scrolling
+      }
     };
   }, [isClosed, isMinimized, scrolled]);
 
@@ -174,24 +178,18 @@ const WindowModal = ({
               scale: [1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0],
               opacity: [1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0],
             }}
-            transition={{ duration: 0.7, type: "spring", delay: 0 }}
-            drag="false"
-            dragConstraints={{
-              left: 0,
-              right: window.innerWidth,
-              top: 0,
-              bottom: 0,
-            }}
+            transition={{ duration: 0.7, type: "ease", delay: 0 }}
             onLoad={handleRestore}
             onClick={(e) => e.stopPropagation()}
+            onTouchStart={(e) => e.stopPropagation()}
           >
             <div className="window-content">
-              <motion.div className="header-bar" drag="false">
+              <motion.div className="header-bar">
                 <div className="header-text">
                   Portfolio Explorer | Items: {totalTabs}/3
                 </div>
               </motion.div>
-              <motion.div className="title-bar" drag="false">
+              <motion.div className="title-bar">
                 <div className="tabs">
                   {tabs.map((tab) => (
                     <div
@@ -200,7 +198,6 @@ const WindowModal = ({
                         lastActiveIndex === tab.index ? "active" : ""
                       }`}
                       onClick={() => setLastActiveIndex(tab.index)}
-                      style={{ width: "33%" }}
                     >
                       <div className="tab-title">{tab.name}</div>
                       <div

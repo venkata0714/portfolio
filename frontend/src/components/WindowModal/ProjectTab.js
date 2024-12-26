@@ -28,11 +28,11 @@ const ProjectTab = ({ data }) => {
             type: "spring",
           }}
           whileHover={{
-            scale: 1.1,
+            scale: 1.01,
             rotate: 360,
           }}
           whileTap={{
-            scale: 0.9,
+            scale: 0.99,
             rotate: 0,
           }}
         >
@@ -68,12 +68,17 @@ const ProjectTab = ({ data }) => {
 
         <motion.div
           className="project-window-content"
-          initial={{ opacity: 0, scale: 0 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1, delay: 0, type: "spring" }}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0, type: "ease" }}
         >
           {data.projectTitle && (
-            <motion.h2 className="project-window-title">
+            <motion.h2
+              className="project-window-title"
+              initial={{ opacity: 0, scale: 0 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0, type: "spring" }}
+            >
               {data.projectTitle}
             </motion.h2>
           )}
@@ -83,7 +88,7 @@ const ProjectTab = ({ data }) => {
               className="project-window-subtitle"
               initial={{ opacity: 0, scale: 0 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1, delay: 0, type: "spring" }}
+              transition={{ delay: 0, type: "spring" }}
             >
               {data.projectSubTitle}
             </motion.h3>
@@ -94,7 +99,7 @@ const ProjectTab = ({ data }) => {
               className="project-window-timeline"
               initial={{ opacity: 0, scale: 0 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1, delay: 0, type: "spring" }}
+              transition={{ delay: 0, type: "spring" }}
             >
               {data.projectTimeline}
             </motion.h4>
@@ -105,16 +110,16 @@ const ProjectTab = ({ data }) => {
               className="project-window-tagline"
               initial={{ opacity: 0, scale: 0 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              drag
-              dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-              dragElastic={0.3}
-              dragTransition={{
-                bounceStiffness: 250,
-                bounceDamping: 15,
-              }}
+              // drag
+              // dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+              // dragElastic={0.3}
+              // dragTransition={{
+              //   bounceStiffness: 250,
+              //   bounceDamping: 15,
+              // }}
               whileHover={{ scale: 1.01 }}
               whileTap={{
-                scale: 0.98,
+                scale: 0.99,
                 boxsizing: "border-box",
                 outline: "1px solid limegreen !important",
               }}
@@ -128,13 +133,13 @@ const ProjectTab = ({ data }) => {
             <motion.div
               className="project-window-urls"
               initial={{ opacity: 0, scale: 0 }}
-              drag
-              dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-              dragElastic={0.3}
-              dragTransition={{
-                bounceStiffness: 250,
-                bounceDamping: 15,
-              }}
+              // drag
+              // dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+              // dragElastic={0.3}
+              // dragTransition={{
+              //   bounceStiffness: 250,
+              //   bounceDamping: 15,
+              // }}
               whileInView={{ opacity: 1, scale: 1 }}
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.98 }}
@@ -147,7 +152,9 @@ const ProjectTab = ({ data }) => {
           {data.projectParagraphs && data.projectParagraphs.length > 0 && (
             <motion.div
               className="project-window-paragraphs glass"
-              variants={staggerContainer(0.2, 0.1)}
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0, type: "spring" }}
             >
               {data.projectParagraphs.map((para, index) => (
                 <motion.p

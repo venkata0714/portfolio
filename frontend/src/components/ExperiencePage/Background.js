@@ -4,6 +4,10 @@ const Background = () => {
   const canvasRef = useRef();
 
   useEffect(() => {
+    // Detect touch device
+    const isTouchDevice =
+      "ontouchstart" in window || navigator.maxTouchPoints > 0;
+
     const STAR_COLOR = "#edeeef";
     const STAR_SIZE = 4;
     const STAR_MIN_SCALE = 0.2;
@@ -17,8 +21,8 @@ const Background = () => {
     let width, height;
 
     const stars = [];
-    let pointerX = window.innerWidth / 2, // Default pointer to center
-      pointerY = window.innerHeight / 2;
+    let pointerX = window.innerWidth / 2; // Default pointer to center
+    let pointerY = window.innerHeight / 2;
 
     let velocity = { x: 0, y: 0, tx: 0, ty: 0, z: 0.00075 };
     let touchInput = false;
@@ -104,10 +108,12 @@ const Background = () => {
         star.x += velocity.x * star.z;
         star.y += velocity.y * star.z;
 
+        // “Pull” them slightly towards or away from the center
         star.x += (star.x - width / 2) * velocity.z * star.z;
         star.y += (star.y - height / 2) * velocity.z * star.z;
         star.z += velocity.z;
 
+        // Recycle star if it goes out of bounds
         if (
           star.x < -OVERFLOW_THRESHOLD ||
           star.x > width + OVERFLOW_THRESHOLD ||
@@ -126,6 +132,7 @@ const Background = () => {
         context.lineWidth = STAR_SIZE * star.z * scale;
         context.globalAlpha = 0.7 + 0.5 * Math.random();
         context.strokeStyle = STAR_COLOR;
+        // A line from (x, y) to (x, y) effectively draws just a single “point”
         context.moveTo(star.x, star.y);
         context.lineTo(star.x, star.y);
 
@@ -133,27 +140,40 @@ const Background = () => {
       });
     };
 
+    /**
+     * If we are NOT on a touch device, we allow pointer tracking via mouse.
+     * Otherwise, we simply skip pointer logic entirely.
+     */
     const movePointer = (x, y) => {
-      const ox = x - pointerX;
-      const oy = y - pointerY;
+      const canvas = canvasRef.current;
+      const rect = canvas.getBoundingClientRect();
 
-      velocity.tx += (ox / (8 * scale)) * (touchInput ? 1 : -1);
-      velocity.ty += (oy / (8 * scale)) * (touchInput ? 1 : -1);
+      const isInsideCanvas =
+        x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
 
-      pointerX = x;
-      pointerY = y;
+      if (isInsideCanvas) {
+        const ox = x - pointerX;
+        const oy = y - pointerY;
+
+        velocity.tx += (ox / (8 * scale)) * (touchInput ? 1 : -1);
+        velocity.ty += (oy / (8 * scale)) * (touchInput ? 1 : -1);
+
+        pointerX = x;
+        pointerY = y;
+      }
     };
 
     const onMouseMove = (event) => {
+      // Mouse-based pointer
       touchInput = false;
-      renderStars();
       movePointer(event.clientX, event.clientY);
     };
 
     const onTouchMove = (event) => {
-      touchInput = false;
-      movePointer(event.touches[0].clientX, event.touches[0].clientY);
-      // event.preventDefault();
+      // If you want to disable star movement on touches entirely,
+      // simply do nothing here, or omit the event listener.
+      // touchInput = true;
+      // movePointer(event.touches[0].clientX, event.touches[0].clientY);
     };
 
     const onMouseLeave = () => {
@@ -166,15 +186,26 @@ const Background = () => {
     step();
 
     window.addEventListener("resize", resizeCanvas);
-    window.addEventListener("mousemove", onMouseMove); // Global listener for mousemove
-    window.addEventListener("touchmove", onTouchMove, { passive: true });
-    window.addEventListener("mouseleave", onMouseLeave);
+
+    // Attach mouse events only if NOT a touch device
+    if (!isTouchDevice) {
+      window.addEventListener("mousemove", onMouseMove);
+      window.addEventListener("mouseleave", onMouseLeave);
+    } else {
+      // If you prefer to still have a background “shift” on touch,
+      // uncomment the next line. But per your request, we skip it:
+      // window.addEventListener("touchmove", onTouchMove, { passive: true });
+    }
 
     return () => {
       window.removeEventListener("resize", resizeCanvas);
-      window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("touchmove", onTouchMove);
-      window.removeEventListener("mouseleave", onMouseLeave);
+
+      if (!isTouchDevice) {
+        window.removeEventListener("mousemove", onMouseMove);
+        window.removeEventListener("mouseleave", onMouseLeave);
+      } else {
+        // window.removeEventListener("touchmove", onTouchMove);
+      }
     };
   }, []);
 

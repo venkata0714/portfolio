@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 import LeftArrow from "../../assets/img/icons/arrow1.svg";
 import RightArrow from "../../assets/img/icons/arrow2.svg";
 import { zoomIn } from "../../services/variants";
-import { fetchSkills } from "../../services/skillService";
 import { Radar } from "react-chartjs-2";
 import "react-multi-carousel/lib/styles.css";
 import {
@@ -47,21 +46,6 @@ const responsive = {
 };
 
 const SkillGraph = ({ givenData }) => {
-  const [skills, setSkills] = useState([]);
-
-  useEffect(() => {
-    const loadSkills = async () => {
-      try {
-        const fetchedSkills = await fetchSkills();
-        setSkills(fetchedSkills);
-      } catch (error) {
-        console.error("Error fetching skills:", error);
-      }
-    };
-
-    loadSkills();
-  }, []);
-
   const averageScore =
     givenData.Scores.reduce((sum, score) => sum + score, 0) /
     givenData.Scores.length;
@@ -176,23 +160,8 @@ const SkillGraph = ({ givenData }) => {
   );
 };
 
-const SkillGraphCarousel = () => {
-  const [skills, setSkills] = useState([]);
+const SkillGraphCarousel = ({ skills }) => {
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
-
-  useEffect(() => {
-    const loadSkills = async () => {
-      try {
-        const fetchedSkills = await fetchSkills();
-        // console.log("Fetched Skills:", fetchedSkills);
-        setSkills(fetchedSkills);
-      } catch (error) {
-        console.error("Error fetching skills:", error);
-      }
-    };
-
-    loadSkills();
-  }, []);
 
   useEffect(() => {
     const handleResize = () => {

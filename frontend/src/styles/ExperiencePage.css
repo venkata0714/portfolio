@@ -21,6 +21,7 @@
   height: 100%;
   margin: 0 auto;
   z-index: 2;
+  transition: all 0.3s ease-in-out;
 }
 
 .tabs-wrapper {
@@ -159,7 +160,7 @@
   height: 80%;
   border-radius: 30px;
   background: rgba(27, 30, 34, 0.6);
-  backdrop-filter: blur(25px); /* High blur effect */
+  backdrop-filter: blur(5px); /* High blur effect */
   box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.8),
     -4px -4px 12px rgba(58, 65, 73, 0.5),
     inset -2px -2px 4px rgba(58, 65, 73, 0.2),

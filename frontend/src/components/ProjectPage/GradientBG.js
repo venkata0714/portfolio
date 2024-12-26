@@ -35,7 +35,7 @@ export default function GradientBG({
   size = "120%",
   blendingValue = "hard-light",
   // Force interactive = true, as requested
-  interactive = true,
+  interactive = false,
   containerClassName = "",
   className = "",
 }) {
@@ -79,14 +79,28 @@ export default function GradientBG({
     { color: fifthColor, anim: "circular", durationMs: 15000 },
   ];
 
-  // On mouse move, update our pointer
+  const isPointerInsideCanvas = (x, y, canvas) => {
+    const rect = canvas.getBoundingClientRect();
+    return (
+      x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom
+    );
+  };
+
+  // Update mouse and touch event handlers
   useEffect(() => {
     const handleMouse = (ev) => {
-      setMousePos({ x: ev.clientX, y: ev.clientY });
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+
+      if (isPointerInsideCanvas(ev.clientX, ev.clientY, canvas)) {
+        setMousePos({ x: ev.clientX, y: ev.clientY });
+      }
     };
+
     if (interactive) {
       window.addEventListener("mousemove", handleMouse);
     }
+
     return () => {
       if (interactive) {
         window.removeEventListener("mousemove", handleMouse);

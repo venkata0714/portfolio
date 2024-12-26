@@ -8,8 +8,8 @@ import "../../styles/ContactPage.css";
 
 function ContactPage() {
   const form = useRef();
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
   const [isSent, setIsSent] = useState(null); // null for no status, true for success, false for error
-  const glowRef = useRef(null);
   const containerRef = useRef(null);
   const sendEmail = (e) => {
     e.preventDefault();
@@ -55,31 +55,7 @@ function ContactPage() {
   };
 
   useEffect(() => {
-    const container = containerRef.current;
-    const glow = glowRef.current;
-
-    const handleMouseMove = (e) => {
-      const rect = container.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-
-      // Move the glowing light
-      glow.style.left = `${x}px`;
-      glow.style.top = `${y}px`;
-      glow.style.opacity = 1; // Ensure the glow is visible
-
-      // Add a timeout to fade out the glow
-      clearTimeout(glow.dataset.timeout);
-      glow.dataset.timeout = setTimeout(() => {
-        glow.style.opacity = 0;
-      }, 300); // Glow fades out after 300ms
-    };
-
-    container.addEventListener("mousemove", handleMouseMove);
-
-    return () => {
-      container.removeEventListener("mousemove", handleMouseMove);
-    };
+    setIsTouchDevice("ontouchstart" in window || navigator.maxTouchPoints > 0);
   }, []);
 
   return (
@@ -90,7 +66,6 @@ function ContactPage() {
           className="contact-page"
           ref={containerRef}
         >
-          <div ref={glowRef} className="mouse-glow"></div>
           <div className="contact-container">
             <div className="contact-div">
               <motion.h2
@@ -151,7 +126,7 @@ function ContactPage() {
                     placeholder="Your Name *"
                     required
                     initial={{ opacity: 0, scale: 0 }}
-                    drag
+                    drag={isTouchDevice ? false : true}
                     dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
                     dragElastic={0.3}
                     dragTransition={{
@@ -169,7 +144,7 @@ function ContactPage() {
                     placeholder="Your Email *"
                     required
                     initial={{ opacity: 0, scale: 0 }}
-                    drag
+                    drag={isTouchDevice ? false : true}
                     dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
                     dragElastic={0.3}
                     dragTransition={{
@@ -186,7 +161,7 @@ function ContactPage() {
                     name="from_phone"
                     placeholder="Your Phone"
                     initial={{ opacity: 0, scale: 0 }}
-                    drag
+                    drag={isTouchDevice ? false : true}
                     dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
                     dragElastic={0.3}
                     dragTransition={{
@@ -213,7 +188,7 @@ function ContactPage() {
                     placeholder="Your Message *"
                     required
                     initial={{ opacity: 0, scale: 0 }}
-                    drag
+                    drag={isTouchDevice ? false : true}
                     dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
                     dragElastic={0.3}
                     dragTransition={{

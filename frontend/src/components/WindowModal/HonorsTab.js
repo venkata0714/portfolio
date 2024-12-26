@@ -105,13 +105,13 @@ const HonorsTab = ({ data }) => {
               className="project-window-tagline"
               initial={{ opacity: 0, scale: 0 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              drag
-              dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-              dragElastic={0.3}
-              dragTransition={{
-                bounceStiffness: 250,
-                bounceDamping: 15,
-              }}
+              // drag
+              // dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+              // dragElastic={0.3}
+              // dragTransition={{
+              //   bounceStiffness: 250,
+              //   bounceDamping: 15,
+              // }}
               whileHover={{ scale: 1.01 }}
               whileTap={{
                 scale: 0.98,
@@ -128,13 +128,13 @@ const HonorsTab = ({ data }) => {
             <motion.div
               className="project-window-urls"
               initial={{ opacity: 0, scale: 0 }}
-              drag
-              dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-              dragElastic={0.3}
-              dragTransition={{
-                bounceStiffness: 250,
-                bounceDamping: 15,
-              }}
+              // drag
+              // dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+              // dragElastic={0.3}
+              // dragTransition={{
+              //   bounceStiffness: 250,
+              //   bounceDamping: 15,
+              // }}
               whileInView={{ opacity: 1, scale: 1 }}
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.98 }}

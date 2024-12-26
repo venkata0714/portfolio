@@ -1,4 +1,5 @@
 .window-modal {
+  display: inline-block;
   position: fixed;
   top: 52px;
   left: 0;
@@ -48,7 +49,7 @@
 .title-bar {
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: space-between;
   background: #212529;
   background-blend-mode: hard-light;
   border-bottom: 1px solid #343a40;
@@ -62,9 +63,6 @@
   padding: 2px 10px 0px 10px;
   overflow: hidden;
   white-space: nowrap;
-}
-.tabs > .tab:nth-child(n + 3) {
-  max-width: unset; /* Remove the 50% rule for tabs beyond 2 */
 }
 
 .tab {
@@ -170,7 +168,7 @@
 
 .content {
   flex: 1;
-  background-color: #343a40;
+  background-color: #212529;
   background-blend-mode: hard-light;
   overflow: auto;
   border: 1px solid #343a40;
@@ -237,6 +235,7 @@
   .tab {
     font-size: xx-small;
     padding: 0.2rem;
+    width: max(110px, 30%);
   }
 
   .minimized-icon {

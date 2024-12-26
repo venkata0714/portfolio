@@ -20,7 +20,9 @@ function ImagesCarousel({ data, title }) {
   return (
     <motion.div
       className="project-window-images"
-      variants={zoomIn(0.3)}
+      initial={{ opacity: 0, scale: 0 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ delay: 0, type: "spring" }}
       style={{ overflow: "hidden", margin: "0 auto" }}
     >
       <Swiper
@@ -39,7 +41,7 @@ function ImagesCarousel({ data, title }) {
               key={`project-window-img-${title}-${index}`}
               className="project-window-img-bg"
               initial={{ opacity: 0, scale: 0 }}
-              whileInView={{ opacity: 1, scale: 1 }}
+              animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0, type: "spring" }}
               style={{
                 // background: `linear-gradient(

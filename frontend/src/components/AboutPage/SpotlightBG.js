@@ -1,12 +1,14 @@
 import React, { useEffect, useRef } from "react";
 
 export const SpotlightBG = () => {
+  const isTouchDevice =
+    "ontouchstart" in window || navigator.maxTouchPoints > 0;
   const canvasRef = useRef(null);
   const mouse = useRef({ x: -100, y: -100 }); // Start with the mouse off-screen
   const paintedHexagons = useRef([]); // Array to store painted hexagons
   const breathingProgress = useRef(0); // Tracks the progress of the breathing animation (0 to 1)
   const direction = useRef(1); // 1 for expanding, -1 for contracting
-  const breathingSpeed = 0.0015; // Very slow breathing animation speed
+  const breathingSpeed = 0.01; // Very slow breathing animation speed
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -96,11 +98,11 @@ export const SpotlightBG = () => {
 
           // Determine base opacity for the hexagon
           let opacity =
-            distance <= lightRadius ? 1 - distance / lightRadius : 0.05;
+            distance <= lightRadius ? 1 - distance / lightRadius : 0.075;
 
           // Add subtle breathing effect to opacity
           if (y <= animationLine) {
-            opacity += 0.1; // Slight increase for breathing effect
+            opacity += 0.15; // Slight increase for breathing effect
           }
 
           // Check if the hexagon is painted
@@ -133,43 +135,68 @@ export const SpotlightBG = () => {
     };
 
     const handleMouseMove = (e) => {
-      mouse.current.x = e.clientX;
-      mouse.current.y = e.clientY;
+      const rect = canvas.getBoundingClientRect();
+      const insideCanvas =
+        e.clientX >= rect.left &&
+        e.clientX <= rect.right &&
+        e.clientY >= rect.top &&
+        e.clientY <= rect.bottom;
+
+      if (insideCanvas) {
+        mouse.current.x = e.clientX - rect.left;
+        mouse.current.y = e.clientY - rect.top;
+      } else {
+        mouse.current.x = -100;
+        mouse.current.y = -100; // Move off-screen when outside
+      }
     };
 
-    const handleMouseClick = () => {
-      const cols = Math.ceil(canvas.width / (hexSize * 1.5));
-      const rows = Math.ceil(canvas.height / (hexSize * Math.sqrt(3)));
+    const handleMouseClick = (e) => {
+      if (isTouchDevice) return;
+      const rect = canvas.getBoundingClientRect();
+      const insideCanvas =
+        e.clientX >= rect.left &&
+        e.clientX <= rect.right &&
+        e.clientY >= rect.top &&
+        e.clientY <= rect.bottom;
 
-      for (let row = 0; row <= rows; row++) {
-        for (let col = 0; col <= cols; col++) {
-          const x = col * hexSize * 1.5;
-          const y =
-            row * hexSize * Math.sqrt(3) +
-            (col % 2 === 0 ? 0 : (hexSize * Math.sqrt(3)) / 2);
+      if (insideCanvas) {
+        const cols = Math.ceil(canvas.width / (hexSize * 1.5));
+        const rows = Math.ceil(canvas.height / (hexSize * Math.sqrt(3)));
 
-          const dx = x - mouse.current.x;
-          const dy = y - mouse.current.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
+        for (let row = 0; row <= rows; row++) {
+          for (let col = 0; col <= cols; col++) {
+            const x = col * hexSize * 1.5;
+            const y =
+              row * hexSize * Math.sqrt(3) +
+              (col % 2 === 0 ? 0 : (hexSize * Math.sqrt(3)) / 2);
 
-          if (distance <= clickRadius) {
-            // Paint hexagon on click
-            paintedHexagons.current.push({ x, y, timestamp: Date.now() });
+            const dx = x - (e.clientX - rect.left);
+            const dy = y - (e.clientY - rect.top);
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance <= clickRadius) {
+              // Paint hexagon on click
+              paintedHexagons.current.push({ x, y, timestamp: Date.now() });
+            }
           }
         }
       }
     };
 
     window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("click", handleMouseClick);
-
+    if (!isTouchDevice) {
+      window.addEventListener("click", handleMouseClick);
+    }
     render();
 
     return () => {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener("resize", resizeCanvas);
       window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("click", handleMouseClick);
+      if (!isTouchDevice) {
+        window.removeEventListener("click", handleMouseClick);
+      }
     };
   }, []);
 

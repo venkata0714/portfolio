@@ -9,17 +9,17 @@ import "../../styles/ExperiencePage.css";
 const tabs = [
   {
     title: "Involvement",
-    icon: <i className="tab-icon fa-solid fa-handshake"></i>,
+    icon: <i className="tab-icon fa-solid fa-handshake" />,
     component: InvolvementTabPage,
   },
   {
     title: "Career",
-    icon: <i className="tab-icon fa-solid fa-briefcase"></i>,
+    icon: <i className="tab-icon fa-solid fa-briefcase" />,
     component: CareerTabPage,
   },
   {
     title: "Honors",
-    icon: <i className="tab-icon fa-solid fa-trophy"></i>,
+    icon: <i className="tab-icon fa-solid fa-trophy" />,
     component: HonorsTabPage,
   },
 ];
@@ -86,29 +86,32 @@ const ExperiencePage = ({ addTab }) => {
               {tabs.map((tab) => (
                 <motion.button
                   key={tab.title}
-                  className={`tab-button ${
-                    selectedTab.title === tab.title ? "active" : ""
+                  className={`tab-button${
+                    selectedTab.title === tab.title ? " active" : ""
                   }`}
                   onClick={() => {
                     setSelectedTab(tab);
                     setActiveComponent(() => tab.component);
                     scrollToSection("experience");
                   }}
-                  drag
-                  dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-                  dragElastic={0.3}
-                  dragTransition={{
-                    bounceStiffness: 250,
-                    bounceDamping: 17,
-                  }}
+                  // drag
+                  // dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+                  // dragElastic={0.3}
+                  // dragTransition={{
+                  //   bounceStiffness: 250,
+                  //   bounceDamping: 17,
+                  // }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   transition={{ delay: 0, type: "spring" }}
+                  aria-label="Trophy"
                 >
                   {tab.icon}
-                  {selectedTab.title === tab.title && (
+                  {selectedTab.title === tab.title ? (
                     <span className="tab-text">{tab.title}</span>
+                  ) : (
+                    ""
                   )}
                 </motion.button>
               ))}

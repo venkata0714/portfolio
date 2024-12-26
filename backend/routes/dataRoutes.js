@@ -15,6 +15,21 @@ const {
   getSkillComponents,
 } = require("../controllers/dataController");
 
+router.get("/ping", (req, res) => {
+  res.json({ message: "Backend is active" });
+});
+
+const { getDB } = require("../config/mongodb");
+router.get("/db-ping", async (req, res) => {
+  try {
+    const db = getDB();
+    await db.collection("someCollection").findOne(); // Replace 'someCollection' with an actual collection
+    res.json({ message: "MongoDB is active" });
+  } catch (error) {
+    res.status(500).json({ message: "MongoDB is not connected", error });
+  }
+});
+
 // Routes for Projects
 router.get("/getprojects", getProjects);
 router.get("/getprojects/:projectLink", getProjectByLink);

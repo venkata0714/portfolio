@@ -1,3 +1,4 @@
+const os = require("os");
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
@@ -43,4 +44,17 @@ app.get("/api/top-langs", async (req, res) => {
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  // Log more server details in a single line every 5 seconds
+  setInterval(() => {
+    const memUsage = process.memoryUsage(); // returns an object with multiple memory usage stats
+    const usedRSSMB = Math.round(memUsage.rss / 1024 / 1024);
+    const usedHeapMB = Math.round(memUsage.heapUsed / 1024 / 1024);
+    const totalHeapMB = Math.round(memUsage.heapTotal / 1024 / 1024);
+    const loadAvg1Min = os.loadavg()[0].toFixed(2); // 1-minute load average
+    const uptimeSecs = process.uptime().toFixed(0); // Node process uptime in seconds
+
+    console.log(
+      `Memory: RSS=${usedRSSMB}MB HeapUsed=${usedHeapMB}MB/${totalHeapMB}MB | CPU Load(1m)=${loadAvg1Min} | Uptime=${uptimeSecs}s`
+    );
+  }, 5000);
 });
