@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { motion } from "framer-motion";
 import "../../styles/Loading.css";
+import { pingBackend, pingDatabase } from "../../services/ping";
 
 const greetings = ["Hello", "नमस्ते", "Bonjour", "こんにちは", "مرحبا"];
 
@@ -10,6 +10,7 @@ const Loading = ({ onComplete }) => {
     backend: false,
     database: false,
   });
+  const [loaded, setLoaded] = useState(false);
   const [currentGreetingIndex, setCurrentGreetingIndex] = useState(0);
 
   useEffect(() => {
@@ -24,38 +25,28 @@ const Loading = ({ onComplete }) => {
   }, []);
 
   useEffect(() => {
-    const isTouchDevice =
-      "ontouchstart" in window || navigator.maxTouchPoints > 0;
-
-    const pingBackend = async () => {
-      try {
-        await axios.get("http://localhost:5000/api/ping");
-        setStatus((prev) => ({ ...prev, backend: true }));
-      } catch (error) {
-        console.error("Backend check failed:", error);
-      }
-    };
-
-    const pingDatabase = async () => {
-      try {
-        await axios.get("http://localhost:5000/api/db-ping");
-        setStatus((prev) => ({ ...prev, database: true }));
-      } catch (error) {
-        console.error("Database check failed:", error);
-      }
-    };
-
     const checkStatus = async () => {
-      await pingBackend();
-      await pingDatabase();
+      const backendStatus = await pingBackend();
+      const databaseStatus = await pingDatabase();
 
+      setStatus({
+        backend: backendStatus,
+        database: databaseStatus,
+      });
+
+      // Ensure all greetings are shown before transition
       if (greetings.every((_, index) => index <= currentGreetingIndex)) {
-        setTimeout(() => onComplete(), 500); // Smooth transition after all greetings and status checks
+        setTimeout(() => {
+          onComplete();
+          setLoaded(true);
+        }, 500); // Smooth transition after all greetings and status checks
       }
     };
 
-    checkStatus();
-  }, [onComplete, currentGreetingIndex]);
+    if (!loaded) {
+      checkStatus();
+    }
+  }, [onComplete, currentGreetingIndex, loaded]);
 
   return (
     <motion.div
@@ -68,10 +59,10 @@ const Loading = ({ onComplete }) => {
       <div className="greeting">
         <motion.h1
           key={greetings[currentGreetingIndex]}
-          initial={{ scale: [0, 0.1, 0.2, 0.8], opacity: 0 }}
+          initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0.1, opacity: 0 }}
-          transition={{ duration: 0.2 }}
+          exit={{ scale: 0.8, opacity: 0 }}
+          transition={{ duration: 0.4 }}
         >
           {greetings[currentGreetingIndex]}
         </motion.h1>
@@ -94,7 +85,7 @@ const Loading = ({ onComplete }) => {
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 1.2 }}
+          transition={{ duration: 0.5, delay: 1.4 }}
         >
           {"ontouchstart" in window || navigator.maxTouchPoints > 0
             ? "Reducing Animations for Touch Devices ✅"
