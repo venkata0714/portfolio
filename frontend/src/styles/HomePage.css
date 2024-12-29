@@ -39,7 +39,7 @@
 }
 
 .container {
-  max-width: min(1140px, 95%);
+  width: min(1140px, 95%);
   height: calc(80vh - 52px);
   margin: 0 auto;
   display: flex;
@@ -123,11 +123,12 @@
   cursor: default !important;
 }
 
-.changing-text-container {
+.changing-text-container em {
   display: flex;
   position: relative;
   justify-content: center;
   align-items: center;
+  width: 100%;
 }
 .changing-text {
   z-index: 50;

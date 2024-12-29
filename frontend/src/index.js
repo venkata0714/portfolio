@@ -5,9 +5,16 @@ import Loading from "./components/SpecialComponents/Loading";
 
 const Root = () => {
   const [isReady, setIsReady] = useState(false);
+  const [isBatterySavingOn, setIsBatterySavingOn] = useState(true); // New state
 
   if (!isReady) {
-    return <Loading onComplete={() => setIsReady(true)} />;
+    return (
+      <Loading
+        isBatterySavingOn={isBatterySavingOn}
+        setIsBatterySavingOn={setIsBatterySavingOn}
+        onComplete={() => setIsReady(true)}
+      />
+    );
   }
 
   return <App />;

@@ -33,7 +33,7 @@ import english from "../assets/img/icons/english.svg";
 import hindi from "../assets/img/icons/hindi.svg";
 import japanese from "../assets/img/icons/japanese.svg";
 import french from "../assets/img/icons/french.svg";
-import arabic from "../assets/img/icons/arabic.svg";
+import arabic from "../assets/img/icons/arabic.png";
 
 const icons = {
   javascript,

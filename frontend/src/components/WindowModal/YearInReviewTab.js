@@ -1,6 +1,5 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { fadeIn, zoomIn, staggerContainer } from "../../services/variants";
 import "../../styles/ProjectTab.css";
 import github from "../../assets/img/icons/github.png";
 import youtube from "../../assets/img/icons/youtube.png";
@@ -20,26 +19,29 @@ const YearInReviewTab = ({ data }) => {
           href={value}
           target="_blank"
           rel="noopener noreferrer"
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0, scale: 0, rotate: 0 }}
+          animate={{ opacity: 1, scale: 1, rotate: 360 }}
           transition={{
-            duration: 0.6,
-            initialDelay: 0.5 + 0.2 * key,
-            type: "spring",
+            delay: 1.7 + 0.4 * key,
+            type: "ease",
           }}
-          whileHover={{
-            scale: 1.1,
-            rotate: 360,
-          }}
-          whileTap={{
-            scale: 0.9,
-            rotate: 0,
-          }}
+          viewport={{ once: true }}
         >
-          <img
+          <motion.img
             src={`${iconName}`}
             alt={`${iconName} logo`}
             className="project-window-logo"
+            whileHover={{
+              scale: 1.01,
+              rotate: 360,
+            }}
+            whileTap={{
+              scale: 0.99,
+              rotate: 0,
+            }}
+            transition={{
+              type: "ease",
+            }}
           />
         </motion.a>
       );
@@ -68,12 +70,18 @@ const YearInReviewTab = ({ data }) => {
 
         <motion.div
           className="project-window-content"
-          initial={{ opacity: 0, scale: 0 }}
+          initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1, delay: 0, type: "spring" }}
+          transition={{ delay: 0.5, type: "ease" }}
         >
           {data.yearInReviewTitle && (
-            <motion.h2 className="project-window-title">
+            <motion.h2
+              className="project-window-title"
+              initial={{ opacity: 0, scale: 0 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.7, type: "ease" }}
+              viewport={{ once: true }}
+            >
               {data.yearInReviewTitle}
             </motion.h2>
           )}
@@ -83,7 +91,8 @@ const YearInReviewTab = ({ data }) => {
               className="project-window-subtitle"
               initial={{ opacity: 0, scale: 0 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1, delay: 0, type: "spring" }}
+              transition={{ delay: 0.9, type: "ease" }}
+              viewport={{ once: true }}
             >
               {data.yearInReviewSubTitle}
             </motion.h3>
@@ -92,9 +101,10 @@ const YearInReviewTab = ({ data }) => {
           {data.yearInReviewTimeline && (
             <motion.h4
               className="project-window-timeline"
-              initial={{ opacity: 0, scale: 0 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1, delay: 0, type: "spring" }}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ delay: 1.1, type: "ease" }}
+              viewport={{ once: true }}
             >
               {data.yearInReviewTimeline}
             </motion.h4>
@@ -105,20 +115,21 @@ const YearInReviewTab = ({ data }) => {
               className="project-window-tagline"
               initial={{ opacity: 0, scale: 0 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              drag
-              dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-              dragElastic={0.3}
-              dragTransition={{
-                bounceStiffness: 250,
-                bounceDamping: 15,
-              }}
+              // drag
+              // dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+              // dragElastic={0.3}
+              // dragTransition={{
+              //   bounceStiffness: 250,
+              //   bounceDamping: 15,
+              // }}
               whileHover={{ scale: 1.01 }}
               whileTap={{
-                scale: 0.98,
+                scale: 0.99,
                 boxsizing: "border-box",
                 outline: "1px solid limegreen !important",
               }}
-              transition={{ delay: 0, type: "spring" }}
+              transition={{ delay: 1.3, type: "ease" }}
+              viewport={{ once: true }}
             >
               {data.yearInReviewTagline}
             </motion.h4>
@@ -128,17 +139,18 @@ const YearInReviewTab = ({ data }) => {
             <motion.div
               className="project-window-urls"
               initial={{ opacity: 0, scale: 0 }}
-              drag
-              dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-              dragElastic={0.3}
-              dragTransition={{
-                bounceStiffness: 250,
-                bounceDamping: 15,
-              }}
+              // drag
+              // dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+              // dragElastic={0.3}
+              // dragTransition={{
+              //   bounceStiffness: 250,
+              //   bounceDamping: 15,
+              // }}
               whileInView={{ opacity: 1, scale: 1 }}
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.98 }}
-              transition={{ delay: 0, type: "spring" }}
+              transition={{ delay: 1.5, type: "ease" }}
+              viewport={{ once: true }}
             >
               {renderLogos(data.yearInReviewURLs)}
             </motion.div>
@@ -148,13 +160,19 @@ const YearInReviewTab = ({ data }) => {
             data.yearInReviewParagraphs.length > 0 && (
               <motion.div
                 className="project-window-paragraphs glass"
-                variants={staggerContainer(0.2, 0.1)}
+                initial={{ opacity: 0, scale: 0 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 2, type: "ease" }}
+                viewport={{ once: true }}
               >
                 {data.yearInReviewParagraphs.map((para, index) => (
                   <motion.p
                     key={index}
                     className="project-window-paragraph"
-                    variants={fadeIn("up", 20, index * 0.1)}
+                    initial={{ opacity: 0, scale: 0 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0, type: "ease" }}
+                    viewport={{ once: true }}
                   >
                     {para}
                   </motion.p>

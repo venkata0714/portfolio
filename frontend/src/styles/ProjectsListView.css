@@ -1,5 +1,4 @@
 .project-container {
-  scroll-snap-type: none; /* Disable snapping */
   display: flex;
   z-index: 5;
   position: sticky;

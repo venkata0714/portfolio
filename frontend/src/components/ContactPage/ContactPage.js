@@ -3,7 +3,7 @@ import { zoomIn, fadeIn } from "../../services/variants";
 import { motion, AnimatePresence } from "framer-motion";
 import { styled, keyframes } from "@stitches/react";
 import Footer from "../SpecialComponents/Footer";
-import emailjs from "emailjs-com";
+import emailjs from "@emailjs/browser";
 import "../../styles/ContactPage.css";
 
 function ContactPage() {
@@ -19,13 +19,13 @@ function ContactPage() {
     // console.log("Form Data Object:", data); // Debug: Check the generated object
 
     // Log all key-value pairs
-    for (let [key, value] of formData.entries()) {
-      console.log(`Name: ${key}, Value: ${value}`);
-    }
-    console.log(form.current.elements.from_name.value);
-    console.log(form.current.elements.from_email.value);
-    console.log(form.current.elements.from_phone.value);
-    console.log(form.current.elements.message.value);
+    // for (let [key, value] of formData.entries()) {
+    //   console.log(`Name: ${key}, Value: ${value}`);
+    // }
+    // console.log(form.current.elements.from_name.value);
+    // console.log(form.current.elements.from_email.value);
+    // console.log(form.current.elements.from_phone.value);
+    // console.log(form.current.elements.message.value);
 
     setTimeout(() => {
       emailjs
@@ -37,7 +37,7 @@ function ContactPage() {
         )
         .then(
           (result) => {
-            console.log(result);
+            // console.log(result);
             setIsSent(true); // Set success status
             setTimeout(() => setIsSent(null), 3000); // Reset status after 2 seconds
           },

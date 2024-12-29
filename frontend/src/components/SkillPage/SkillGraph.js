@@ -114,7 +114,7 @@ const SkillGraph = ({ givenData }) => {
       animation: {
         duration: 2000, // 2 seconds for a full animation
         easing: "easeInOutQuad",
-        onComplete: () => console.log("Animation Complete!"),
+        // onComplete: () => console.log("Animation Complete!"),
       },
       customAverage: {
         id: "customAverage",

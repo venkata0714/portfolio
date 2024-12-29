@@ -2,7 +2,6 @@ import { React, useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
 import { motion } from "framer-motion";
-import { zoomIn } from "../../services/variants";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -22,7 +21,7 @@ function ImagesCarousel({ data, title }) {
       className="project-window-images"
       initial={{ opacity: 0, scale: 0 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ delay: 0, type: "spring" }}
+      transition={{ delay: 0.5, type: "ease" }}
       style={{ overflow: "hidden", margin: "0 auto" }}
     >
       <Swiper
@@ -40,9 +39,9 @@ function ImagesCarousel({ data, title }) {
             <motion.div
               key={`project-window-img-${title}-${index}`}
               className="project-window-img-bg"
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0, type: "spring" }}
+              // initial={{ opacity: 0, scale: 0 }}
+              // animate={{ opacity: 1, scale: 1 }}
+              // transition={{ delay: 0, type: "spring" }}
               style={{
                 // background: `linear-gradient(
                 //     to bottom,

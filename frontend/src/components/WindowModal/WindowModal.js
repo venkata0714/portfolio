@@ -150,7 +150,7 @@ const WindowModal = ({
               bounceStiffness: 250,
               bounceDamping: 15,
             }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            // whileInView={{ opacity: 1, scale: 1 }}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9, rotate: 360 }}
             transition={{ duration: 0, delay: 0, type: "spring" }}
@@ -172,13 +172,19 @@ const WindowModal = ({
           <motion.div
             className="window-modal"
             ref={modalRef}
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
+            initial={{
+              scale: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
+              opacity: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
+            }}
+            animate={{
+              scale: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
+              opacity: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
+            }}
             exit={{
               scale: [1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0],
               opacity: [1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0],
             }}
-            transition={{ duration: 0.7, type: "ease", delay: 0 }}
+            transition={{ type: "ease", delay: 0, duration: 0.5 }}
             onLoad={handleRestore}
             onClick={(e) => e.stopPropagation()}
             onTouchStart={(e) => e.stopPropagation()}
@@ -233,7 +239,7 @@ const WindowModal = ({
                 initial={{ scale: 0, opacity: 0 }}
                 whileInView={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0, opacity: 0 }}
-                transition={{ duration: 0.4, type: "spring" }}
+                transition={{ type: "ease" }}
               >
                 {tabs.length > 0 &&
                   renderTabContent(

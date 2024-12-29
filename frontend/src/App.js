@@ -42,10 +42,10 @@ function App() {
         setIsClosed(false); // Ensure the modal is visible
         setIsMinimized(false); // Ensure the modal is not minimized
         setLastActiveIndex(existingTabIndex);
-        console.log(
-          "Tab already exists, switching to existing tab:",
-          prev[existingTabIndex]
-        );
+        // console.log(
+        //   "Tab already exists, switching to existing tab:",
+        //   prev[existingTabIndex]
+        // );
         return prev;
       }
 
@@ -109,7 +109,6 @@ function App() {
     const onScroll = () => {
       setScrolled(window.scrollY > 100);
     };
-
     window.addEventListener("scroll", onScroll);
     return () => {
       window.removeEventListener("scroll", onScroll);
