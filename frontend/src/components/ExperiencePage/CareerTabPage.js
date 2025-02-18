@@ -37,7 +37,7 @@ const CustomArrow = ({ direction, onClick, imgSrc, label }) => {
 };
 const CareerTabPage = ({ addTab }) => {
   const [experiences, setExperiences] = useState([]);
-  const [activeSlide, setActiveSlide] = useState(1);
+  const [activeSlide, setActiveSlide] = useState(0);
 
   useEffect(() => {
     const getExperiences = async () => {
