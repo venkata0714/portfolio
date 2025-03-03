@@ -5,7 +5,7 @@ import { styled } from "@stitches/react";
 import "../../styles/AboutPage.css";
 import { SpotlightBG } from "./SpotlightBG";
 import AboutImg from "../../assets/img/media/Kartavya-Profile-Photo.jpg";
-import Resume from "../../assets/Singh_Kartavya_Resume2024.pdf";
+import Resume from "../../assets/Singh_Kartavya_Resume2025.pdf";
 
 const aboutData = [
   {
