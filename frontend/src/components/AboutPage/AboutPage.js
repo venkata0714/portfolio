@@ -166,7 +166,7 @@ function AboutPage() {
               </motion.a>
               <motion.a
                 href={Resume}
-                download="Kartavya-Singh-Resume-2024.pdf"
+                download="Kartavya-Singh-Resume-2025.pdf"
                 className="download-cv"
                 drag="false"
               >

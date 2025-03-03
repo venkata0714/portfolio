@@ -321,7 +321,7 @@ const NavBar = () => {
             </li>
             <li className="nav-item">
               <a
-                download="Kartavya-Singh-Resume-2024.pdf"
+                download="Kartavya-Singh-Resume-2025.pdf"
                 href={Resume}
                 className="navbar-link"
                 target="_blank"
