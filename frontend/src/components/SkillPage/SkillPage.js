@@ -28,7 +28,7 @@ ChartJS.register(
   Legend
 );
 
-const BarChart = ({ topLangs }) => {
+const BarChart = ({ topLangs, isBatterySavingOn }) => {
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
 
   useEffect(() => {
@@ -122,7 +122,7 @@ const BarChart = ({ topLangs }) => {
   return (
     <motion.div
       className="bar-chart-container"
-      variants={zoomIn(0)}
+      variants={isBatterySavingOn ? {} : zoomIn(0)}
       initial="hidden"
       whileInView="show"
       exit="hidden"
@@ -138,7 +138,7 @@ const BarChart = ({ topLangs }) => {
   );
 };
 
-function SkillPage() {
+function SkillPage({ isBatterySavingOn }) {
   const [skillScreenWidth, setSkillScreenWidth] = useState(window.innerWidth);
   const [topLangs, setTopLangs] = useState({ labels: [], data: [] });
   const [skills, setSkills] = useState([]);
@@ -246,7 +246,7 @@ function SkillPage() {
       {/* <SpotlightBG /> */}
       <motion.div
         className="skill-div"
-        variants={zoomIn(0)}
+        variants={isBatterySavingOn ? {} : zoomIn(0)}
         initial="hidden"
         whileInView="show"
         exit="hidden"
@@ -254,7 +254,7 @@ function SkillPage() {
         <div className="skill-box">
           <motion.h2
             className="skill-heading"
-            variants={fadeIn("right", 200, 0)}
+            variants={isBatterySavingOn ? {} : fadeIn("right", 200, 0)}
             initial="hidden"
             whileInView="show"
             exit="hidden"
@@ -264,7 +264,7 @@ function SkillPage() {
           <motion.div className="skill-section">
             <motion.p
               className="skill-paragraph"
-              variants={fadeIn("right", 200, 0)}
+              variants={isBatterySavingOn ? {} : fadeIn("right", 200, 0)}
               initial="hidden"
               whileInView="show"
               exit="hidden"
@@ -274,16 +274,16 @@ function SkillPage() {
             <motion.div
               className="skill-carousel-container"
               key={`skill-carousel-${skillScreenWidth}`}
-              variants={zoomIn(0)}
+              variants={isBatterySavingOn ? {} : zoomIn(0)}
               initial="hidden"
               whileInView="show"
               exit="hidden"
             >
-              <SkillSection />
+              <SkillSection isBatterySavingOn={isBatterySavingOn} />
             </motion.div>
             <motion.p
               className="skill-paragraph"
-              variants={fadeIn("right", 200, 0)}
+              variants={isBatterySavingOn ? {} : fadeIn("right", 200, 0)}
               initial="hidden"
               whileInView="show"
               exit="hidden"
@@ -301,17 +301,24 @@ function SkillPage() {
                   <img src={github} alt="GitHub" />
                 </a>
 
-                <BarChart key={topLangs} topLangs={topLangs} />
+                <BarChart
+                  key={topLangs}
+                  topLangs={topLangs}
+                  isBatterySavingOn={isBatterySavingOn}
+                />
               </motion.div>
               <motion.div className="last-skill-column column2">
                 <motion.div
                   className="skill-graph-carousel"
-                  variants={zoomIn(0)}
+                  variants={isBatterySavingOn ? {} : zoomIn(0)}
                   initial="hidden"
                   whileInView="show"
                   exit="hidden"
                 >
-                  <SkillGraphCarousel skills={skills} />
+                  <SkillGraphCarousel
+                    skills={skills}
+                    isBatterySavingOn={isBatterySavingOn}
+                  />
                 </motion.div>
               </motion.div>
             </motion.div>

@@ -203,6 +203,7 @@
 .career-container {
   display: flex;
   height: 100%;
+  width: 100%;
   flex-direction: column;
   align-items: center;
   justify-content: stretch;
@@ -230,6 +231,7 @@
 
 .career-details {
   flex-grow: 1;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -239,8 +241,9 @@
 .career-subtitle-area {
   /* Flex container to allow row and wrapping behavior */
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between; /* Spreads subtitle on the left, timeline on the right */
   width: 100%;
 }
@@ -381,6 +384,14 @@
   color: transparent !important;
   font-size: 0.9rem;
   font-weight: 500;
+  color: #edeeef;
+  /* background: rgba(255, 255, 255, 0.1); glassy effect */
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  border-radius: 30px;
+  padding: 10px 20px;
+  margin: 10px 0;
+  border-bottom-left-radius: 5px;
   pointer-events: none;
   background-clip: text;
   -webkit-background-clip: text;

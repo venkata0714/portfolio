@@ -13,6 +13,9 @@ const {
   getHonorsExperienceByLink,
   getSkills,
   getSkillComponents,
+  compareAdminName,
+  compareAdminPassword,
+  // setAdminCredentials,
 } = require("../controllers/dataController");
 
 router.get("/ping", (req, res) => {
@@ -56,5 +59,9 @@ router.get(
 // Routes for Skills
 router.get("/getskills", getSkills);
 router.get("/getskillcomponents", getSkillComponents);
+
+// router.post("/setAdminCredentials", setAdminCredentials);
+router.post("/compareAdminName", compareAdminName);
+router.post("/compareAdminPassword", compareAdminPassword);
 
 module.exports = router;

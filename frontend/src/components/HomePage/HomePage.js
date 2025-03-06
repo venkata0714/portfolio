@@ -13,7 +13,7 @@ import { zoomIn } from "../../services/variants";
 import "../../styles/HomePage.css";
 import ProfilePhoto from "../../assets/img/media/Kartavya.jpg";
 
-function HomePage() {
+function HomePage({ isBatterySavingOn, scrolled }) {
   const [clicked, setClicked] = useState(false);
   const [isCooldown, setIsCooldown] = useState(false);
   const clickCount = useRef(0); // Use useRef to keep track of click count across renders
@@ -30,8 +30,26 @@ function HomePage() {
     smooth: true,
   });
   const blur = useTransform(scrollYProgress, [0, 1], [2, 5]);
+  // useEffect(() => {
+  //   if (!scrolled) {
+  //     blur.set(0);
+  //   }
+  // }, [scrolled, blur, scrollYProgress]);
   const scale = useTransform(scrollYProgress, [0, 1], [1, 1.6]);
   const opacity = useTransform(scrollYProgress, [0.25, 1], [0.85, 1]);
+
+  // Local state to hold formatted blur string
+  const [filterStyle, setFilterStyle] = useState("blur(0px)");
+
+  // Subscribe to changes on the blur motion value
+  useEffect(() => {
+    const unsubscribe = blur.onChange((latest) => {
+      // If you want to set blur to 0 when the value is below a threshold:
+      const value = latest <= 2.3 ? 0 : latest;
+      setFilterStyle(`blur(${value}px)`);
+    });
+    return unsubscribe;
+  }, [blur]);
 
   const handleProfileClick = () => {
     setFrameIndex((prevIndex) => (prevIndex + 1) % frames.length); // Cycle frames
@@ -112,19 +130,24 @@ function HomePage() {
           className="homepage-bg"
           key={scrollYProgress}
           ref={HomeBGRef}
-          style={{
-            opacity,
-            scale,
-            filter: `blur(${blur.current > 2.3 ? blur.current : 0}px)`,
-            zIndex: -1,
-          }}
+          style={
+            isBatterySavingOn
+              ? {}
+              : {
+                  opacity,
+                  scale,
+                  // filter: `blur(${scrolled ? blur.current : 0}px)`,
+                  filter: filterStyle,
+                  zIndex: -1,
+                }
+          }
         />
         <section className="homepage-container" id="home">
           <div className="container">
             <div className="home-row">
               <motion.div
                 className={`profile-picture-container`}
-                variants={zoomIn(0)}
+                variants={isBatterySavingOn ? {} : zoomIn(0)}
                 initial="hidden"
                 drag
                 dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
@@ -133,7 +156,7 @@ function HomePage() {
                   bounceStiffness: 250,
                   bounceDamping: 15,
                 }}
-                whileTap={{ scale: 1.1 }}
+                whileTap={isBatterySavingOn ? {} : { scale: 1.1 }}
                 whileInView={"show"}
               >
                 <animated.img
@@ -143,7 +166,9 @@ function HomePage() {
                   draggable="false"
                   style={{
                     boxShadow,
-                    transform: isHovering
+                    transform: isBatterySavingOn
+                      ? {}
+                      : isHovering
                       ? `translate3d(${mousePosition.x}px, ${mousePosition.y}px, 0) scale3d(1.03, 1.03, 1.03)`
                       : "translate3d(0px, 0px, 0) scale3d(1, 1, 1)",
                     transition: "transform 0.1s ease-out",
@@ -161,7 +186,7 @@ function HomePage() {
             <div className="home-row">
               <motion.h1
                 className="name"
-                variants={zoomIn(0)}
+                variants={isBatterySavingOn ? {} : zoomIn(0)}
                 initial="hidden"
                 animate="show"
               >
@@ -172,7 +197,7 @@ function HomePage() {
               <motion.div
                 className="changing-text-container"
                 onClick={() => setKey((prevKey) => prevKey + 1)}
-                variants={zoomIn(0)}
+                variants={isBatterySavingOn ? {} : zoomIn(0)}
                 initial="hidden"
                 animate="show"
               >
@@ -183,12 +208,12 @@ function HomePage() {
                       className="changing-text-animation"
                       sequence={[
                         1500,
-                        ...keywords.map((text) => [text, 4000]), // Typing each keyword with a pause
+                        ...keywords.map((text) => [text, 3000]), // Typing each keyword with a pause
                         keywords[keywords.length - 1], // Ensures the last phrase displays permanently
                       ].flat()}
-                      speed={50} // Typing speed for smooth effect
-                      deletionSpeed={50} // Faster deletion for a smoother experience
-                      delay={1000}
+                      speed={{ type: "keyStrokeDelayInMs", value: 17 }} // Fast typing
+                      deletionSpeed={{ type: "keyStrokeDelayInMs", value: 8 }}
+                      // delay={1000}
                       repeat={0} // No repeat
                       cursor={true}
                     />
@@ -199,7 +224,7 @@ function HomePage() {
               {/* Styled "Enter Portfolio" Button */}
               <motion.div
                 className="enter-button-motioned"
-                variants={zoomIn(0)}
+                variants={isBatterySavingOn ? {} : zoomIn(0)}
                 initial="hidden"
                 animate="show"
                 drag

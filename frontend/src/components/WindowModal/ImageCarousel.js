@@ -7,7 +7,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "../../styles/ProjectTab.css"; // Make sure to include styles if needed
 
-function ImagesCarousel({ data, title }) {
+function ImagesCarousel({ data, title, isBatterySavingOn }) {
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
   useEffect(() => {
     const handleResize = () => {
@@ -19,9 +19,9 @@ function ImagesCarousel({ data, title }) {
   return (
     <motion.div
       className="project-window-images"
-      initial={{ opacity: 0, scale: 0 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ delay: 0.5, type: "ease" }}
+      initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
+      animate={isBatterySavingOn ? {} : { opacity: 1, scale: 1 }}
+      transition={isBatterySavingOn ? {} : { delay: 0.5, type: "ease" }}
       style={{ overflow: "hidden", margin: "0 auto" }}
     >
       <Swiper

@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { fadeIn } from "../../services/variants";
 import "../../styles/NavBar.css";
 
-const NavBar = () => {
+const NavBar = ({ isBatterySavingOn }) => {
   const [activeLink, setActiveLink] = useState("home");
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);

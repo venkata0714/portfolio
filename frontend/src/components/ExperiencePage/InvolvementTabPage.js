@@ -37,7 +37,7 @@ const CustomArrow = ({ direction, onClick, imgSrc, label }) => {
   );
 };
 
-const InvolvementTabPage = ({ addTab }) => {
+const InvolvementTabPage = ({ addTab, isBatterySavingOn }) => {
   const [involvements, setInvolvements] = useState([]);
   const [activeSlide, setActiveSlide] = useState(0);
 
@@ -109,9 +109,9 @@ const InvolvementTabPage = ({ addTab }) => {
   return (
     <motion.div
       className="career-tab-page"
-      initial={{ opacity: 0, scale: 0 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ delay: 0, type: "spring" }}
+      initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
+      animate={isBatterySavingOn ? {} : { opacity: 1, scale: 1 }}
+      transition={isBatterySavingOn ? {} : { delay: 0, type: "spring" }}
     >
       <h1 className="career-tab-header">My Involvements</h1>
       <div className="career-tabs-slider">

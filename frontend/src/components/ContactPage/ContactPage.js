@@ -6,7 +6,7 @@ import Footer from "../SpecialComponents/Footer";
 import emailjs from "@emailjs/browser";
 import "../../styles/ContactPage.css";
 
-function ContactPage() {
+function ContactPage({ isBatterySavingOn, addTab }) {
   const form = useRef();
   const [isTouchDevice, setIsTouchDevice] = useState(false);
   const [isSent, setIsSent] = useState(null); // null for no status, true for success, false for error
@@ -70,17 +70,21 @@ function ContactPage() {
             <div className="contact-div">
               <motion.h2
                 className="section-header"
-                initial={{ opacity: 0, scale: 0 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0, type: "spring" }}
+                initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
+                whileInView={isBatterySavingOn ? {} : { opacity: 1, scale: 1 }}
+                transition={
+                  isBatterySavingOn ? {} : { delay: 0, type: "spring" }
+                }
               >
                 Contact Me
               </motion.h2>
               <motion.h5
                 className="contact-info"
-                initial={{ opacity: 0, scale: 0 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0, type: "spring" }}
+                initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
+                whileInView={isBatterySavingOn ? {} : { opacity: 1, scale: 1 }}
+                transition={
+                  isBatterySavingOn ? {} : { delay: 0, type: "spring" }
+                }
               >
                 Email:{" "}
                 <a href="mailto:singhk6@mail.uc.edu" className="lead">
@@ -93,9 +97,11 @@ function ContactPage() {
               </motion.h5>
               <motion.h5
                 className="contact-info"
-                initial={{ opacity: 0, scale: 0 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0, type: "spring" }}
+                initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
+                whileInView={isBatterySavingOn ? {} : { opacity: 1, scale: 1 }}
+                transition={
+                  isBatterySavingOn ? {} : { delay: 0, type: "spring" }
+                }
               >
                 Phone:{" "}
                 <a href="tel:5138377683" className="lead">
@@ -105,9 +111,11 @@ function ContactPage() {
               <br />
               <motion.h5
                 className="form-subheading"
-                initial={{ opacity: 0, scale: 0 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0, type: "spring" }}
+                initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
+                whileInView={isBatterySavingOn ? {} : { opacity: 1, scale: 1 }}
+                transition={
+                  isBatterySavingOn ? {} : { delay: 0, type: "spring" }
+                }
               >
                 ...or feel free to get in touch with me by filling the form.
               </motion.h5>
@@ -116,7 +124,7 @@ function ContactPage() {
               <form ref={form} onSubmit={sendEmail} className="contact-form">
                 <motion.div
                   className="input-group"
-                  variants={fadeIn("right", 200, 0)}
+                  variants={isBatterySavingOn ? {} : fadeIn("right", 200, 0)}
                   initial="hidden"
                   whileInView="show"
                 >
@@ -125,7 +133,7 @@ function ContactPage() {
                     name="from_name"
                     placeholder="Your Name *"
                     required
-                    initial={{ opacity: 0, scale: 0 }}
+                    initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
                     drag={isTouchDevice ? false : true}
                     dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
                     dragElastic={0.3}
@@ -133,17 +141,21 @@ function ContactPage() {
                       bounceStiffness: 250,
                       bounceDamping: 15,
                     }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    whileHover={{ scale: 1.01 }}
-                    whileTap={{ scale: 0.99 }}
-                    transition={{ delay: 0, type: "spring" }}
+                    whileInView={
+                      isBatterySavingOn ? {} : { opacity: 1, scale: 1 }
+                    }
+                    whileHover={isBatterySavingOn ? {} : { scale: 1.01 }}
+                    whileTap={isBatterySavingOn ? {} : { scale: 0.99 }}
+                    transition={
+                      isBatterySavingOn ? {} : { delay: 0, type: "spring" }
+                    }
                   />
                   <motion.input
                     type="email"
                     name="from_email"
                     placeholder="Your Email *"
                     required
-                    initial={{ opacity: 0, scale: 0 }}
+                    initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
                     drag={isTouchDevice ? false : true}
                     dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
                     dragElastic={0.3}
@@ -151,16 +163,20 @@ function ContactPage() {
                       bounceStiffness: 250,
                       bounceDamping: 15,
                     }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    whileHover={{ scale: 1.01 }}
-                    whileTap={{ scale: 0.99 }}
-                    transition={{ delay: 0, type: "spring" }}
+                    whileInView={
+                      isBatterySavingOn ? {} : { opacity: 1, scale: 1 }
+                    }
+                    whileHover={isBatterySavingOn ? {} : { scale: 1.01 }}
+                    whileTap={isBatterySavingOn ? {} : { scale: 0.99 }}
+                    transition={
+                      isBatterySavingOn ? {} : { delay: 0, type: "spring" }
+                    }
                   />
                   <motion.input
                     type="tel"
                     name="from_phone"
                     placeholder="Your Phone"
-                    initial={{ opacity: 0, scale: 0 }}
+                    initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
                     drag={isTouchDevice ? false : true}
                     dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
                     dragElastic={0.3}
@@ -168,17 +184,21 @@ function ContactPage() {
                       bounceStiffness: 250,
                       bounceDamping: 15,
                     }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    whileHover={{ scale: 1.01 }}
-                    whileTap={{ scale: 0.99 }}
-                    transition={{ delay: 0, type: "spring" }}
+                    whileInView={
+                      isBatterySavingOn ? {} : { opacity: 1, scale: 1 }
+                    }
+                    whileHover={isBatterySavingOn ? {} : { scale: 1.01 }}
+                    whileTap={isBatterySavingOn ? {} : { scale: 0.99 }}
+                    transition={
+                      isBatterySavingOn ? {} : { delay: 0, type: "spring" }
+                    }
                   />
                 </motion.div>
                 <motion.div
                   className="textarea-group"
-                  variants={fadeIn("left", 200, 0)}
-                  whileHover={{ scale: 1.01 }}
-                  whileTap={{ scale: 0.99 }}
+                  variants={isBatterySavingOn ? {} : fadeIn("left", 200, 0)}
+                  whileHover={isBatterySavingOn ? {} : { scale: 1.01 }}
+                  whileTap={isBatterySavingOn ? {} : { scale: 0.99 }}
                   initial="hidden"
                   whileInView="show"
                   exit="hidden"
@@ -187,7 +207,7 @@ function ContactPage() {
                     name="message"
                     placeholder="Your Message *"
                     required
-                    initial={{ opacity: 0, scale: 0 }}
+                    initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
                     drag={isTouchDevice ? false : true}
                     dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
                     dragElastic={0.3}
@@ -195,26 +215,38 @@ function ContactPage() {
                       bounceStiffness: 250,
                       bounceDamping: 15,
                     }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    whileHover={{ scale: 1.01 }}
-                    whileTap={{ scale: 0.99 }}
-                    transition={{ delay: 0, type: "spring" }}
+                    whileInView={
+                      isBatterySavingOn ? {} : { opacity: 1, scale: 1 }
+                    }
+                    whileHover={isBatterySavingOn ? {} : { scale: 1.01 }}
+                    whileTap={isBatterySavingOn ? {} : { scale: 0.99 }}
+                    transition={
+                      isBatterySavingOn ? {} : { delay: 0, type: "spring" }
+                    }
                   ></motion.textarea>
                 </motion.div>
                 <motion.div
                   className="button-group"
-                  initial={{ opacity: 0, scale: 0 }}
+                  initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
                   drag
-                  dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+                  dragConstraints={
+                    isBatterySavingOn
+                      ? {}
+                      : { left: 0, right: 0, top: 0, bottom: 0 }
+                  }
                   dragElastic={0.3}
                   dragTransition={{
                     bounceStiffness: 250,
                     bounceDamping: 15,
                   }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  transition={{ delay: 0, type: "spring" }}
+                  whileInView={
+                    isBatterySavingOn ? {} : { opacity: 1, scale: 1 }
+                  }
+                  whileHover={isBatterySavingOn ? {} : { scale: 1.1 }}
+                  whileTap={isBatterySavingOn ? {} : { scale: 0.9 }}
+                  transition={
+                    isBatterySavingOn ? {} : { delay: 0, type: "spring" }
+                  }
                 >
                   <StyledButton type="submit">
                     <ButtonShadow />
@@ -231,7 +263,7 @@ function ContactPage() {
               </form>
             </motion.div>
           </div>
-          <Footer />
+          <Footer isBatterySavingOn={isBatterySavingOn} addTab={addTab} />
         </motion.section>
       </AnimatePresence>
     </>

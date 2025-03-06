@@ -89,7 +89,7 @@ const Loading = ({ isBatterySavingOn, setIsBatterySavingOn, onComplete }) => {
         return duration;
       };
       const cpuTestDuration = testCpuPerformance();
-      const isCpuThrottled = cpuTestDuration > 5; // Threshold for CPU throttling
+      const isCpuThrottled = cpuTestDuration > 20; // Threshold for CPU throttling
 
       // Check for device memory (if supported)
       const deviceMemory = navigator.deviceMemory || "Unknown";
@@ -105,7 +105,7 @@ const Loading = ({ isBatterySavingOn, setIsBatterySavingOn, onComplete }) => {
         isLowBattery ||
         lowPerformanceDevice ||
         isCpuThrottled ||
-        isTouchDevice ||
+        // isTouchDevice ||
         lowMemoryDevice;
       console.log("Prefers Reduced Motion:", prefersReducedMotion);
       console.log("Low Battery:", isLowBattery);
@@ -227,7 +227,9 @@ const Loading = ({ isBatterySavingOn, setIsBatterySavingOn, onComplete }) => {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 1.4 }}
         >
-          {"ontouchstart" in window || navigator.maxTouchPoints > 0
+          {isBatterySavingOn
+            ? "Reducing Animations Due to Weak Device ❌"
+            : "ontouchstart" in window || navigator.maxTouchPoints > 0
             ? "Reducing Animations for Touch Devices ✅"
             : "Amplifying Animations ✅"}
         </motion.p>

@@ -45,7 +45,7 @@ const responsive = {
   mobile: { breakpoint: { max: 576, min: 0 }, items: 1 },
 };
 
-const SkillGraph = ({ givenData }) => {
+const SkillGraph = ({ givenData, isBatterySavingOn }) => {
   const averageScore =
     givenData.Scores.reduce((sum, score) => sum + score, 0) /
     givenData.Scores.length;
@@ -147,9 +147,9 @@ const SkillGraph = ({ givenData }) => {
   return (
     <motion.div
       className="skill-image"
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 1.5, ease: "easeInOut" }}
+      initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0.8 }}
+      animate={isBatterySavingOn ? {} : { opacity: 1, scale: 1 }}
+      transition={isBatterySavingOn ? {} : { duration: 1.5, ease: "easeInOut" }}
     >
       <Radar
         data={data}
@@ -160,7 +160,7 @@ const SkillGraph = ({ givenData }) => {
   );
 };
 
-const SkillGraphCarousel = ({ skills }) => {
+const SkillGraphCarousel = ({ skills, isBatterySavingOn }) => {
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
 
   useEffect(() => {
@@ -187,17 +187,20 @@ const SkillGraphCarousel = ({ skills }) => {
         <motion.div
           className="item"
           key={eachSkill.id || eachSkill.skillTitle}
-          variants={zoomIn(0)}
+          variants={isBatterySavingOn ? {} : zoomIn(0)}
           initial="hidden"
           whileInView="show"
           exit="hidden"
         >
           <motion.div
             className="skill-graph"
-            initial={{ scale: 1 }}
-            whileHover={{ scale: 1.01 }}
+            initial={isBatterySavingOn ? {} : { scale: 1 }}
+            whileHover={isBatterySavingOn ? {} : { scale: 1.01 }}
           >
-            <SkillGraph givenData={eachSkill} />
+            <SkillGraph
+              givenData={eachSkill}
+              isBatterySavingOn={isBatterySavingOn}
+            />
           </motion.div>
           <h5 className="skill-title">{eachSkill.skillTitle}</h5>
           <p className="skill-description">{eachSkill.skillDescription}</p>

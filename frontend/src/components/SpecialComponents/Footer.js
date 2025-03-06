@@ -2,7 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import "../../styles/Footer.css";
 
-const Footer = () => {
+const Footer = ({ isBatterySavingOn, addTab }) => {
   const linksData = [
     {
       href: "https://github.com/Kartavya904",
@@ -56,18 +56,18 @@ const Footer = () => {
   return (
     <motion.footer
       className="footer"
-      initial={{ y: 50, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
+      initial={isBatterySavingOn ? {} : { y: 50, opacity: 0 }}
+      animate={isBatterySavingOn ? {} : { y: 0, opacity: 1 }}
+      transition={isBatterySavingOn ? {} : { duration: 0.5, ease: "easeOut" }}
     >
       {/* Header Section */}
       <motion.div
         className="footer-header"
-        initial={{ opacity: 0, scale: 0 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0, type: "spring" }}
-        whileHover={{ scale: 1.01 }}
-        whileTap={{ scale: 0.99 }}
+        initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
+        whileInView={isBatterySavingOn ? {} : { opacity: 1, scale: 1 }}
+        transition={isBatterySavingOn ? {} : { delay: 0, type: "spring" }}
+        whileHover={isBatterySavingOn ? {} : { scale: 1.01 }}
+        whileTap={isBatterySavingOn ? {} : { scale: 0.99 }}
         onTap={() => scrollToSection("home")}
       >
         <h2>Kartavya Singh</h2>
@@ -77,30 +77,44 @@ const Footer = () => {
       {/* Navigation Links */}
       <motion.ul
         className="footer-navlinks"
-        initial={{ opacity: 0, scale: 0 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0, type: "spring" }}
+        initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
+        whileInView={isBatterySavingOn ? {} : { opacity: 1, scale: 1 }}
+        transition={isBatterySavingOn ? {} : { delay: 0, type: "spring" }}
       >
         {["about", "skills", "projects", "experience"].map((id, index) => (
           <li key={id}>
             <motion.button
               onClick={() => scrollToSection(id)}
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.1 * index, type: "ease" }}
+              initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
+              animate={isBatterySavingOn ? {} : { opacity: 1, scale: 1 }}
+              transition={
+                isBatterySavingOn ? {} : { delay: 0.1 * index, type: "ease" }
+              }
             >
               {id.charAt(0).toUpperCase() + id.slice(1)}
             </motion.button>
           </li>
         ))}
+        <li key={"admin"}>
+          <motion.button
+            onClick={() => addTab("Admin", { adminTitle: "Admin Page" })}
+            initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
+            animate={isBatterySavingOn ? {} : { opacity: 1, scale: 1 }}
+            transition={
+              isBatterySavingOn ? {} : { delay: 0.1 * 4, type: "ease" }
+            }
+          >
+            Admin
+          </motion.button>
+        </li>
       </motion.ul>
 
       {/* Social Links */}
       <motion.div
         className="footer-social"
-        initial={{ opacity: 0, scale: 0 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0, type: "spring" }}
+        initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
+        whileInView={isBatterySavingOn ? {} : { opacity: 1, scale: 1 }}
+        transition={isBatterySavingOn ? {} : { delay: 0, type: "spring" }}
       >
         {linksData.map((link, index) => (
           <motion.a
@@ -116,10 +130,10 @@ const Footer = () => {
               bounceStiffness: 250,
               bounceDamping: 15,
             }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            whileHover={{ scale: 1.01, rotate: 360 }}
-            whileTap={{ scale: 0.99, rotate: 0 }}
-            transition={{ delay: 0, type: "spring" }}
+            whileInView={isBatterySavingOn ? {} : { opacity: 1, scale: 1 }}
+            whileHover={isBatterySavingOn ? {} : { scale: 1.01, rotate: 360 }}
+            whileTap={isBatterySavingOn ? {} : { scale: 0.99, rotate: 0 }}
+            transition={isBatterySavingOn ? {} : { delay: 0, type: "spring" }}
           >
             <motion.img
               src={link.icon}
@@ -134,9 +148,9 @@ const Footer = () => {
       {/* Footer Bottom */}
       <motion.div
         className="footer-bottom"
-        initial={{ opacity: 0, scale: 0 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0, type: "spring" }}
+        initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
+        whileInView={isBatterySavingOn ? {} : { opacity: 1, scale: 1 }}
+        transition={isBatterySavingOn ? {} : { delay: 0, type: "spring" }}
       >
         <p>
           &copy; {new Date().getFullYear()} Kartavya Singh. All rights reserved.

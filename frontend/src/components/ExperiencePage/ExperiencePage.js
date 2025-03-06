@@ -57,7 +57,7 @@ const tabHighlightVariants = {
   }),
 };
 
-const ExperiencePage = ({ addTab }) => {
+const ExperiencePage = ({ addTab, isBatterySavingOn }) => {
   const [selectedTab, setSelectedTab] = useState(tabs[1]); // Default tab is "Career"
   const [ActiveComponent, setActiveComponent] = useState(
     () => selectedTab.component
@@ -71,9 +71,9 @@ const ExperiencePage = ({ addTab }) => {
           <div className="experience-div">
             <motion.div
               className="tabs-wrapper"
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0, type: "spring" }}
+              initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
+              animate={isBatterySavingOn ? {} : { opacity: 1, scale: 1 }}
+              transition={isBatterySavingOn ? {} : { delay: 0, type: "spring" }}
             >
               <motion.div
                 className="tab-highlight"
@@ -101,10 +101,14 @@ const ExperiencePage = ({ addTab }) => {
                   //   bounceStiffness: 250,
                   //   bounceDamping: 17,
                   // }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  transition={{ delay: 0, type: "spring" }}
+                  whileInView={
+                    isBatterySavingOn ? {} : { opacity: 1, scale: 1 }
+                  }
+                  whileHover={isBatterySavingOn ? {} : { scale: 1.1 }}
+                  whileTap={isBatterySavingOn ? {} : { scale: 0.9 }}
+                  transition={
+                    isBatterySavingOn ? {} : { delay: 0, type: "spring" }
+                  }
                   aria-label="Trophy"
                 >
                   {tab.icon}
@@ -118,11 +122,14 @@ const ExperiencePage = ({ addTab }) => {
             </motion.div>
             <motion.div
               className="content-container"
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0, type: "spring" }}
+              initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
+              animate={isBatterySavingOn ? {} : { opacity: 1, scale: 1 }}
+              transition={isBatterySavingOn ? {} : { delay: 0, type: "spring" }}
             >
-              <ActiveComponent addTab={addTab} />
+              <ActiveComponent
+                addTab={addTab}
+                isBatterySavingOn={isBatterySavingOn}
+              />
             </motion.div>
           </div>
         </section>

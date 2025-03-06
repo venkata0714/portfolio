@@ -25,7 +25,7 @@ const aboutData = [
   },
 ];
 
-function AboutPage() {
+function AboutPage({ isBatterySavingOn }) {
   const scrollToSection = (id) => {
     const element = document.getElementById(id);
     const offset = 52; // Adjust based on your navbar height
@@ -41,7 +41,7 @@ function AboutPage() {
     <section className="about-section-container" id="about">
       <SpotlightBG />
       <motion.div
-        variants={zoomIn(0)}
+        variants={isBatterySavingOn ? {} : zoomIn(0)}
         initial="hidden"
         whileInView="show"
         exit="hidden"
@@ -54,7 +54,7 @@ function AboutPage() {
               src={AboutImg}
               className="about-image"
               alt="Profile"
-              variants={fadeIn("right", 200, 0)}
+              variants={isBatterySavingOn ? {} : fadeIn("right", 200, 0)}
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.99 }}
               initial="hidden"
@@ -63,7 +63,7 @@ function AboutPage() {
             />
             <motion.div
               className="about-info"
-              variants={zoomIn(0)}
+              variants={isBatterySavingOn ? {} : zoomIn(0)}
               initial="hidden"
               whileInView="show"
               exit="hidden"
@@ -86,7 +86,7 @@ function AboutPage() {
           <motion.div className="about-row">
             <motion.div
               className="about-description-box"
-              variants={fadeIn("left", 200, 0)}
+              variants={isBatterySavingOn ? {} : fadeIn("left", 200, 0)}
               initial="hidden"
               whileInView="show"
               exit="hidden"
@@ -106,7 +106,7 @@ function AboutPage() {
             </motion.div>
             <motion.h2
               className="about-page-subtitle"
-              variants={zoomIn(0)}
+              variants={isBatterySavingOn ? {} : zoomIn(0)}
               initial="hidden"
               whileInView="show"
               exit="hidden"
@@ -115,7 +115,7 @@ function AboutPage() {
             </motion.h2>
             <motion.div
               className="button-container"
-              variants={zoomIn(0)}
+              variants={isBatterySavingOn ? {} : zoomIn(0)}
               initial="hidden"
               whileInView="show"
               exit="hidden"
@@ -147,7 +147,7 @@ function AboutPage() {
             </motion.div>
             <motion.div
               className="button-container"
-              variants={zoomIn(0)}
+              variants={isBatterySavingOn ? {} : zoomIn(0)}
               initial="hidden"
               whileInView="show"
               exit="hidden"

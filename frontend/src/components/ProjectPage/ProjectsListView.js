@@ -5,7 +5,7 @@ import { styled } from "@stitches/react";
 import { fetchProjects } from "../../services/projectService";
 import "../../styles/ProjectsListView.css";
 
-function ProjectsListView({ addTab }) {
+function ProjectsListView({ addTab, isBatterySavingOn }) {
   const parentRef = useRef(null);
   const [projects, setProjects] = useState([]);
   const [cardStates, setCardStates] = useState([]);
@@ -212,10 +212,12 @@ function ProjectsListView({ addTab }) {
               style={{
                 top: `${topOffset}px`,
                 marginBottom: calculateMarginBottom(index, totalCards),
-                transform: isHovering
+                transform: isBatterySavingOn
+                  ? ``
+                  : isHovering
                   ? `translate3d(${mousePosition.x}px, ${mousePosition.y}px, 0) scale3d(1, 1, 1)`
                   : "translate3d(0px, 0px, 0) scale3d(1, 1, 1)",
-                transition: "transform 0.1s ease-out",
+                transition: isBatterySavingOn ? {} : "transform 0.1s ease-out",
               }}
               viewport={{ amount: "50%", once: true }}
             >

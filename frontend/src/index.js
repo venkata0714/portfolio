@@ -17,7 +17,12 @@ const Root = () => {
     );
   }
 
-  return <App />;
+  return (
+    <App
+      isBatterySavingOn={isBatterySavingOn}
+      setIsBatterySavingOn={setIsBatterySavingOn}
+    />
+  );
 };
 
 const root = ReactDOM.createRoot(document.getElementById("root"));

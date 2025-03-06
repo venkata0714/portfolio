@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import "../../styles/WindowModal.css";
 import windowIcon from "../../assets/img/icons/window.svg";
+import AdminTab from "./AdminTab"; // Add this import
 import ProjectTab from "./ProjectTab";
 import ExperienceTab from "./ExperienceTab";
 import InvolvementTab from "./InvolvementTab";
@@ -18,6 +19,9 @@ const WindowModal = ({
   lastActiveIndex,
   setLastActiveIndex,
   scrolled,
+  isBatterySavingOn,
+  loggedIn,
+  setLoggedIn,
 }) => {
   const modalRef = useRef(null);
   const [totalTabs, setTotalTabs] = useState(0);
@@ -74,15 +78,30 @@ const WindowModal = ({
   const renderTabContent = (type, data) => {
     switch (type) {
       case "Project":
-        return <ProjectTab data={data} />;
+        return <ProjectTab data={data} isBatterySavingOn={isBatterySavingOn} />;
       case "Experience":
-        return <ExperienceTab data={data} />;
+        return (
+          <ExperienceTab data={data} isBatterySavingOn={isBatterySavingOn} />
+        );
       case "Involvement":
-        return <InvolvementTab data={data} />;
+        return (
+          <InvolvementTab data={data} isBatterySavingOn={isBatterySavingOn} />
+        );
       case "Honors":
-        return <HonorsTab data={data} />;
+        return <HonorsTab data={data} isBatterySavingOn={isBatterySavingOn} />;
       case "YearInReview":
-        return <YearInReviewTab data={data} />;
+        return (
+          <YearInReviewTab data={data} isBatterySavingOn={isBatterySavingOn} />
+        );
+      case "Admin": // Add this new case
+        return (
+          <AdminTab
+            data={data}
+            isBatterySavingOn={isBatterySavingOn}
+            loggedIn={loggedIn}
+            setLoggedIn={setLoggedIn}
+          />
+        );
       default:
         return null;
     }
@@ -140,9 +159,9 @@ const WindowModal = ({
             className="minimized-icon"
             onClick={handleRestore}
             title="Click to maximize"
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0 }}
+            initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
+            animate={isBatterySavingOn ? {} : { opacity: 1, scale: 1 }}
+            exit={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
             drag
             dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
             dragElastic={0.3}
@@ -151,17 +170,29 @@ const WindowModal = ({
               bounceDamping: 15,
             }}
             // whileInView={{ opacity: 1, scale: 1 }}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9, rotate: 360 }}
-            transition={{ duration: 0, delay: 0, type: "spring" }}
+            whileHover={isBatterySavingOn ? {} : { scale: 1.1 }}
+            whileTap={isBatterySavingOn ? {} : { scale: 0.9, rotate: 360 }}
+            transition={
+              isBatterySavingOn ? {} : { duration: 0, delay: 0, type: "spring" }
+            }
           >
             <motion.div className="minimized-icon-image">
               <motion.img
                 className="icon-image"
-                initial={{ opacity: 0, scale: 0, rotate: 0 }}
-                animate={{ opacity: 1, scale: 1, rotate: 360 }}
-                exit={{ opacity: 0, scale: 0, rotate: 0 }}
-                transition={{ duration: 0.5, delay: 0, type: "spring" }}
+                initial={
+                  isBatterySavingOn ? {} : { opacity: 0, scale: 0, rotate: 0 }
+                }
+                animate={
+                  isBatterySavingOn ? {} : { opacity: 1, scale: 1, rotate: 360 }
+                }
+                exit={
+                  isBatterySavingOn ? {} : { opacity: 0, scale: 0, rotate: 0 }
+                }
+                transition={
+                  isBatterySavingOn
+                    ? {}
+                    : { duration: 0.5, delay: 0, type: "spring" }
+                }
                 src={windowIcon}
                 drag="false"
                 alt=""
@@ -172,19 +203,39 @@ const WindowModal = ({
           <motion.div
             className="window-modal"
             ref={modalRef}
-            initial={{
-              scale: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
-              opacity: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
-            }}
-            animate={{
-              scale: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
-              opacity: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
-            }}
-            exit={{
-              scale: [1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0],
-              opacity: [1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0],
-            }}
-            transition={{ type: "ease", delay: 0, duration: 0.5 }}
+            initial={
+              isBatterySavingOn
+                ? {}
+                : {
+                    scale: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
+                    opacity: [
+                      0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1,
+                    ],
+                  }
+            }
+            animate={
+              isBatterySavingOn
+                ? {}
+                : {
+                    scale: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
+                    opacity: [
+                      0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1,
+                    ],
+                  }
+            }
+            exit={
+              isBatterySavingOn
+                ? {}
+                : {
+                    scale: [1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0],
+                    opacity: [
+                      1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0,
+                    ],
+                  }
+            }
+            transition={
+              isBatterySavingOn ? {} : { type: "ease", delay: 0, duration: 0.5 }
+            }
             onLoad={handleRestore}
             onClick={(e) => e.stopPropagation()}
             onTouchStart={(e) => e.stopPropagation()}
@@ -236,10 +287,10 @@ const WindowModal = ({
               <motion.div
                 className="content"
                 // key={lastActiveIndex}
-                initial={{ scale: 0, opacity: 0 }}
-                whileInView={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0, opacity: 0 }}
-                transition={{ type: "ease" }}
+                initial={isBatterySavingOn ? {} : { scale: 0, opacity: 0 }}
+                whileInView={isBatterySavingOn ? {} : { scale: 1, opacity: 1 }}
+                exit={isBatterySavingOn ? {} : { scale: 0, opacity: 0 }}
+                transition={isBatterySavingOn ? {} : { type: "ease" }}
               >
                 {tabs.length > 0 &&
                   renderTabContent(

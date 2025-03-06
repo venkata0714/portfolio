@@ -12,8 +12,9 @@ import ProjectPage from "./components/ProjectPage/ProjectPage";
 import ContactPage from "./components/ContactPage/ContactPage";
 import WindowModal from "./components/WindowModal/WindowModal";
 
-function App() {
+function App({ isBatterySavingOn, setIsBatterySavingOn }) {
   const [scrolled, setScrolled] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
   const [tabs, setTabs] = useState([]); // Tabs state for WindowModal
   const [isClosed, setIsClosed] = useState(true);
   const [isMinimized, setIsMinimized] = useState(false); // Track if modal is minimized
@@ -34,7 +35,8 @@ function App() {
             data.experienceTitle ||
             data.honorsExperienceTitle ||
             data.involvementTitle ||
-            data.yearInReviewTitle)
+            data.yearInReviewTitle ||
+            data.adminTitle)
       );
 
       if (existingTabIndex !== -1) {
@@ -69,6 +71,7 @@ function App() {
             data.honorsExperienceTitle ||
             data.involvementTitle ||
             data.yearInReviewTitle ||
+            data.adminTitle ||
             `Tab ${updatedTabs.length + 1}`,
         };
 
@@ -88,6 +91,7 @@ function App() {
           data.honorsExperienceTitle ||
           data.involvementTitle ||
           data.yearInReviewTitle ||
+          data.adminTitle ||
           `Tab ${prev.length + 1}`,
       };
       const result = [...prev, newTab];
@@ -123,14 +127,14 @@ function App() {
         initial="initial"
         animate={"show"}
       >
-        <NavBar />
-        <HomePage />
-        <AboutPage />
-        <SkillPage />
-        <ProjectPage addTab={addTab} />
-        <ExperiencePage addTab={addTab} />
-        <ContactPage />
-        <Links />
+        <NavBar isBatterySavingOn={isBatterySavingOn} />
+        <HomePage isBatterySavingOn={isBatterySavingOn} scrolled={scrolled} />
+        <AboutPage isBatterySavingOn={isBatterySavingOn} />
+        <SkillPage isBatterySavingOn={isBatterySavingOn} />
+        <ProjectPage addTab={addTab} isBatterySavingOn={isBatterySavingOn} />
+        <ExperiencePage addTab={addTab} isBatterySavingOn={isBatterySavingOn} />
+        <ContactPage isBatterySavingOn={isBatterySavingOn} addTab={addTab} />
+        <Links isBatterySavingOn={isBatterySavingOn} />
         <a
           className={`scroll-to-top ${scrolled ? "show" : ""}`}
           href="#page-top"
@@ -148,6 +152,9 @@ function App() {
           lastActiveIndex={lastActiveIndex}
           setLastActiveIndex={setLastActiveIndex}
           scrolled={scrolled}
+          isBatterySavingOn={isBatterySavingOn}
+          loggedIn={loggedIn}
+          setLoggedIn={setLoggedIn}
         />
       </motion.div>
     </AnimatePresence>

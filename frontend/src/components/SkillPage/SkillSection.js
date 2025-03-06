@@ -133,7 +133,7 @@ const proficiencyColor = {
   default: "rgba(176, 176, 176, 0.6)", // Default to medium dark silver
 };
 
-const SkillSection = () => {
+const SkillSection = ({ isBatterySavingOn }) => {
   const glideRef = useRef(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isMediumWidth, setIsMediumWidth] = useState(
@@ -214,10 +214,10 @@ const SkillSection = () => {
         />
         <motion.div
           className="proficiency-table"
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0 }}
-          transition={{ ease: "easeInOut", delay: 2 }}
+          initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
+          animate={isBatterySavingOn ? {} : { opacity: 1, scale: 1 }}
+          exit={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
+          transition={isBatterySavingOn ? {} : { ease: "easeInOut", delay: 2 }}
         >
           <p className="proficient">Proficient</p>
           <p className="intermediate">Intermediate</p>
@@ -236,7 +236,7 @@ const SkillSection = () => {
                   >
                     <motion.h2
                       className="skill-card-title"
-                      variants={zoomIn(0.4)}
+                      variants={isBatterySavingOn ? {} : zoomIn(0.4)}
                       initial="hidden"
                       whileInView="show"
                       exit="hidden"
@@ -245,7 +245,7 @@ const SkillSection = () => {
                     </motion.h2>
                     <motion.p
                       className="skill-card-description"
-                      variants={zoomIn(0.4)}
+                      variants={isBatterySavingOn ? {} : zoomIn(0.4)}
                       initial="hidden"
                       whileInView="show"
                       exit="hidden"
@@ -264,7 +264,9 @@ const SkillSection = () => {
                         <motion.div
                           key={`${category.title}-${skillIndex}`}
                           className="skill-item"
-                          variants={zoomIn(skillIndex * 0.2)} // Add consistent stagger effect
+                          variants={
+                            isBatterySavingOn ? {} : zoomIn(skillIndex * 0.2)
+                          } // Add consistent stagger effect
                           initial="hidden"
                           whileInView="show"
                           exit="hidden"
@@ -285,12 +287,16 @@ const SkillSection = () => {
                                 proficiencyColor.default
                               }`,
                             }}
-                            variants={fadeIn(
-                              "right",
-                              50, // Reduced size for a more subtle animation
-                              skillIndex * 0.075, // Stagger delay for each skill
-                              1.5 // Shorter duration for smoother animations
-                            )}
+                            variants={
+                              isBatterySavingOn
+                                ? {}
+                                : fadeIn(
+                                    "right",
+                                    50, // Reduced size for a more subtle animation
+                                    skillIndex * 0.075, // Stagger delay for each skill
+                                    1.5 // Shorter duration for smoother animations
+                                  )
+                            }
                             initial="hidden"
                             whileInView="show"
                             exit="hidden"
@@ -319,12 +325,16 @@ const SkillSection = () => {
 
                           <motion.span
                             className={`skill-card-name ${skill.proficiency}`}
-                            variants={fadeIn(
-                              "left",
-                              50, // Reduced size for a more subtle animation
-                              skillIndex * 0.075, // Match stagger delay
-                              1.5 // Match duration for consistent animations
-                            )}
+                            variants={
+                              isBatterySavingOn
+                                ? {}
+                                : fadeIn(
+                                    "left",
+                                    50, // Reduced size for a more subtle animation
+                                    skillIndex * 0.075, // Match stagger delay
+                                    1.5 // Match duration for consistent animations
+                                  )
+                            }
                             initial="hidden"
                             whileInView="show"
                             exit="hidden"

@@ -1,6 +1,30 @@
+const bcrypt = require("bcrypt");
 const { getDB } = require("../config/mongodb");
 
+// const setAdminCredentials = async (req, res) => {
+//   const { userName, password } = req.body;
+//   const db = getDB();
+
+//   try {
+//     const hashedUsername = await bcrypt.hash(userName, 10);
+//     const hashedPassword = await bcrypt.hash(password, 10);
+
+//     // Always store only one admin credentials
+//     await db.collection("KartavyaPortfolio").deleteMany({});
+//     await db.collection("KartavyaPortfolio").insertOne({
+//       userName: hashedUsername,
+//       password: hashedPassword,
+//     });
+
+//     res.json({ success: true, message: "Admin credentials set." });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Error setting credentials." });
+//   }
+// };
+
 // Helper function to fetch all documents from a collection
+
 const getAllDocuments = async (collectionName, res) => {
   try {
     const db = getDB();
@@ -93,6 +117,42 @@ const getHonorsExperienceByLink = (req, res) =>
 
 const getSkills = (req, res) => getAllDocuments("skillsTable", res);
 
+// Compares Admin Username
+const compareAdminName = async (req, res) => {
+  const { userName } = req.body;
+  const db = getDB();
+  try {
+    const admin = await db.collection("KartavyaPortfolio").findOne({});
+    if (!admin) return res.status(404).json({ message: "No Admin Found" });
+
+    const match = await bcrypt.compare(userName, admin.userName);
+    match
+      ? res.json({ success: true })
+      : res.status(401).json({ message: "Incorrect Username" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error comparing username" });
+  }
+};
+
+const compareAdminPassword = async (req, res) => {
+  const { password } = req.body;
+  const db = getDB();
+
+  try {
+    const admin = await db.collection("KartavyaPortfolio").findOne({});
+    if (!admin) return res.status(404).json({ message: "Admin not found" });
+
+    const match = await bcrypt.compare(password, admin.password);
+    match
+      ? res.json({ success: true })
+      : res.status(401).json({ message: "Incorrect Password" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error comparing passwords." });
+  }
+};
+
 const getSkillComponents = (req, res) =>
   getAllDocuments("skillsCollection", res);
 
@@ -109,4 +169,7 @@ module.exports = {
   getHonorsExperienceByLink,
   getSkills,
   getSkillComponents,
+  compareAdminName,
+  compareAdminPassword,
+  // setAdminCredentials,
 };

@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import "../../styles/Links.css";
 import { animated } from "@react-spring/web";
 
-const Links = () => {
+const Links = ({ isBatterySavingOn }) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
 
@@ -83,7 +83,7 @@ const Links = () => {
         className={`link-btn ${isOpen ? "active" : ""}`}
         onClick={() => setIsOpen((prev) => !prev)}
         title="Links"
-        initial={{ opacity: 0, scale: 0 }}
+        initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
         drag
         dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
         dragElastic={0.3}
@@ -91,10 +91,10 @@ const Links = () => {
           bounceStiffness: 250,
           bounceDamping: 15,
         }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-        transition={{ delay: 0, type: "spring" }}
+        whileInView={isBatterySavingOn ? {} : { opacity: 1, scale: 1 }}
+        whileHover={isBatterySavingOn ? {} : { scale: 1.1 }}
+        whileTap={isBatterySavingOn ? {} : { scale: 0.9 }}
+        transition={isBatterySavingOn ? {} : { delay: 0, type: "spring" }}
       >
         <animated.img
           src={require("../../assets/img/icons/links.png")}
@@ -110,10 +110,12 @@ const Links = () => {
         {isOpen && (
           <motion.div
             className="links-menu"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
+            initial={isBatterySavingOn ? {} : { opacity: 0 }}
+            animate={isBatterySavingOn ? {} : { opacity: 1 }}
+            exit={isBatterySavingOn ? {} : { opacity: 0 }}
+            transition={
+              isBatterySavingOn ? {} : { duration: 0.3, ease: "easeInOut" }
+            }
           >
             {linksData.map((link, index) => (
               <motion.a
@@ -122,9 +124,9 @@ const Links = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="link-item"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                transition={{ duration: 0.5 }}
+                whileHover={isBatterySavingOn ? {} : { scale: 1.1 }}
+                whileTap={isBatterySavingOn ? {} : { scale: 0.9 }}
+                transition={isBatterySavingOn ? {} : { duration: 0.5 }}
               >
                 <animated.img
                   draggable="false"
@@ -135,10 +137,10 @@ const Links = () => {
                 />
                 <motion.span
                   className="link-label"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  transition={{ delay: 0.3 * index }}
+                  initial={isBatterySavingOn ? {} : { opacity: 0, x: -20 }}
+                  animate={isBatterySavingOn ? {} : { opacity: 1, x: 0 }}
+                  exit={isBatterySavingOn ? {} : { opacity: 0, x: -20 }}
+                  transition={isBatterySavingOn ? {} : { delay: 0.3 }}
                 >
                   {link.label}
                 </motion.span>
