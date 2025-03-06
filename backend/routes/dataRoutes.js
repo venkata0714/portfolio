@@ -15,8 +15,21 @@ const {
   getSkillComponents,
   compareAdminName,
   compareAdminPassword,
+  compareOTP,
+  logoutAdmin,
+  getCollectionCounts,
   // setAdminCredentials,
 } = require("../controllers/dataController");
+
+const verifyJWT = require("../controllers/middlewareController");
+
+router.get("/check-cookie", verifyJWT, (req, res) => {
+  res.json({
+    message: "Protected Cookie. Logged In as Admin!",
+    valid: true,
+    user: req.user,
+  });
+});
 
 router.get("/ping", (req, res) => {
   res.json({ message: "Backend is active" });
@@ -63,5 +76,9 @@ router.get("/getskillcomponents", getSkillComponents);
 // router.post("/setAdminCredentials", setAdminCredentials);
 router.post("/compareAdminName", compareAdminName);
 router.post("/compareAdminPassword", compareAdminPassword);
+router.post("/compareOTP", compareOTP);
+router.get("/logout", logoutAdmin);
+
+router.get("/collection-counts", getCollectionCounts);
 
 module.exports = router;

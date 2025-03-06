@@ -1,72 +1,89 @@
-/* AdminTab.css - Clean and Modern Admin Login Style */
-
 .admin-tab {
-  background-color: #2c2f36;
-  border-radius: 12px;
-  padding: 30px;
-  max-width: 400px;
-  margin: 50px auto;
-  box-shadow: 0 8px 20px rgba(0, 123, 255, 0.2);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  color: #ffffff;
   font-family: "Montserrat", sans-serif;
-  color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+  width: 100%;
+  padding: 20px;
 }
 
-.admin-tab h2 {
-  font-size: 1.6rem;
-  margin-bottom: 10px;
+.admin-login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 }
 
-.admin-tab p {
-  font-size: 1rem;
+.admin-login-form {
+  background-color: #1a1d23;
+  padding: 30px;
+  border-radius: 12px;
+  width: 400px;
+  box-shadow: 0 10px 20px rgba(0, 123, 255, 0.2);
+}
+
+.login-title {
+  text-align: center;
   margin-bottom: 20px;
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #ffffff;
 }
 
-.admin-tab input[type="text"],
-.admin-tab input[type="password"] {
+.login-input {
   width: 100%;
   padding: 12px;
-  margin: 10px 0;
-  border: none;
+  margin-bottom: 15px;
   border-radius: 8px;
-  background: #434750;
+  border: none;
+  background-color: #2c3037;
   color: #ffffff;
   font-size: 1rem;
-  transition: box-shadow 0.2s ease;
+  transition: box-shadow 0.3s ease;
 }
 
-.admin-tab input[type="text"]:focus,
-.admin-tab input[type="password"]:focus {
-  box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+.login-input:focus {
   outline: none;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.6);
 }
 
-.admin-tab button {
+.login-btn {
   width: 100%;
   padding: 12px;
-  margin-top: 10px;
-  border: none;
   border-radius: 8px;
   background: linear-gradient(145deg, #007bff, #0056b3);
   color: #ffffff;
+  border: none;
   font-size: 1rem;
   cursor: pointer;
-  transition: transform 0.1s ease-in-out, box-shadow 0.2s ease;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.admin-tab button:hover {
-  box-shadow: 0 4px 15px rgba(0, 123, 255, 0.6);
+.login-btn:hover {
   transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0, 123, 255, 0.6);
 }
 
-.admin-tab button:active {
+.login-btn:active {
   transform: translateY(1px);
 }
 
-.admin-tab .danger {
+.danger {
   color: #ff4d4f;
-  margin-top: 15px;
+  text-align: center;
+  margin-top: 10px;
   font-size: 0.9rem;
+}
+
+@media (max-width: 480px) {
+  .admin-login-form {
+    width: 90%;
+    padding: 20px;
+  }
+
+  .login-title {
+    font-size: 1.5rem;
+  }
 }

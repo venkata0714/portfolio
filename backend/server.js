@@ -2,6 +2,7 @@ const os = require("os");
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const cookieParser = require("cookie-parser");
 const { connectDB } = require("./config/mongodb");
 
 dotenv.config();
@@ -9,8 +10,24 @@ const app = express();
 
 // Middleware
 app.use(express.json());
-app.use(cors());
+app.use(cookieParser());
+const allowedOrigins = [
+  "https://kartavya-portfolio-mern-frontend.onrender.com",
+  "https://kartavya-singh.com",
+];
 
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
 // Connect to MongoDB
 connectDB();
 
