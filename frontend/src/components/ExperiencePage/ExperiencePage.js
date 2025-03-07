@@ -57,7 +57,11 @@ const tabHighlightVariants = {
   }),
 };
 
-const ExperiencePage = ({ addTab, isBatterySavingOn }) => {
+const ExperiencePage = ({
+  addTab,
+  isBatterySavingOn,
+  isWindowModalVisible,
+}) => {
   const [selectedTab, setSelectedTab] = useState(tabs[1]); // Default tab is "Career"
   const [ActiveComponent, setActiveComponent] = useState(
     () => selectedTab.component
@@ -68,7 +72,14 @@ const ExperiencePage = ({ addTab, isBatterySavingOn }) => {
       <AnimatePresence>
         <section className="experience-container" id="experience">
           <Background />
-          <div className="experience-div">
+          <div
+            className="experience-div"
+            style={
+              isWindowModalVisible
+                ? { opacity: 0, transition: "opacity 0.5s ease-in-out" }
+                : { opacity: 1, transition: "opacity 0.5s ease-in-out" }
+            }
+          >
             <motion.div
               className="tabs-wrapper"
               initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}

@@ -138,7 +138,7 @@ const BarChart = ({ topLangs, isBatterySavingOn }) => {
   );
 };
 
-function SkillPage({ isBatterySavingOn }) {
+function SkillPage({ isBatterySavingOn, isWindowModalVisible }) {
   const [skillScreenWidth, setSkillScreenWidth] = useState(window.innerWidth);
   const [topLangs, setTopLangs] = useState({ labels: [], data: [] });
   const [skills, setSkills] = useState([]);
@@ -250,6 +250,11 @@ function SkillPage({ isBatterySavingOn }) {
         initial="hidden"
         whileInView="show"
         exit="hidden"
+        style={
+          isWindowModalVisible
+            ? { opacity: 0, transition: "opacity 0.5s ease-in-out" }
+            : { opacity: 1, transition: "opacity 0.5s ease-in-out" }
+        }
       >
         <div className="skill-box">
           <motion.h2

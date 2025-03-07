@@ -22,6 +22,8 @@ const WindowModal = ({
   isBatterySavingOn,
   loggedIn,
   setLoggedIn,
+  isWindowModalVisible,
+  setIsWindowModalVisible,
 }) => {
   const modalRef = useRef(null);
   const [totalTabs, setTotalTabs] = useState(0);
@@ -29,6 +31,16 @@ const WindowModal = ({
   useEffect(() => {
     setTotalTabs(tabs.length);
   }, [tabs]);
+
+  useEffect(() => {
+    if (tabs.length > 0 && !isClosed && !isMinimized) {
+      setIsWindowModalVisible(true);
+      // console.log("WindowModal is visible");
+    } else {
+      setIsWindowModalVisible(false);
+      // console.log("WindowModal is hidden");
+    }
+  }, [tabs, setIsWindowModalVisible, isClosed, isMinimized]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {

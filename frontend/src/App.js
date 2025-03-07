@@ -19,6 +19,7 @@ function App({ isBatterySavingOn, setIsBatterySavingOn }) {
   const [isClosed, setIsClosed] = useState(true);
   const [isMinimized, setIsMinimized] = useState(false); // Track if modal is minimized
   const [lastActiveIndex, setLastActiveIndex] = useState(0); // Track active tab index
+  const [isWindowModalVisible, setIsWindowModalVisible] = useState(false);
 
   const addTab = (type, data) => {
     if (!data || typeof data !== "object") {
@@ -129,10 +130,32 @@ function App({ isBatterySavingOn, setIsBatterySavingOn }) {
       >
         <NavBar isBatterySavingOn={isBatterySavingOn} />
         <HomePage isBatterySavingOn={isBatterySavingOn} scrolled={scrolled} />
-        <AboutPage isBatterySavingOn={isBatterySavingOn} />
+        {/* {isWindowModalVisible && (
+          <>
+                  <AboutPage isBatterySavingOn={isBatterySavingOn} />
         <SkillPage isBatterySavingOn={isBatterySavingOn} />
         <ProjectPage addTab={addTab} isBatterySavingOn={isBatterySavingOn} />
         <ExperiencePage addTab={addTab} isBatterySavingOn={isBatterySavingOn} />
+          </>
+        )} */}
+        <AboutPage
+          isBatterySavingOn={isBatterySavingOn}
+          isWindowModalVisible={isWindowModalVisible}
+        />
+        <SkillPage
+          isBatterySavingOn={isBatterySavingOn}
+          isWindowModalVisible={isWindowModalVisible}
+        />
+        <ProjectPage
+          addTab={addTab}
+          isBatterySavingOn={isBatterySavingOn}
+          isWindowModalVisible={isWindowModalVisible}
+        />
+        <ExperiencePage
+          addTab={addTab}
+          isBatterySavingOn={isBatterySavingOn}
+          isWindowModalVisible={isWindowModalVisible}
+        />
         <ContactPage isBatterySavingOn={isBatterySavingOn} addTab={addTab} />
         <Links isBatterySavingOn={isBatterySavingOn} />
         <a
@@ -155,6 +178,8 @@ function App({ isBatterySavingOn, setIsBatterySavingOn }) {
           isBatterySavingOn={isBatterySavingOn}
           loggedIn={loggedIn}
           setLoggedIn={setLoggedIn}
+          isWindowModalVisible={isWindowModalVisible}
+          setIsWindowModalVisible={setIsWindowModalVisible}
         />
       </motion.div>
     </AnimatePresence>

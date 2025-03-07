@@ -107,13 +107,13 @@ const Loading = ({ isBatterySavingOn, setIsBatterySavingOn, onComplete }) => {
         isCpuThrottled ||
         // isTouchDevice ||
         lowMemoryDevice;
-      console.log("Prefers Reduced Motion:", prefersReducedMotion);
-      console.log("Low Battery:", isLowBattery);
-      console.log("Low Performance Device:", lowPerformanceDevice);
-      console.log("Low Memory Device:", lowMemoryDevice);
-      console.log("CPU Throttled:", isCpuThrottled);
-      console.log("CPU Test Duration:", cpuTestDuration);
-      console.log("Overall Saving Mode:", isSavingMode);
+      // console.log("Prefers Reduced Motion:", prefersReducedMotion);
+      // console.log("Low Battery:", isLowBattery);
+      // console.log("Low Performance Device:", lowPerformanceDevice);
+      // console.log("Low Memory Device:", lowMemoryDevice);
+      // console.log("CPU Throttled:", isCpuThrottled);
+      // console.log("CPU Test Duration:", cpuTestDuration);
+      // console.log("Overall Saving Mode:", isSavingMode);
 
       setStats({
         prefersReducedMotion,

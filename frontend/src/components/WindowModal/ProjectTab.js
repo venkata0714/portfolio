@@ -60,6 +60,7 @@ const ProjectTab = ({ data, isBatterySavingOn }) => {
                     type: "ease",
                   }
             }
+            viewport={{ once: true }}
           />
         </motion.a>
       );
@@ -98,7 +99,11 @@ const ProjectTab = ({ data, isBatterySavingOn }) => {
               className="project-window-title"
               initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
               animate={isBatterySavingOn ? {} : { opacity: 1, scale: 1 }}
-              transition={isBatterySavingOn ? {} : { delay: 0.7, type: "ease" }}
+              transition={
+                isBatterySavingOn
+                  ? {}
+                  : { delay: 0.7, type: "ease", repeatType: "mirror" }
+              }
               viewport={{ once: true }}
             >
               {data.projectTitle}

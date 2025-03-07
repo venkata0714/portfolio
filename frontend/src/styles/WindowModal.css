@@ -94,6 +94,10 @@
   border-radius: 10px 10px 0px 0px;
 }
 
+.tab:hover .close-tab {
+  color: lightcoral;
+}
+
 .tab.active {
   background-color: #343a40;
   background-blend-mode: hard-light;
@@ -127,8 +131,7 @@
   opacity: 1;
   justify-content: center;
   align-items: center;
-  background-color: lightcoral;
-  color: #212529;
+  color: #ff0000;
   background-blend-mode: soft-light;
   cursor: pointer;
 }

@@ -25,7 +25,7 @@ const aboutData = [
   },
 ];
 
-function AboutPage({ isBatterySavingOn }) {
+function AboutPage({ isBatterySavingOn, isWindowModalVisible }) {
   const scrollToSection = (id) => {
     const element = document.getElementById(id);
     const offset = 52; // Adjust based on your navbar height
@@ -46,6 +46,11 @@ function AboutPage({ isBatterySavingOn }) {
         whileInView="show"
         exit="hidden"
         className="about-div glass"
+        style={
+          isWindowModalVisible
+            ? { opacity: 0, transition: "opacity 0.5s ease-in-out" }
+            : { opacity: 1, transition: "opacity 0.5s ease-in-out" }
+        }
       >
         <h2 className="section-title">ABOUT ME</h2>
         <div className="about-container">
