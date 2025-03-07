@@ -11,7 +11,7 @@ const aboutData = [
   {
     icon: "bx bxs-hourglass about-icon",
     title: "Coding Hours",
-    subtitle: "900+ Hours",
+    subtitle: "1200+ Hours",
   },
   {
     icon: "bx bx-trophy about-icon",

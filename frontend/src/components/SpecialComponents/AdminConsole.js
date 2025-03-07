@@ -160,12 +160,14 @@ const AdminConsole = ({ logout }) => {
       const newData = JSON.parse(JSON.stringify(prev));
       if (Array.isArray(newData[field]) && nestedIndex !== null) {
         if (nestedField) {
-          newData[field][nestedIndex][nestedField] = value;
+          newData[field][nestedIndex][nestedField] =
+            field === "Scores" ? Number(value) : value;
         } else {
-          newData[field][nestedIndex] = value;
+          newData[field][nestedIndex] =
+            field === "Scores" ? Number(value) : value;
         }
       } else {
-        newData[field] = value;
+        newData[field] = field === "Scores" ? Number(value) : value;
       }
       return newData;
     });

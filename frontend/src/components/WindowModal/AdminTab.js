@@ -22,6 +22,7 @@ const AdminTab = ({ loggedIn, setLoggedIn }) => {
   const [otp, setOtp] = useState("");
   const [userVerified, setUserVerified] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -73,7 +74,7 @@ const AdminTab = ({ loggedIn, setLoggedIn }) => {
 
   const verifyOTP = async () => {
     try {
-      await axios.post(`${API_URL}/compareOTP`, { otp });
+      await axios.post(`${API_URL}/compareOTP`, { otp, rememberMe });
       setLoggedIn(true);
       setError("");
     } catch {
@@ -131,6 +132,17 @@ const AdminTab = ({ loggedIn, setLoggedIn }) => {
                   onChange={(e) => setOtp(e.target.value)}
                   onKeyDown={(e) => handleEnterKey(e, verifyOTP)}
                 />
+                <div className="toggle-container">
+                  <label className="switch">
+                    <input
+                      type="checkbox"
+                      checked={rememberMe}
+                      onChange={(e) => setRememberMe(e.target.checked)}
+                    />
+                    <span className="remember-slider"></span>
+                  </label>
+                  <span className="toggle-label">Remember Me</span>
+                </div>
                 <button className="login-btn" onClick={verifyOTP}>
                   Verify OTP
                 </button>

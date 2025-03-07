@@ -46,16 +46,16 @@ const responsive = {
 };
 
 const SkillGraph = ({ givenData, isBatterySavingOn }) => {
+  const numericScores = givenData.Scores.map((score) => Number(score) || 0);
   const averageScore =
-    givenData.Scores.reduce((sum, score) => sum + score, 0) /
-    givenData.Scores.length;
+    numericScores.reduce((sum, score) => sum + score, 0) / numericScores.length;
 
   const data = {
     labels: givenData.Labels,
     datasets: [
       {
         label: givenData.skillTitle,
-        data: givenData.Scores,
+        data: numericScores,
         backgroundColor: "rgba(252, 188, 29, 0.2)",
         borderColor: "#6cbcfc",
         borderWidth: 2,

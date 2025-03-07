@@ -52,11 +52,9 @@ const getDocumentByLink = async (collectionName, linkField, linkValue, res) => {
       `Error fetching document by link from ${collectionName}:`,
       error
     );
-    res
-      .status(500)
-      .json({
-        message: `Error fetching document by link from ${collectionName}`,
-      });
+    res.status(500).json({
+      message: `Error fetching document by link from ${collectionName}`,
+    });
   }
 };
 
@@ -180,30 +178,40 @@ const compareAdminPassword = async (req, res) => {
 };
 
 const compareOTP = async (req, res) => {
-  const { otp } = req.body;
+  const { otp, rememberMe = false } = req.body;
   const db = getDB();
   try {
     const otpData = await db.collection("KartavyaPortfolioOTP").findOne({});
-    if (!otpData) return res.status(404).json({ message: "No OTP found." });
-    const currentTime = new Date();
-    if (otp === otpData.otp && currentTime < otpData.expireTime) {
-      await db.collection("KartavyaPortfolioOTP").deleteMany({});
-      const token = jwt.sign({ user: "admin" }, process.env.JWT_SECRET, {
-        expiresIn: "1h",
-      });
-      res.cookie("token", token, {
-        httpOnly: true,
-        maxAge: 3600000,
-        secure: true,
-        sameSite: "none",
-      });
-      return res.json({ success: true });
-    } else {
-      return res.status(401).json({ message: "OTP expired or incorrect." });
+    if (!otpData || otpData.otp !== otp) {
+      return res.status(400).json({ message: "Invalid OTP" });
     }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error verifying OTP." });
+
+    const currentTime = new Date();
+    if (otpData.expiry < currentTime) {
+      return res.status(400).json({ message: "OTP expired" });
+    }
+
+    // const expiresIn = rememberMe ? "1m" : "1hr"; // 1 week vs 1 hour
+    const expiresIn = rememberMe ? "365d" : "1h"; // 1 week vs 1 hour
+    const token = jwt.sign({ user: "admin" }, process.env.JWT_SECRET, {
+      expiresIn,
+    });
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      // maxAge: rememberMe ? 60000 : 3600000, // 7 days vs 1 hour
+      maxAge: rememberMe ? 365 * 24 * 60 * 60 * 1000 : 3600000, // 365 days vs 1 hour
+      // 365 * 24 * 60 * 60 * 1000 = 31536000000ms = 365 days = 1 year
+      // 3600000 ms = 1 hour
+    });
+
+    await db.collection("KartavyaPortfolioOTP").deleteOne({}); // OTP invalidation
+
+    return res.json({ success: true, message: "Logged in successfully!" });
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
   }
 };
 

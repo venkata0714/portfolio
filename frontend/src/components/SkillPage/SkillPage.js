@@ -158,6 +158,7 @@ function SkillPage({ isBatterySavingOn, isWindowModalVisible }) {
 
   useEffect(() => {
     const fetchTopLangData = async () => {
+      const totalHours = 1200;
       const url = `${process.env.REACT_APP_API_URI}/top-langs`;
 
       try {
@@ -175,14 +176,16 @@ function SkillPage({ isBatterySavingOn, isWindowModalVisible }) {
         const extractedLangNames = Array.from(langNames).map((el) =>
           el.innerHTML.trim()
         );
-
         // Process the first 5 elements to create the topLangs dictionary
         let processedData = extractedLangNames.slice(0, 5).reduce(
           (acc, lang) => {
             const parts = lang.split(" ");
             const name = parts.slice(0, -1).join(" "); // All but the last word
-            const value =
-              parseFloat(parts[parts.length - 1].replace("%", "")) * 7; // Convert percentage to float and multiply by 6
+            const percentage = parseFloat(
+              parts[parts.length - 1].replace("%", "")
+            );
+            // Multiply by constant so that the total for the top languages equals roughly 80% of totalHours
+            const value = percentage * ((totalHours * 0.75) / 100);
 
             acc.labels.push(name);
             acc.data.push(parseFloat(value.toFixed(2)));
@@ -191,19 +194,23 @@ function SkillPage({ isBatterySavingOn, isWindowModalVisible }) {
           { labels: [], data: [] }
         );
 
-        // Calculate the total hours and assign remaining hours to C++
-        const totalHours = processedData.data.reduce(
-          (sum, hours) => sum + hours,
+        // Calculate the total hours spent on the top languages
+        const totalTopLangsHours = processedData.data.reduce(
+          (acc, curr) => acc + curr,
           0
         );
-        const remainingHours = 900 - totalHours;
+
+        // Calculate the remaining hours and assign them to C++
+        const remainingHours = parseFloat(
+          (totalHours - totalTopLangsHours).toFixed(2)
+        );
         const cppIndex = processedData.labels.indexOf("C++");
 
         if (cppIndex !== -1) {
-          processedData.data[cppIndex] = parseFloat(remainingHours.toFixed(2));
+          processedData.data[cppIndex] = remainingHours;
         } else {
           processedData.labels.push("C++");
-          processedData.data.push(parseFloat(remainingHours.toFixed(2)));
+          processedData.data.push(remainingHours);
         }
 
         // Sort the processedData by data in descending order
@@ -217,9 +224,6 @@ function SkillPage({ isBatterySavingOn, isWindowModalVisible }) {
         };
 
         setTopLangs(processedData);
-
-        // console.log("Extracted Lang Names: ", extractedLangNames);
-        // console.log("Top Langs Processed Data: ", processedData);
       } catch (error) {
         console.error("Error fetching TopLangData:", error);
       }
