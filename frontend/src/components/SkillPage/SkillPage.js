@@ -5,7 +5,7 @@ import github from "../../assets/img/icons/github.png";
 import SkillBG from "./SkillBG.js";
 import SkillGraphCarousel from "./SkillGraph";
 import SkillSection from "./SkillSection";
-import { fetchSkills } from "../../services/skillService";
+import { fetchSkillsComponents } from "../../services/skillComponentService";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -146,7 +146,7 @@ function SkillPage({ isBatterySavingOn, isWindowModalVisible }) {
   useEffect(() => {
     const loadSkills = async () => {
       try {
-        const fetchedSkills = await fetchSkills();
+        const fetchedSkills = await fetchSkillsComponents();
         setSkills(fetchedSkills);
       } catch (error) {
         console.error("Error fetching skills:", error);

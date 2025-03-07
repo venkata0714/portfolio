@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { zoomIn, fadeIn } from "../../services/variants";
 import icons from "../../services/icons";
 import Glide from "@glidejs/glide";
-import { fetchSkillsComponents } from "../../services/skillComponentService";
+import { fetchSkills } from "../../services/skillService";
 import "@glidejs/glide/dist/css/glide.core.min.css";
 import "@glidejs/glide/dist/css/glide.theme.min.css";
 import "../../styles/SkillSection.css";
@@ -147,7 +147,7 @@ const SkillSection = ({ isBatterySavingOn }) => {
   useEffect(() => {
     const loadSkills = async () => {
       try {
-        const fetchedSkills = await fetchSkillsComponents();
+        const fetchedSkills = await fetchSkills();
         setSkillCategories(fetchedSkills);
       } catch (error) {
         console.error("Error fetching skills:", error);

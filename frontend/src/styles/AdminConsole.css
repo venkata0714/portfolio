@@ -98,6 +98,172 @@
   justify-content: flex-start;
 }
 
+.admin-credentials-form {
+  background-color: #1a1d23;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+}
+.admin-credentials-form h3 {
+  text-align: center;
+  margin-bottom: 15px;
+  color: #edeeef;
+}
+
+/* Item list and card styles */
+.item-list {
+  width: 100%;
+  max-width: 800px;
+  margin: 20px 0;
+}
+.item-card {
+  background-color: #1a1d23;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+.item-title {
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 5px;
+}
+.item-title:hover {
+  text-decoration: underline;
+}
+.item-details {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #444;
+}
+
+/* Form field and input styles */
+.field {
+  margin-bottom: 10px;
+}
+.field label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 5px;
+  color: #edeeef;
+}
+.field input,
+.admin-credentials-form input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  border: none;
+  background-color: #2c3037;
+  color: #ffffff;
+}
+.field input:focus,
+.admin-credentials-form input:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* List fields (array inputs) */
+.list-field {
+  display: flex;
+  flex-direction: column;
+}
+.list-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+.list-item input {
+  flex: 1;
+  margin-right: 5px;
+}
+
+/* Add/remove item buttons for list fields */
+.list-add-btn,
+.list-remove-btn {
+  background-color: #343a40;
+  color: #ffffff;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.list-remove-btn {
+  margin-left: 5px;
+}
+.list-add-btn:hover,
+.list-remove-btn:hover {
+  background-color: #495057;
+}
+
+/* Add New Item button */
+.add-item-btn {
+  background-color: #212529;
+  color: #edeeef;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 15px 0;
+}
+.add-item-btn:hover {
+  background-color: rgba(252, 188, 29, 0.5);
+}
+
+/* Action buttons for form (Save, Reset, Cancel, Delete) */
+.item-actions {
+  margin-top: 10px;
+}
+.save-btn {
+  background: linear-gradient(45deg, #4caf50, #2e7d32);
+  border: none;
+  color: #ffffff;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.save-btn:disabled {
+  background: #555555;
+  cursor: not-allowed;
+}
+.secondary-btn {
+  background-color: #343a40;
+  color: #ffffff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+.secondary-btn:hover {
+  background-color: #495057;
+}
+.delete-btn {
+  background-color: #c82333;
+  color: #ffffff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+.delete-btn:hover {
+  background-color: #a71d2a;
+}
+
+/* Error message text */
+.danger {
+  color: #ff4d4f;
+  text-align: center;
+  margin-top: 10px;
+  font-size: 0.9rem;
+}
+
 @media (max-width: 768px) {
   .admin-dashboard {
     gap: 20px;
