@@ -167,6 +167,7 @@ function App({ isBatterySavingOn, setIsBatterySavingOn }) {
         </a>
         <WindowModal
           tabs={tabs}
+          addTab={addTab}
           setTabs={setTabs}
           isClosed={isClosed}
           setIsClosed={setIsClosed}

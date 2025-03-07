@@ -8,9 +8,11 @@ import ExperienceTab from "./ExperienceTab";
 import InvolvementTab from "./InvolvementTab";
 import HonorsTab from "./HonorsTab";
 import YearInReviewTab from "./YearInReviewTab";
+import ProjectsListView from "../ProjectPage/ProjectsListView";
 
 const WindowModal = ({
   tabs,
+  addTab,
   setTabs,
   isClosed,
   setIsClosed,
@@ -104,6 +106,14 @@ const WindowModal = ({
       case "YearInReview":
         return (
           <YearInReviewTab data={data} isBatterySavingOn={isBatterySavingOn} />
+        );
+      case "ProjectsListView":
+        return (
+          <ProjectsListView
+            addTab={addTab}
+            isBatterySavingOn={isBatterySavingOn}
+            showStarred={false}
+          />
         );
       case "Admin": // Add this new case
         return (

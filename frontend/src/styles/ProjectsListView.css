@@ -1,8 +1,6 @@
 .project-container {
   display: flex;
   z-index: 5;
-  position: sticky;
-  top: 500px;
   flex-direction: column;
   width: 100%;
   height: calc(100vh - 52px);
@@ -31,6 +29,16 @@
   border-radius: 5px;
   font-size: 0.9rem;
   white-space: nowrap;
+}
+
+.featured-tag {
+  position: absolute;
+  top: -20px; /* Adjust position as needed */
+  right: -20px; /* Adjust position as needed */
+  font-size: 2rem; /* Adjust size */
+  color: #ffd700; /* Gold color for a royal look */
+  z-index: 10; /* Ensure it's above other content */
+  transform: rotate(45deg);
 }
 
 .project-card {

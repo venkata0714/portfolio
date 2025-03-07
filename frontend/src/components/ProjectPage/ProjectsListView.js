@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { FaCrown } from "react-icons/fa";
 import { zoomIn } from "../../services/variants";
 import { styled } from "@stitches/react";
 import { fetchProjects } from "../../services/projectService";
 import "../../styles/ProjectsListView.css";
 
-function ProjectsListView({ addTab, isBatterySavingOn }) {
+function ProjectsListView({ addTab, isBatterySavingOn, showFeatured }) {
   const parentRef = useRef(null);
   const [projects, setProjects] = useState([]);
   const [cardStates, setCardStates] = useState([]);
@@ -34,6 +35,13 @@ function ProjectsListView({ addTab, isBatterySavingOn }) {
     async function getProjects() {
       try {
         const data = await fetchProjects();
+        // if (showFeatured) {
+        //   const featuredProjects = data.filter((project) => project.featured);
+        //   setProjects(featuredProjects.reverse());
+        //   setProjects(data.reverse());
+        // } else {
+        //   setProjects(data.reverse());
+        // }
         setProjects(data.reverse());
         // Initialize card states for each project
         setCardStates(
@@ -47,7 +55,7 @@ function ProjectsListView({ addTab, isBatterySavingOn }) {
       }
     }
     getProjects();
-  }, []);
+  }, [showFeatured]);
 
   useEffect(() => {
     // Auto-scroll container to top if it scrolls upward out of view
@@ -221,6 +229,7 @@ function ProjectsListView({ addTab, isBatterySavingOn }) {
             {hoveredCard === index && (
               <div className="hover-tooltip">{project.projectTitle}</div>
             )}
+            {/* {project.featured && <FaCrown className="featured-tag" />} */}
             {/* Project Content */}
             <div className="project-info" id={project.projectLink}>
               <div className="project-header">
