@@ -261,8 +261,8 @@ function SkillPage({ isBatterySavingOn, isWindowModalVisible }) {
             className="skill-heading"
             variants={isBatterySavingOn ? {} : fadeIn("right", 200, 0)}
             initial="hidden"
-            whileInView="show"
-            exit="hidden"
+            animate="show"
+            // exit="hidden"
           >
             Skills
           </motion.h2>

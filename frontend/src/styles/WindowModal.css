@@ -223,6 +223,11 @@
 }
 
 @media (max-width: 768px) {
+  .control-btn {
+    padding: 0.2rem 0.5rem;
+    font-size: xx-small;
+  }
+
   .close-tab:hover {
     background-color: transparent !important;
     color: #edeeef;

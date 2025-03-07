@@ -8,7 +8,7 @@ export const SpotlightBG = () => {
   const paintedHexagons = useRef([]); // Array to store painted hexagons
   const breathingProgress = useRef(0); // Tracks the progress of the breathing animation (0 to 1)
   const direction = useRef(1); // 1 for expanding, -1 for contracting
-  const breathingSpeed = 0.01; // Very slow breathing animation speed
+  const breathingSpeed = 0.005; // Very slow breathing animation speed
 
   useEffect(() => {
     const canvas = canvasRef.current;

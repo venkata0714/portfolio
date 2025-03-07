@@ -72,13 +72,17 @@ const ExperiencePage = ({
       <AnimatePresence>
         <section className="experience-container" id="experience">
           <Background />
-          <div
+          <motion.div
             className="experience-div"
             style={
               isWindowModalVisible
                 ? { opacity: 0, transition: "opacity 0.5s ease-in-out" }
                 : { opacity: 1, transition: "opacity 0.5s ease-in-out" }
             }
+            initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
+            whileInView={isBatterySavingOn ? {} : { opacity: 1, scale: 1 }}
+            exit={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
+            transition={isBatterySavingOn ? {} : { delay: 0, type: "spring" }}
           >
             <motion.div
               className="tabs-wrapper"
@@ -135,6 +139,7 @@ const ExperiencePage = ({
               className="content-container"
               initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
               animate={isBatterySavingOn ? {} : { opacity: 1, scale: 1 }}
+              exit={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
               transition={isBatterySavingOn ? {} : { delay: 0, type: "spring" }}
             >
               <ActiveComponent
@@ -142,7 +147,7 @@ const ExperiencePage = ({
                 isBatterySavingOn={isBatterySavingOn}
               />
             </motion.div>
-          </div>
+          </motion.div>
         </section>
       </AnimatePresence>
     </>

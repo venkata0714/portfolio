@@ -77,7 +77,7 @@ function App({ isBatterySavingOn, setIsBatterySavingOn }) {
         };
 
         const result = [...updatedTabs, newTab];
-        console.log("Tabs after addition (3 tabs max):", result);
+        // console.log("Tabs after addition (3 tabs max):", result);
         return result;
       }
 
