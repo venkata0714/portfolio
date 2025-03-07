@@ -1,19 +1,23 @@
 .admin-console {
   color: #ffffff;
   width: 100%;
+  height: 100%;
   font-family: "Montserrat", sans-serif;
+  align-self: start;
 }
 
 .admin-title-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #1a1d23;
-  padding: 15px;
-  border-radius: 10px;
+  height: 40px;
 }
 
 .admin-title {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 1.4rem;
   font-weight: 700;
   color: #edeeef;
@@ -21,32 +25,47 @@
   flex-grow: 1;
 }
 
-.admin-button-group button,
-.back-btn {
-  background: transparent;
-  border: none;
-  color: #edeeef;
-  font-size: 1.4rem;
-  margin-left: 10px;
-  cursor: pointer;
-  transition: color 0.2s, transform 0.2s;
+.admin-btn-group {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
-.admin-button-group button:hover,
+.db-btn,
+.logout-btn,
+.back-btn {
+  height: 100%;
+  background-color: #212529;
+  border: none;
+  color: #edeeef;
+  font-size: small;
+  padding: 0.3rem 0.8rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.db-btn:hover,
+.logout-btn:hover,
 .back-btn:hover {
-  color: #dc3545;
-  transform: scale(1.2);
+  background-color: rgba(252, 188, 29, 0.5);
 }
 
 .admin-dashboard {
+  width: min(95%, 1140px);
+  height: calc(100vh - 250px);
+  margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, 1fr); /* exactly 2 elements per row */
   gap: 20px;
-  margin-top: 25px;
 }
 
 .dashboard-box {
-  background: #2a2d34;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #edeeef;
   padding: 20px;
   border-radius: 10px;
   text-align: center;
@@ -71,16 +90,39 @@
 
 .expanded-view {
   background: #212529;
-  padding: 25px;
-  border-radius: 10px;
-  margin-top: 20px;
+  background-blend-mode: hard-light;
   transition: background-color 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
 }
 
-.logout-btn:hover {
-  color: #dc3545;
+@media (max-width: 768px) {
+  .admin-dashboard {
+    gap: 20px;
+  }
+
+  .admin-title {
+    font-size: 1.2rem;
+  }
+
+  .dashboard-box {
+    padding: 30px;
+  }
 }
 
-.back-btn:hover {
-  color: #007bff;
+@media (max-width: 480px) {
+  .admin-dashboard {
+    gap: 10px;
+  }
+
+  .dashboard-box {
+    padding: 0;
+    font-size: small;
+  }
+
+  .admin-title {
+    font-size: 0.9rem;
+  }
 }

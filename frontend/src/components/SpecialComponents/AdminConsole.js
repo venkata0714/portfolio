@@ -48,7 +48,7 @@ const AdminConsole = ({ logout }) => {
             <FaDatabase />
           </button>
           <button
-            className="logout-btn"
+            className="logout-btn close"
             onClick={() => window.confirm("Confirm logout?") && logout()}
           >
             <FaSignOutAlt />
@@ -61,7 +61,7 @@ const AdminConsole = ({ logout }) => {
           {tables.map((table) => (
             <div
               key={table.key}
-              className="dashboard-box"
+              className="dashboard-box glass"
               onClick={() => setSelectedTable(table)}
             >
               <h3>{table.title}</h3>

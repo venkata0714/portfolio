@@ -14,6 +14,7 @@ app.use(cookieParser());
 const allowedOrigins = [
   "https://kartavya-portfolio-mern-frontend.onrender.com",
   "https://kartavya-singh.com",
+  "http://localhost:3000",
 ];
 
 app.use(
