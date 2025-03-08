@@ -1,26 +1,40 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useMemo } from "react";
 
 /**
- * Helper to parse "r, g, b" or "r, g, b, a" strings into numeric array [r,g,b,a].
- * The user might pass "18, 113, 255" or "0, 17, 82", etc.
+ * Helper to parse "r, g, b" or "r, g, b, a" strings into a numeric object { r, g, b, a }.
  */
 function parseColorString(colorString) {
   const parts = colorString.split(",").map((val) => parseFloat(val.trim()));
-  // Ensure we have at least RGB
   const [r, g, b, a = 1] = parts;
   return { r, g, b, a };
 }
 
 /**
- * Convert the color object {r,g,b,a} to a string "rgba(r, g, b, a)".
+ * Convert the color object { r, g, b, a } to a string "rgba(r, g, b, a)".
  */
 function toRgbaString({ r, g, b, a }) {
   return `rgba(${r}, ${g}, ${b}, ${a})`;
 }
 
 /**
- * The main GradientBG component replicating the five moving radial gradients
- * and an optional pointer circle, all drawn onto a <canvas>.
+ * Darken a given color by subtracting a fixed amount from each channel.
+ */
+function darkenColor(color, amount) {
+  let col = color;
+  if (col.startsWith("rgb(") || col.startsWith("rgba(")) {
+    col = col.replace(/rgba?\(/, "").replace(")", "");
+  }
+  const [r, g, b] = col.split(",").map((n) => parseInt(n.trim(), 10));
+  const dr = Math.max(r - amount, 0);
+  const dg = Math.max(g - amount, 0);
+  const db = Math.max(b - amount, 0);
+  return `rgb(${dr}, ${dg}, ${db})`;
+}
+
+/**
+ * GradientBG component replicating the five moving radial gradients,
+ * interactive pointer effect, parallax background, twinkle stars,
+ * and chromatic glow effects.
  */
 export default function GradientBG({
   gradientBackgroundStart = "rgb(108, 0, 162)",
@@ -32,7 +46,7 @@ export default function GradientBG({
   fifthColor = "180, 180, 50",
   pointerColor = "140, 100, 255",
   // Increase from "80%" → "120%"
-  size = "120%",
+  size = "160%",
   blendingValue = "hard-light",
   // Force interactive = true, as requested
   interactive = false,
@@ -41,31 +55,44 @@ export default function GradientBG({
 }) {
   const canvasRef = useRef(null);
 
-  // Mouse position for interactive pointer effect
+  // Track mouse position for interactive pointer effect.
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
-  // Convert "80%" to a fraction for usage in canvas
-  const fractionSize = (() => {
+  // Convert "120%" (or any percentage) to a fraction for usage in canvas.
+  const fractionSize = useMemo(() => {
     if (typeof size === "string" && size.includes("%")) {
       const val = parseFloat(size);
-      if (!isNaN(val)) {
-        return val / 100;
-      }
-      return 0.8;
+      return !isNaN(val) ? val / 100 : 0.8;
     }
-    // If user used px or something else, just default to 0.8
     return 0.8;
-  })();
+  }, [size]);
 
-  // ---- Circle definitions (similar to the DOM-based radial gradients) ----
-  // We'll define each circle's color, animation style, and period
-  // so it exactly matches the original:
-  //   "first" moves vertical with a 30s period
-  //   "second" moves in a circle with a 20s period, reversed
-  //   "third" moves in a circle with a 40s period, normal
-  //   "fourth" moves horizontal with a 40s period
-  //   "fifth" moves in a circle with a 20s period, normal
-  // Circles: durations scaled to 3/4 previous. e.g. 30s -> 22500 ms, etc.
+  // Pre-generate random twinkle stars (they remain static, fading over time).
+  const [twinkles] = useState(() => {
+    const numStars = 50;
+    const arr = [];
+    for (let i = 0; i < numStars; i++) {
+      arr.push({
+        x: Math.random(),
+        y: Math.random(),
+        speed: 0.002 + Math.random() * 0.003, // fade speed
+        phase: Math.random() * Math.PI * 2,
+      });
+    }
+    return arr;
+  });
+
+  // Cache darkened background colors.
+  const darkenedStart = useMemo(
+    () => darkenColor(gradientBackgroundStart, 20),
+    [gradientBackgroundStart]
+  );
+  const darkenedEnd = useMemo(
+    () => darkenColor(gradientBackgroundEnd, 20),
+    [gradientBackgroundEnd]
+  );
+
+  // Define circle animations and properties.
   const circles = [
     // first: 30s → 22.5s
     { color: firstColor, anim: "vertical", durationMs: 22500 },
@@ -79,6 +106,7 @@ export default function GradientBG({
     { color: fifthColor, anim: "circular", durationMs: 15000 },
   ];
 
+  // Utility: Check if a pointer is inside the canvas.
   const isPointerInsideCanvas = (x, y, canvas) => {
     const rect = canvas.getBoundingClientRect();
     return (
@@ -86,21 +114,18 @@ export default function GradientBG({
     );
   };
 
-  // Update mouse and touch event handlers
+  // Update mouse position on move if pointer is within the canvas.
   useEffect(() => {
     const handleMouse = (ev) => {
       const canvas = canvasRef.current;
       if (!canvas) return;
-
       if (isPointerInsideCanvas(ev.clientX, ev.clientY, canvas)) {
         setMousePos({ x: ev.clientX, y: ev.clientY });
       }
     };
-
     if (interactive) {
       window.addEventListener("mousemove", handleMouse);
     }
-
     return () => {
       if (interactive) {
         window.removeEventListener("mousemove", handleMouse);
@@ -108,26 +133,7 @@ export default function GradientBG({
     };
   }, [interactive]);
 
-  // Additional “cool” enhancements:
-  // 1) Parallax shift on background gradient
-  // 2) Random “twinkle” particles
-  // 3) Chromatic glow effect for circle edges
-  const [twinkles] = useState(() => {
-    // Pre-generate some random star-like positions
-    // We'll keep them static, but fade in/out over time
-    const numStars = 50;
-    const arr = [];
-    for (let i = 0; i < numStars; i++) {
-      arr.push({
-        x: Math.random(),
-        y: Math.random(),
-        speed: 0.002 + Math.random() * 0.003, // fade speed
-      });
-    }
-    return arr;
-  });
-
-  // The main animation loop
+  // Main animation loop.
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -135,34 +141,28 @@ export default function GradientBG({
     let animationFrameId;
     let startTime = null;
 
-    // Resize canvas to fill screen
+    // Define computeGridPoints before it's used.
+    const computeGridPoints = () => {
+      // (Placeholder for further static grid computations if needed.)
+    };
+
+    // Resize canvas to fill the screen and precompute any static data.
     const resize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
+      computeGridPoints();
     };
-    resize();
     window.addEventListener("resize", resize);
+    resize();
 
-    // Each “twinkle” has a random “phase” for alpha oscillation
-    twinkles.forEach((tw) => {
-      tw.phase = Math.random() * Math.PI * 2;
-    });
-
-    // Draw function
     const draw = (time) => {
-      // Convert time to ms from start
       const now = time || 0;
       if (!startTime) startTime = now;
-      const elapsed = now - startTime; // ms since start
+      const elapsed = now - startTime;
 
-      // 1) Parallax factor based on mouse
+      // 1) Parallax background gradient based on mouse position.
       const parallaxX = (mousePos.x / window.innerWidth - 0.5) * 0.2;
       const parallaxY = (mousePos.y / window.innerHeight - 0.5) * 0.2;
-
-      // Clear the canvas
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // 3) Draw background gradient with parallax shift
       const shiftX = canvas.width * 0.5 * parallaxX;
       const shiftY = canvas.height * 0.5 * parallaxY;
       const bgGrad = ctx.createLinearGradient(
@@ -171,21 +171,19 @@ export default function GradientBG({
         canvas.width + shiftX,
         canvas.height + shiftY
       );
-      // Slightly darker, more matte-like
-      // (You can also apply multi-stop gradient for a pseudo 3D effect)
-      bgGrad.addColorStop(0, darkenColor(gradientBackgroundStart, 20));
-      bgGrad.addColorStop(1, darkenColor(gradientBackgroundEnd, 20));
+      bgGrad.addColorStop(0, darkenedStart);
+      bgGrad.addColorStop(1, darkenedEnd);
       ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // 4) Draw twinkle stars
+      // 2) Draw twinkle stars.
       twinkles.forEach((star) => {
         star.phase += star.speed;
-        const alpha = Math.abs(Math.sin(star.phase)); // 0 -> 1
+        const alpha = Math.abs(Math.sin(star.phase));
         const tx = star.x * canvas.width;
         const ty = star.y * canvas.height;
         ctx.save();
-        ctx.globalAlpha = alpha * 0.7; // fade
+        ctx.globalAlpha = alpha * 0.7;
         ctx.fillStyle = "white";
         ctx.beginPath();
         ctx.arc(tx, ty, 1.2, 0, 2 * Math.PI);
@@ -194,33 +192,24 @@ export default function GradientBG({
       });
 
       ctx.save();
-      ctx.globalCompositeOperation = blendingValue; // e.g. "hard-light"
-
-      // For each circle, compute position based on animation type
-      // We'll treat the "size" fraction for radius
+      ctx.globalCompositeOperation = blendingValue;
       const minDim = Math.min(canvas.width, canvas.height);
       const radius = fractionSize * minDim * 0.5;
-      // ^ 0.5 because the circle is from the center outward
 
+      // 3) Draw moving radial gradient circles.
       circles.forEach((circle) => {
         const { r, g, b } = parseColorString(circle.color);
-
         let cx = canvas.width / 2;
         let cy = canvas.height / 2;
-
-        const progress = (elapsed % circle.durationMs) / circle.durationMs; // 0->1 over the duration
-        const angle = progress * 2 * Math.PI; // complete loop in one duration
-
+        const progress = (elapsed % circle.durationMs) / circle.durationMs;
+        const angle = progress * 2 * Math.PI;
         switch (circle.anim) {
           case "vertical": {
-            // Move up/down
-            // from -0.5 radius to +0.5 radius
             const offset = Math.sin(angle) * (canvas.height * 0.25);
             cy = canvas.height / 2 + offset;
             break;
           }
           case "horizontal": {
-            // Move left/right
             const offset = Math.sin(angle) * (canvas.width * 0.25);
             cx = canvas.width / 2 + offset;
             break;
@@ -233,7 +222,6 @@ export default function GradientBG({
             break;
           }
           case "circularReverse": {
-            // same as "circular" but rotate in the opposite direction
             const offsetX = -Math.cos(angle) * (canvas.width * 0.25);
             const offsetY = -Math.sin(angle) * (canvas.height * 0.25);
             cx = canvas.width / 2 + offsetX;
@@ -243,16 +231,10 @@ export default function GradientBG({
           default:
             break;
         }
-
-        // Draw with a radial gradient. The original code used
-        // radial-gradient(circle at center, color 0, transparent 50%).
-        // We'll do something similar:
         const radGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
         radGrad.addColorStop(0, `rgba(${r}, ${g}, ${b}, 0.8)`);
         radGrad.addColorStop(0.5, `rgba(${r}, ${g}, ${b}, 0.0)`);
         ctx.fillStyle = radGrad;
-
-        // Optionally add blur to replicate the heavy blur:
         ctx.save();
         ctx.filter = "blur(40px)";
         ctx.beginPath();
@@ -260,17 +242,15 @@ export default function GradientBG({
         ctx.fill();
         ctx.restore();
       });
-
       ctx.restore();
 
-      // If interactive, draw a pointer circle where the mouse is
+      // 4) If interactive, draw a pointer circle.
       if (interactive) {
         ctx.save();
-        ctx.globalCompositeOperation = blendingValue; // e.g. "hard-light"
+        ctx.globalCompositeOperation = blendingValue;
         ctx.filter = "blur(40px)";
         const { r, g, b } = parseColorString(pointerColor);
-        const pointerRad = minDim * 0.3; // pointer's radial gradient size
-
+        const pointerRad = minDim * 0.3;
         const pointerGrad = ctx.createRadialGradient(
           mousePos.x,
           mousePos.y,
@@ -282,20 +262,17 @@ export default function GradientBG({
         pointerGrad.addColorStop(0, `rgba(${r}, ${g}, ${b}, 0.8)`);
         pointerGrad.addColorStop(0.5, `rgba(${r}, ${g}, ${b}, 0)`);
         ctx.fillStyle = pointerGrad;
-
         ctx.beginPath();
         ctx.arc(mousePos.x, mousePos.y, pointerRad, 0, 2 * Math.PI);
         ctx.fill();
         ctx.restore();
       }
 
-      // request next frame
+      // Request next animation frame.
       animationFrameId = requestAnimationFrame(draw);
     };
 
-    // Start the animation
     animationFrameId = requestAnimationFrame(draw);
-
     return () => {
       window.removeEventListener("resize", resize);
       cancelAnimationFrame(animationFrameId);
@@ -312,16 +289,16 @@ export default function GradientBG({
     blendingValue,
     fractionSize,
     interactive,
+    twinkles,
+    mousePos,
+    darkenedStart,
+    darkenedEnd,
   ]);
 
   return (
     <div
       className={`relative w-screen h-screen overflow-hidden ${containerClassName}`}
     >
-      {/* 
-        We place the <canvas> absolutely to fill the parent. 
-        className if you want extra styling. 
-      */}
       <canvas
         ref={canvasRef}
         className={className}
@@ -329,25 +306,13 @@ export default function GradientBG({
           position: "absolute",
           top: 0,
           left: 0,
-          zIndex: -1,
           width: "100%",
           height: "100%",
+          zIndex: -1,
+          transform: "translateZ(0)", // Hardware acceleration hint
+          willChange: "transform",
         }}
       />
     </div>
   );
-}
-
-function darkenColor(color, amount) {
-  // Convert "rgb(r,g,b)" → numeric
-  let col = color;
-  // If we see "rgb(", strip it
-  if (col.startsWith("rgb(") || col.startsWith("rgba(")) {
-    col = col.replace(/rgba?\(/, "").replace(")", "");
-  }
-  const [r, g, b] = col.split(",").map((n) => parseInt(n.trim(), 10));
-  const dr = Math.max(r - amount, 0);
-  const dg = Math.max(g - amount, 0);
-  const db = Math.max(b - amount, 0);
-  return `rgb(${dr}, ${dg}, ${db})`;
 }

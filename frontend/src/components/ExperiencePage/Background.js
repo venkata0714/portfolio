@@ -218,6 +218,8 @@ const Background = () => {
         left: 0,
         width: "100%",
         height: "100%",
+        transform: "translateZ(0)", // Hardware acceleration hint
+        willChange: "transform",
       }}
     />
   );
