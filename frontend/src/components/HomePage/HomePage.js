@@ -29,27 +29,9 @@ function HomePage({ isBatterySavingOn, scrolled }) {
     axis: "y",
     smooth: true,
   });
-  const blur = useTransform(scrollYProgress, [0, 1], [2, 5]);
-  // useEffect(() => {
-  //   if (!scrolled) {
-  //     blur.set(0);
-  //   }
-  // }, [scrolled, blur, scrollYProgress]);
+  const blur = useTransform(scrollYProgress, [0, 1], [1, 20]);
   const scale = useTransform(scrollYProgress, [0, 1], [1, 1.6]);
   const opacity = useTransform(scrollYProgress, [0.25, 1], [0.85, 1]);
-
-  // Local state to hold formatted blur string
-  const [filterStyle, setFilterStyle] = useState("blur(0px)");
-
-  // Subscribe to changes on the blur motion value
-  useEffect(() => {
-    const unsubscribe = blur.onChange((latest) => {
-      // If you want to set blur to 0 when the value is below a threshold:
-      const value = latest <= 2.3 ? 0 : latest;
-      setFilterStyle(`blur(${value}px)`);
-    });
-    return unsubscribe;
-  }, [blur]);
 
   const handleProfileClick = () => {
     setFrameIndex((prevIndex) => (prevIndex + 1) % frames.length); // Cycle frames
@@ -137,7 +119,9 @@ function HomePage({ isBatterySavingOn, scrolled }) {
                   opacity,
                   scale,
                   // filter: `blur(${scrolled ? blur.current : 0}px)`,
-                  filter: filterStyle,
+                  filter: `blur(${
+                    blur.current > 0.3 && scrolled ? blur.current : 0
+                  }px)`,
                   zIndex: -1,
                 }
           }

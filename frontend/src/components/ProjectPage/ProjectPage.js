@@ -25,7 +25,6 @@ function ProjectPage({ addTab, isBatterySavingOn, isWindowModalVisible }) {
         whileInView="show"
         exit="hidden"
       >
-        <h2 className="project-section-title">My Projects</h2>
         <ProjectsListView
           addTab={addTab}
           isBatterySavingOn={isBatterySavingOn}

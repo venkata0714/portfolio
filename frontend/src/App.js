@@ -146,11 +146,23 @@ function App({ isBatterySavingOn, setIsBatterySavingOn }) {
           isBatterySavingOn={isBatterySavingOn}
           isWindowModalVisible={isWindowModalVisible}
         />
-        <ProjectPage
-          addTab={addTab}
-          isBatterySavingOn={isBatterySavingOn}
-          isWindowModalVisible={isWindowModalVisible}
-        />
+        <div
+          style={{
+            display: "sticky",
+            top: 0,
+            bottom: 0,
+            width: "100%",
+            // height: "calc(100vh - 52px)",
+            height: "auto",
+            overflow: "show",
+          }}
+        >
+          <ProjectPage
+            addTab={addTab}
+            isBatterySavingOn={isBatterySavingOn}
+            isWindowModalVisible={isWindowModalVisible}
+          />
+        </div>
         <ExperiencePage
           addTab={addTab}
           isBatterySavingOn={isBatterySavingOn}

@@ -187,103 +187,106 @@ function ProjectsListView({ addTab, isBatterySavingOn, showFeatured }) {
   const totalCards = projects.length;
 
   return (
-    <div ref={parentRef} className="project-container">
-      {/* Project Cards */}
-      {projects.map((project, index) => {
-        const { mousePosition, isHovering } = cardStates[index] || {
-          mousePosition: { x: 0, y: 0 },
-          isHovering: false,
-        };
-        // Use the computed baseTopOffset and offsetSpacing for dynamic positioning
-        const topOffset = baseTopOffset + index * offsetSpacing;
-        return (
-          <motion.div
-            key={`project-${project.projectTitle}-${index}`}
-            className="project-card"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ delay: 0, type: "spring" }}
-            onMouseMove={(event) => handleMouseMove(event, index)}
-            onMouseEnter={() => handleMouseEnter(index)}
-            onMouseLeave={() => handleMouseLeave(index)}
-            onClick={() => {
-              scrollToCard(index);
-              scrollToSection("projects");
-            }}
-            style={{
-              top: `${topOffset}px`,
-              // For cards except the last one, we don't need extra bottom margin.
-              // For the last card, use the calculated remaining space.
-              marginBottom:
-                index === totalCards - 1 ? `${lastCardMargin}px` : "0px",
-              transform: isBatterySavingOn
-                ? ``
-                : isHovering
-                ? `translate3d(${mousePosition.x}px, ${mousePosition.y}px, 0) scale3d(1, 1, 1)`
-                : "translate3d(0px, 0px, 0) scale3d(1, 1, 1)",
-              transition: isBatterySavingOn ? {} : "transform 0.1s ease-out",
-            }}
-            viewport={{ amount: "50%", once: true }}
-          >
-            {hoveredCard === index && (
-              <div className="hover-tooltip">{project.projectTitle}</div>
-            )}
-            {/* {project.featured && <FaCrown className="featured-tag" />} */}
-            {/* Project Content */}
-            <div className="project-info" id={project.projectLink}>
-              <div className="project-header">
-                {project.projectSubTitle && (
-                  <span>{project.projectSubTitle} | </span>
-                )}
-                <span>{project.projectTimeline}</span>
-              </div>
-              <a
-                className="project-title"
-                href={`#${project.projectLink}`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToCard(index);
-                }}
-              >
-                {project.projectTitle}
-              </a>
-              <hr />
-              <p className="project-tagline">{project.projectTagline}</p>
-              <motion.div
-                className="learn-button-motioned"
-                onClick={() => addTab("Project", project)}
-                variants={zoomIn(1)}
-                initial="hidden"
-                animate="show"
-                drag
-                dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-                dragElastic={0.3}
-                dragTransition={{ bounceStiffness: 250, bounceDamping: 15 }}
-              >
-                <StyledButton
+    <>
+      <h2 className="project-section-title">My Projects</h2>
+      <div ref={parentRef} className="project-container">
+        {/* Project Cards */}
+        {projects.map((project, index) => {
+          const { mousePosition, isHovering } = cardStates[index] || {
+            mousePosition: { x: 0, y: 0 },
+            isHovering: false,
+          };
+          // Use the computed baseTopOffset and offsetSpacing for dynamic positioning
+          const topOffset = baseTopOffset + index * offsetSpacing;
+          return (
+            <motion.div
+              key={`project-${project.projectTitle}-${index}`}
+              className="project-card"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ delay: 0, type: "spring" }}
+              onMouseMove={(event) => handleMouseMove(event, index)}
+              onMouseEnter={() => handleMouseEnter(index)}
+              onMouseLeave={() => handleMouseLeave(index)}
+              onClick={() => {
+                scrollToCard(index);
+                scrollToSection("projects");
+              }}
+              style={{
+                top: `${topOffset}px`,
+                // For cards except the last one, we don't need extra bottom margin.
+                // For the last card, use the calculated remaining space.
+                marginBottom:
+                  index === totalCards - 1 ? `${lastCardMargin}px` : "0px",
+                transform: isBatterySavingOn
+                  ? ``
+                  : isHovering
+                  ? `translate3d(${mousePosition.x}px, ${mousePosition.y}px, 0) scale3d(1, 1, 1)`
+                  : "translate3d(0px, 0px, 0) scale3d(1, 1, 1)",
+                transition: isBatterySavingOn ? {} : "transform 0.1s ease-out",
+              }}
+              viewport={{ amount: "50%", once: true }}
+            >
+              {hoveredCard === index && (
+                <div className="hover-tooltip">{project.projectTitle}</div>
+              )}
+              {/* {project.featured && <FaCrown className="featured-tag" />} */}
+              {/* Project Content */}
+              <div className="project-info" id={project.projectLink}>
+                <div className="project-header">
+                  {project.projectSubTitle && (
+                    <span>{project.projectSubTitle} | </span>
+                  )}
+                  <span>{project.projectTimeline}</span>
+                </div>
+                <a
+                  className="project-title"
+                  href={`#${project.projectLink}`}
                   onClick={(e) => {
                     e.preventDefault();
+                    scrollToCard(index);
                   }}
                 >
-                  <ButtonShadow />
-                  <ButtonEdge />
-                  <ButtonLabel>Learn More →</ButtonLabel>
-                </StyledButton>
-              </motion.div>
-            </div>
-            {/* Project Image */}
-            <div
-              className="project-image"
-              key={`project-image-${project.projectTitle}-${index}`}
-              style={{
-                backgroundImage: `url(${project.projectImages[0]})`,
-              }}
-            ></div>
-          </motion.div>
-        );
-      })}
-    </div>
+                  {project.projectTitle}
+                </a>
+                <hr />
+                <p className="project-tagline">{project.projectTagline}</p>
+                <motion.div
+                  className="learn-button-motioned"
+                  onClick={() => addTab("Project", project)}
+                  variants={zoomIn(1)}
+                  initial="hidden"
+                  animate="show"
+                  drag
+                  dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+                  dragElastic={0.3}
+                  dragTransition={{ bounceStiffness: 250, bounceDamping: 15 }}
+                >
+                  <StyledButton
+                    onClick={(e) => {
+                      e.preventDefault();
+                    }}
+                  >
+                    <ButtonShadow />
+                    <ButtonEdge />
+                    <ButtonLabel>Learn More →</ButtonLabel>
+                  </StyledButton>
+                </motion.div>
+              </div>
+              {/* Project Image */}
+              <div
+                className="project-image"
+                key={`project-image-${project.projectTitle}-${index}`}
+                style={{
+                  backgroundImage: `url(${project.projectImages[0]})`,
+                }}
+              ></div>
+            </motion.div>
+          );
+        })}
+      </div>
+    </>
   );
 }
 
