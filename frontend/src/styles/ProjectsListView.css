@@ -1,21 +1,29 @@
-.project-container {
-  display: flex;
-  z-index: 5;
-  flex-direction: column;
-  width: 100%;
-  height: calc(100vh - 52px);
-  /* height: auto; */
-  overflow-y: auto;
-  scrollbar-width: none; /* For Firefox: hide scrollbar */
-  gap: 40px;
-  align-items: center;
-  justify-content: flex-start;
-  scroll-behavior: smooth;
-  /* scroll-snap-type: y mandatory; */
+/* Container for project cards: occupy full viewport height minus header/title, no separate scrolling */
+
+.project-section-title {
+  font-family: "Montserrat", "Helvetica Neue";
+  font-weight: 700;
+  font-size: 2.5rem;
+  color: #edeeef;
+  margin: 20px auto;
+  position: sticky;
+  top: 72px;
 }
 
+/* Projects list container: full width, auto-height to fit all cards */
+.project-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  /* height: calc(100vh - 52px - <titleHeight> ); -- removed fixed height */
+  overflow: visible; /* allow content to extend naturally */
+  scrollbar-width: none; /* hide scrollbar (no overflow anyway) */
+  margin-top: 20px;
+}
 .project-container::-webkit-scrollbar {
-  display: none; /* Hides the scrollbar */
+  display: none;
 }
 
 .hover-tooltip {
@@ -31,16 +39,7 @@
   white-space: nowrap;
 }
 
-.featured-tag {
-  position: absolute;
-  top: -20px; /* Adjust position as needed */
-  right: -20px; /* Adjust position as needed */
-  font-size: 2rem; /* Adjust size */
-  color: #ffd700; /* Gold color for a royal look */
-  z-index: 10; /* Ensure it's above other content */
-  transform: rotate(45deg);
-}
-
+/* Each project card: sticky positioning for stacking effect */
 .project-card {
   max-width: 1140px;
   /* scroll-snap-align: center;
@@ -54,7 +53,7 @@
   text-align: left;
   padding: 20px;
   margin: 20px;
-  backdrop-filter: blur(15px);
+  backdrop-filter: blur(10px);
   border-radius: 20px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
   transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
@@ -62,33 +61,30 @@
 
 .project-card:nth-child(3n + 1) {
   background: linear-gradient(
-    rgba(139, 69, 90, 0.3),
-    rgba(139, 69, 90, 0.4),
-    rgba(139, 69, 90, 0.5),
-    rgba(139, 69, 90, 0.6)
-  );
+      rgba(139, 69, 90, 0.4),
+      /* Dark Pink */ rgba(139, 69, 90, 0.4)
+    ),
+    url("https://www.transparenttextures.com/patterns/noise-pattern.png");
   background-size: cover;
   color: #f8f9fa; /* Light text for readability */
 }
 
 .project-card:nth-child(3n + 2) {
   background: linear-gradient(
-    rgba(54, 79, 107, 0.3),
-    rgba(54, 79, 107, 0.4),
-    rgba(54, 79, 107, 0.5),
-    rgba(54, 79, 107, 0.6)
-  );
+      rgba(54, 79, 107, 0.4),
+      /* Dark Blue */ rgba(54, 79, 107, 0.4)
+    ),
+    url("https://www.transparenttextures.com/patterns/noise-pattern.png");
   background-size: cover;
   color: #f8f9fa; /* Light text for readability */
 }
 
 .project-card:nth-child(3n) {
   background: linear-gradient(
-    rgba(97, 89, 38, 0.3),
-    rgba(97, 89, 38, 0.4),
-    rgba(97, 89, 38, 0.5),
-    rgba(97, 89, 38, 0.6)
-  );
+      rgba(97, 89, 38, 0.4),
+      /* Dark Yellow */ rgba(97, 89, 38, 0.4)
+    ),
+    url("https://www.transparenttextures.com/patterns/noise-pattern.png");
   background-size: cover;
   color: #f8f9fa; /* Light text for readability */
 }
@@ -103,6 +99,7 @@
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
   } */
 
+/* Project card content layout (unchanged)... */
 .project-info {
   flex: 4; /* Take up two-thirds of the card */
   padding: 40px 40px 40px 20px;
@@ -171,6 +168,11 @@
 }
 
 @media (max-width: 992px) {
+  .project-section-title {
+    font-size: 2rem;
+    margin: 10px auto;
+  }
+
   .project-card {
     width: min(720px, 100%);
   }

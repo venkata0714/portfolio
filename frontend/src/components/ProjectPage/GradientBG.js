@@ -296,23 +296,19 @@ export default function GradientBG({
   ]);
 
   return (
-    <div
-      className={`relative w-screen h-screen overflow-hidden ${containerClassName}`}
-    >
-      <canvas
-        ref={canvasRef}
-        className={className}
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          zIndex: -1,
-          transform: "translateZ(0)", // Hardware acceleration hint
-          willChange: "transform",
-        }}
-      />
-    </div>
+    <canvas
+      ref={canvasRef}
+      className={className}
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100vh",
+        zIndex: -1,
+        transform: "translateZ(0)", // Hardware acceleration hint
+        willChange: "transform",
+      }}
+    />
   );
 }

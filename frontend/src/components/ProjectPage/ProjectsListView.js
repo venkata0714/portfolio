@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { FaCrown } from "react-icons/fa";
 import { zoomIn } from "../../services/variants";
 import { styled } from "@stitches/react";
@@ -11,39 +11,22 @@ function ProjectsListView({ addTab, isBatterySavingOn, showFeatured }) {
   const [projects, setProjects] = useState([]);
   const [cardStates, setCardStates] = useState([]);
   const [hoveredCard, setHoveredCard] = useState(null);
-  // State to track animation completion and force layout recalculations
+
+  // Trigger to force layout recalculation
   const [layoutTrigger, setLayoutTrigger] = useState(0);
 
-  // New state variables for dynamic positioning
+  // Layout states
   const [baseTopOffset, setBaseTopOffset] = useState(0);
   const [offsetSpacing, setOffsetSpacing] = useState(0);
   const [lastCardMargin, setLastCardMargin] = useState(20);
 
-  // A helper function to scroll to a section by ID
-  const scrollToSection = (id) => {
-    const element = document.getElementById(id);
-    const offset = 52; // Adjust based on your navbar height
-    const elementPosition = element.getBoundingClientRect().top;
-    const offsetPosition = elementPosition + window.scrollY - offset;
-    window.scrollTo({
-      top: offsetPosition,
-      behavior: "smooth",
-    });
-  };
-
+  // Fetch projects once (or when showFeatured changes).
   useEffect(() => {
     async function getProjects() {
       try {
         const data = await fetchProjects();
-        // if (showFeatured) {
-        //   const featuredProjects = data.filter((project) => project.featured);
-        //   setProjects(featuredProjects.reverse());
-        //   setProjects(data.reverse());
-        // } else {
-        //   setProjects(data.reverse());
-        // }
         setProjects(data.reverse());
-        // Initialize card states for each project
+        // Initialize card states for hover effects
         setCardStates(
           data.map(() => ({
             mousePosition: { x: 0, y: 0 },
@@ -57,101 +40,94 @@ function ProjectsListView({ addTab, isBatterySavingOn, showFeatured }) {
     getProjects();
   }, [showFeatured]);
 
+  // Whenever the window resizes, or if you want to force a recalc,
+  // increment layoutTrigger so the effect below re-runs.
   useEffect(() => {
-    // Auto-scroll container to top if it scrolls upward out of view
-    const container = parentRef.current;
-    if (!container) return;
-    const handleScrollToTop = ([entry]) => {
-      if (!entry.isIntersecting && entry.boundingClientRect.top > 0) {
-        container.scrollTo({ top: 0, behavior: "smooth" });
-      }
-    };
-    const observer = new IntersectionObserver(handleScrollToTop, {
-      root: null,
-      threshold: 0,
-    });
-    observer.observe(container);
-    return () => {
-      if (container) observer.unobserve(container);
-    };
-  }, []);
-
-  useEffect(() => {
-    // Trigger layout recalculation on window resize
-    const handleResize = () => setLayoutTrigger((prev) => prev + 1);
+    function handleResize() {
+      setLayoutTrigger((prev) => prev + 1);
+    }
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // Recalculate layout whenever projects, battery mode, or layoutTrigger changes
   useEffect(() => {
-    // Calculate dynamic positioning so that cards are evenly spaced
-    // and the last card fits perfectly within the container.
-    // This runs when projects load, when animations complete, on battery-saving mode change, or on layoutTrigger.
-    if (projects.length > 0) {
-      const container = parentRef.current;
-      if (container) {
-        const containerHeight = container.clientHeight || window.innerHeight;
-        const cards = container.querySelectorAll(".project-card");
-        if (cards.length > 0) {
-          // Use the last card's height as reference
-          const lastCard = cards[cards.length - 1];
-          const lastCardHeight = lastCard.getBoundingClientRect().height || 100;
-          const marginB = 20; // minimum margin at the bottom of the last card
-          // Base offset: a percentage of container height to leave at the top
-          const baseOffset =
-            containerHeight * (window.innerWidth <= 768 ? 0.05 : 0.1);
-          let spacing = 0;
-          if (projects.length > 1) {
-            spacing =
-              (containerHeight - baseOffset - lastCardHeight - marginB) /
-              (projects.length - 1);
-          }
-          if (spacing < 0) spacing = 0;
-          setBaseTopOffset(baseOffset);
-          setOffsetSpacing(spacing);
-          // Calculate remaining space to be used as bottom margin for the last card
-          let remainingSpace =
-            containerHeight -
-            (baseOffset + (projects.length - 1) * spacing + lastCardHeight);
-          if (remainingSpace < marginB) remainingSpace = marginB;
-          setLastCardMargin(remainingSpace);
-        }
+    if (projects.length > 0 && parentRef.current) {
+      const containerEl = parentRef.current;
+      const titleEl = document.querySelector(".project-section-title");
+
+      // 1) .project-section-title margins & height
+      let titleHeight = 0,
+        titleMarginTop = 0,
+        titleMarginBottom = 0;
+      if (titleEl) {
+        const titleStyles = window.getComputedStyle(titleEl);
+        titleHeight = titleEl.getBoundingClientRect().height || 0;
+        titleMarginTop = parseFloat(titleStyles.marginTop) || 0;
+        titleMarginBottom = parseFloat(titleStyles.marginBottom) || 0;
       }
+
+      // 2) .project-container margin-top
+      const containerStyles = window.getComputedStyle(containerEl);
+      const containerMarginTop = parseFloat(containerStyles.marginTop) || 0;
+
+      // 3) total available vertical space
+      const availableHeight =
+        window.innerHeight -
+        52 -
+        titleHeight -
+        titleMarginTop -
+        titleMarginBottom -
+        containerMarginTop -
+        lastCardMargin;
+
+      // 4) initial top offset
+      const baseOffset =
+        52 +
+        titleHeight +
+        titleMarginTop +
+        titleMarginBottom +
+        containerMarginTop;
+
+      // 5) measure last card height
+      let hLast = 0;
+      const lastChild = containerEl.lastElementChild;
+      if (lastChild) {
+        hLast = lastChild.getBoundingClientRect().height || 0;
+      }
+
+      // 6) compute spacing
+      let spacing = 0;
+      if (projects.length > 1) {
+        spacing = (availableHeight - hLast) / (projects.length - 1);
+        if (spacing < 0) spacing = 0;
+      }
+
+      // 7) set container padding-bottom
+      containerEl.style.paddingBottom = `${baseOffset}px`;
+      if (titleEl) {
+        // If you want the title to stay above stacked cards, you can manipulate it here
+        titleEl.style.bottom = `${baseOffset}px`; // optional
+      }
+
+      setBaseTopOffset(baseOffset);
+      setOffsetSpacing(spacing);
+      setLastCardMargin(0); // last card margin bottom is 0
     }
-  }, [projects, isBatterySavingOn, layoutTrigger]);
+  }, [projects, isBatterySavingOn, layoutTrigger, lastCardMargin]);
 
+  // Smoothly scroll the page to a specific card
   const scrollToCard = (clickedIndex) => {
-    const container = parentRef.current;
     const cards = document.querySelectorAll(".project-card");
-
-    if (container && cards.length > 0) {
-      // First scroll to the top
-      container.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
-
-      // After reaching the top, scroll down to the clicked card
-      setTimeout(() => {
-        const spacing = offsetSpacing;
-
-        let scrollOffset = 0;
-
-        for (let i = 0; i < clickedIndex; i++) {
-          const cardHeight = cards[i]?.getBoundingClientRect().height || 100; // Fallback for card height
-          scrollOffset += cardHeight + (i < clickedIndex ? spacing : 0);
-        }
-
-        container.scrollTo({
-          top: window.innerWidth <= 768 ? 52 + scrollOffset : scrollOffset, // Adjust based on container's offset
-          behavior: "smooth",
-        });
-        // const targetOffset = baseTopOffset + clickedIndex * offsetSpacing;
-        // container.scrollTo({ top: targetOffset, behavior: "smooth" });
-      }, 5); // A small delay so the first scroll completes
+    if (cards[clickedIndex]) {
+      const navOffset = 52;
+      const cardRect = cards[clickedIndex].getBoundingClientRect();
+      const cardPositionY = cardRect.top + window.scrollY;
+      window.scrollTo({ top: cardPositionY - navOffset, behavior: "smooth" });
     }
   };
 
+  // Hover effects
   const handleMouseMove = (event, index) => {
     const { clientX, clientY } = event;
     const rect = event.currentTarget.getBoundingClientRect();
@@ -177,27 +153,24 @@ function ProjectsListView({ addTab, isBatterySavingOn, showFeatured }) {
     setHoveredCard(null);
     setCardStates((prevStates) =>
       prevStates.map((state, i) =>
-        i === index
-          ? { ...state, isHovering: false, mousePosition: { x: 0, y: 0 } }
-          : state
+        i === index ? { ...state, isHovering: false } : state
       )
     );
   };
-
-  const totalCards = projects.length;
 
   return (
     <>
       <h2 className="project-section-title">My Projects</h2>
       <div ref={parentRef} className="project-container">
-        {/* Project Cards */}
         {projects.map((project, index) => {
           const { mousePosition, isHovering } = cardStates[index] || {
             mousePosition: { x: 0, y: 0 },
             isHovering: false,
           };
-          // Use the computed baseTopOffset and offsetSpacing for dynamic positioning
+
+          // Each card's top offset
           const topOffset = baseTopOffset + index * offsetSpacing;
+
           return (
             <motion.div
               key={`project-${project.projectTitle}-${index}`}
@@ -206,33 +179,29 @@ function ProjectsListView({ addTab, isBatterySavingOn, showFeatured }) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ delay: 0, type: "spring" }}
-              onMouseMove={(event) => handleMouseMove(event, index)}
+              onMouseMove={(e) => handleMouseMove(e, index)}
               onMouseEnter={() => handleMouseEnter(index)}
               onMouseLeave={() => handleMouseLeave(index)}
-              onClick={() => {
-                scrollToCard(index);
-                scrollToSection("projects");
-              }}
+              onClick={() => scrollToCard(index)}
               style={{
                 top: `${topOffset}px`,
-                // For cards except the last one, we don't need extra bottom margin.
-                // For the last card, use the calculated remaining space.
                 marginBottom:
-                  index === totalCards - 1 ? `${lastCardMargin}px` : "0px",
+                  index === projects.length - 1 ? `${lastCardMargin}px` : "0px",
                 transform: isBatterySavingOn
-                  ? ``
+                  ? ""
                   : isHovering
-                  ? `translate3d(${mousePosition.x}px, ${mousePosition.y}px, 0) scale3d(1, 1, 1)`
-                  : "translate3d(0px, 0px, 0) scale3d(1, 1, 1)",
-                transition: isBatterySavingOn ? {} : "transform 0.1s ease-out",
+                  ? `translate3d(${mousePosition.x}px, ${mousePosition.y}px, 0)`
+                  : "translate3d(0, 0, 0)",
+                transition: isBatterySavingOn
+                  ? "none"
+                  : "transform 0.1s ease-out",
               }}
-              viewport={{ amount: "50%", once: true }}
             >
               {hoveredCard === index && (
                 <div className="hover-tooltip">{project.projectTitle}</div>
               )}
               {/* {project.featured && <FaCrown className="featured-tag" />} */}
-              {/* Project Content */}
+
               <div className="project-info" id={project.projectLink}>
                 <div className="project-header">
                   {project.projectSubTitle && (
@@ -252,6 +221,7 @@ function ProjectsListView({ addTab, isBatterySavingOn, showFeatured }) {
                 </a>
                 <hr />
                 <p className="project-tagline">{project.projectTagline}</p>
+
                 <motion.div
                   className="learn-button-motioned"
                   onClick={() => addTab("Project", project)}
@@ -263,24 +233,17 @@ function ProjectsListView({ addTab, isBatterySavingOn, showFeatured }) {
                   dragElastic={0.3}
                   dragTransition={{ bounceStiffness: 250, bounceDamping: 15 }}
                 >
-                  <StyledButton
-                    onClick={(e) => {
-                      e.preventDefault();
-                    }}
-                  >
+                  <StyledButton onClick={(e) => e.preventDefault()}>
                     <ButtonShadow />
                     <ButtonEdge />
                     <ButtonLabel>Learn More →</ButtonLabel>
                   </StyledButton>
                 </motion.div>
               </div>
-              {/* Project Image */}
+
               <div
                 className="project-image"
-                key={`project-image-${project.projectTitle}-${index}`}
-                style={{
-                  backgroundImage: `url(${project.projectImages[0]})`,
-                }}
+                style={{ backgroundImage: `url(${project.projectImages[0]})` }}
               ></div>
             </motion.div>
           );
@@ -292,7 +255,10 @@ function ProjectsListView({ addTab, isBatterySavingOn, showFeatured }) {
 
 export default ProjectsListView;
 
-// StyledButton component and sub-components (for button styling)
+/* -------------------------------------------------------
+   Styled Components for the "Learn More →" Button 
+   (unchanged from your original code)
+---------------------------------------------------------*/
 const ButtonPart = styled("span", {
   position: "absolute",
   top: 0,
@@ -310,12 +276,12 @@ const ButtonShadow = styled(ButtonPart, {
 
 const ButtonEdge = styled(ButtonPart, {
   background: `linear-gradient(
-        to left,
-        hsl(0deg 0% 69%) 0%,
-        hsl(0deg 0% 85%) 8%,
-        hsl(0deg 0% 85%) 92%,
-        hsl(0deg 0% 69%) 100%
-      )`,
+    to left,
+    hsl(0deg 0% 69%) 0%,
+    hsl(0deg 0% 85%) 8%,
+    hsl(0deg 0% 85%) 92%,
+    hsl(0deg 0% 69%) 100%
+  )`,
 });
 
 const ButtonLabel = styled("span", {
@@ -350,12 +316,8 @@ const StyledButton = styled("button", {
   transition: "filter 250ms ease-out",
   "&:hover": {
     filter: "brightness(110%)",
-    [`& ${ButtonLabel}`]: {
-      transform: "translateY(-8px)",
-    },
-    [`& ${ButtonShadow}`]: {
-      transform: "translateY(6px)",
-    },
+    [`& ${ButtonLabel}`]: { transform: "translateY(-8px)" },
+    [`& ${ButtonShadow}`]: { transform: "translateY(6px)" },
   },
   "&:active": {
     [`& ${ButtonLabel}`]: {

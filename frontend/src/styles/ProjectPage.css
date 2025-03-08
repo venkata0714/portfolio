@@ -7,9 +7,9 @@
   flex-direction: column; /* Ensure vertical stacking of child elements */
   align-items: center;
   justify-content: flex-start;
-  overflow: auto; /* Ensure the page scrolls */
-  height: auto;
-  height: calc(100vh - 52px);
+  /* overflow: auto; Ensure the page scrolls */
+  /* height: auto; */
+  min-height: calc(100vh - 52px);
   /* max-height: calc(100vh - 52px); */
   background: transparent;
   scroll-behavior: smooth;
@@ -19,37 +19,11 @@
   text-align: center;
 }
 
-.project-page-div {
-  /* max-height: calc(100vh - 67px); */
-  height: 100%;
-  width: 100%;
-  flex: 1; /* Allows the container to grow to fill the available space */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
-
-.project-section-title {
-  font-family: "Montserrat", "Helvetica Neue";
-  z-index: 7;
-  font-weight: 700;
-  font-size: 2.5rem;
-  color: #edeeef;
-  /* margin-bottom: 20px; */
-  position: sticky;
-  top: 30px;
-}
-
-@media (max-width: 992px) {
+/* @media (max-width: 992px) {
   .project-page-div {
     padding: 0;
     max-width: 100%;
     margin: 0 auto;
-  }
-
-  .project-section-title {
-    font-size: 2rem;
   }
 }
 
@@ -60,8 +34,4 @@
     max-width: 100%;
     margin: 0 auto;
   }
-
-  .project-section-title {
-    font-size: 1.75rem;
-  }
-}
+} */

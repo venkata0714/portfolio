@@ -29,6 +29,30 @@ const SkillBG = () => {
 
       const particles = [];
       let time = 0;
+      let bg; // p5.Graphics buffer for the gradient background
+
+      // Function to draw the gradient on the bg graphics buffer
+      const drawGradient = () => {
+        bg.background(0, 0); // Clear the buffer
+        let ctx = bg.drawingContext;
+        const w = bg.width;
+        const h = bg.height;
+        // CSS linear-gradient(145deg, #212529, #181a1d) explanation:
+        // In CSS, 0deg points up so 145deg means 55deg in standard math (0deg is right)
+        const angle = p.radians(55);
+        const cx = w / 2;
+        const cy = h / 2;
+        const r = Math.sqrt(w * w + h * h) / 2;
+        const x0 = cx - r * Math.cos(angle);
+        const y0 = cy - r * Math.sin(angle);
+        const x1 = cx + r * Math.cos(angle);
+        const y1 = cy + r * Math.sin(angle);
+        let gradient = ctx.createLinearGradient(x0, y0, x1, y1);
+        gradient.addColorStop(0, "#212529");
+        gradient.addColorStop(1, "#181a1d");
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, w, h);
+      };
 
       // Particle class with improved variable naming and methods
       class Particle {
@@ -127,6 +151,10 @@ const SkillBG = () => {
         canvasElement = canvas.canvas;
         p.strokeWeight(opt.strokeWeight);
 
+        // Initialize the gradient background graphics buffer
+        bg = p.createGraphics(p.width, p.height);
+        drawGradient();
+
         // Initialize particles
         for (let i = 0; i < opt.particles; i++) {
           particles.push(
@@ -140,9 +168,15 @@ const SkillBG = () => {
 
       p.draw = () => {
         time++;
-        // Draw background with a trailing effect
-        p.background(0, 100 - opt.tail);
 
+        // Draw the gradient background with a trailing fade effect
+        p.push();
+        // Tint the gradient image with low alpha (18 out of 255) to simulate fading
+        p.tint(255, 18);
+        p.image(bg, 0, 0, p.width, p.height);
+        p.pop();
+
+        // Update and render particles
         for (let i = 0; i < particles.length; i++) {
           particles[i].update();
           particles[i].render();
@@ -151,6 +185,8 @@ const SkillBG = () => {
 
       p.windowResized = () => {
         p.resizeCanvas(p.windowWidth, p.windowHeight);
+        bg.resizeCanvas(p.width, p.height);
+        drawGradient();
       };
 
       // Handle clicks anywhere in the document

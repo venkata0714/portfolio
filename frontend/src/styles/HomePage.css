@@ -10,13 +10,25 @@
   text-align: center;
 }
 
-.homepage-bg {
-  position: fixed; /* Fixed position for background */
+.homepage-bg-wrapper {
+  position: absolute; /* or fixed if you want it anchored to the viewport */
   top: 0;
   left: 0;
   width: 100%;
   height: 100vh;
-  z-index: -1; /* Ensure it stays behind all content */
+  overflow: hidden; /* This ensures that scaling won't show outside bounds */
+  z-index: 0; /* Ensure the background stays behind other content */
+}
+
+.homepage-bg {
+  position: absolute; /* Fixed position for background */
+  top: 0;
+  left: 0;
+  width: 100%;
+  max-width: 100%;
+  height: 100vh;
+  min-height: 100vh;
+  z-index: 1; /* Ensure it stays behind all content */
   background: linear-gradient(
       to bottom,
       rgba(0, 0, 0, 0.4),
@@ -34,8 +46,8 @@
   background-position: center;
   background-size: cover; /* Default size */
   scroll-behavior: smooth;
-  scale: 1;
-  transition: scale 1ms ease-in-out, filter 1ms linear;
+  transition: scale 1ms ease-in-out, filter 0.25ms ease-in-out;
+  overflow: hidden;
 }
 
 .container {
