@@ -19,7 +19,7 @@ const tables = [
   { title: "Involvements", key: "involvementTable" },
   { title: "Honors", key: "honorsExperienceTable" },
   { title: "Year In Reviews", key: "yearInReviewTable" },
-  { title: "User Management", key: "KartavyaPortfolio" },
+  { title: "Admin Management", key: "KartavyaPortfolio" },
 ];
 
 const routeMap = {

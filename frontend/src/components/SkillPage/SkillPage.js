@@ -176,6 +176,7 @@ function SkillPage({ isBatterySavingOn, isWindowModalVisible }) {
         const extractedLangNames = Array.from(langNames).map((el) =>
           el.innerHTML.trim()
         );
+
         // Process the first 5 elements to create the topLangs dictionary
         let processedData = extractedLangNames.slice(0, 5).reduce(
           (acc, lang) => {
@@ -184,7 +185,7 @@ function SkillPage({ isBatterySavingOn, isWindowModalVisible }) {
             const percentage = parseFloat(
               parts[parts.length - 1].replace("%", "")
             );
-            // Multiply by constant so that the total for the top languages equals roughly 80% of totalHours
+            // Calculate the hours for this language
             const value = percentage * ((totalHours * 0.75) / 100);
 
             acc.labels.push(name);
@@ -194,13 +195,13 @@ function SkillPage({ isBatterySavingOn, isWindowModalVisible }) {
           { labels: [], data: [] }
         );
 
-        // Calculate the total hours spent on the top languages
+        // Calculate total hours spent on the top languages
         const totalTopLangsHours = processedData.data.reduce(
           (acc, curr) => acc + curr,
           0
         );
 
-        // Calculate the remaining hours and assign them to C++
+        // Calculate remaining hours and assign them to C++
         const remainingHours = parseFloat(
           (totalHours - totalTopLangsHours).toFixed(2)
         );
@@ -213,7 +214,7 @@ function SkillPage({ isBatterySavingOn, isWindowModalVisible }) {
           processedData.data.push(remainingHours);
         }
 
-        // Sort the processedData by data in descending order
+        // Sort the processedData by hours in descending order
         const sortedIndices = [...processedData.data.keys()].sort(
           (a, b) => processedData.data[b] - processedData.data[a]
         );
@@ -226,6 +227,54 @@ function SkillPage({ isBatterySavingOn, isWindowModalVisible }) {
         setTopLangs(processedData);
       } catch (error) {
         console.error("Error fetching TopLangData:", error);
+
+        // Fallback raw percentages, similar to what you'd normally receive from the API.
+        const fallbackLangs = [
+          "JavaScript 46.86%",
+          "HTML 25.11%",
+          "Python 15.59%",
+          "CSS 13.45%",
+        ];
+
+        let processedData = fallbackLangs.slice(0, 5).reduce(
+          (acc, lang) => {
+            const parts = lang.split(" ");
+            const name = parts.slice(0, -1).join(" ");
+            const percentage = parseFloat(
+              parts[parts.length - 1].replace("%", "")
+            );
+            const value = percentage * ((totalHours * 0.75) / 100);
+            acc.labels.push(name);
+            acc.data.push(parseFloat(value.toFixed(2)));
+            return acc;
+          },
+          { labels: [], data: [] }
+        );
+
+        // Calculate total hours spent on the fallback languages
+        const totalTopLangsHours = processedData.data.reduce(
+          (acc, curr) => acc + curr,
+          0
+        );
+
+        // Calculate remaining hours and add as C++
+        const remainingHours = parseFloat(
+          (totalHours - totalTopLangsHours).toFixed(2)
+        );
+        processedData.labels.push("C++");
+        processedData.data.push(remainingHours);
+
+        // Sort the processedData by hours in descending order
+        const sortedIndices = [...processedData.data.keys()].sort(
+          (a, b) => processedData.data[b] - processedData.data[a]
+        );
+
+        processedData = {
+          labels: sortedIndices.map((index) => processedData.labels[index]),
+          data: sortedIndices.map((index) => processedData.data[index]),
+        };
+
+        setTopLangs(processedData);
       }
     };
 
