@@ -84,7 +84,7 @@ const NavBar = ({ isBatterySavingOn }) => {
         // Snap to the nearest section if within snapping range
         if (nearestSection && nearestDistance <= 180) {
           const id = nearestSection.getAttribute("id");
-          if (id && id !== "contact") {
+          if (id && id !== "contact" && id !== "projects") {
             scrollToSection(id);
           }
         }

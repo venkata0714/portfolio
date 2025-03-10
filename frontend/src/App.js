@@ -11,6 +11,7 @@ import ExperiencePage from "./components/ExperiencePage/ExperiencePage";
 import ProjectPage from "./components/ProjectPage/ProjectPage";
 import ContactPage from "./components/ContactPage/ContactPage";
 import WindowModal from "./components/WindowModal/WindowModal";
+// import { cleanupEventListeners } from "./services/eventListenerRegistry";
 
 function App({ isBatterySavingOn, setIsBatterySavingOn }) {
   const [scrolled, setScrolled] = useState(false);
@@ -20,6 +21,17 @@ function App({ isBatterySavingOn, setIsBatterySavingOn }) {
   const [isMinimized, setIsMinimized] = useState(false); // Track if modal is minimized
   const [lastActiveIndex, setLastActiveIndex] = useState(0); // Track active tab index
   const [isWindowModalVisible, setIsWindowModalVisible] = useState(false);
+
+  // useEffect(() => {
+  //   const cleanupInterval = setInterval(() => {
+  //     // Clean up listeners that haven't been active for over 60 seconds
+  //     const remainingListeners = cleanupEventListeners(1000);
+  //     // Optionally, you can log or set state with the remaining listeners count
+  //     console.log("Remaining listeners:", remainingListeners.length);
+  //   }, 10000);
+
+  //   return () => clearInterval(cleanupInterval);
+  // }, []);
 
   const addTab = (type, data) => {
     if (!data || typeof data !== "object") {

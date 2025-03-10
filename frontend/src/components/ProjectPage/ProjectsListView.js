@@ -12,6 +12,9 @@ function ProjectsListView({ addTab, isBatterySavingOn, showFeatured }) {
   const [cardStates, setCardStates] = useState([]);
   const [hoveredCard, setHoveredCard] = useState(null);
 
+  // Create an array of refs for each project card
+  const cardRefs = useRef([]);
+
   // Trigger to force layout recalculation
   const [layoutTrigger, setLayoutTrigger] = useState(0);
 
@@ -48,6 +51,31 @@ function ProjectsListView({ addTab, isBatterySavingOn, showFeatured }) {
     }
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const header = document.querySelector(".project-section-title");
+      const titleStyles = window.getComputedStyle(header);
+      let titleMarginTop = parseFloat(titleStyles.marginTop) || 0;
+
+      const lastCard = document.querySelector(".project-card-last");
+      if (!header || !lastCard) return;
+
+      const lastRect = lastCard.getBoundingClientRect();
+
+      // When the last card's top reaches the top of the viewport,
+      // disable sticky behavior for the header.
+      if (lastRect.top <= 0) {
+        header.style.position = "relative";
+      } else {
+        header.style.position = "sticky";
+        header.style.top = `${titleMarginTop + 52}px`;
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   // Recalculate layout whenever projects, battery mode, or layoutTrigger changes
@@ -105,10 +133,10 @@ function ProjectsListView({ addTab, isBatterySavingOn, showFeatured }) {
 
       // 7) set container padding-bottom
       containerEl.style.paddingBottom = `${baseOffset}px`;
-      if (titleEl) {
-        // If you want the title to stay above stacked cards, you can manipulate it here
-        titleEl.style.bottom = `${baseOffset}px`; // optional
-      }
+      // if (titleEl) {
+      //   // If you want the title to stay above stacked cards, you can manipulate it here
+      //   titleEl.style.bottom = `${baseOffset}px`; // optional
+      // }
 
       setBaseTopOffset(baseOffset);
       setOffsetSpacing(spacing);
@@ -116,15 +144,40 @@ function ProjectsListView({ addTab, isBatterySavingOn, showFeatured }) {
     }
   }, [projects, isBatterySavingOn, layoutTrigger, lastCardMargin]);
 
-  // Smoothly scroll the page to a specific card
-  const scrollToCard = (clickedIndex) => {
-    const cards = document.querySelectorAll(".project-card");
-    if (cards[clickedIndex]) {
-      const navOffset = 52;
-      const cardRect = cards[clickedIndex].getBoundingClientRect();
-      const cardPositionY = cardRect.top + window.scrollY;
-      window.scrollTo({ top: cardPositionY - navOffset, behavior: "smooth" });
-    }
+  // Best implementation: dynamically calculate and scroll to the target card using refs.
+  const scrollToCard = (index) => {
+    if (!parentRef.current) return;
+
+    // Get the combined height of sections above the projects.
+    const getSectionHeight = (id) => {
+      const el = document.getElementById(id);
+      return el ? el.getBoundingClientRect().height : 0;
+    };
+    const homeHeight = getSectionHeight("home");
+    const aboutHeight = getSectionHeight("about");
+    const skillsHeight = getSectionHeight("skills");
+    const aboveSectionsHeight = homeHeight + aboutHeight + skillsHeight - 52;
+
+    // Get the absolute top of the project container relative to the page.
+    // const containerOffsetY =
+    //   parentRef.current.getBoundingClientRect().top + window.scrollY;
+
+    // Use a representative card height from the first card.
+    const cardHeight =
+      cardRefs.current[0] && cardRefs.current[0].getBoundingClientRect().height
+        ? cardRefs.current[0].getBoundingClientRect().height
+        : 0;
+
+    // Calculate the card's relative Y position within the project container.
+    const cardRelativeY = index === 0 ? 0 : -20 + index * cardHeight;
+
+    // Calculate the target scroll position:
+    // Sum the heights of sections above projects, the container's offset,
+    // plus the card's relative position.
+    const targetY =
+      aboveSectionsHeight + cardRelativeY - (index / projects.length) * 100;
+
+    window.scrollTo({ top: targetY, behavior: "smooth" });
   };
 
   // Hover effects
@@ -174,7 +227,12 @@ function ProjectsListView({ addTab, isBatterySavingOn, showFeatured }) {
           return (
             <motion.div
               key={`project-${project.projectTitle}-${index}`}
-              className="project-card"
+              ref={(el) => (cardRefs.current[index] = el)}
+              className={
+                index === projects.length - 1
+                  ? "project-card  project-card-last"
+                  : "project-card"
+              }
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}

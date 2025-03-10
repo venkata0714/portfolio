@@ -53,6 +53,7 @@
   text-align: left;
   padding: 20px;
   margin: 20px;
+  /* margin-bottom: 5px !important; */
   backdrop-filter: blur(10px);
   border-radius: 20px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
@@ -92,6 +93,7 @@
 /* Enhance shadow on hover */
 .project-card:hover {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+  /* z-index: 10000; */
 }
 
 /* .project-card:hover {
