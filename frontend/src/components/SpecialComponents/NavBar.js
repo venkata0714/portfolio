@@ -23,6 +23,24 @@ const NavBar = ({ isBatterySavingOn }) => {
   };
 
   useEffect(() => {
+    const updateScale = () => {
+      const homeRow = document.querySelector(".navbar-container");
+      if (!homeRow) return;
+      const screenHeight = window.innerHeight;
+      const screenWidth = window.innerWidth;
+      let scaleValue = 1;
+      if (screenHeight < 826 && screenWidth > 576) {
+        scaleValue = screenHeight / 826;
+      }
+      homeRow.style.zoom = `${scaleValue}`;
+    };
+
+    updateScale();
+    window.addEventListener("resize", updateScale);
+    return () => window.removeEventListener("resize", updateScale);
+  }, []);
+
+  useEffect(() => {
     // Query the sections and navLinks once the component mounts
     const sections = document.querySelectorAll("section");
     const navLinks = document.querySelectorAll(

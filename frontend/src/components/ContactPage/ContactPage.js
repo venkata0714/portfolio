@@ -58,6 +58,24 @@ function ContactPage({ isBatterySavingOn, addTab }) {
     setIsTouchDevice("ontouchstart" in window || navigator.maxTouchPoints > 0);
   }, []);
 
+  useEffect(() => {
+    const updateScale = () => {
+      const contactContainer = document.querySelector(".contact-container");
+      if (!contactContainer) return;
+      const screenHeight = window.innerHeight;
+      const screenWidth = window.innerWidth;
+      let scaleValue = 1;
+      if (screenHeight < 826 && screenWidth > 576) {
+        scaleValue = screenHeight / 826;
+      }
+      contactContainer.style.zoom = `${scaleValue}`;
+    };
+
+    updateScale();
+    window.addEventListener("resize", updateScale);
+    return () => window.removeEventListener("resize", updateScale);
+  }, []);
+
   return (
     <>
       <AnimatePresence>

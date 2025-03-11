@@ -6,8 +6,7 @@
   scroll-snap-type: y mandatory;
   align-items: center;
   justify-content: center;
-  max-height: calc(100vh - 52px);
-  min-height: calc(100vh - 52px);
+  height: calc(100vh - 52px);
   background: transparent; /* Allow the beams to show through */
   font-family: "Montserrat", sans-serif;
   color: #212529;
@@ -17,11 +16,22 @@
 }
 
 .about-div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: min(1140px, 95%);
+  margin: 0 auto;
+  padding: 0 0px;
+  z-index: 2;
+}
+
+.about-content {
   position: absolute;
   width: min(1140px, 95%);
   height: auto;
   margin: 0 auto;
   padding: 45px 15px;
+  z-index: 3;
 }
 
 .glass {

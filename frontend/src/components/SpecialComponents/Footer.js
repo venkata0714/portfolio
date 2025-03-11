@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import "../../styles/Footer.css";
 
@@ -52,6 +52,24 @@ const Footer = ({ isBatterySavingOn, addTab }) => {
       behavior: "smooth",
     });
   };
+
+  useEffect(() => {
+    const updateScale = () => {
+      const footerContent = document.querySelector(".footer");
+      if (!footerContent) return;
+      const screenHeight = window.innerHeight;
+      const screenWidth = window.innerWidth;
+      let scaleValue = 1;
+      if (screenHeight < 826 && screenWidth > 576) {
+        scaleValue = screenHeight / 826;
+      }
+      footerContent.style.zoom = `${scaleValue}`;
+    };
+
+    updateScale();
+    window.addEventListener("resize", updateScale);
+    return () => window.removeEventListener("resize", updateScale);
+  }, []);
 
   return (
     <motion.footer

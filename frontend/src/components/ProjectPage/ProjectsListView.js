@@ -133,10 +133,10 @@ function ProjectsListView({ addTab, isBatterySavingOn, showFeatured }) {
 
       // 7) set container padding-bottom
       containerEl.style.paddingBottom = `${baseOffset}px`;
-      // if (titleEl) {
-      //   // If you want the title to stay above stacked cards, you can manipulate it here
-      //   titleEl.style.bottom = `${baseOffset}px`; // optional
-      // }
+      if (titleEl) {
+        // If you want the title to stay above stacked cards, you can manipulate it here
+        titleEl.style.top = `${52 + 2 * titleMarginTop}px`; // optional
+      }
 
       setBaseTopOffset(baseOffset);
       setOffsetSpacing(spacing);
@@ -210,6 +210,26 @@ function ProjectsListView({ addTab, isBatterySavingOn, showFeatured }) {
       )
     );
   };
+
+  useEffect(() => {
+    const updateScale = () => {
+      const projectContainer = document.querySelector(".project-container");
+      const projectHeader = document.querySelector(".project-section-title");
+      if (!projectContainer || !projectHeader) return;
+      const screenHeight = window.innerHeight;
+      const screenWidth = window.innerWidth;
+      let scaleValue = 1;
+      if (screenHeight < 700 && screenWidth > 576) {
+        scaleValue = screenHeight / 700;
+      }
+      projectContainer.style.zoom = `${scaleValue}`;
+      projectHeader.style.zoom = `${scaleValue}`;
+    };
+
+    updateScale();
+    window.addEventListener("resize", updateScale);
+    return () => window.removeEventListener("resize", updateScale);
+  }, []);
 
   return (
     <>

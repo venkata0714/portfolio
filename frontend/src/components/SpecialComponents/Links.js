@@ -76,8 +76,26 @@ const Links = ({ isBatterySavingOn }) => {
     };
   }, [isOpen]);
 
+  useEffect(() => {
+    const updateScale = () => {
+      const linksContent = document.querySelector(".links-content");
+      if (!linksContent) return;
+      const screenHeight = window.innerHeight;
+      const screenWidth = window.innerWidth;
+      let scaleValue = 1;
+      if (screenHeight < 826 && screenWidth > 576) {
+        scaleValue = screenHeight / 826;
+      }
+      linksContent.style.zoom = `${scaleValue}`;
+    };
+
+    updateScale();
+    window.addEventListener("resize", updateScale);
+    return () => window.removeEventListener("resize", updateScale);
+  }, []);
+
   return (
-    <div ref={menuRef}>
+    <div className="links-content" ref={menuRef}>
       {/* Parent Button */}
       <motion.div
         className={`link-btn ${isOpen ? "active" : ""}`}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Background from "./Background";
 import InvolvementTabPage from "./InvolvementTabPage";
@@ -66,6 +66,26 @@ const ExperiencePage = ({
   const [ActiveComponent, setActiveComponent] = useState(
     () => selectedTab.component
   );
+
+  useEffect(() => {
+    const updateScale = () => {
+      const tabsWrapper = document.querySelector(".tabs-wrapper");
+      const slideContainer = document.querySelector(".content-container");
+      if (!tabsWrapper || !slideContainer) return;
+      const screenHeight = window.innerHeight;
+      const screenWidth = window.innerWidth;
+      let scaleValue = 1;
+      if (screenHeight < 826 && screenWidth > 576) {
+        scaleValue = screenHeight / 826;
+      }
+      tabsWrapper.style.scale = `${scaleValue}`;
+      slideContainer.style.zoom = `${scaleValue}`;
+    };
+
+    updateScale();
+    window.addEventListener("resize", updateScale);
+    return () => window.removeEventListener("resize", updateScale);
+  }, []);
 
   return (
     <>

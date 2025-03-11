@@ -154,6 +154,24 @@ const Loading = ({ isBatterySavingOn, setIsBatterySavingOn, onComplete }) => {
     }
   }, [loaded, allGreetingsShown, onComplete]);
 
+  useEffect(() => {
+    const updateScale = () => {
+      const loadingContainer = document.querySelector(".loading-content");
+      if (!loadingContainer) return;
+      const screenHeight = window.innerHeight;
+      const screenWidth = window.innerWidth;
+      let scaleValue = 1;
+      if (screenHeight < 826 && screenWidth > 576) {
+        scaleValue = screenHeight / 826;
+      }
+      loadingContainer.style.zoom = `${scaleValue}`;
+    };
+
+    updateScale();
+    window.addEventListener("resize", updateScale);
+    return () => window.removeEventListener("resize", updateScale);
+  }, []);
+
   return !loaded || !allGreetingsShown ? (
     <motion.div
       className="loading-container"
@@ -162,77 +180,81 @@ const Loading = ({ isBatterySavingOn, setIsBatterySavingOn, onComplete }) => {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <div
-        className="current-mode"
-        style={{
-          position: "absolute",
-          top: "10px",
-          right: "10px",
-          width: "20px",
-          height: "20px",
-          borderRadius: "50%",
-          backgroundColor: isBatterySavingOn ? "red" : "green",
-        }}
-      ></div>
-      <div
-        className="stats-box"
-        style={{
-          position: "absolute",
-          top: "40px",
-          right: "10px",
-          padding: "10px",
-          backgroundColor: "rgba(0, 0, 0, 0.8)",
-          color: "white",
-          borderRadius: "5px",
-          fontSize: "12px",
-          lineHeight: "1.5",
-        }}
-      >
-        <div>Reduced Motion: {stats.prefersReducedMotion ? "Yes" : "No"}</div>
-        <div>Low Battery: {stats.isLowBattery ? "Yes" : "No"}</div>
-        <div>Low Performance: {stats.lowPerformanceDevice ? "Yes" : "No"}</div>
-        <div>Low Memory: {stats.lowMemoryDevice ? "Yes" : "No"}</div>
-        <div>CPU Throttled: {stats.isCpuThrottled ? "Yes" : "No"}</div>
-        <div>CPU Test Duration: {stats.cpuTestDuration} ms</div>
-        <div>Touch Device: {stats.isTouchDevice ? "Yes" : "No"}</div>
-      </div>
-      <div className="greeting">
-        <motion.h1
-          key={greetings[currentGreetingIndex]}
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0.8, opacity: 0 }}
-          transition={{ duration: 0.4 }}
+      <div className="loading-content">
+        <div
+          className="current-mode"
+          style={{
+            position: "absolute",
+            top: "10px",
+            right: "10px",
+            width: "20px",
+            height: "20px",
+            borderRadius: "50%",
+            backgroundColor: isBatterySavingOn ? "red" : "green",
+          }}
+        ></div>
+        <div
+          className="stats-box"
+          style={{
+            position: "absolute",
+            top: "40px",
+            right: "10px",
+            padding: "10px",
+            backgroundColor: "rgba(0, 0, 0, 0.8)",
+            color: "white",
+            borderRadius: "5px",
+            fontSize: "12px",
+            lineHeight: "1.5",
+          }}
         >
-          {greetings[currentGreetingIndex]}
-        </motion.h1>
-      </div>
-      <div className="status">
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          Connecting to Backend {status.backend && <span>✅</span>}
-        </motion.p>
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.7 }}
-        >
-          Connecting to Database {status.database && <span>✅</span>}
-        </motion.p>
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 1.4 }}
-        >
-          {isBatterySavingOn
-            ? "Reducing Animations Due to Weak Device ❌"
-            : "ontouchstart" in window || navigator.maxTouchPoints > 0
-            ? "Reducing Animations for Touch Devices ✅"
-            : "Amplifying Animations ✅"}
-        </motion.p>
+          <div>Reduced Motion: {stats.prefersReducedMotion ? "Yes" : "No"}</div>
+          <div>Low Battery: {stats.isLowBattery ? "Yes" : "No"}</div>
+          <div>
+            Low Performance: {stats.lowPerformanceDevice ? "Yes" : "No"}
+          </div>
+          <div>Low Memory: {stats.lowMemoryDevice ? "Yes" : "No"}</div>
+          <div>CPU Throttled: {stats.isCpuThrottled ? "Yes" : "No"}</div>
+          <div>CPU Test Duration: {stats.cpuTestDuration} ms</div>
+          <div>Touch Device: {stats.isTouchDevice ? "Yes" : "No"}</div>
+        </div>
+        <div className="greeting">
+          <motion.h1
+            key={greetings[currentGreetingIndex]}
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.8, opacity: 0 }}
+            transition={{ duration: 0.4 }}
+          >
+            {greetings[currentGreetingIndex]}
+          </motion.h1>
+        </div>
+        <div className="status">
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            Connecting to Backend {status.backend && <span>✅</span>}
+          </motion.p>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.7 }}
+          >
+            Connecting to Database {status.database && <span>✅</span>}
+          </motion.p>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 1.4 }}
+          >
+            {isBatterySavingOn
+              ? "Reducing Animations Due to Weak Device ❌"
+              : "ontouchstart" in window || navigator.maxTouchPoints > 0
+              ? "Reducing Animations for Touch Devices ✅"
+              : "Amplifying Animations ✅"}
+          </motion.p>
+        </div>
       </div>
     </motion.div>
   ) : null;

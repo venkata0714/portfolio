@@ -173,6 +173,30 @@ const WindowModal = ({
     }
   }, [tabs]);
 
+  useEffect(() => {
+    const updateScale = () => {
+      const windowContent = document.querySelector(".window-content");
+      const minimizedIcon = document.querySelector(".minimized-icon");
+      if (!windowContent && !minimizedIcon) return;
+      const screenHeight = window.innerHeight;
+      const screenWidth = window.innerWidth;
+      let scaleValue = 1;
+      if (screenHeight < 826 && screenWidth > 576) {
+        scaleValue = screenHeight / 826;
+      }
+      if (windowContent) {
+        windowContent.style.zoom = `${scaleValue}`;
+      }
+      if (minimizedIcon) {
+        minimizedIcon.style.height = `${scaleValue}`;
+      }
+    };
+
+    updateScale();
+    window.addEventListener("resize", updateScale);
+    return () => window.removeEventListener("resize", updateScale);
+  }, [tabs, isMinimized, isClosed]);
+
   return (
     <AnimatePresence>
       {!isClosed ? (

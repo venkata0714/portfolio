@@ -105,6 +105,26 @@ function HomePage({ isBatterySavingOn, scrolled }) {
     });
   };
 
+  useEffect(() => {
+    const updateScale = () => {
+      const homeRow = document.querySelector(".home-row");
+      const infoRow = document.querySelector(".info");
+      if (!homeRow || !infoRow) return;
+      const screenHeight = window.innerHeight;
+      const screenWidth = window.innerWidth;
+      let scaleValue = 1;
+      if (screenHeight < 826 && screenWidth > 576) {
+        scaleValue = screenHeight / 826;
+      }
+      homeRow.style.zoom = `${scaleValue}`;
+      infoRow.style.zoom = `${scaleValue}`;
+    };
+
+    updateScale();
+    window.addEventListener("resize", updateScale);
+    return () => window.removeEventListener("resize", updateScale);
+  }, []);
+
   return (
     <AnimatePresence>
       <div className="homepage-bg-wrapper">
@@ -128,109 +148,114 @@ function HomePage({ isBatterySavingOn, scrolled }) {
         />
       </div>
       <section className="homepage-container" id="home">
-        <div className="container">
-          <div className="home-row">
-            <motion.div
-              className={`profile-picture-container`}
-              variants={isBatterySavingOn ? {} : zoomIn(0)}
-              initial="hidden"
-              drag
-              dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-              dragElastic={0.3}
-              dragTransition={{
-                bounceStiffness: 250,
-                bounceDamping: 15,
-              }}
-              whileTap={isBatterySavingOn ? {} : { scale: 1.1 }}
-              whileInView={"show"}
-            >
-              <animated.img
-                src={ProfilePhoto}
-                alt="Profile"
-                className={`profile-picture img-responsive img-circle${frames[frameIndex]}`}
-                draggable="false"
-                style={{
-                  boxShadow,
-                  transform: isBatterySavingOn
-                    ? {}
-                    : isHovering
-                    ? `translate3d(${mousePosition.x}px, ${mousePosition.y}px, 0) scale3d(1.03, 1.03, 1.03)`
-                    : "translate3d(0px, 0px, 0) scale3d(1, 1, 1)",
-                  transition: "transform 0.1s ease-out",
+        <div
+          className="container"
+          // style={{ zoom: "80%", height: "calc(100vh -52px)" }}
+        >
+          <div className="home-div">
+            <div className="home-row">
+              <motion.div
+                className={`profile-picture-container`}
+                variants={isBatterySavingOn ? {} : zoomIn(0)}
+                initial="hidden"
+                drag
+                dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+                dragElastic={0.3}
+                dragTransition={{
+                  bounceStiffness: 250,
+                  bounceDamping: 15,
                 }}
-                onMouseMove={handleMouseMove}
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
-                onClick={() => {
-                  handleClick();
-                  handleProfileClick();
-                }}
-              />
-            </motion.div>
-          </div>
-          <div className="home-row">
-            <motion.h1
-              className="name"
-              variants={isBatterySavingOn ? {} : zoomIn(0)}
-              initial="hidden"
-              animate="show"
-            >
-              Kartavya Singh
-            </motion.h1>
+                whileTap={isBatterySavingOn ? {} : { scale: 1.1 }}
+                whileInView={"show"}
+              >
+                <animated.img
+                  src={ProfilePhoto}
+                  alt="Profile"
+                  className={`profile-picture img-responsive img-circle${frames[frameIndex]}`}
+                  draggable="false"
+                  style={{
+                    boxShadow,
+                    transform: isBatterySavingOn
+                      ? {}
+                      : isHovering
+                      ? `translate3d(${mousePosition.x}px, ${mousePosition.y}px, 0) scale3d(1.03, 1.03, 1.03)`
+                      : "translate3d(0px, 0px, 0) scale3d(1, 1, 1)",
+                    transition: "transform 0.1s ease-out",
+                  }}
+                  onMouseMove={handleMouseMove}
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
+                  onClick={() => {
+                    handleClick();
+                    handleProfileClick();
+                  }}
+                />
+              </motion.div>
+            </div>
+            <div className="home-row info">
+              <motion.h1
+                className="name"
+                variants={isBatterySavingOn ? {} : zoomIn(0)}
+                initial="hidden"
+                animate="show"
+              >
+                Kartavya Singh
+              </motion.h1>
 
-            {/* Changing Text Animation */}
-            <motion.div
-              className="changing-text-container"
-              onClick={() => setKey((prevKey) => prevKey + 1)}
-              variants={isBatterySavingOn ? {} : zoomIn(0)}
-              initial="hidden"
-              animate="show"
-            >
-              <em>
-                <span className="changing-text">
-                  <TypeAnimation
-                    key={key} // Forces the component to re-render on click
-                    className="changing-text-animation"
-                    sequence={[
-                      1500,
-                      ...keywords.map((text) => [text, 3000]), // Typing each keyword with a pause
-                      keywords[keywords.length - 1], // Ensures the last phrase displays permanently
-                    ].flat()}
-                    speed={{ type: "keyStrokeDelayInMs", value: 17 }} // Fast typing
-                    deletionSpeed={{ type: "keyStrokeDelayInMs", value: 8 }}
-                    // delay={1000}
-                    repeat={0} // No repeat
-                    cursor={true}
-                  />
-                </span>
-              </em>
-            </motion.div>
+              {/* Changing Text Animation */}
+              <motion.div
+                className="changing-text-container"
+                onClick={() => setKey((prevKey) => prevKey + 1)}
+                variants={isBatterySavingOn ? {} : zoomIn(0)}
+                initial="hidden"
+                animate="show"
+              >
+                <em>
+                  <span className="changing-text">
+                    <TypeAnimation
+                      key={key} // Forces the component to re-render on click
+                      className="changing-text-animation"
+                      sequence={[
+                        1500,
+                        ...keywords.map((text) => [text, 3000]), // Typing each keyword with a pause
+                        keywords[keywords.length - 1], // Ensures the last phrase displays permanently
+                      ].flat()}
+                      speed={{ type: "keyStrokeDelayInMs", value: 17 }} // Fast typing
+                      deletionSpeed={{ type: "keyStrokeDelayInMs", value: 8 }}
+                      // delay={1000}
+                      repeat={0} // No repeat
+                      cursor={true}
+                    />
+                  </span>
+                </em>
+              </motion.div>
 
-            {/* Styled "Enter Portfolio" Button */}
-            <motion.div
-              className="enter-button-motioned"
-              variants={isBatterySavingOn ? {} : zoomIn(0)}
-              initial="hidden"
-              animate="show"
-              drag
-              dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-              dragElastic={0.3}
-              dragTransition={{
-                bounceStiffness: 250,
-                bounceDamping: 15,
-              }}
-            >
-              <StyledButton
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToSection("about");
+              {/* Styled "Enter Portfolio" Button */}
+              <motion.div
+                className="enter-button-motioned"
+                variants={isBatterySavingOn ? {} : zoomIn(0)}
+                initial="hidden"
+                animate="show"
+                drag
+                dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+                dragElastic={0.3}
+                dragTransition={{
+                  bounceStiffness: 250,
+                  bounceDamping: 15,
                 }}
               >
-                <ButtonShadow />
-                <ButtonEdge />
-                <ButtonLabel>Enter Portfolio</ButtonLabel>
-              </StyledButton>
-            </motion.div>
+                <StyledButton
+                  onClick={(e) => {
+                    e.preventDefault();
+                    scrollToSection("about");
+                  }}
+                >
+                  <ButtonShadow />
+                  <ButtonEdge />
+                  <ButtonLabel>Enter Portfolio</ButtonLabel>
+                </StyledButton>
+              </motion.div>
+            </div>
           </div>
         </div>
       </section>

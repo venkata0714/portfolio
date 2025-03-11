@@ -282,12 +282,31 @@ function SkillPage({ isBatterySavingOn, isWindowModalVisible }) {
   }, []);
 
   useEffect(() => {
+    const updateScale = () => {
+      const skillBox = document.querySelector(".skill-box");
+      if (!skillBox) return;
+      const screenHeight = window.innerHeight;
+      const screenWidth = window.innerWidth;
+      let scaleValue = 1;
+      if (screenHeight < 826 && screenWidth > 576) {
+        scaleValue = screenHeight / 826;
+      }
+      skillBox.style.zoom = `${scaleValue}`;
+    };
+
+    updateScale();
+    window.addEventListener("resize", updateScale);
+    return () => window.removeEventListener("resize", updateScale);
+  }, []);
+
+  useEffect(() => {
     const handleResize = () => {
       setSkillScreenWidth(window.innerWidth);
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
   return (
     <section
       className="skill-container"
