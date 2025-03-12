@@ -24,7 +24,7 @@ import powerbi from "../assets/img/icons/powerbi.svg";
 import windows from "../assets/img/icons/windows.svg";
 import macos from "../assets/img/icons/macos.svg";
 import ms_office from "../assets/img/icons/ms_office.svg";
-import labview from "../assets/img/icons/labview.svg";
+import labview from "../assets/img/icons/labview.jpg";
 import tableau from "../assets/img/icons/tableau.svg";
 import unity from "../assets/img/icons/unity.svg";
 import kali from "../assets/img/icons/kali.svg";

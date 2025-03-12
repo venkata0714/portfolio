@@ -11,6 +11,12 @@
   align-items: center;
   justify-content: space-between;
   height: 40px;
+  position: sticky;
+  top: 0px;
+  background: #212529;
+  border-top: 1px solid #343a40;
+  background-blend-mode: hard-light;
+  z-index: 1000;
 }
 
 .admin-title {
