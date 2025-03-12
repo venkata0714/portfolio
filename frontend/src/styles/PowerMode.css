@@ -1,6 +1,6 @@
 .power-mode {
   position: fixed;
-  left: 5px;
+  right: 5px;
   width: 10px;
   height: 10px;
   border-radius: 50%;
@@ -22,8 +22,8 @@
 .power-tooltip {
   position: absolute;
   top: 0px;
-  left: 700%;
-  transform: translateX(-50%);
+  right: 10px;
+  /* transform: translateX(-50%); */
   background-color: rgba(0, 0, 0, 0.8);
   color: white;
   padding: 2px 5px;
