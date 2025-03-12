@@ -11,6 +11,7 @@ import ExperiencePage from "./components/ExperiencePage/ExperiencePage";
 import ProjectPage from "./components/ProjectPage/ProjectPage";
 import ContactPage from "./components/ContactPage/ContactPage";
 import WindowModal from "./components/WindowModal/WindowModal";
+import PowerMode from "./components/SpecialComponents/PowerMode";
 // import { cleanupEventListeners } from "./services/eventListenerRegistry";
 
 function App({ isBatterySavingOn, setIsBatterySavingOn }) {
@@ -140,6 +141,11 @@ function App({ isBatterySavingOn, setIsBatterySavingOn }) {
         initial="initial"
         animate={"show"}
       >
+        <PowerMode
+          isBatterySavingOn={isBatterySavingOn}
+          setIsBatterySavingOn={setIsBatterySavingOn}
+          scrolled={scrolled}
+        />
         <NavBar isBatterySavingOn={isBatterySavingOn} />
         <HomePage isBatterySavingOn={isBatterySavingOn} scrolled={scrolled} />
         {/* {isWindowModalVisible && (
