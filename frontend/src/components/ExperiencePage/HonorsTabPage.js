@@ -121,9 +121,11 @@ const HonorsTabPage = ({ addTab, isBatterySavingOn }) => {
   return (
     <motion.div
       className="career-tab-page"
-      initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
-      animate={isBatterySavingOn ? {} : { opacity: 1, scale: 1 }}
-      transition={isBatterySavingOn ? {} : { delay: 0, type: "spring" }}
+      variants={isBatterySavingOn ? {} : zoomIn(0)}
+      initial="hidden"
+      whileInView="show"
+      exit="hidden"
+      viewport={{ once: true }}
     >
       <h1 className="career-tab-header">My Honors Journey</h1>
       <div className="career-tabs-slider">
