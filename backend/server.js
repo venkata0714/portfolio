@@ -15,6 +15,7 @@ const allowedOrigins = [
   "https://kartavya-portfolio-mern-frontend.onrender.com",
   "https://kartavya-singh.com",
   "http://localhost:3000",
+  "http://localhost:3001"
 ];
 
 app.use(

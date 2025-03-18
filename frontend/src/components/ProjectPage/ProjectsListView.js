@@ -132,7 +132,9 @@ function ProjectsListView({ addTab, isBatterySavingOn, showFeatured }) {
       }
 
       // 7) set container padding-bottom
-      containerEl.style.paddingBottom = `${baseOffset}px`;
+      containerEl.style.paddingBottom = `${baseOffset - titleHeight -
+        titleMarginBottom -
+        containerMarginTop}px`;
       if (titleEl) {
         // If you want the title to stay above stacked cards, you can manipulate it here
         titleEl.style.top = `${52 + 2 * titleMarginTop}px`; // optional
