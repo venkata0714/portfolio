@@ -234,14 +234,7 @@ function ProjectsListView({ addTab, isBatterySavingOn, showFeatured }) {
   return (
     <>
       <h2 className="project-section-title">My Projects</h2>
-      <motion.div
-        ref={parentRef}
-        className="project-container"
-        variants={isBatterySavingOn ? {} : zoomIn(0)}
-        initial="hidden"
-        animate="show"
-        exit="hidden"
-      >
+      <div ref={parentRef} className="project-container">
         {projects.map((project, index) => {
           const { mousePosition, isHovering } = cardStates[index] || {
             mousePosition: { x: 0, y: 0 },
@@ -260,10 +253,10 @@ function ProjectsListView({ addTab, isBatterySavingOn, showFeatured }) {
                   ? "project-card  project-card-last"
                   : "project-card"
               }
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              // transition={{ delay: 0.05, type: "spring" }}
+              // initial={{ opacity: 0 }}
+              // animate={{ opacity: 1 }}
+              // exit={{ opacity: 0 }}
+              // transition={{ delay: 0, type: "spring" }}
               onMouseMove={(e) => handleMouseMove(e, index)}
               onMouseEnter={() => handleMouseEnter(index)}
               onMouseLeave={() => handleMouseLeave(index)}
@@ -333,7 +326,7 @@ function ProjectsListView({ addTab, isBatterySavingOn, showFeatured }) {
             </motion.div>
           );
         })}
-      </motion.div>
+      </div>
     </>
   );
 }

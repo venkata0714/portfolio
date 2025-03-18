@@ -1,31 +1,40 @@
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { zoomIn } from "../../services/variants";
 import LeftArrow from "../../assets/img/icons/arrow1.svg";
 import RightArrow from "../../assets/img/icons/arrow2.svg";
 import { fetchInvolvements } from "../../services/involvementService";
 import { styled } from "@stitches/react";
 
+const slideVariants = {
+  hidden: { opacity: 0, scale: 0.6, x: 0, rotateY: 0, z: -400, zIndex: 7 },
+  prev: { opacity: 0.8, scale: 0.8, x: -240, rotateY: 15, z: -200, zIndex: 9 },
+  next: { opacity: 0.8, scale: 0.8, x: 240, rotateY: -15, z: -200, zIndex: 9 },
+  active: { opacity: 1, scale: 1, x: 0, rotateY: 0, z: 0, zIndex: 10 },
+};
+const slideTransition = {
+  duration: 0.8,
+  ease: "easeInOut",
+  zIndex: { duration: 0 },
+};
+
 const CustomArrow = ({ direction, onClick, imgSrc, label }) => {
   const scrollToSection = (id) => {
     const element = document.getElementById(id);
     if (element) {
-      const offset = 52; // Adjust based on your navbar height
+      const offset = 52;
       const elementPosition = element.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.scrollY - offset;
-
       window.scrollTo({
         top: offsetPosition,
         behavior: "smooth",
       });
     }
   };
-
   const handleClick = () => {
-    if (onClick) onClick(); // Call the passed onClick function if it exists
-    scrollToSection("experience"); // Correct capitalization here
+    if (onClick) onClick();
+    scrollToSection("experience");
   };
-
   return (
     <button
       className={`custom-arrow custom-${direction}-arrow`}
@@ -61,50 +70,17 @@ const InvolvementTabPage = ({ addTab, isBatterySavingOn }) => {
       (prev) => (prev - 1 + involvements.length) % involvements.length
     );
 
-  const getStyles = (index) => {
-    const isActive = index === activeSlide;
-    const isPrevious =
-      index === (activeSlide - 1 + involvements.length) % involvements.length;
-    const isNext = index === (activeSlide + 1) % involvements.length;
-
-    // Common transition style for smooth animation
-    const transitionStyle = {
-      transition: "transform 0.8s ease, opacity 0.8s ease, z-index 0s linear",
-    };
-
-    if (isActive) {
-      return {
-        ...transitionStyle,
-        opacity: 1,
-        transform: "scale(1) translateX(0px) translateZ(0px) rotateY(0deg)",
-        zIndex: 10,
-      };
-    } else if (isPrevious) {
-      return {
-        ...transitionStyle,
-        opacity: 0.8,
-        transform:
-          "scale(0.8) translateX(-240px) translateZ(-200px) rotateY(15deg)",
-        zIndex: 9,
-      };
-    } else if (isNext) {
-      return {
-        ...transitionStyle,
-        opacity: 0.8,
-        transform:
-          "scale(0.8) translateX(240px) translateZ(-200px) rotateY(-15deg)",
-        zIndex: 9,
-      };
-    } else {
-      // Cards that are neither active nor adjacent get a more distant look
-      return {
-        ...transitionStyle,
-        opacity: 0,
-        transform: "scale(0.6) translateZ(-400px)",
-        zIndex: 7,
-      };
-    }
-  };
+  const n = involvements.length;
+  const prevIndex = (activeSlide - 1 + n) % n;
+  const nextIndex = (activeSlide + 1) % n;
+  const visibleIndices =
+    n === 0
+      ? []
+      : n === 1
+      ? [0]
+      : n === 2
+      ? [activeSlide, nextIndex]
+      : [prevIndex, activeSlide, nextIndex];
 
   return (
     <motion.div
@@ -113,77 +89,91 @@ const InvolvementTabPage = ({ addTab, isBatterySavingOn }) => {
       initial="hidden"
       whileInView="show"
       exit="hidden"
-      viewport={{ once: true }}
     >
       <h1 className="career-tab-header">My Involvements</h1>
       <div className="career-tabs-slider">
         <div className="slide-container">
-          {involvements.map((involvement, index) => (
-            <div
-              key={index}
-              className="slide"
-              style={{
-                ...getStyles(index),
-              }}
-            >
-              <div className="slider-content">
-                <div className="career-container">
-                  <div className="career-image">
-                    <img
-                      src={involvement.involvementImages[0]}
-                      alt=""
-                      className="career-image-content"
-                    />
-                  </div>
-                  <div className="career-details">
-                    <h2 className="career-title">
-                      {involvement.involvementTitle}
-                    </h2>
-                    <div className="career-subtitle-area">
-                      <h4 className="career-subtitle">
-                        {involvement.involvementSubTitle}
-                      </h4>
-                      <p className="career-timeline">
-                        {involvement.involvementTimeline}
-                      </p>
+          <AnimatePresence initial={false}>
+            {visibleIndices.map((index) => {
+              const involvement = involvements[index];
+              const variant =
+                index === activeSlide
+                  ? "active"
+                  : index === prevIndex
+                  ? "prev"
+                  : index === nextIndex
+                  ? "next"
+                  : "hidden";
+              return (
+                <motion.div
+                  key={index}
+                  className="slide"
+                  variants={slideVariants}
+                  initial="hidden"
+                  animate={variant}
+                  exit="hidden"
+                  transition={slideTransition}
+                >
+                  <div className="slider-content">
+                    <div className="career-container">
+                      <div className="career-image">
+                        <img
+                          src={involvement.involvementImages[0]}
+                          alt=""
+                          className="career-image-content"
+                        />
+                      </div>
+                      <div className="career-details">
+                        <h2 className="career-title">
+                          {involvement.involvementTitle}
+                        </h2>
+                        <div className="career-subtitle-area">
+                          <h4 className="career-subtitle">
+                            {involvement.involvementSubTitle}
+                          </h4>
+                          <p className="career-timeline">
+                            {involvement.involvementTimeline}
+                          </p>
+                        </div>
+                        <p className="career-tagline">
+                          {involvement.involvementTagline}
+                        </p>
+                        <motion.div
+                          className="career-learn-button-motioned"
+                          onClick={() => addTab("Involvement", involvement)}
+                          variants={zoomIn(0)}
+                          initial="hidden"
+                          animate="show"
+                          drag
+                          dragConstraints={{
+                            left: 0,
+                            right: 0,
+                            top: 0,
+                            bottom: 0,
+                          }}
+                          dragElastic={0.3}
+                          dragTransition={{
+                            bounceStiffness: 250,
+                            bounceDamping: 15,
+                          }}
+                        >
+                          <StyledButton
+                            onClick={(e) => {
+                              e.preventDefault();
+                            }}
+                          >
+                            <ButtonShadow />
+                            <ButtonEdge />
+                            <ButtonLabel>Learn More →</ButtonLabel>
+                          </StyledButton>
+                        </motion.div>
+                      </div>
                     </div>
-                    <p className="career-tagline">
-                      {involvement.involvementTagline}
-                    </p>
-                    <motion.div
-                      className="career-learn-button-motioned"
-                      onClick={() => addTab("Involvement", involvement)}
-                      variants={zoomIn(0)}
-                      initial="hidden"
-                      animate="show"
-                      drag
-                      dragConstraints={{
-                        left: 0,
-                        right: 0,
-                        top: 0,
-                        bottom: 0,
-                      }}
-                      dragElastic={0.3}
-                      dragTransition={{
-                        bounceStiffness: 250,
-                        bounceDamping: 15,
-                      }}
-                    >
-                      <StyledButton
-                        onClick={(e) => {
-                          e.preventDefault();
-                        }}
-                      >
-                        <ButtonShadow />
-                        <ButtonEdge />
-                        <ButtonLabel>Learn More →</ButtonLabel>
-                      </StyledButton>
-                    </motion.div>
                   </div>
-                </div>
-              </div>
-            </div>
-          ))}
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
         </div>
         <div className="btns">
           <CustomArrow

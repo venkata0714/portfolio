@@ -21,9 +21,10 @@ function ProjectPage({ addTab, isBatterySavingOn, isWindowModalVisible }) {
             : { opacity: 1, transition: "opacity 0.5s ease-in-out" }
         }
         variants={isBatterySavingOn ? {} : zoomIn(0)}
-        initial="hidden"
-        animate="show"
+        initial="show"
+        whileInView="show"
         exit="hidden"
+        viewport={{ once: true }}
       >
         <ProjectsListView
           addTab={addTab}

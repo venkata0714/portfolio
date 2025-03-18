@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { zoomIn } from "../../services/variants";
 import LeftArrow from "../../assets/img/icons/arrow1.svg";
 import RightArrow from "../../assets/img/icons/arrow2.svg";
@@ -7,26 +7,35 @@ import { fetchHonorsExperiences } from "../../services/honorsExperienceService";
 import { fetchYearInReviews } from "../../services/yearInReviewService";
 import { styled } from "@stitches/react";
 
+const slideVariants = {
+  hidden: { opacity: 0, scale: 0.6, x: 0, rotateY: 0, z: -400, zIndex: 7 },
+  prev: { opacity: 0.8, scale: 0.8, x: -240, rotateY: 15, z: -200, zIndex: 9 },
+  next: { opacity: 0.8, scale: 0.8, x: 240, rotateY: -15, z: -200, zIndex: 9 },
+  active: { opacity: 1, scale: 1, x: 0, rotateY: 0, z: 0, zIndex: 10 },
+};
+const slideTransition = {
+  duration: 0.8,
+  ease: "easeInOut",
+  zIndex: { duration: 0 },
+};
+
+const scrollToSection = (id) => {
+  const element = document.getElementById(id);
+  if (element) {
+    const offset = 52;
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.scrollY - offset;
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: "smooth",
+    });
+  }
+};
 const CustomArrow = ({ direction, onClick, imgSrc, label }) => {
-  const scrollToSection = (id) => {
-    const element = document.getElementById(id);
-    if (element) {
-      const offset = 52; // Adjust based on your navbar height
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.scrollY - offset;
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: "smooth",
-      });
-    }
-  };
-
   const handleClick = () => {
-    if (onClick) onClick(); // Call the passed onClick function if it exists
-    scrollToSection("experience"); // Correct capitalization here
+    if (onClick) onClick();
+    scrollToSection("experience");
   };
-
   return (
     <button
       className={`custom-arrow custom-${direction}-arrow`}
@@ -54,7 +63,6 @@ const HonorsTabPage = ({ addTab, isBatterySavingOn }) => {
         console.error("Error fetching data:", error);
       }
     };
-
     fetchData();
   }, []);
 
@@ -73,50 +81,17 @@ const HonorsTabPage = ({ addTab, isBatterySavingOn }) => {
     }
   };
 
-  const getStyles = (index) => {
-    const isActive = index === activeSlide;
-    const isPrevious =
-      index === (activeSlide - 1 + combinedLength) % combinedLength;
-    const isNext = index === (activeSlide + 1) % combinedLength;
-
-    // Common transition style for smooth animation
-    const transitionStyle = {
-      transition: "transform 0.8s ease, opacity 0.8s ease, z-index 0s linear",
-    };
-
-    if (isActive) {
-      return {
-        ...transitionStyle,
-        opacity: 1,
-        transform: "scale(1) translateX(0px) translateZ(0px) rotateY(0deg)",
-        zIndex: 10,
-      };
-    } else if (isPrevious) {
-      return {
-        ...transitionStyle,
-        opacity: 0.8,
-        transform:
-          "scale(0.8) translateX(-240px) translateZ(-200px) rotateY(15deg)",
-        zIndex: 9,
-      };
-    } else if (isNext) {
-      return {
-        ...transitionStyle,
-        opacity: 0.8,
-        transform:
-          "scale(0.8) translateX(240px) translateZ(-200px) rotateY(-15deg)",
-        zIndex: 9,
-      };
-    } else {
-      // Cards that are neither active nor adjacent get a more distant look
-      return {
-        ...transitionStyle,
-        opacity: 0,
-        transform: "scale(0.6) translateZ(-400px)",
-        zIndex: 7,
-      };
-    }
-  };
+  const n = combinedLength;
+  const prevIndex = (activeSlide - 1 + n) % n;
+  const nextIndex = (activeSlide + 1) % n;
+  const visibleIndices =
+    n === 0
+      ? []
+      : n === 1
+      ? [0]
+      : n === 2
+      ? [activeSlide, nextIndex]
+      : [prevIndex, activeSlide, nextIndex];
 
   return (
     <motion.div
@@ -125,54 +100,67 @@ const HonorsTabPage = ({ addTab, isBatterySavingOn }) => {
       initial="hidden"
       whileInView="show"
       exit="hidden"
-      viewport={{ once: true }}
     >
       <h1 className="career-tab-header">My Honors Journey</h1>
       <div className="career-tabs-slider">
         <div className="slide-container">
-          {Array.from({ length: combinedLength }).map((_, index) => {
-            const { type, data } = getSlideData(index);
-            return (
-              <div
-                key={`${type}-${index}`}
-                className={`slide`}
-                style={getStyles(index)}
-              >
-                <div className={`slider-content`}>
-                  <div className="career-container">
-                    <div className="career-image">
-                      <img
-                        src={
-                          type === "honor"
-                            ? data.honorsExperienceImages[0]
-                            : data.yearInReviewImages[0]
-                        }
-                        alt=""
-                        className="career-image-content"
-                      />
-                    </div>
-                    <div className="career-details">
-                      <h2 className="career-title">
-                        {type === "honor"
-                          ? data.honorsExperienceTitle
-                          : data.yearInReviewTitle}
-                      </h2>
-                      <div className="career-subtitle-area">
-                        <h4 className="career-subtitle">
+          <AnimatePresence initial={false}>
+            {visibleIndices.map((index) => {
+              const { type, data } = getSlideData(index);
+              return (
+                <motion.div
+                  key={`${type}-${index}`}
+                  className="slide"
+                  variants={slideVariants}
+                  initial="hidden"
+                  animate={
+                    index === activeSlide
+                      ? "active"
+                      : index === prevIndex
+                      ? "prev"
+                      : index === nextIndex
+                      ? "next"
+                      : "hidden"
+                  }
+                  exit="hidden"
+                  transition={slideTransition}
+                >
+                  <div className="slider-content">
+                    <div className="career-container">
+                      <div className="career-image">
+                        <img
+                          src={
+                            type === "honor"
+                              ? data.honorsExperienceImages[0]
+                              : data.yearInReviewImages[0]
+                          }
+                          alt=""
+                          className="career-image-content"
+                        />
+                      </div>
+                      <div className="career-details">
+                        <h2 className="career-title">
                           {type === "honor"
-                            ? data.honorsExperienceSubTitle
-                            : data.yearInReviewSubTitle}
-                        </h4>
-                        <p className="career-timeline">
-                          {type === "honor"
-                            ? data.honorsExperienceTimeline
-                            : data.yearInReviewTimeline}
-                        </p>
-                        <p className="career-tagline">
-                          {type === "honor"
-                            ? data.honorsExperienceTagline
-                            : data.yearInReviewTagline}
-                        </p>
+                            ? data.honorsExperienceTitle
+                            : data.yearInReviewTitle}
+                        </h2>
+                        <div className="career-subtitle-area">
+                          <h4 className="career-subtitle">
+                            {type === "honor"
+                              ? data.honorsExperienceSubTitle
+                              : data.yearInReviewSubTitle}
+                          </h4>
+                          <p className="career-timeline">
+                            {type === "honor"
+                              ? data.honorsExperienceTimeline
+                              : data.yearInReviewTimeline}
+                          </p>
+                          <p className="career-tagline">
+                            {type === "honor"
+                              ? data.honorsExperienceTagline
+                              : data.yearInReviewTagline}
+                          </p>
+                        </div>
                         <motion.div
                           className="career-learn-button-motioned"
                           onClick={() => {
@@ -181,7 +169,6 @@ const HonorsTabPage = ({ addTab, isBatterySavingOn }) => {
                             } else if (type === "review") {
                               addTab("YearInReview", data);
                             } else {
-                              // Handle case when no career data is available for the review tab
                               console.error(
                                 "No career data available for the review tab"
                               );
@@ -216,10 +203,10 @@ const HonorsTabPage = ({ addTab, isBatterySavingOn }) => {
                       </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            );
-          })}
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
         </div>
         <div className="btns">
           <CustomArrow

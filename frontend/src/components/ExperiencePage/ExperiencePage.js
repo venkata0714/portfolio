@@ -105,69 +105,59 @@ const ExperiencePage = ({
                 : { opacity: 1, transition: "opacity 0.5s ease-in-out" }
             }
           >
-            <>
+            <motion.div
+              className="tabs-wrapper"
+              variants={isBatterySavingOn ? {} : zoomIn(0)}
+              initial="hidden"
+              whileInView="show"
+              exit="hidden"
+              viewport={{ once: true }}
+            >
               <motion.div
-                className="tabs-wrapper"
-                variants={isBatterySavingOn ? {} : zoomIn(0)}
-                initial="hidden"
-                whileInView="show"
-                exit="hidden"
-                viewport={{ once: true }}
-              >
-                <motion.div
-                  className="tab-highlight"
-                  key={`tab-${selectedTab}`}
-                  custom={tabs.indexOf(selectedTab)}
-                  // variants={tabHighlightVariants}
-                  // animate="animate"
-                  // initial="initial"
-                />
-                {tabs.map((tab) => (
-                  <motion.button
-                    key={tab.title}
-                    className={`tab-button${
-                      selectedTab.title === tab.title ? " active" : ""
-                    }`}
-                    onClick={() => {
-                      setSelectedTab(tab);
-                      setActiveComponent(() => tab.component);
-                      scrollToSection("experience");
-                    }}
-                    // drag
-                    // dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-                    // dragElastic={0.3}
-                    // dragTransition={{
-                    //   bounceStiffness: 250,
-                    //   bounceDamping: 17,
-                    // }}
-                    whileInView={
-                      isBatterySavingOn ? {} : { opacity: 1, scale: 1 }
-                    }
-                    whileHover={isBatterySavingOn ? {} : { scale: 1.1 }}
-                    whileTap={isBatterySavingOn ? {} : { scale: 0.9 }}
-                    transition={
-                      isBatterySavingOn ? {} : { delay: 0, type: "spring" }
-                    }
-                    aria-label="Trophy"
-                  >
-                    {tab.icon}
-                    {selectedTab.title === tab.title ? (
-                      <span className="tab-text">{tab.title}</span>
-                    ) : (
-                      ""
-                    )}
-                  </motion.button>
-                ))}
-              </motion.div>
-            </>
-
+                className="tab-highlight"
+                key={`tab-${selectedTab}`}
+                custom={tabs.indexOf(selectedTab)}
+                // variants={tabHighlightVariants}
+                // animate="animate"
+                // initial="initial"
+              />
+              {tabs.map((tab) => (
+                <motion.button
+                  key={tab.title}
+                  className={`tab-button${
+                    selectedTab.title === tab.title ? " active" : ""
+                  }`}
+                  onClick={() => {
+                    setSelectedTab(tab);
+                    setActiveComponent(() => tab.component);
+                    scrollToSection("experience");
+                  }}
+                  whileInView={
+                    isBatterySavingOn ? {} : { opacity: 1, scale: 1 }
+                  }
+                  whileHover={isBatterySavingOn ? {} : { scale: 1.1 }}
+                  whileTap={isBatterySavingOn ? {} : { scale: 0.9 }}
+                  transition={
+                    isBatterySavingOn ? {} : { delay: 0, type: "spring" }
+                  }
+                  aria-label={tab.title}
+                >
+                  {tab.icon}
+                  {selectedTab.title === tab.title ? (
+                    <span className="tab-text">{tab.title}</span>
+                  ) : (
+                    ""
+                  )}
+                </motion.button>
+              ))}
+            </motion.div>
             <motion.div
               className="content-container"
               variants={isBatterySavingOn ? {} : zoomIn(0)}
               initial="hidden"
               whileInView="show"
               exit="hidden"
-              // viewport={{ once: true }}
+              viewport={{ once: true }}
             >
               <ActiveComponent
                 addTab={addTab}
