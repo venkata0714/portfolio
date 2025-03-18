@@ -313,7 +313,7 @@ function SkillPage({ isBatterySavingOn, isWindowModalVisible }) {
       id="skills"
       style={{ overflow: "hidden" }}
     >
-      <SkillBG />
+      {/* <SkillBG /> */}
       {/* <EnhancedHexagonalGrid /> */}
       {/* <SpotlightBG /> */}
       <motion.div

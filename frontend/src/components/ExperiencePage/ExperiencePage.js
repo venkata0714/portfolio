@@ -91,7 +91,7 @@ const ExperiencePage = ({
     <>
       <AnimatePresence>
         <section className="experience-container" id="experience">
-          <Background />
+          {/* <Background /> */}
           <motion.div
             className="experience-div"
             style={
@@ -103,6 +103,7 @@ const ExperiencePage = ({
             whileInView={isBatterySavingOn ? {} : { opacity: 1, scale: 1 }}
             exit={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
             transition={isBatterySavingOn ? {} : { delay: 0, type: "spring" }}
+            viewport={{ once: true }}
           >
             <motion.div
               className="tabs-wrapper"

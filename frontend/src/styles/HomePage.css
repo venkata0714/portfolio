@@ -8,6 +8,7 @@
   font-family: "Montserrat", sans-serif;
   color: #edeeef;
   text-align: center;
+  z-index: 2;
 }
 
 .homepage-bg-wrapper {
@@ -17,7 +18,7 @@
   width: 100%;
   height: 100vh;
   overflow: hidden; /* This ensures that scaling won't show outside bounds */
-  z-index: 0; /* Ensure the background stays behind other content */
+  z-index: 2; /* Ensure the background stays behind other content */
 }
 
 .homepage-bg {

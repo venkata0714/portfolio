@@ -10,9 +10,9 @@ function ProjectPage({ addTab, isBatterySavingOn, isWindowModalVisible }) {
   const [showFeatured, setShowFeatured] = useState(false);
   return (
     <motion.section className="project-page-container" id="projects">
-      <div className="gradient-bg-container">
+      {/* <div className="gradient-bg-container">
         <GradientBG />
-      </div>
+      </div> */}
       <motion.div
         className="project-page-div"
         style={

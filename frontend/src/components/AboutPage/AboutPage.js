@@ -69,7 +69,6 @@ function AboutPage({ isBatterySavingOn, isWindowModalVisible }) {
             ? { opacity: 0, transition: "opacity 0.5s ease-in-out" }
             : { opacity: 1, transition: "opacity 0.5s ease-in-out" }
         }
-        loading="lazy"
       >
         <div className="about-content glass">
           <h2 className="section-title">ABOUT ME</h2>

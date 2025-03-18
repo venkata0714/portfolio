@@ -157,13 +157,13 @@ export const SpotlightBG = () => {
     const drawInstructionText = () => {
       if (clickCountRef.current >= 3) return;
       const time = Date.now();
-      const textAlpha = 0.4 + 0.1 * Math.sin(time / 500);
+      const textAlpha = 0.4 + 0.4 * Math.sin(time / 500);
       ctx.save();
-      ctx.font = "20px Montserrat, sans-serif";
+      ctx.font = "12px Montserrat, sans-serif";
       ctx.textAlign = "center";
-      ctx.textBaseline = "top";
       ctx.fillStyle = `rgba(255, 255, 255, ${textAlpha})`;
-      ctx.fillText("Click anywhere to interact", canvas.width / 2, 25);
+      ctx.textBaseline = "top";
+      ctx.fillText("Click anywhere to interact", canvas.width / 2, 52);
       ctx.restore();
     };
 
@@ -235,13 +235,24 @@ export const SpotlightBG = () => {
   return (
     <canvas
       ref={canvasRef}
+      // style={{
+      //   position: "absolute",
+      //   top: 0,
+      //   left: 0,
+      //   width: "100%",
+      //   height: "100%",
+      //   zIndex: -1,
+      // }}
+
       style={{
-        position: "absolute",
+        position: "fixed",
         top: 0,
         left: 0,
         width: "100%",
-        height: "100%",
-        zIndex: -1,
+        height: "100vh",
+        zIndex: 0,
+        transform: "translateZ(0)", // Hardware acceleration hint
+        willChange: "transform",
       }}
     />
   );

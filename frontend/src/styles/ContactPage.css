@@ -17,6 +17,7 @@
   color: #edeeef;
   text-align: center;
   overflow-y: hidden;
+  z-index: 1;
 }
 
 /* Glowing Light Effect */

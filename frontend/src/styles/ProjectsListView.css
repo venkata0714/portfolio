@@ -62,30 +62,27 @@
 
 .project-card:nth-child(3n + 1) {
   background: linear-gradient(
-      rgba(139, 69, 90, 0.4),
-      /* Dark Pink */ rgba(139, 69, 90, 0.4)
-    ),
-    url("https://www.transparenttextures.com/patterns/noise-pattern.png");
+    rgba(139, 69, 90, 0.4),
+    /* Dark Pink */ rgba(139, 69, 90, 0.4)
+  );
   background-size: cover;
   color: #f8f9fa; /* Light text for readability */
 }
 
 .project-card:nth-child(3n + 2) {
   background: linear-gradient(
-      rgba(54, 79, 107, 0.4),
-      /* Dark Blue */ rgba(54, 79, 107, 0.4)
-    ),
-    url("https://www.transparenttextures.com/patterns/noise-pattern.png");
+    rgba(54, 79, 107, 0.4),
+    /* Dark Blue */ rgba(54, 79, 107, 0.4)
+  );
   background-size: cover;
   color: #f8f9fa; /* Light text for readability */
 }
 
 .project-card:nth-child(3n) {
   background: linear-gradient(
-      rgba(97, 89, 38, 0.4),
-      /* Dark Yellow */ rgba(97, 89, 38, 0.4)
-    ),
-    url("https://www.transparenttextures.com/patterns/noise-pattern.png");
+    rgba(97, 89, 38, 0.4),
+    /* Dark Yellow */ rgba(97, 89, 38, 0.4)
+  );
   background-size: cover;
   color: #f8f9fa; /* Light text for readability */
 }

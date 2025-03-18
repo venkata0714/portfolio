@@ -17,6 +17,7 @@
   font-family: "Montserrat", sans-serif;
   color: #212529;
   text-align: center;
+  z-index: 1;
 }
 
 /* @media (max-width: 992px) {
