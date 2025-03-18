@@ -167,7 +167,7 @@ const ExperiencePage = ({
               initial="hidden"
               whileInView="show"
               exit="hidden"
-              viewport={{ once: true }}
+              // viewport={{ once: true }}
             >
               <ActiveComponent
                 addTab={addTab}

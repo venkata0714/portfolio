@@ -57,7 +57,8 @@
   backdrop-filter: blur(10px);
   border-radius: 20px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
-  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out,
+    opacity 0.3s ease-in-out;
 }
 
 .project-card:nth-child(3n + 1) {

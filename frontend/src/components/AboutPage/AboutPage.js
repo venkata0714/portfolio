@@ -98,7 +98,6 @@ function AboutPage({ isBatterySavingOn, isWindowModalVisible }) {
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.99 }}
                     key={index}
-                    drag="false"
                   >
                     <motion.i className={item.icon}></motion.i>
                     <h3 className="about-title">{item.title}</h3>
@@ -145,7 +144,7 @@ function AboutPage({ isBatterySavingOn, isWindowModalVisible }) {
                 whileInView="show"
                 exit="hidden"
               >
-                <motion.a drag="false">
+                <motion.a>
                   <StyledButton
                     onClick={(e) => {
                       e.preventDefault();
@@ -157,7 +156,7 @@ function AboutPage({ isBatterySavingOn, isWindowModalVisible }) {
                     <ButtonLabel>Skills</ButtonLabel>
                   </StyledButton>
                 </motion.a>
-                <motion.a drag="false">
+                <motion.a>
                   <StyledButton
                     onClick={(e) => {
                       e.preventDefault();
@@ -177,7 +176,7 @@ function AboutPage({ isBatterySavingOn, isWindowModalVisible }) {
                 whileInView="show"
                 exit="hidden"
               >
-                <motion.a drag="false">
+                <motion.a>
                   <StyledButton
                     onClick={(e) => {
                       e.preventDefault();
@@ -193,7 +192,9 @@ function AboutPage({ isBatterySavingOn, isWindowModalVisible }) {
                   href={Resume}
                   download="Kartavya-Singh-Resume-2025.pdf"
                   className="download-cv"
-                  drag="false"
+                  style={{ userSelect: "none" }}
+                  draggable={false}
+                  onDragStart={(e) => e.preventDefault()}
                 >
                   <StyledButton>
                     <ButtonShadow />
