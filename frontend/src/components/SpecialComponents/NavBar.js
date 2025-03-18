@@ -224,13 +224,13 @@ const NavBar = ({ isBatterySavingOn }) => {
         </motion.button>
 
         {/* Conditionally rendered navbar menu */}
-        <div className={`navbar-menu ${menuOpen ? "open" : ""}`}>
-          <motion.ul
-            className="navbar-links"
-            variants={fadeIn("left", 40, 0)}
-            initial="hidden"
-            animate="show"
-          >
+        <motion.div
+          className={`navbar-menu ${menuOpen ? "open" : ""}`}
+          variants={fadeIn("left", 40, 0)}
+          initial="hidden"
+          animate="show"
+        >
+          <motion.ul className="navbar-links">
             <li
               className={
                 activeLink === "about" ? "active nav-item" : "nav-item"
@@ -351,7 +351,7 @@ const NavBar = ({ isBatterySavingOn }) => {
               </a>
             </li>
           </motion.ul>
-        </div>
+        </motion.div>
       </div>
     </motion.nav>
   );

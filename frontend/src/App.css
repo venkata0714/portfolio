@@ -70,23 +70,3 @@ body {
 .scroll-to-top.show {
   display: inline; /* Show the button when 'show' class is applied */
 }
-
-.open-modal-btn {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  z-index: 20000;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 10px 20px;
-  font-size: 1rem;
-  cursor: pointer;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-  transition: background-color 0.2s ease;
-}
-
-.open-modal-btn:hover {
-  background-color: #0056b3;
-}

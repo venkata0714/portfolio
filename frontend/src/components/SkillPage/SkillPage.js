@@ -319,7 +319,7 @@ function SkillPage({ isBatterySavingOn, isWindowModalVisible }) {
       <motion.div
         className="skill-div"
         variants={isBatterySavingOn ? {} : zoomIn(0)}
-        initial="hidden"
+        initial="show"
         whileInView="show"
         exit="hidden"
         style={
