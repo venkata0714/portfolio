@@ -137,6 +137,9 @@ const getCollectionCounts = async (req, res) => {
       KartavyaPortfolio: await db
         .collection("KartavyaPortfolio")
         .countDocuments(),
+      FeedTable: await db
+        .collection("FeedTable")
+        .countDocuments({ deleted: { $ne: true } }),
     };
 
     res.json(collections);
@@ -578,6 +581,84 @@ const deleteSkillComponent = async (req, res) => {
   }
 };
 
+const getFeeds = async (req, res) => {
+  try {
+    const db = getDB();
+    const feeds = await db
+      .collection("FeedTable")
+      .find({ deleted: { $ne: true } })
+      .sort({ feedCreatedAt: -1 }) // sorts in descending order by created timestamp
+      .toArray();
+    res.json(feeds);
+  } catch (error) {
+    console.error("Error fetching feeds:", error);
+    res.status(500).json({ message: "Error fetching feeds", error });
+  }
+};
+
+const addFeed = async (req, res) => {
+  const { feedTitle, feedCategory, feedContent, feedImageURL, feedLinks } =
+    req.body;
+
+  // Validate mandatory fields
+  if (!feedTitle || !feedCategory) {
+    return res
+      .status(400)
+      .json({ message: "feedTitle and feedCategory are required." });
+  }
+
+  try {
+    const db = getDB();
+    const newFeed = {
+      feedTitle,
+      feedCategory,
+      feedContent: feedContent || [],
+      feedImageURL: feedImageURL || null,
+      feedLinks: feedLinks || [],
+      feedCreatedAt: new Date().toISOString(), // or use new Date() if you prefer a Date object
+    };
+    const result = await db.collection("FeedTable").insertOne(newFeed);
+    res.json({
+      success: true,
+      message: "Feed added successfully.",
+      newItem: { ...newFeed, _id: result.insertedId },
+    });
+  } catch (error) {
+    console.error("Error adding feed:", error);
+    res.status(500).json({ message: "Error adding feed", error });
+  }
+};
+
+const deleteFeed = async (req, res) => {
+  try {
+    const db = getDB();
+    // Using the helper getObjectId from the file (see :contentReference[oaicite:2]{index=2}&#8203;:contentReference[oaicite:3]{index=3})
+    const id = req.params.id;
+    await db
+      .collection("FeedTable")
+      .updateOne({ _id: getObjectId(id) }, { $set: { deleted: true } });
+    res.json({ success: true, message: "Feed soft deleted." });
+  } catch (error) {
+    console.error("Error deleting feed:", error);
+    res.status(500).json({ message: "Error deleting feed", error });
+  }
+};
+
+const editFeed = async (req, res) => {
+  try {
+    const db = getDB();
+    const id = req.params.id;
+    const { _id, ...updateData } = req.body; // Exclude _id from update data
+    await db
+      .collection("FeedTable")
+      .updateOne({ _id: getObjectId(id) }, { $set: updateData });
+    res.json({ success: true, message: "Feed updated." });
+  } catch (error) {
+    console.error("Error editing feed:", error);
+    res.status(500).json({ message: "Error editing feed", error });
+  }
+};
+
 module.exports = {
   getProjects,
   getProjectByLink,
@@ -618,4 +699,8 @@ module.exports = {
   addSkillComponent,
   updateSkillComponent,
   deleteSkillComponent,
+  getFeeds,
+  addFeed,
+  deleteFeed,
+  editFeed,
 };

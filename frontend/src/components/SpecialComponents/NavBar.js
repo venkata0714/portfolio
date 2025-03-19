@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { fadeIn } from "../../services/variants";
 import "../../styles/NavBar.css";
 
-const NavBar = ({ isBatterySavingOn }) => {
+const NavBar = ({ isBatterySavingOn, addTab }) => {
   const [activeLink, setActiveLink] = useState("home");
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -335,6 +335,22 @@ const NavBar = ({ isBatterySavingOn }) => {
                 }}
               >
                 <span className="navbar-text">CONTACT</span>
+              </a>
+            </li>
+            <li
+              className={
+                activeLink === "experience" ? "active nav-item" : "nav-item"
+              }
+            >
+              <a
+                href="#experience"
+                className={"navbar-link"}
+                onClick={(e) => {
+                  e.preventDefault();
+                  addTab("FeedTab", { title: "Kartavya's Feed" });
+                }}
+              >
+                <span className="navbar-text">FEED</span>
               </a>
             </li>
             <li className="nav-item">

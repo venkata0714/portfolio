@@ -40,6 +40,10 @@ const {
   addSkillComponent,
   updateSkillComponent,
   deleteSkillComponent,
+  getFeeds,
+  addFeed,
+  deleteFeed,
+  editFeed,
 } = require("../controllers/dataController");
 
 const verifyJWT = require("../controllers/middlewareController");
@@ -114,6 +118,10 @@ router.delete("/deleteskill/:id", verifyJWT, deleteSkill);
 router.post("/addskillcomponent", verifyJWT, addSkillComponent);
 router.put("/updateskillcomponent/:id", verifyJWT, updateSkillComponent);
 router.delete("/deleteskillcomponent/:id", verifyJWT, deleteSkillComponent);
+router.get("/getFeeds", getFeeds);
+router.post("/addFeed", verifyJWT, addFeed);
+router.delete("/deleteFeed/:id", verifyJWT, deleteFeed);
+router.put("/editFeed/:id", verifyJWT, editFeed);
 
 // Admin Management
 router.post("/setAdminCredentials", verifyJWT, setAdminCredentials);

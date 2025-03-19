@@ -9,13 +9,14 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use(express.json());
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(cookieParser());
 const allowedOrigins = [
   "https://kartavya-portfolio-mern-frontend.onrender.com",
   "https://kartavya-singh.com",
   "http://localhost:3000",
-  "http://localhost:3001"
+  "http://localhost:3001",
 ];
 
 app.use(
@@ -59,6 +60,13 @@ app.get("/api/top-langs", async (req, res) => {
     res.status(500).send("Failed to fetch GitHub stats");
   }
 });
+
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: "Internal Server Error" });
+});
+
+app.set("case sensitive routing", false);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

@@ -141,7 +141,7 @@ function HomePage({ isBatterySavingOn, scrolled }) {
                   filter: `blur(${
                     blur.current > 0.3 && scrolled ? blur.current : 0
                   }px)`,
-                  transformOrigin: "center center",
+                  transformOrigin: "top top",
                   zIndex: 0,
                 }
           }

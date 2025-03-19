@@ -9,6 +9,7 @@ import InvolvementTab from "./InvolvementTab";
 import HonorsTab from "./HonorsTab";
 import YearInReviewTab from "./YearInReviewTab";
 import ProjectsListView from "../ProjectPage/ProjectsListView";
+import FeedTab from "./FeedTab";
 
 const WindowModal = ({
   tabs,
@@ -124,6 +125,8 @@ const WindowModal = ({
             setLoggedIn={setLoggedIn}
           />
         );
+      case "FeedTab":
+        return <FeedTab isBatterySavingOn={isBatterySavingOn} />;
       default:
         return null;
     }

@@ -20,6 +20,7 @@ const tables = [
   { title: "Honors", key: "honorsExperienceTable" },
   { title: "Year In Reviews", key: "yearInReviewTable" },
   { title: "Admin Management", key: "KartavyaPortfolio" },
+  { title: "Feeds", key: "FeedTable" },
 ];
 
 const routeMap = {
@@ -30,6 +31,7 @@ const routeMap = {
   yearInReviewTable: "yearinreview",
   skillsCollection: "skill",
   skillsTable: "skillcomponent",
+  FeedTable: "Feed",
 };
 
 const AdminConsole = ({ logout }) => {
@@ -87,6 +89,9 @@ const AdminConsole = ({ logout }) => {
         case "yearInReviewTable":
           endpoint = "/getyearinreviews";
           break;
+        case "FeedTable": // <-- Add this case
+          endpoint = "/getFeeds";
+          break;
         default:
           endpoint = "";
       }
@@ -122,6 +127,11 @@ const AdminConsole = ({ logout }) => {
 
   const isFormComplete = (dataObj) => {
     if (!dataObj) return false;
+    // If it's a Feed item, only require feedTitle and feedCategory.
+    if (dataObj.hasOwnProperty("feedTitle")) {
+      return Boolean(dataObj.feedTitle) && Boolean(dataObj.feedCategory);
+    }
+    // For other items, use the default check.
     return Object.entries(dataObj).every(([key, value]) => {
       if (key.toLowerCase().includes("subtitle")) {
         return value !== undefined;
@@ -335,7 +345,9 @@ const AdminConsole = ({ logout }) => {
     try {
       const base =
         routeMap[selectedTable.key] || selectedTable.key.toLowerCase();
-      const res = await axios.post(`${API_URL}/add${base}`, activeFormData);
+      const res = await axios.post(`${API_URL}/add${base}`, activeFormData, {
+        withCredentials: true,
+      });
       if (res.data && res.data.success) {
         if (res.data.newItem) {
           setItems((prev) => [res.data.newItem, ...prev]);
@@ -553,6 +565,70 @@ const AdminConsole = ({ logout }) => {
                   <div className="item-details">
                     {Object.keys(activeFormData).map((field) => {
                       if (field === "_id" || field === "deleted") return null;
+
+                      // For feedImageURL in FeedTable, render a file upload input.
+                      if (
+                        selectedTable.key === "FeedTable" &&
+                        field === "feedImageURL"
+                      ) {
+                        return (
+                          <div className="field" key={field}>
+                            <label>{field} (Enter URL or upload file)</label>
+                            {/* If editing and an image is already set, show a preview */}
+                            {activeFormData[field] &&
+                              typeof activeFormData[field] === "object" && (
+                                <img
+                                  src={
+                                    activeFormData[field].data.startsWith(
+                                      "data:"
+                                    )
+                                      ? activeFormData[field].data
+                                      : `data:${activeFormData[field].contentType};base64,${activeFormData[field].data}`
+                                  }
+                                  alt="Image Preview"
+                                  style={{
+                                    maxWidth: "100%",
+                                    marginBottom: "10px",
+                                  }}
+                                />
+                              )}
+                            {/* Text input for entering an image URL */}
+                            <input
+                              type="text"
+                              placeholder="Enter image URL"
+                              value={
+                                typeof activeFormData[field] === "string"
+                                  ? activeFormData[field]
+                                  : ""
+                              }
+                              onChange={(e) =>
+                                handleFieldChange(field, e.target.value)
+                              }
+                            />
+                            {/* File input for uploading an image */}
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) => {
+                                const file = e.target.files[0];
+                                if (file) {
+                                  const reader = new FileReader();
+                                  reader.onloadend = () => {
+                                    // Update activeFormData for feedImageURL with the file data and MIME type
+                                    handleFieldChange(field, {
+                                      data: reader.result,
+                                      contentType: file.type,
+                                    });
+                                  };
+                                  reader.readAsDataURL(file);
+                                }
+                              }}
+                            />
+                          </div>
+                        );
+                      }
+
+                      // Default rendering for non-list fields (or list fields)
                       const value = activeFormData[field];
                       const isList = Array.isArray(value);
                       return (
@@ -567,6 +643,7 @@ const AdminConsole = ({ logout }) => {
                               }
                             />
                           ) : (
+                            // (Your existing code for rendering list fields)
                             <div className="list-field">
                               {value.map((item, idx) => (
                                 <div className="list-item" key={idx}>

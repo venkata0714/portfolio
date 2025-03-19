@@ -146,7 +146,7 @@ function App({ isBatterySavingOn, setIsBatterySavingOn }) {
           setIsBatterySavingOn={setIsBatterySavingOn}
           scrolled={scrolled}
         />
-        <NavBar isBatterySavingOn={isBatterySavingOn} />
+        <NavBar isBatterySavingOn={isBatterySavingOn} addTab={addTab} />
         <HomePage isBatterySavingOn={isBatterySavingOn} scrolled={scrolled} />
         {/* {isWindowModalVisible && (
           <>
