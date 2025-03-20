@@ -121,7 +121,7 @@ router.delete("/deleteskillcomponent/:id", verifyJWT, deleteSkillComponent);
 router.get("/getFeeds", getFeeds);
 router.post("/addFeed", verifyJWT, addFeed);
 router.delete("/deleteFeed/:id", verifyJWT, deleteFeed);
-router.put("/editFeed/:id", verifyJWT, editFeed);
+router.put("/updateFeed/:id", verifyJWT, editFeed);
 
 // Admin Management
 router.post("/setAdminCredentials", verifyJWT, setAdminCredentials);

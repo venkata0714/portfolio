@@ -100,6 +100,7 @@ const HonorsTabPage = ({ addTab, isBatterySavingOn }) => {
       initial="hidden"
       whileInView="show"
       exit="hidden"
+      viewport={{ once: true }}
     >
       <h1 className="career-tab-header">My Honors Journey</h1>
       <div className="career-tabs-slider">

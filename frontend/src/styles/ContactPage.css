@@ -147,9 +147,10 @@ a:hover {
 .button-group {
   display: flex;
   align-items: center;
-  padding: 1rem;
   justify-content: center;
-  grid-column: 1 / span 2;
+  grid-column: 1 / -1;
+  margin: 0 auto;
+  width: fit-content !important;
 }
 
 .contact-form input::placeholder,
@@ -185,14 +186,9 @@ a:hover {
   }
 
   .input-group,
-  .textarea-group,
-  .button-group {
+  .textarea-group {
     width: 95%; /* Take up most of the form width */
     margin: 0 auto; /* Center each group within the form */
-  }
-
-  .button-group {
-    justify-content: center;
   }
 }
 
@@ -202,14 +198,9 @@ a:hover {
   }
 
   .input-group,
-  .textarea-group,
-  .button-group {
+  .textarea-group {
     grid-column: 1 / -1;
     width: 95%;
     margin: 0 auto; /* Center each group within the container */
-  }
-
-  .button-group {
-    justify-content: center;
   }
 }

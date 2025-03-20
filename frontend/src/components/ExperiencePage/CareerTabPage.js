@@ -90,6 +90,7 @@ const CareerTabPage = ({ addTab, isBatterySavingOn }) => {
       initial="hidden"
       whileInView="show"
       exit="hidden"
+      viewport={{ once: true }}
     >
       <h1 className="career-tab-header">My Career</h1>
       <div className="career-tabs-slider">
