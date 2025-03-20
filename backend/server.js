@@ -365,4 +365,4 @@ setInterval(async () => {
       "Database Metrics | Error fetching DB metrics: " + error.message
     );
   }
-}, 3000);
+}, 30000);
