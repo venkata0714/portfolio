@@ -10,6 +10,11 @@ const NavBar = ({ isBatterySavingOn, addTab }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null); // Reference to the navbar menu
 
+  const onUpdateActiveLink = (link) => {
+    setActiveLink(link);
+    setMenuOpen(false); // Close menu when a link is clicked
+  };
+
   const scrollToSection = (id) => {
     const element = document.getElementById(id);
     const offset = 52; // Adjust based on your navbar height
@@ -20,6 +25,7 @@ const NavBar = ({ isBatterySavingOn, addTab }) => {
       top: offsetPosition,
       behavior: "smooth",
     });
+    // onUpdateActiveLink(id);
   };
 
   useEffect(() => {
@@ -146,11 +152,6 @@ const NavBar = ({ isBatterySavingOn, addTab }) => {
     };
   }, []);
 
-  const onUpdateActiveLink = (link) => {
-    setActiveLink(link);
-    setMenuOpen(false); // Close menu when a link is clicked
-  };
-
   // Close menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -163,14 +164,13 @@ const NavBar = ({ isBatterySavingOn, addTab }) => {
       }
     };
 
-    if (menuOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
-
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
+    window.addEventListener("scroll", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+      window.removeEventListener("scroll", handleClickOutside);
     };
   }, [menuOpen]);
 
@@ -179,24 +179,28 @@ const NavBar = ({ isBatterySavingOn, addTab }) => {
       ref={menuRef}
       id="mainNav"
       className={scrolled ? "navbar scrolled fixed-top" : "navbar fixed-top"}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
+      // initial={{ opacity: 0 }}
+      // animate={{ opacity: 1 }}
+      // transition={{ duration: 0.5 }}
     >
       <div className="navbar-container">
         <motion.a
           href="#home"
           className={scrolled ? "scrolled-navbar-brand" : "navbar-brand"}
-          variants={fadeIn("right", 40, 0)}
-          initial="hidden"
-          animate="show"
+          // variants={fadeIn("right", 40, 0)}
+          // initial="hidden"
+          // animate="show"
+          initial={{ x: -40, y: -40, opacity: 0 }}
+          animate={{ x: 0, y: 0, opacity: 1 }}
+          // whileHover={{ scale: 1.1, rotate: -2 }}
+          // whileTap={{ scale: 0.9, rotate: 2 }}
           // drag
           // dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
           onClick={() => {
             onUpdateActiveLink("home");
-            if (window.innerWidth >= 992) {
-              setScrolled(false);
-            }
+            // if (window.innerWidth >= 992) {
+            //   setScrolled(false);
+            // }
           }}
         >
           <b>Kartavya Singh</b>
@@ -206,11 +210,10 @@ const NavBar = ({ isBatterySavingOn, addTab }) => {
         <motion.button
           className="navbar-toggler"
           onClick={() => setMenuOpen(!menuOpen)}
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ x: 40, y: -40, opacity: 0 }}
+          animate={{ x: 0, y: 0, opacity: 1 }}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
-          transition={{ duration: 1 }}
           drag
           dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
           dragElastic={0.3}
@@ -226,15 +229,21 @@ const NavBar = ({ isBatterySavingOn, addTab }) => {
         {/* Conditionally rendered navbar menu */}
         <motion.div
           className={`navbar-menu ${menuOpen ? "open" : ""}`}
-          variants={fadeIn("left", 40, 0)}
-          initial="hidden"
-          animate="show"
+          // variants={fadeIn("left", 40, 0)}
+          // initial="hidden"
+          // animate="show"
         >
-          <motion.ul className="navbar-links">
-            <li
+          <motion.ul
+            className="navbar-links"
+            initial={{ x: 40, y: -40, opacity: 0 }}
+            animate={{ x: 0, y: 0, opacity: 1 }}
+          >
+            <motion.li
               className={
                 activeLink === "about" ? "active nav-item" : "nav-item"
               }
+              whileHover={{ scale: 1.1, rotate: -2 }}
+              whileTap={{ scale: 0.9, rotate: 2 }}
             >
               <a
                 href="#about"
@@ -244,17 +253,19 @@ const NavBar = ({ isBatterySavingOn, addTab }) => {
                 onClick={(e) => {
                   e.preventDefault();
                   scrollToSection("about");
-                  onUpdateActiveLink("about");
-                  setScrolled(true);
+                  // onUpdateActiveLink("about");
+                  // setScrolled(true);
                 }}
               >
                 <span className="navbar-text">ABOUT</span>
               </a>
-            </li>
-            <li
+            </motion.li>
+            <motion.li
               className={
                 activeLink === "skills" ? "active nav-item" : "nav-item"
               }
+              whileHover={{ scale: 1.1, rotate: -2 }}
+              whileTap={{ scale: 0.9, rotate: 2 }}
             >
               <a
                 href="#skills"
@@ -264,17 +275,19 @@ const NavBar = ({ isBatterySavingOn, addTab }) => {
                 onClick={(e) => {
                   e.preventDefault();
                   scrollToSection("skills");
-                  onUpdateActiveLink("skills");
-                  setScrolled(true);
+                  // onUpdateActiveLink("skills");
+                  // setScrolled(true);
                 }}
               >
                 <span className="navbar-text">SKILLS</span>
               </a>
-            </li>
-            <li
+            </motion.li>
+            <motion.li
               className={
                 activeLink === "projects" ? "active nav-item" : "nav-item"
               }
+              whileHover={{ scale: 1.1, rotate: -2 }}
+              whileTap={{ scale: 0.9, rotate: 2 }}
             >
               <a
                 href="#projects"
@@ -286,17 +299,19 @@ const NavBar = ({ isBatterySavingOn, addTab }) => {
                 onClick={(e) => {
                   e.preventDefault();
                   scrollToSection("projects");
-                  onUpdateActiveLink("projects");
-                  setScrolled(true);
+                  // onUpdateActiveLink("projects");
+                  // setScrolled(true);
                 }}
               >
                 <span className="navbar-text">PROJECTS</span>
               </a>
-            </li>
-            <li
+            </motion.li>
+            <motion.li
               className={
                 activeLink === "experience" ? "active nav-item" : "nav-item"
               }
+              whileHover={{ scale: 1.1, rotate: -2 }}
+              whileTap={{ scale: 0.9, rotate: 2 }}
             >
               <a
                 href="#experience"
@@ -308,17 +323,19 @@ const NavBar = ({ isBatterySavingOn, addTab }) => {
                 onClick={(e) => {
                   e.preventDefault();
                   scrollToSection("experience");
-                  onUpdateActiveLink("experience");
-                  setScrolled(true);
+                  // onUpdateActiveLink("experience");
+                  // setScrolled(true);
                 }}
               >
                 <span className="navbar-text">EXPERIENCE</span>
               </a>
-            </li>
-            <li
+            </motion.li>
+            <motion.li
               className={
                 activeLink === "contact" ? "active nav-item" : "nav-item"
               }
+              whileHover={{ scale: 1.1, rotate: -2 }}
+              whileTap={{ scale: 0.9, rotate: 2 }}
             >
               <a
                 href="#contact"
@@ -330,30 +347,35 @@ const NavBar = ({ isBatterySavingOn, addTab }) => {
                 onClick={(e) => {
                   e.preventDefault();
                   scrollToSection("contact");
-                  onUpdateActiveLink("contact");
-                  setScrolled(true);
+                  // onUpdateActiveLink("contact");
+                  // setScrolled(true);
                 }}
               >
                 <span className="navbar-text">CONTACT</span>
               </a>
-            </li>
-            <li
-              className={
-                activeLink === "experience" ? "active nav-item" : "nav-item"
-              }
+            </motion.li>
+            <motion.li
+              className={activeLink === "feed" ? "active nav-item" : "nav-item"}
+              whileHover={{ scale: 1.1, rotate: -2 }}
+              whileTap={{ scale: 0.9, rotate: 2 }}
             >
               <a
-                href="#experience"
+                href="#feed"
                 className={"navbar-link"}
                 onClick={(e) => {
                   e.preventDefault();
                   addTab("FeedTab", { title: "Kartavya's Feed" });
+                  setMenuOpen(false);
                 }}
               >
                 <span className="navbar-text">FEED</span>
               </a>
-            </li>
-            <li className="nav-item">
+            </motion.li>
+            <motion.li
+              className="nav-item"
+              whileHover={{ scale: 1.1, rotate: -2 }}
+              whileTap={{ scale: 0.9, rotate: 2 }}
+            >
               <a
                 download="Kartavya-Singh-Resume-2025.pdf"
                 href={Resume}
@@ -365,7 +387,7 @@ const NavBar = ({ isBatterySavingOn, addTab }) => {
                   <i className="fa fa-file-pdf-o"></i> RESUME
                 </span>
               </a>
-            </li>
+            </motion.li>
           </motion.ul>
         </motion.div>
       </div>

@@ -17,11 +17,17 @@ html {
   border: none !important;
   background: transparent;
   width: 100%;
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out,
+    color 0.3s ease-in-out, padding 0.3s ease-in-out, height 0.3s ease-in-out,
+    font-size 0.3s ease-in-out, x 0.3s ease-in-out, background 0.3s ease-in-out;
   opacity: 1;
   transform: translateY(0);
-  -webkit-transition: all 0.3s;
-  -moz-transition: all 0.3s;
+  -webkit-transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out,
+    color 0.3s ease-in-out, padding 0.3s ease-in-out, height 0.3s ease-in-out,
+    font-size 0.3s ease-in-out, x 0.3s ease-in-out, background 0.3s ease-in-out;
+  -moz-transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out,
+    color 0.3s ease-in-out, padding 0.3s ease-in-out, height 0.3s ease-in-out,
+    font-size 0.3s ease-in-out, x 0.3s ease-in-out, background 0.3s ease-in-out;
 }
 
 .fixed-top {
@@ -38,6 +44,9 @@ html {
   padding-left: 16px;
   padding-right: 16px;
   background-color: #212529;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out,
+    color 0.3s ease-in-out, padding 0.3s ease-in-out, height 0.3s ease-in-out,
+    font-size 0.3s ease-in-out, x 0.3s ease-in-out, background 0.3s ease-in-out;
 }
 
 .navbar-container {
@@ -78,6 +87,10 @@ html {
   line-height: inherit;
   white-space: nowrap;
   position: relative;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out,
+    color 0.3s ease-in-out, padding 0.3s ease-in-out, height 0.3s ease-in-out,
+    font-size 0.3s ease-in-out, x 0.3s ease-in-out, background 0.3s ease-in-out,
+    scale;
 }
 
 @keyframes pulse {
@@ -100,7 +113,7 @@ b {
 .navbar-brand:active,
 .navbar-brand:focus,
 .navbar-brand:hover {
-  animation: pulse 2s infinite;
+  /* animation: pulse 2s infinite; */
   text-decoration: none;
 }
 
@@ -132,6 +145,10 @@ b {
   line-height: inherit;
   white-space: nowrap;
   position: relative;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out,
+    color 0.3s ease-in-out, padding 0.3s ease-in-out, height 0.3s ease-in-out,
+    font-size 0.3s ease-in-out, x 0.3s ease-in-out, background 0.3s ease-in-out,
+    rotate 0.3s ease-in-out, scale 0.3s ease-in-out;
 }
 
 .navbar-toggler {
@@ -146,6 +163,9 @@ b {
   border: 0;
   background-color: #fcbc1d;
   font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out,
+    color 0.3s ease-in-out, padding 0.3s ease-in-out, height 0.3s ease-in-out,
+    font-size 0.3s ease-in-out, x 0.3s ease-in-out, background 0.3s ease-in-out;
 }
 
 .navbar-toggler:not(:disabled):not(.disabled) {
@@ -171,7 +191,9 @@ b {
   padding-left: 0;
   margin-bottom: 0;
   list-style: none;
-  transition: all 0.5s ease-in-out;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out,
+    color 0.3s ease-in-out, padding 0.3s ease-in-out, height 0.3s ease-in-out,
+    font-size 0.3s ease-in-out, x 0.3s ease-in-out, background 0.3s ease-in-out;
 }
 
 .navbar-links li,
@@ -267,7 +289,10 @@ i {
     background-color: #212529;
     width: 100%;
     z-index: 1000;
-    transition: 500px 0.3s ease; /* Smooth transition */
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out,
+      color 0.3s ease-in-out, padding 0.3s ease-in-out, height 0.3s ease-in-out,
+      font-size 0.3s ease-in-out, x 0.3s ease-in-out,
+      background 0.3s ease-in-out; /* Smooth transition */
     overflow: hidden;
     max-height: 0;
   }
@@ -278,9 +303,15 @@ i {
     list-style: none;
     overflow: hidden;
     max-height: 0;
-    transition: max-height 0.3s ease;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out,
+      color 0.3s ease-in-out, padding 0.3s ease-in-out, height 0.3s ease-in-out,
+      font-size 0.3s ease-in-out, x 0.3s ease-in-out,
+      background 0.3s ease-in-out;
     overflow-y: scroll;
-    transition: max-height 0.3s ease;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out,
+      color 0.3s ease-in-out, padding 0.3s ease-in-out, height 0.3s ease-in-out,
+      font-size 0.3s ease-in-out, x 0.3s ease-in-out,
+      background 0.3s ease-in-out;
     overflow-y: scroll;
     overflow-x: hidden;
     overflow-y: scroll;
@@ -309,11 +340,17 @@ i {
   }
 
   .navbar-menu.open .navbar-menu {
-    transition: all 2s ease-in-out;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out,
+      color 0.3s ease-in-out, padding 0.3s ease-in-out, height 0.3s ease-in-out,
+      font-size 0.3s ease-in-out, x 0.3s ease-in-out,
+      background 0.3s ease-in-out;
   }
 
   .navbar-menu.open .navbar-links {
-    transition: all 2s ease-in-out;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out,
+      color 0.3s ease-in-out, padding 0.3s ease-in-out, height 0.3s ease-in-out,
+      font-size 0.3s ease-in-out, x 0.3s ease-in-out,
+      background 0.3s ease-in-out;
   }
 
   .navbar-toggler {
