@@ -7,6 +7,8 @@ const cookieParser = require("cookie-parser");
 const { connectDB } = require("./config/mongodb");
 const winston = require("winston");
 
+const githubStatsRouter = require("./githubStats");
+
 dotenv.config();
 const app = express();
 
@@ -215,7 +217,20 @@ connectDB();
 
 // Define routes
 const dataRoutes = require("./routes/dataRoutes");
+// Root endpoint: Welcome message for the backend
+app.get("/", (req, res) => {
+  res.send("Welcome to Kartavya's MERN Portfolio Backend");
+});
+
+// API root endpoint: Presentable description of the API track
+app.get("/api", (req, res) => {
+  res.send(
+    "This is the API track for Kartavya's MERN Portfolio Backend. Explore our various endpoints to interact with the data and services provided."
+  );
+});
+
 app.use("/api", dataRoutes);
+app.use("/api/github-stats/top-langs", githubStatsRouter);
 
 // Add a new route for fetching GitHub stats
 app.get("/api/top-langs", async (req, res) => {
