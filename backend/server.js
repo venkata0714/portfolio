@@ -230,7 +230,7 @@ app.get("/api", (req, res) => {
 });
 
 app.use("/api", dataRoutes);
-app.use("/api/github-stats/top-langs", githubStatsRouter);
+app.use("/api/github-stats", githubStatsRouter);
 
 // Add a new route for fetching GitHub stats
 app.get("/api/top-langs", async (req, res) => {
