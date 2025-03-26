@@ -425,7 +425,7 @@ function SkillPage({ isBatterySavingOn, isWindowModalVisible }) {
             </motion.p>
             <motion.div
               className="skill-carousel-container"
-              key={`skill-carousel-${skillScreenWidth}`}
+              // key={`skill-carousel-${skillScreenWidth}`}
               variants={isBatterySavingOn ? {} : zoomIn(0)}
               initial="hidden"
               whileInView="show"
