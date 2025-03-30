@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { zoomIn } from "../../services/variants";
 import LeftArrow from "../../assets/img/icons/arrow1.svg";
 import RightArrow from "../../assets/img/icons/arrow2.svg";
+import LikeButton from "../SpecialComponents/LikeButton";
 import { fetchExperiences } from "../../services/experienceService";
 import { styled } from "@stitches/react";
 
@@ -88,7 +89,7 @@ const CareerTabPage = ({ addTab, isBatterySavingOn }) => {
       className="career-tab-page"
       variants={isBatterySavingOn ? {} : zoomIn(0)}
       initial="hidden"
-      whileInView="show"
+      animate="show"
       exit="hidden"
       viewport={{ once: true }}
     >
@@ -118,6 +119,29 @@ const CareerTabPage = ({ addTab, isBatterySavingOn }) => {
                   transition={slideTransition}
                 >
                   <div className="slider-content">
+                    {/* Like Button positioned at the top-right corner */}
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: "10px",
+                        right: "10px",
+                        zIndex: 100,
+                      }}
+                    >
+                      <LikeButton
+                        type="Experience"
+                        title={experience.experienceTitle}
+                        onLikeSuccess={() =>
+                          setExperiences((prevExperiences) =>
+                            prevExperiences.map((e) =>
+                              e.experienceTitle === experience.experienceTitle
+                                ? { ...e, likesCount: (e.likesCount || 0) + 1 }
+                                : e
+                            )
+                          )
+                        }
+                      />
+                    </div>
                     <div className="career-container">
                       <div className="career-image">
                         <img
@@ -175,6 +199,20 @@ const CareerTabPage = ({ addTab, isBatterySavingOn }) => {
                         </motion.div>
                       </div>
                     </div>
+                    {experience.likesCount > 0 && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          bottom: "27.5px",
+                          right: "10px",
+                          color: "#edeeef",
+                          fontSize: "0.8em",
+                          zIndex: 150,
+                        }}
+                      >
+                        Likes: {experience.likesCount}
+                      </div>
+                    )}
                   </div>
                 </motion.div>
               );

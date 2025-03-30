@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { zoomIn } from "../../services/variants";
 import LeftArrow from "../../assets/img/icons/arrow1.svg";
 import RightArrow from "../../assets/img/icons/arrow2.svg";
+import LikeButton from "../SpecialComponents/LikeButton";
 import { fetchHonorsExperiences } from "../../services/honorsExperienceService";
 import { fetchYearInReviews } from "../../services/yearInReviewService";
 import { styled } from "@stitches/react";
@@ -127,6 +128,60 @@ const HonorsTabPage = ({ addTab, isBatterySavingOn }) => {
                   transition={slideTransition}
                 >
                   <div className="slider-content">
+                    {type === "honor" ? (
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: "10px",
+                          right: "10px",
+                          zIndex: 100,
+                        }}
+                      >
+                        <LikeButton
+                          type="HonorsExperience"
+                          title={data.honorsExperienceTitle}
+                          onLikeSuccess={() =>
+                            setHonors((prevHonorsExperience) =>
+                              prevHonorsExperience.map((he) =>
+                                he.honorsExperienceTitle ===
+                                data.honorsExperienceTitle
+                                  ? {
+                                      ...he,
+                                      likesCount: (he.likesCount || 0) + 1,
+                                    }
+                                  : he
+                              )
+                            )
+                          }
+                        />
+                      </div>
+                    ) : (
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: "10px",
+                          right: "10px",
+                          zIndex: 100,
+                        }}
+                      >
+                        <LikeButton
+                          type="YearInReview"
+                          title={data.yearInReviewTitle}
+                          onLikeSuccess={() =>
+                            setReviews((prevReviews) =>
+                              prevReviews.map((ri) =>
+                                ri.yearInReviewTitle === data.yearInReviewTitle
+                                  ? {
+                                      ...ri,
+                                      likesCount: (ri.likesCount || 0) + 1,
+                                    }
+                                  : ri
+                              )
+                            )
+                          }
+                        />
+                      </div>
+                    )}
                     <div className="career-container">
                       <div className="career-image">
                         <img
@@ -203,6 +258,20 @@ const HonorsTabPage = ({ addTab, isBatterySavingOn }) => {
                         </motion.div>
                       </div>
                     </div>
+                    {data.likesCount > 0 && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          bottom: "27.5px",
+                          right: "10px",
+                          color: "#edeeef",
+                          fontSize: "0.8em",
+                          zIndex: 150,
+                        }}
+                      >
+                        Likes: {data.likesCount}
+                      </div>
+                    )}
                   </div>
                 </motion.div>
               );

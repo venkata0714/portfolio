@@ -44,6 +44,7 @@ const {
   addFeed,
   deleteFeed,
   editFeed,
+  addLike,
 } = require("../controllers/dataController");
 
 const verifyJWT = require("../controllers/middlewareController");
@@ -131,5 +132,7 @@ router.post("/compareOTP", compareOTP);
 router.get("/logout", logoutAdmin);
 
 router.get("/collection-counts", getCollectionCounts);
+
+router.post("/addLike", addLike);
 
 module.exports = router;

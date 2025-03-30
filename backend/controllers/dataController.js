@@ -659,6 +659,68 @@ const editFeed = async (req, res) => {
   }
 };
 
+// Likes Implementation:
+const typeMapping = {
+  Feed: { collection: "FeedTable", titleField: "feedTitle" },
+  YearInReview: {
+    collection: "yearInReviewTable",
+    titleField: "yearInReviewTitle",
+  },
+  Project: { collection: "projectTable", titleField: "projectTitle" },
+  Involvement: {
+    collection: "involvementTable",
+    titleField: "involvementTitle",
+  },
+  HonorsExperience: {
+    collection: "honorsExperienceTable",
+    titleField: "honorsExperienceTitle",
+  },
+  Experience: { collection: "experienceTable", titleField: "experienceTitle" },
+};
+
+const addLike = async (req, res) => {
+  const { type, title } = req.body;
+
+  // Validate inputs
+  if (!type || !title) {
+    return res
+      .status(400)
+      .json({ message: "Both 'type' and 'title' are required." });
+  }
+
+  // Check if provided type is valid
+  const mapping = typeMapping[type];
+  if (!mapping) {
+    return res.status(400).json({ message: "Invalid type provided." });
+  }
+
+  try {
+    const db = require("../config/mongodb").getDB();
+    // Build the filter using the title field based on the type
+    const filter = { [mapping.titleField]: title, deleted: { $ne: true } };
+
+    // Use the $inc operator to increment likesCount by 1.
+    // If likesCount does not exist, $inc creates it.
+    const update = { $inc: { likesCount: 1 } };
+
+    const result = await db
+      .collection(mapping.collection)
+      .updateOne(filter, update);
+
+    if (result.modifiedCount === 0) {
+      // No document was updated: either not found or already soft-deleted
+      return res
+        .status(404)
+        .json({ message: "Document not found or cannot be updated." });
+    }
+
+    return res.json({ success: true, message: "Like added successfully." });
+  } catch (error) {
+    console.error("Error in addLike:", error);
+    res.status(500).json({ message: "Server error while adding like." });
+  }
+};
+
 module.exports = {
   getProjects,
   getProjectByLink,
@@ -703,4 +765,5 @@ module.exports = {
   addFeed,
   deleteFeed,
   editFeed,
+  addLike,
 };

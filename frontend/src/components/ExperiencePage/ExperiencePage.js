@@ -155,7 +155,7 @@ const ExperiencePage = ({
               className="content-container"
               variants={isBatterySavingOn ? {} : zoomIn(0)}
               initial="hidden"
-              whileInView="show"
+              animate="show"
               exit="hidden"
               viewport={{ once: true }}
             >

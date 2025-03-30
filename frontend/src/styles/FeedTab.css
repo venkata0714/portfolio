@@ -53,7 +53,7 @@
 }
 
 .feed-item-container {
-  padding: 15px;
+  padding: 25px;
   flex: 1 1 70%;
   flex-grow: 1;
   display: flex;
@@ -67,7 +67,7 @@
 .feed-timestamp {
   display: block;
   position: absolute;
-  top: 5px;
+  bottom: 5px;
   right: 15px;
   font-size: 0.9rem;
   color: transparent;

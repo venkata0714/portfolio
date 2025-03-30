@@ -1,0 +1,6 @@
+curl -X POST http://127.0.0.1:5000/api/addLike -H "Content-Type: application/json"  -d '{"type": "Feed", "title": "Test For DB - Chicago"}'
+
+Working:
+Invoke-RestMethod -Method Post -Uri "http://127.0.0.1:5000/api/addLike" `
+  -Headers @{"Content-Type"="application/json"} `
+  -Body '{"type": "Feed", "title": "Test For DB - Chicago"}'

@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { zoomIn } from "../../services/variants";
 import LeftArrow from "../../assets/img/icons/arrow1.svg";
 import RightArrow from "../../assets/img/icons/arrow2.svg";
+import LikeButton from "../SpecialComponents/LikeButton";
 import { fetchInvolvements } from "../../services/involvementService";
 import { styled } from "@stitches/react";
 
@@ -115,6 +116,30 @@ const InvolvementTabPage = ({ addTab, isBatterySavingOn }) => {
                   transition={slideTransition}
                 >
                   <div className="slider-content">
+                    {/* Like Button positioned at the top-right corner */}
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: "10px",
+                        right: "10px",
+                        zIndex: 100,
+                      }}
+                    >
+                      <LikeButton
+                        type="Involvement"
+                        title={involvement.involvementTitle}
+                        onLikeSuccess={() =>
+                          setInvolvements((prevInvolvements) =>
+                            prevInvolvements.map((i) =>
+                              i.involvementTitle ===
+                              involvement.involvementTitle
+                                ? { ...i, likesCount: (i.likesCount || 0) + 1 }
+                                : i
+                            )
+                          )
+                        }
+                      />
+                    </div>
                     <div className="career-container">
                       <div className="career-image">
                         <img
@@ -169,6 +194,20 @@ const InvolvementTabPage = ({ addTab, isBatterySavingOn }) => {
                         </motion.div>
                       </div>
                     </div>
+                    {involvement.likesCount > 0 && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          bottom: "27.5px",
+                          right: "10px",
+                          color: "#edeeef",
+                          fontSize: "0.8em",
+                          zIndex: 150,
+                        }}
+                      >
+                        Likes: {involvement.likesCount}
+                      </div>
+                    )}
                   </div>
                 </motion.div>
               );

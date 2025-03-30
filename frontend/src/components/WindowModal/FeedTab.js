@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { styled } from "@stitches/react";
+import LikeButton from "../SpecialComponents/LikeButton";
 import axios from "axios";
 import "../../styles/FeedTab.css";
 
@@ -103,6 +104,29 @@ const FeedTab = () => {
                 )}
                 <div className="feed-item-container">
                   <h2 className="feed-item-title">
+                    {/* Like Button positioned at the top-right corner */}
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: "10px",
+                        right: "10px",
+                        zIndex: 100,
+                      }}
+                    >
+                      <LikeButton
+                        type="Feed"
+                        title={feed.feedTitle}
+                        onLikeSuccess={() =>
+                          setFeeds((prevFeeds) =>
+                            prevFeeds.map((f) =>
+                              f.feedTitle === feed.feedTitle
+                                ? { ...f, likesCount: (f.likesCount || 0) + 1 }
+                                : f
+                            )
+                          )
+                        }
+                      />
+                    </div>
                     {feed.feedLinks && feed.feedLinks.length > 0 ? (
                       <div className="feed-link">
                         {feed.feedLinks.map((link, idx) => (
@@ -155,6 +179,23 @@ const FeedTab = () => {
                       feed.feedContent.join(" ")
                     )}
                   </div>
+                  {feed.likesCount > 0 && (
+                    <div
+                      style={{
+                        // position: "absolute",
+                        // bottom: "27.5px",
+                        // right: "10px",
+                        marginTop: "5px",
+                        width: "100%",
+                        textAlign: "left",
+                        color: "#edeeef",
+                        fontSize: "0.8em",
+                        zIndex: 150,
+                      }}
+                    >
+                      Likes: {feed.likesCount}
+                    </div>
+                  )}
 
                   <span className="feed-timestamp">
                     {feed.feedCreatedAt &&
