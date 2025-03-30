@@ -32,7 +32,7 @@ function HomePage({ isBatterySavingOn, scrolled }) {
   const blur = useTransform(scrollYProgress, [0, 1], [1, 20]);
   const currentBlur = blur.current !== undefined ? blur.current : 0;
   const appliedBlur = scrolled && currentBlur > 0.3 ? currentBlur : 0;
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.6]);
+  const scale = useTransform(scrollYProgress, [0, 0.1, 1], [1, 1, 1.6]);
   // const opacity = useTransform(scrollYProgress, [0.25, 1], [1, 1]);
 
   const handleProfileClick = () => {
@@ -135,18 +135,17 @@ function HomePage({ isBatterySavingOn, scrolled }) {
           key={scrollYProgress}
           ref={HomeBGRef}
           style={
-            // isBatterySavingOn
-            //   ? {}
-            //   :
-            {
-              // opacity,
-              // scale,
-              filter: `blur(${appliedBlur}px)`,
-              transformOrigin: "top top",
-              zIndex: 0,
-              willChange: "transform, filter",
-              transform: "translateZ(0)",
-            }
+            isBatterySavingOn
+              ? {}
+              : {
+                  // opacity,
+                  scale,
+                  filter: `blur(${appliedBlur}px)`,
+                  transformOrigin: "top top",
+                  zIndex: 0,
+                  willChange: "transform, filter",
+                  transform: "translateZ(0)",
+                }
           }
         />
       </div>
