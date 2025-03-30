@@ -59,7 +59,6 @@ async function routes(fastify, options) {
     { preHandler: verifyJWT },
     deleteProject
   );
-  E;
 
   // Involvements
   fastify.get("/getinvolvements", getInvolvements);
