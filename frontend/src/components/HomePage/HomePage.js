@@ -33,7 +33,7 @@ function HomePage({ isBatterySavingOn, scrolled }) {
   const currentBlur = blur.current !== undefined ? blur.current : 0;
   const appliedBlur = scrolled && currentBlur > 0.3 ? currentBlur : 0;
   const scale = useTransform(scrollYProgress, [0, 1], [1, 1.6]);
-  const opacity = useTransform(scrollYProgress, [0.25, 1], [1, 1]);
+  // const opacity = useTransform(scrollYProgress, [0.25, 1], [1, 1]);
 
   const handleProfileClick = () => {
     setFrameIndex((prevIndex) => (prevIndex + 1) % frames.length); // Cycle frames
@@ -138,7 +138,7 @@ function HomePage({ isBatterySavingOn, scrolled }) {
             isBatterySavingOn
               ? {}
               : {
-                  opacity,
+                  // opacity,
                   scale,
                   filter: `blur(${appliedBlur}px)`,
                   transformOrigin: "top top",
