@@ -1,115 +1,124 @@
+// controllers/dataController.js
 const bcrypt = require("bcrypt");
 const { getDB } = require("../config/mongodb");
 const jwt = require("jsonwebtoken");
 const { ObjectId } = require("mongodb");
 
-// Helper: convert a route parameter to an ObjectId
 function getObjectId(id) {
-  // If id consists only of digits, assume it’s a timestamp (in seconds)
   if (/^\d+$/.test(id)) {
     return ObjectId.createFromTime(Number(id));
   } else if (ObjectId.isValid(id)) {
-    // For a typical 24-character hex string, use createFromHexString
     return ObjectId.createFromHexString(id);
   } else {
     throw new Error("Invalid id format");
   }
 }
 
-// Helper function to fetch all documents (excluding soft-deleted items)
-const getAllDocuments = async (collectionName, res) => {
+const getAllDocuments = async (collectionName, reply) => {
   try {
     const db = getDB();
     const documents = await db
       .collection(collectionName)
       .find({ deleted: { $ne: true } })
       .toArray();
-    res.json(documents);
+    reply.send(documents);
   } catch (error) {
     console.error(`Error fetching documents from ${collectionName}:`, error);
-    res
+    reply
       .status(500)
-      .json({ message: `Error fetching documents from ${collectionName}` });
+      .send({ message: `Error fetching documents from ${collectionName}` });
   }
 };
 
-// Helper function to fetch a single document by typeLink (excluding soft-deleted items)
-const getDocumentByLink = async (collectionName, linkField, linkValue, res) => {
+const getDocumentByLink = async (
+  collectionName,
+  linkField,
+  linkValue,
+  reply
+) => {
   try {
     const db = getDB();
     const document = await db
       .collection(collectionName)
       .findOne({ [linkField]: linkValue, deleted: { $ne: true } });
     if (document) {
-      res.json(document);
+      reply.send(document);
     } else {
-      res
+      reply
         .status(404)
-        .json({ message: `${collectionName.slice(0, -5)} not found` });
+        .send({ message: `${collectionName.slice(0, -5)} not found` });
     }
   } catch (error) {
     console.error(
       `Error fetching document by link from ${collectionName}:`,
       error
     );
-    res.status(500).json({
+    reply.status(500).send({
       message: `Error fetching document by link from ${collectionName}`,
     });
   }
 };
 
 // Projects
-const getProjects = (req, res) => getAllDocuments("projectTable", res);
-const getProjectByLink = (req, res) =>
-  getDocumentByLink("projectTable", "projectLink", req.params.projectLink, res);
+const getProjects = (req, reply) => getAllDocuments("projectTable", reply);
+const getProjectByLink = (req, reply) =>
+  getDocumentByLink(
+    "projectTable",
+    "projectLink",
+    req.params.projectLink,
+    reply
+  );
 
 // Involvements
-const getInvolvements = (req, res) => getAllDocuments("involvementTable", res);
-const getInvolvementByLink = (req, res) =>
+const getInvolvements = (req, reply) =>
+  getAllDocuments("involvementTable", reply);
+const getInvolvementByLink = (req, reply) =>
   getDocumentByLink(
     "involvementTable",
     "involvementLink",
     req.params.involvementLink,
-    res
+    reply
   );
 
 // Experiences
-const getExperiences = (req, res) => getAllDocuments("experienceTable", res);
-const getExperienceByLink = (req, res) =>
+const getExperiences = (req, reply) =>
+  getAllDocuments("experienceTable", reply);
+const getExperienceByLink = (req, reply) =>
   getDocumentByLink(
     "experienceTable",
     "experienceLink",
     req.params.experienceLink,
-    res
+    reply
   );
 
 // Year In Reviews
-const getYearInReviews = (req, res) =>
-  getAllDocuments("yearInReviewTable", res);
-const getYearInReviewByLink = (req, res) =>
+const getYearInReviews = (req, reply) =>
+  getAllDocuments("yearInReviewTable", reply);
+const getYearInReviewByLink = (req, reply) =>
   getDocumentByLink(
     "yearInReviewTable",
     "yearInReviewLink",
     req.params.yearInReviewLink,
-    res
+    reply
   );
 
 // Honors Experiences
-const getHonorsExperiences = (req, res) =>
-  getAllDocuments("honorsExperienceTable", res);
-const getHonorsExperienceByLink = (req, res) =>
+const getHonorsExperiences = (req, reply) =>
+  getAllDocuments("honorsExperienceTable", reply);
+const getHonorsExperienceByLink = (req, reply) =>
   getDocumentByLink(
     "honorsExperienceTable",
     "honorsExperienceLink",
     req.params.honorsExperienceLink,
-    res
+    reply
   );
 
 // Skills
-const getSkills = (req, res) => getAllDocuments("skillsCollection", res);
-const getSkillComponents = (req, res) => getAllDocuments("skillsTable", res);
+const getSkills = (req, reply) => getAllDocuments("skillsCollection", reply);
+const getSkillComponents = (req, reply) =>
+  getAllDocuments("skillsTable", reply);
 
-const getCollectionCounts = async (req, res) => {
+const getCollectionCounts = async (req, reply) => {
   try {
     const db = getDB();
     const collections = {
@@ -142,150 +151,134 @@ const getCollectionCounts = async (req, res) => {
         .countDocuments({ deleted: { $ne: true } }),
     };
 
-    res.json(collections);
+    reply.send(collections);
   } catch (error) {
     console.error("Error fetching collection counts:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+    reply.status(500).send({ message: "Internal Server Error" });
   }
 };
 
-// Compare Admin Username
-const compareAdminName = async (req, res) => {
+const compareAdminName = async (req, reply) => {
   const { userName } = req.body;
   const db = getDB();
   const admin = await db.collection("KartavyaPortfolio").findOne({});
-  if (!admin) return res.status(404).json({ message: "No Admin found." });
+  if (!admin) return reply.status(404).send({ message: "No Admin found." });
   const match = await bcrypt.compare(userName, admin.userName);
   return match
-    ? res.json({ success: true })
-    : res.status(401).json({ message: "Incorrect Username" });
+    ? reply.send({ success: true })
+    : reply.status(401).send({ message: "Incorrect Username" });
 };
 
-// Compare Admin Password and Send OTP
-const compareAdminPassword = async (req, res) => {
+const compareAdminPassword = async (req, reply) => {
   const { password } = req.body;
   const db = getDB();
   try {
     const admin = await db.collection("KartavyaPortfolio").findOne({});
-    if (!admin) return res.status(404).json({ message: "Admin not found" });
+    if (!admin) return reply.status(404).send({ message: "Admin not found" });
     const match = await bcrypt.compare(password, admin.password);
-    if (!match) return res.status(401).json({ message: "Incorrect Password" });
+    if (!match)
+      return reply.status(401).send({ message: "Incorrect Password" });
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const expireTime = new Date(Date.now() + 5 * 60000);
     await db.collection("KartavyaPortfolioOTP").deleteMany({});
     await db.collection("KartavyaPortfolioOTP").insertOne({ otp, expireTime });
-    res.json({ success: true, otpSent: true, otp: otp, message: "OTP sent." });
+    reply.send({ success: true, otpSent: true, otp, message: "OTP sent." });
   } catch (error) {
-    res.status(500).json({ message: "Error comparing passwords." });
+    reply.status(500).send({ message: "Error comparing passwords." });
   }
 };
 
-const compareOTP = async (req, res) => {
+const compareOTP = async (req, reply) => {
   const { otp, rememberMe = false } = req.body;
   const db = getDB();
   try {
     const otpData = await db.collection("KartavyaPortfolioOTP").findOne({});
     if (!otpData || otpData.otp !== otp) {
-      return res.status(400).json({ message: "Invalid OTP" });
+      return reply.status(400).send({ message: "Invalid OTP" });
     }
-
     const currentTime = new Date();
     if (otpData.expiry < currentTime) {
-      return res.status(400).json({ message: "OTP expired" });
+      return reply.status(400).send({ message: "OTP expired" });
     }
-
-    // const expiresIn = rememberMe ? "1m" : "1hr"; // 1 week vs 1 hour
-    const expiresIn = rememberMe ? "365d" : "1h"; // 1 week vs 1 hour
+    const expiresIn = rememberMe ? "365d" : "1h";
     const token = jwt.sign({ user: "admin" }, process.env.JWT_SECRET, {
       expiresIn,
     });
-
-    res.cookie("token", token, {
+    reply.setCookie("token", token, {
       httpOnly: true,
       secure: true,
       sameSite: "none",
-      // maxAge: rememberMe ? 60000 : 3600000, // 7 days vs 1 hour
-      maxAge: rememberMe ? 365 * 24 * 60 * 60 * 1000 : 3600000, // 365 days vs 1 hour
-      // 365 * 24 * 60 * 60 * 1000 = 31536000000ms = 365 days = 1 year
-      // 3600000 ms = 1 hour
+      maxAge: rememberMe ? 365 * 24 * 60 * 60 * 1000 : 3600000,
     });
-
-    await db.collection("KartavyaPortfolioOTP").deleteOne({}); // OTP invalidation
-
-    return res.json({ success: true, message: "Logged in successfully!" });
+    await db.collection("KartavyaPortfolioOTP").deleteOne({});
+    return reply.send({ success: true, message: "Logged in successfully!" });
   } catch (err) {
-    res.status(500).json({ message: "Server error" });
+    reply.status(500).send({ message: "Server error" });
   }
 };
 
-const logoutAdmin = (req, res) => {
-  res.clearCookie("token", {
+const logoutAdmin = (req, reply) => {
+  reply.clearCookie("token", {
     httpOnly: true,
     secure: true,
     sameSite: "none",
   });
-  res.json({ success: true, message: "Logged out successfully!" });
+  reply.send({ success: true, message: "Logged out successfully!" });
 };
 
-// Admin management – update credentials (requires current password)
-const setAdminCredentials = async (req, res) => {
+const setAdminCredentials = async (req, reply) => {
   const { userName, password, currentPassword } = req.body;
   const db = getDB();
   try {
     const admin = await db.collection("KartavyaPortfolio").findOne({});
-    if (!admin) {
-      return res.status(404).json({ message: "Admin not found." });
-    }
+    if (!admin) return reply.status(404).send({ message: "Admin not found." });
     const passwordMatch = await bcrypt.compare(currentPassword, admin.password);
-    if (!passwordMatch) {
-      return res
+    if (!passwordMatch)
+      return reply
         .status(401)
-        .json({ message: "Current password is incorrect." });
-    }
+        .send({ message: "Current password is incorrect." });
     const hashedUsername = await bcrypt.hash(userName, 10);
     const hashedPassword = await bcrypt.hash(password, 10);
     await db.collection("KartavyaPortfolio").deleteMany({});
-    await db.collection("KartavyaPortfolio").insertOne({
-      userName: hashedUsername,
-      password: hashedPassword,
-    });
-    res.json({ success: true, message: "Admin credentials set." });
+    await db
+      .collection("KartavyaPortfolio")
+      .insertOne({ userName: hashedUsername, password: hashedPassword });
+    reply.send({ success: true, message: "Admin credentials set." });
   } catch (error) {
     console.error("Error setting admin credentials:", error);
-    res.status(500).json({ message: "Error setting credentials." });
+    reply.status(500).send({ message: "Error setting credentials." });
   }
 };
 
-// CRUD functions for Projects (soft delete)
-const addProject = async (req, res) => {
+// Projects CRUD
+const addProject = async (req, reply) => {
   try {
     const db = getDB();
     const result = await db.collection("projectTable").insertOne(req.body);
-    res.json({
+    reply.send({
       success: true,
       message: "Project added.",
       newItem: { ...req.body, _id: result.insertedId },
     });
   } catch (error) {
     console.error("Error adding project:", error);
-    res.status(500).json({ message: "Error adding project." });
+    reply.status(500).send({ message: "Error adding project." });
   }
 };
-const updateProject = async (req, res) => {
+const updateProject = async (req, reply) => {
   try {
     const db = getDB();
-    // Remove _id from the update payload
     const { _id, ...updateData } = req.body;
     await db
       .collection("projectTable")
       .updateOne({ _id: getObjectId(req.params.id) }, { $set: updateData });
-    res.json({ success: true, message: "Project updated." });
+    reply.send({ success: true, message: "Project updated." });
   } catch (error) {
     console.error("Error updating project:", error);
-    res.status(500).json({ message: "Error updating project." });
+    reply.status(500).send({ message: "Error updating project." });
   }
 };
-const deleteProject = async (req, res) => {
+const deleteProject = async (req, reply) => {
   try {
     const db = getDB();
     await db
@@ -294,44 +287,42 @@ const deleteProject = async (req, res) => {
         { _id: getObjectId(req.params.id) },
         { $set: { deleted: true } }
       );
-    // Hard delete (commented out):
-    // await db.collection("projectTable").deleteOne({ _id: getObjectId(req.params.id) });
-    res.json({ success: true, message: "Project soft deleted." });
+    reply.send({ success: true, message: "Project soft deleted." });
   } catch (error) {
     console.error("Error deleting project:", error);
-    res.status(500).json({ message: "Error deleting project." });
+    reply.status(500).send({ message: "Error deleting project." });
   }
 };
 
-// Involvements
-const addInvolvement = async (req, res) => {
+// Involvements CRUD
+const addInvolvement = async (req, reply) => {
   try {
     const db = getDB();
     const result = await db.collection("involvementTable").insertOne(req.body);
-    res.json({
+    reply.send({
       success: true,
       message: "Involvement added.",
       newItem: { ...req.body, _id: result.insertedId },
     });
   } catch (error) {
     console.error("Error adding involvement:", error);
-    res.status(500).json({ message: "Error adding involvement." });
+    reply.status(500).send({ message: "Error adding involvement." });
   }
 };
-const updateInvolvement = async (req, res) => {
+const updateInvolvement = async (req, reply) => {
   try {
     const db = getDB();
     const { _id, ...updateData } = req.body;
     await db
       .collection("involvementTable")
       .updateOne({ _id: getObjectId(req.params.id) }, { $set: updateData });
-    res.json({ success: true, message: "Involvement updated." });
+    reply.send({ success: true, message: "Involvement updated." });
   } catch (error) {
     console.error("Error updating involvement:", error);
-    res.status(500).json({ message: "Error updating involvement." });
+    reply.status(500).send({ message: "Error updating involvement." });
   }
 };
-const deleteInvolvement = async (req, res) => {
+const deleteInvolvement = async (req, reply) => {
   try {
     const db = getDB();
     await db
@@ -340,44 +331,42 @@ const deleteInvolvement = async (req, res) => {
         { _id: getObjectId(req.params.id) },
         { $set: { deleted: true } }
       );
-    // Hard delete (commented out):
-    // await db.collection("involvementTable").deleteOne({ _id: getObjectId(req.params.id) });
-    res.json({ success: true, message: "Involvement soft deleted." });
+    reply.send({ success: true, message: "Involvement soft deleted." });
   } catch (error) {
     console.error("Error deleting involvement:", error);
-    res.status(500).json({ message: "Error deleting involvement." });
+    reply.status(500).send({ message: "Error deleting involvement." });
   }
 };
 
-// Experiences
-const addExperience = async (req, res) => {
+// Experiences CRUD
+const addExperience = async (req, reply) => {
   try {
     const db = getDB();
     const result = await db.collection("experienceTable").insertOne(req.body);
-    res.json({
+    reply.send({
       success: true,
       message: "Experience added.",
       newItem: { ...req.body, _id: result.insertedId },
     });
   } catch (error) {
     console.error("Error adding experience:", error);
-    res.status(500).json({ message: "Error adding experience." });
+    reply.status(500).send({ message: "Error adding experience." });
   }
 };
-const updateExperience = async (req, res) => {
+const updateExperience = async (req, reply) => {
   try {
     const db = getDB();
     const { _id, ...updateData } = req.body;
     await db
       .collection("experienceTable")
       .updateOne({ _id: getObjectId(req.params.id) }, { $set: updateData });
-    res.json({ success: true, message: "Experience updated." });
+    reply.send({ success: true, message: "Experience updated." });
   } catch (error) {
     console.error("Error updating experience:", error);
-    res.status(500).json({ message: "Error updating experience." });
+    reply.status(500).send({ message: "Error updating experience." });
   }
 };
-const deleteExperience = async (req, res) => {
+const deleteExperience = async (req, reply) => {
   try {
     const db = getDB();
     await db
@@ -386,44 +375,42 @@ const deleteExperience = async (req, res) => {
         { _id: getObjectId(req.params.id) },
         { $set: { deleted: true } }
       );
-    // Hard delete (commented out):
-    // await db.collection("experienceTable").deleteOne({ _id: getObjectId(req.params.id) });
-    res.json({ success: true, message: "Experience soft deleted." });
+    reply.send({ success: true, message: "Experience soft deleted." });
   } catch (error) {
     console.error("Error deleting experience:", error);
-    res.status(500).json({ message: "Error deleting experience." });
+    reply.status(500).send({ message: "Error deleting experience." });
   }
 };
 
-// Year In Reviews
-const addYearInReview = async (req, res) => {
+// Year In Reviews CRUD
+const addYearInReview = async (req, reply) => {
   try {
     const db = getDB();
     const result = await db.collection("yearInReviewTable").insertOne(req.body);
-    res.json({
+    reply.send({
       success: true,
       message: "YearInReview added.",
       newItem: { ...req.body, _id: result.insertedId },
     });
   } catch (error) {
     console.error("Error adding year-in-review:", error);
-    res.status(500).json({ message: "Error adding year-in-review." });
+    reply.status(500).send({ message: "Error adding year-in-review." });
   }
 };
-const updateYearInReview = async (req, res) => {
+const updateYearInReview = async (req, reply) => {
   try {
     const db = getDB();
     const { _id, ...updateData } = req.body;
     await db
       .collection("yearInReviewTable")
       .updateOne({ _id: getObjectId(req.params.id) }, { $set: updateData });
-    res.json({ success: true, message: "YearInReview updated." });
+    reply.send({ success: true, message: "YearInReview updated." });
   } catch (error) {
     console.error("Error updating year-in-review:", error);
-    res.status(500).json({ message: "Error updating year-in-review." });
+    reply.status(500).send({ message: "Error updating year-in-review." });
   }
 };
-const deleteYearInReview = async (req, res) => {
+const deleteYearInReview = async (req, reply) => {
   try {
     const db = getDB();
     await db
@@ -432,46 +419,44 @@ const deleteYearInReview = async (req, res) => {
         { _id: getObjectId(req.params.id) },
         { $set: { deleted: true } }
       );
-    // Hard delete (commented out):
-    // await db.collection("yearInReviewTable").deleteOne({ _id: getObjectId(req.params.id) });
-    res.json({ success: true, message: "YearInReview soft deleted." });
+    reply.send({ success: true, message: "YearInReview soft deleted." });
   } catch (error) {
     console.error("Error deleting year-in-review:", error);
-    res.status(500).json({ message: "Error deleting year-in-review." });
+    reply.status(500).send({ message: "Error deleting year-in-review." });
   }
 };
 
-// Honors Experiences
-const addHonorsExperience = async (req, res) => {
+// Honors Experiences CRUD
+const addHonorsExperience = async (req, reply) => {
   try {
     const db = getDB();
     const result = await db
       .collection("honorsExperienceTable")
       .insertOne(req.body);
-    res.json({
+    reply.send({
       success: true,
       message: "HonorsExperience added.",
       newItem: { ...req.body, _id: result.insertedId },
     });
   } catch (error) {
     console.error("Error adding honors experience:", error);
-    res.status(500).json({ message: "Error adding honors experience." });
+    reply.status(500).send({ message: "Error adding honors experience." });
   }
 };
-const updateHonorsExperience = async (req, res) => {
+const updateHonorsExperience = async (req, reply) => {
   try {
     const db = getDB();
     const { _id, ...updateData } = req.body;
     await db
       .collection("honorsExperienceTable")
       .updateOne({ _id: getObjectId(req.params.id) }, { $set: updateData });
-    res.json({ success: true, message: "HonorsExperience updated." });
+    reply.send({ success: true, message: "HonorsExperience updated." });
   } catch (error) {
     console.error("Error updating honors experience:", error);
-    res.status(500).json({ message: "Error updating honors experience." });
+    reply.status(500).send({ message: "Error updating honors experience." });
   }
 };
-const deleteHonorsExperience = async (req, res) => {
+const deleteHonorsExperience = async (req, reply) => {
   try {
     const db = getDB();
     await db
@@ -480,44 +465,42 @@ const deleteHonorsExperience = async (req, res) => {
         { _id: getObjectId(req.params.id) },
         { $set: { deleted: true } }
       );
-    // Hard delete (commented out):
-    // await db.collection("honorsExperienceTable").deleteOne({ _id: getObjectId(req.params.id) });
-    res.json({ success: true, message: "HonorsExperience soft deleted." });
+    reply.send({ success: true, message: "HonorsExperience soft deleted." });
   } catch (error) {
     console.error("Error deleting honors experience:", error);
-    res.status(500).json({ message: "Error deleting honors experience." });
+    reply.status(500).send({ message: "Error deleting honors experience." });
   }
 };
 
-// Skills Collection
-const addSkill = async (req, res) => {
+// Skills Collection CRUD
+const addSkill = async (req, reply) => {
   try {
     const db = getDB();
     const result = await db.collection("skillsCollection").insertOne(req.body);
-    res.json({
+    reply.send({
       success: true,
       message: "Skill added.",
       newItem: { ...req.body, _id: result.insertedId },
     });
   } catch (error) {
     console.error("Error adding skill:", error);
-    res.status(500).json({ message: "Error adding skill." });
+    reply.status(500).send({ message: "Error adding skill." });
   }
 };
-const updateSkill = async (req, res) => {
+const updateSkill = async (req, reply) => {
   try {
     const db = getDB();
     const { _id, ...updateData } = req.body;
     await db
       .collection("skillsCollection")
       .updateOne({ _id: getObjectId(req.params.id) }, { $set: updateData });
-    res.json({ success: true, message: "Skill updated." });
+    reply.send({ success: true, message: "Skill updated." });
   } catch (error) {
     console.error("Error updating skill:", error);
-    res.status(500).json({ message: "Error updating skill." });
+    reply.status(500).send({ message: "Error updating skill." });
   }
 };
-const deleteSkill = async (req, res) => {
+const deleteSkill = async (req, reply) => {
   try {
     const db = getDB();
     await db
@@ -526,44 +509,42 @@ const deleteSkill = async (req, res) => {
         { _id: getObjectId(req.params.id) },
         { $set: { deleted: true } }
       );
-    // Hard delete (commented out):
-    // await db.collection("skillsCollection").deleteOne({ _id: getObjectId(req.params.id) });
-    res.json({ success: true, message: "Skill soft deleted." });
+    reply.send({ success: true, message: "Skill soft deleted." });
   } catch (error) {
     console.error("Error deleting skill:", error);
-    res.status(500).json({ message: "Error deleting skill." });
+    reply.status(500).send({ message: "Error deleting skill." });
   }
 };
 
-// Skills Table (Skill Components)
-const addSkillComponent = async (req, res) => {
+// Skills Table (Skill Components) CRUD
+const addSkillComponent = async (req, reply) => {
   try {
     const db = getDB();
     const result = await db.collection("skillsTable").insertOne(req.body);
-    res.json({
+    reply.send({
       success: true,
       message: "SkillComponent added.",
       newItem: { ...req.body, _id: result.insertedId },
     });
   } catch (error) {
     console.error("Error adding skill component:", error);
-    res.status(500).json({ message: "Error adding skill component." });
+    reply.status(500).send({ message: "Error adding skill component." });
   }
 };
-const updateSkillComponent = async (req, res) => {
+const updateSkillComponent = async (req, reply) => {
   try {
     const db = getDB();
     const { _id, ...updateData } = req.body;
     await db
       .collection("skillsTable")
       .updateOne({ _id: getObjectId(req.params.id) }, { $set: updateData });
-    res.json({ success: true, message: "SkillComponent updated." });
+    reply.send({ success: true, message: "SkillComponent updated." });
   } catch (error) {
     console.error("Error updating skill component:", error);
-    res.status(500).json({ message: "Error updating skill component." });
+    reply.status(500).send({ message: "Error updating skill component." });
   }
 };
-const deleteSkillComponent = async (req, res) => {
+const deleteSkillComponent = async (req, reply) => {
   try {
     const db = getDB();
     await db
@@ -572,41 +553,36 @@ const deleteSkillComponent = async (req, res) => {
         { _id: getObjectId(req.params.id) },
         { $set: { deleted: true } }
       );
-    // Hard delete (commented out):
-    // await db.collection("skillsTable").deleteOne({ _id: getObjectId(req.params.id) });
-    res.json({ success: true, message: "SkillComponent soft deleted." });
+    reply.send({ success: true, message: "SkillComponent soft deleted." });
   } catch (error) {
     console.error("Error deleting skill component:", error);
-    res.status(500).json({ message: "Error deleting skill component." });
+    reply.status(500).send({ message: "Error deleting skill component." });
   }
 };
 
-const getFeeds = async (req, res) => {
+const getFeeds = async (req, reply) => {
   try {
     const db = getDB();
     const feeds = await db
       .collection("FeedTable")
       .find({ deleted: { $ne: true } })
-      .sort({ feedCreatedAt: -1 }) // sorts in descending order by created timestamp
+      .sort({ feedCreatedAt: -1 })
       .toArray();
-    res.json(feeds);
+    reply.send(feeds);
   } catch (error) {
     console.error("Error fetching feeds:", error);
-    res.status(500).json({ message: "Error fetching feeds", error });
+    reply.status(500).send({ message: "Error fetching feeds", error });
   }
 };
 
-const addFeed = async (req, res) => {
+const addFeed = async (req, reply) => {
   const { feedTitle, feedCategory, feedContent, feedImageURL, feedLinks } =
     req.body;
-
-  // Validate mandatory fields
   if (!feedTitle || !feedCategory) {
-    return res
+    return reply
       .status(400)
-      .json({ message: "feedTitle and feedCategory are required." });
+      .send({ message: "feedTitle and feedCategory are required." });
   }
-
   try {
     const db = getDB();
     const newFeed = {
@@ -615,47 +591,46 @@ const addFeed = async (req, res) => {
       feedContent: feedContent || [],
       feedImageURL: feedImageURL || null,
       feedLinks: feedLinks || [],
-      feedCreatedAt: new Date().toISOString(), // or use new Date() if you prefer a Date object
+      feedCreatedAt: new Date().toISOString(),
     };
     const result = await db.collection("FeedTable").insertOne(newFeed);
-    res.json({
+    reply.send({
       success: true,
       message: "Feed added successfully.",
       newItem: { ...newFeed, _id: result.insertedId },
     });
   } catch (error) {
     console.error("Error adding feed:", error);
-    res.status(500).json({ message: "Error adding feed", error });
+    reply.status(500).send({ message: "Error adding feed", error });
   }
 };
 
-const deleteFeed = async (req, res) => {
+const deleteFeed = async (req, reply) => {
   try {
     const db = getDB();
-    // Using the helper getObjectId from the file (see :contentReference[oaicite:2]{index=2}&#8203;:contentReference[oaicite:3]{index=3})
     const id = req.params.id;
     await db
       .collection("FeedTable")
       .updateOne({ _id: getObjectId(id) }, { $set: { deleted: true } });
-    res.json({ success: true, message: "Feed soft deleted." });
+    reply.send({ success: true, message: "Feed soft deleted." });
   } catch (error) {
     console.error("Error deleting feed:", error);
-    res.status(500).json({ message: "Error deleting feed", error });
+    reply.status(500).send({ message: "Error deleting feed", error });
   }
 };
 
-const editFeed = async (req, res) => {
+const editFeed = async (req, reply) => {
   try {
     const db = getDB();
     const id = req.params.id;
-    const { _id, ...updateData } = req.body; // Exclude _id from update data
+    const { _id, ...updateData } = req.body;
     await db
       .collection("FeedTable")
       .updateOne({ _id: getObjectId(id) }, { $set: updateData });
-    res.json({ success: true, message: "Feed updated." });
+    reply.send({ success: true, message: "Feed updated." });
   } catch (error) {
     console.error("Error editing feed:", error);
-    res.status(500).json({ message: "Error editing feed", error });
+    reply.status(500).send({ message: "Error editing feed", error });
   }
 };
 
@@ -678,72 +653,35 @@ const typeMapping = {
   Experience: { collection: "experienceTable", titleField: "experienceTitle" },
 };
 
-const addLike = async (req, res) => {
+const addLike = async (req, reply) => {
   const { type, title } = req.body;
-
-  // Validate inputs
   if (!type || !title) {
-    return res
+    return reply
       .status(400)
-      .json({ message: "Both 'type' and 'title' are required." });
+      .send({ message: "Both 'type' and 'title' are required." });
   }
-
-  // Check if provided type is valid
   const mapping = typeMapping[type];
   if (!mapping) {
-    return res.status(400).json({ message: "Invalid type provided." });
+    return reply.status(400).send({ message: "Invalid type provided." });
   }
-
   try {
-    const db = require("../config/mongodb").getDB();
-    // Build the filter using the title field based on the type
+    const db = getDB();
     const filter = { [mapping.titleField]: title, deleted: { $ne: true } };
-
-    // Use the $inc operator to increment likesCount by 1.
-    // If likesCount does not exist, $inc creates it.
     const update = { $inc: { likesCount: 1 } };
-
     const result = await db
       .collection(mapping.collection)
       .updateOne(filter, update);
-
     if (result.modifiedCount === 0) {
-      // No document was updated: either not found or already soft-deleted
-      return res
+      return reply
         .status(404)
-        .json({ message: "Document not found or cannot be updated." });
+        .send({ message: "Document not found or cannot be updated." });
     }
-
-    return res.json({ success: true, message: "Like added successfully." });
+    reply.send({ success: true, message: "Like added successfully." });
   } catch (error) {
     console.error("Error in addLike:", error);
-    res.status(500).json({ message: "Server error while adding like." });
+    reply.status(500).send({ message: "Server error while adding like." });
   }
 };
-
-// const resetLikes = async (req, res) => {
-//   try {
-//     const db = require("../config/mongodb").getDB();
-//     // Define the collections that hold a likesCount field.
-//     const collectionsToReset = [
-//       "FeedTable",
-//       "yearInReviewTable",
-//       "projectTable",
-//       "involvementTable",
-//       "honorsExperienceTable",
-//       "experienceTable",
-//     ];
-
-//     // For each collection, update all documents to set likesCount to 0.
-//     for (const colName of collectionsToReset) {
-//       await db.collection(colName).updateMany({}, { $set: { likesCount: 0 } });
-//     }
-//     res.json({ success: true, message: "All likes reset to 0" });
-//   } catch (error) {
-//     console.error("Error resetting likes:", error);
-//     res.status(500).json({ success: false, message: "Error resetting likes" });
-//   }
-// };
 
 module.exports = {
   getProjects,
@@ -790,5 +728,4 @@ module.exports = {
   deleteFeed,
   editFeed,
   addLike,
-  // resetLikes,
 };

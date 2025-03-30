@@ -1,18 +1,19 @@
+// controllers/middlewareController.js
 const jwt = require("jsonwebtoken");
 
-const verifyJWT = (req, res, next) => {
-  const token = req.cookies.token;
-
+const verifyJWT = (request, reply, done) => {
+  const token = request.cookies.token;
   if (!token) {
-    return res.status(401).json({ message: "No token provided" });
+    reply.status(401).send({ message: "No token provided" });
+    return;
   }
-
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
-      return res.status(403).json({ message: "Failed to authenticate token" });
+      reply.status(403).send({ message: "Failed to authenticate token" });
+      return;
     }
-    req.user = decoded;
-    next();
+    request.user = decoded;
+    done();
   });
 };
 

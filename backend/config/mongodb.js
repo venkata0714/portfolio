@@ -1,4 +1,4 @@
-// backend/config/mongodb.js
+// config/mongodb.js
 const { MongoClient } = require("mongodb");
 const dotenv = require("dotenv");
 
