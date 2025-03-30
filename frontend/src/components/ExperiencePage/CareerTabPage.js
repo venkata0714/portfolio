@@ -7,35 +7,36 @@ import LikeButton from "../SpecialComponents/LikeButton";
 import { fetchExperiences } from "../../services/experienceService";
 import { styled } from "@stitches/react";
 
+// ---------------- Slide Variants & Transition ----------------
 const slideVariants = {
   hidden: { opacity: 0, scale: 0.6, x: 0, rotateY: 0, z: -400, zIndex: 7 },
   prev: { opacity: 0.8, scale: 0.8, x: -240, rotateY: 15, z: -200, zIndex: 9 },
   next: { opacity: 0.8, scale: 0.8, x: 240, rotateY: -15, z: -200, zIndex: 9 },
   active: { opacity: 1, scale: 1, x: 0, rotateY: 0, z: 0, zIndex: 10 },
 };
+
 const slideTransition = {
   duration: 0.8,
   ease: "easeInOut",
-  // Ensure zIndex jumps to target value without tweening
   zIndex: { duration: 0 },
 };
 
+// ---------------- Utility Function ----------------
 const scrollToSection = (id) => {
   const element = document.getElementById(id);
   if (element) {
-    const offset = 52; // Adjust based on your navbar height
+    const offset = 52;
     const elementPosition = element.getBoundingClientRect().top;
     const offsetPosition = elementPosition + window.scrollY - offset;
-    window.scrollTo({
-      top: offsetPosition,
-      behavior: "smooth",
-    });
+    window.scrollTo({ top: offsetPosition, behavior: "smooth" });
   }
 };
+
+// ---------------- Custom Arrow Component ----------------
 const CustomArrow = ({ direction, onClick, imgSrc, label }) => {
   const handleClick = () => {
-    scrollToSection("experience"); // Correct capitalization here
-    if (onClick) onClick(); // Call the passed onClick function if it exists
+    scrollToSection("experience");
+    if (onClick) onClick();
   };
   return (
     <button
@@ -48,6 +49,7 @@ const CustomArrow = ({ direction, onClick, imgSrc, label }) => {
   );
 };
 
+// ---------------- CareerTabPage Component ----------------
 const CareerTabPage = ({ addTab, isBatterySavingOn }) => {
   const [experiences, setExperiences] = useState([]);
   const [activeSlide, setActiveSlide] = useState(0);
@@ -66,7 +68,6 @@ const CareerTabPage = ({ addTab, isBatterySavingOn }) => {
 
   const nextSlide = () =>
     setActiveSlide((prev) => (prev + 1) % experiences.length);
-
   const prevSlide = () =>
     setActiveSlide(
       (prev) => (prev - 1 + experiences.length) % experiences.length
@@ -84,6 +85,21 @@ const CareerTabPage = ({ addTab, isBatterySavingOn }) => {
       ? [activeSlide, nextIndex]
       : [prevIndex, activeSlide, nextIndex];
 
+  // ---------------- Advanced Swipe Logic ----------------
+  const swipeConfidenceThreshold = 10000;
+  const swipePower = (offsetX, velocityX) => {
+    return Math.abs(offsetX) * velocityX;
+  };
+
+  const handleDragEnd = (event, info) => {
+    const swipe = swipePower(info.offset.x, info.velocity.x);
+    if (swipe < -swipeConfidenceThreshold) {
+      nextSlide();
+    } else if (swipe > swipeConfidenceThreshold) {
+      prevSlide();
+    }
+  };
+
   return (
     <motion.div
       className="career-tab-page"
@@ -95,11 +111,17 @@ const CareerTabPage = ({ addTab, isBatterySavingOn }) => {
     >
       <h1 className="career-tab-header">My Career</h1>
       <div className="career-tabs-slider">
-        <div className="slide-container">
+        {/* Enable smooth, advanced swiping */}
+        <motion.div
+          className="slide-container"
+          drag="x"
+          dragConstraints={{ left: 0, right: 0 }}
+          dragElastic={0.5}
+          onDragEnd={handleDragEnd}
+        >
           <AnimatePresence initial={false}>
             {visibleIndices.map((index) => {
               const experience = experiences[index];
-              // Determine the variant state for this slide
               const variant =
                 index === activeSlide
                   ? "active"
@@ -119,7 +141,7 @@ const CareerTabPage = ({ addTab, isBatterySavingOn }) => {
                   transition={slideTransition}
                 >
                   <div className="slider-content">
-                    {/* Like Button positioned at the top-right corner */}
+                    {/* Like Button at top-right */}
                     <div
                       style={{
                         position: "absolute",
@@ -187,11 +209,7 @@ const CareerTabPage = ({ addTab, isBatterySavingOn }) => {
                             bounceDamping: 15,
                           }}
                         >
-                          <StyledButton
-                            onClick={(e) => {
-                              e.preventDefault();
-                            }}
-                          >
+                          <StyledButton onClick={(e) => e.preventDefault()}>
                             <ButtonShadow />
                             <ButtonEdge />
                             <ButtonLabel>Learn More →</ButtonLabel>
@@ -218,7 +236,7 @@ const CareerTabPage = ({ addTab, isBatterySavingOn }) => {
               );
             })}
           </AnimatePresence>
-        </div>
+        </motion.div>
         <div className="btns">
           <CustomArrow
             direction="left"
@@ -240,7 +258,7 @@ const CareerTabPage = ({ addTab, isBatterySavingOn }) => {
 
 export default CareerTabPage;
 
-// Styled Components for Button
+// ---------------- Styled Components for "Learn More →" Button ----------------
 const ButtonPart = styled("span", {
   position: "absolute",
   top: 0,
@@ -280,7 +298,6 @@ const ButtonLabel = styled("span", {
   userSelect: "none",
   transition:
     "transform 250ms ease-out, background-color 0.3s ease, color 0.3s ease",
-
   "&:hover": {
     backgroundColor: "#fcbc1d",
     color: "#212529",
@@ -297,25 +314,16 @@ const StyledButton = styled("button", {
   position: "relative",
   padding: 0,
   transition: "filter 250ms ease-out",
-
   "&:hover": {
     filter: "brightness(110%)",
-
-    [`& ${ButtonLabel}`]: {
-      transform: "translateY(-8px)",
-    },
-
-    [`& ${ButtonShadow}`]: {
-      transform: "translateY(6px)",
-    },
+    [`& ${ButtonLabel}`]: { transform: "translateY(-8px)" },
+    [`& ${ButtonShadow}`]: { transform: "translateY(6px)" },
   },
-
   "&:active": {
     [`& ${ButtonLabel}`]: {
       transform: "translateY(-2px)",
       transition: "transform 34ms",
     },
-
     [`& ${ButtonShadow}`]: {
       transform: "translateY(1px)",
       transition: "transform 34ms",

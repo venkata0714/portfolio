@@ -7,6 +7,7 @@ import LikeButton from "../SpecialComponents/LikeButton";
 import { fetchInvolvements } from "../../services/involvementService";
 import { styled } from "@stitches/react";
 
+// ---------------- Slide Variants & Transition ----------------
 const slideVariants = {
   hidden: { opacity: 0, scale: 0.6, x: 0, rotateY: 0, z: -400, zIndex: 7 },
   prev: { opacity: 0.8, scale: 0.8, x: -240, rotateY: 15, z: -200, zIndex: 9 },
@@ -19,19 +20,22 @@ const slideTransition = {
   zIndex: { duration: 0 },
 };
 
+// ---------------- Utility Function ----------------
+const scrollToSection = (id) => {
+  const element = document.getElementById(id);
+  if (element) {
+    const offset = 52;
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.scrollY - offset;
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: "smooth",
+    });
+  }
+};
+
+// ---------------- Custom Arrow Component ----------------
 const CustomArrow = ({ direction, onClick, imgSrc, label }) => {
-  const scrollToSection = (id) => {
-    const element = document.getElementById(id);
-    if (element) {
-      const offset = 52;
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.scrollY - offset;
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: "smooth",
-      });
-    }
-  };
   const handleClick = () => {
     if (onClick) onClick();
     scrollToSection("experience");
@@ -47,6 +51,7 @@ const CustomArrow = ({ direction, onClick, imgSrc, label }) => {
   );
 };
 
+// ---------------- InvolvementTabPage Component ----------------
 const InvolvementTabPage = ({ addTab, isBatterySavingOn }) => {
   const [involvements, setInvolvements] = useState([]);
   const [activeSlide, setActiveSlide] = useState(0);
@@ -63,9 +68,9 @@ const InvolvementTabPage = ({ addTab, isBatterySavingOn }) => {
     getInvolvements();
   }, []);
 
+  // Navigation functions
   const nextSlide = () =>
     setActiveSlide((prev) => (prev + 1) % involvements.length);
-
   const prevSlide = () =>
     setActiveSlide(
       (prev) => (prev - 1 + involvements.length) % involvements.length
@@ -83,6 +88,18 @@ const InvolvementTabPage = ({ addTab, isBatterySavingOn }) => {
       ? [activeSlide, nextIndex]
       : [prevIndex, activeSlide, nextIndex];
 
+  // Advanced swipe detection using swipe power (offset * velocity)
+  const swipeConfidenceThreshold = 10000;
+  const swipePower = (offsetX, velocityX) => Math.abs(offsetX) * velocityX;
+  const handleDragEnd = (event, info) => {
+    const swipe = swipePower(info.offset.x, info.velocity.x);
+    if (swipe < -swipeConfidenceThreshold) {
+      nextSlide();
+    } else if (swipe > swipeConfidenceThreshold) {
+      prevSlide();
+    }
+  };
+
   return (
     <motion.div
       className="career-tab-page"
@@ -90,10 +107,18 @@ const InvolvementTabPage = ({ addTab, isBatterySavingOn }) => {
       initial="hidden"
       whileInView="show"
       exit="hidden"
+      viewport={{ once: true }}
     >
       <h1 className="career-tab-header">My Involvements</h1>
       <div className="career-tabs-slider">
-        <div className="slide-container">
+        {/* Slide container with advanced swipe support */}
+        <motion.div
+          className="slide-container"
+          drag="x"
+          dragConstraints={{ left: 0, right: 0 }}
+          dragElastic={0.5}
+          onDragEnd={handleDragEnd}
+        >
           <AnimatePresence initial={false}>
             {visibleIndices.map((index) => {
               const involvement = involvements[index];
@@ -116,7 +141,7 @@ const InvolvementTabPage = ({ addTab, isBatterySavingOn }) => {
                   transition={slideTransition}
                 >
                   <div className="slider-content">
-                    {/* Like Button positioned at the top-right corner */}
+                    {/* Like Button positioned at top-right */}
                     <div
                       style={{
                         position: "absolute",
@@ -129,8 +154,8 @@ const InvolvementTabPage = ({ addTab, isBatterySavingOn }) => {
                         type="Involvement"
                         title={involvement.involvementTitle}
                         onLikeSuccess={() =>
-                          setInvolvements((prevInvolvements) =>
-                            prevInvolvements.map((i) =>
+                          setInvolvements((prev) =>
+                            prev.map((i) =>
                               i.involvementTitle ===
                               involvement.involvementTitle
                                 ? { ...i, likesCount: (i.likesCount || 0) + 1 }
@@ -182,11 +207,7 @@ const InvolvementTabPage = ({ addTab, isBatterySavingOn }) => {
                             bounceDamping: 15,
                           }}
                         >
-                          <StyledButton
-                            onClick={(e) => {
-                              e.preventDefault();
-                            }}
-                          >
+                          <StyledButton onClick={(e) => e.preventDefault()}>
                             <ButtonShadow />
                             <ButtonEdge />
                             <ButtonLabel>Learn More →</ButtonLabel>
@@ -194,6 +215,7 @@ const InvolvementTabPage = ({ addTab, isBatterySavingOn }) => {
                         </motion.div>
                       </div>
                     </div>
+                    {/* Display likes count at bottom-right if available */}
                     {involvement.likesCount > 0 && (
                       <div
                         style={{
@@ -213,7 +235,7 @@ const InvolvementTabPage = ({ addTab, isBatterySavingOn }) => {
               );
             })}
           </AnimatePresence>
-        </div>
+        </motion.div>
         <div className="btns">
           <CustomArrow
             direction="left"
@@ -235,7 +257,7 @@ const InvolvementTabPage = ({ addTab, isBatterySavingOn }) => {
 
 export default InvolvementTabPage;
 
-// Styled Components for Button
+// ---------------- Styled Components for "Learn More →" Button ----------------
 const ButtonPart = styled("span", {
   position: "absolute",
   top: 0,
@@ -253,12 +275,12 @@ const ButtonShadow = styled(ButtonPart, {
 
 const ButtonEdge = styled(ButtonPart, {
   background: `linear-gradient(
-        to left,
-        hsl(0deg 0% 69%) 0%,
-        hsl(0deg 0% 85%) 8%,
-        hsl(0deg 0% 85%) 92%,
-        hsl(0deg 0% 69%) 100%
-      )`,
+    to left,
+    hsl(0deg 0% 69%) 0%,
+    hsl(0deg 0% 85%) 8%,
+    hsl(0deg 0% 85%) 92%,
+    hsl(0deg 0% 69%) 100%
+  )`,
 });
 
 const ButtonLabel = styled("span", {
@@ -275,7 +297,6 @@ const ButtonLabel = styled("span", {
   userSelect: "none",
   transition:
     "transform 250ms ease-out, background-color 0.3s ease, color 0.3s ease",
-
   "&:hover": {
     backgroundColor: "#fcbc1d",
     color: "#212529",
@@ -292,25 +313,16 @@ const StyledButton = styled("button", {
   position: "relative",
   padding: 0,
   transition: "filter 250ms ease-out",
-
   "&:hover": {
     filter: "brightness(110%)",
-
-    [`& ${ButtonLabel}`]: {
-      transform: "translateY(-8px)",
-    },
-
-    [`& ${ButtonShadow}`]: {
-      transform: "translateY(6px)",
-    },
+    [`& ${ButtonLabel}`]: { transform: "translateY(-8px)" },
+    [`& ${ButtonShadow}`]: { transform: "translateY(6px)" },
   },
-
   "&:active": {
     [`& ${ButtonLabel}`]: {
       transform: "translateY(-2px)",
       transition: "transform 34ms",
     },
-
     [`& ${ButtonShadow}`]: {
       transform: "translateY(1px)",
       transition: "transform 34ms",

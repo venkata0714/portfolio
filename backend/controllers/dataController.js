@@ -721,6 +721,30 @@ const addLike = async (req, res) => {
   }
 };
 
+// const resetLikes = async (req, res) => {
+//   try {
+//     const db = require("../config/mongodb").getDB();
+//     // Define the collections that hold a likesCount field.
+//     const collectionsToReset = [
+//       "FeedTable",
+//       "yearInReviewTable",
+//       "projectTable",
+//       "involvementTable",
+//       "honorsExperienceTable",
+//       "experienceTable",
+//     ];
+
+//     // For each collection, update all documents to set likesCount to 0.
+//     for (const colName of collectionsToReset) {
+//       await db.collection(colName).updateMany({}, { $set: { likesCount: 0 } });
+//     }
+//     res.json({ success: true, message: "All likes reset to 0" });
+//   } catch (error) {
+//     console.error("Error resetting likes:", error);
+//     res.status(500).json({ success: false, message: "Error resetting likes" });
+//   }
+// };
+
 module.exports = {
   getProjects,
   getProjectByLink,
@@ -766,4 +790,5 @@ module.exports = {
   deleteFeed,
   editFeed,
   addLike,
+  // resetLikes,
 };

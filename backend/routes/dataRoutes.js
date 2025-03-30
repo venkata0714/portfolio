@@ -45,6 +45,7 @@ const {
   deleteFeed,
   editFeed,
   addLike,
+  // resetLikes,
 } = require("../controllers/dataController");
 
 const verifyJWT = require("../controllers/middlewareController");
@@ -134,5 +135,7 @@ router.get("/logout", logoutAdmin);
 router.get("/collection-counts", getCollectionCounts);
 
 router.post("/addLike", addLike);
+// router.post("/resetLikes", resetLikes);
+// Invoke-RestMethod -Method Post -Uri "http://127.0.0.1:5000/api/resetLikes" -Headers @{ "Content-Type" = "application/json" }
 
 module.exports = router;

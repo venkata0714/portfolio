@@ -484,3 +484,9 @@ i {
     margin-left: auto; /* Pushes the toggle button to the right */
   }
 }
+
+@media (max-width: 375px) {
+  .navbar-brand {
+    font-size: 20px;
+  }
+}

@@ -130,7 +130,7 @@ const NavBar = ({ isBatterySavingOn, addTab }) => {
   useEffect(() => {
     // Initial check on load for screen size
     const initialCheck = () => {
-      if (window.scrollY > 100 || window.innerWidth < 992) {
+      if (window.scrollY > 100) {
         setScrolled(true);
       }
     };
@@ -138,7 +138,7 @@ const NavBar = ({ isBatterySavingOn, addTab }) => {
     initialCheck();
 
     const onScroll = () => {
-      if (window.scrollY > 100 || window.innerWidth < 992) {
+      if (window.scrollY > 100) {
         setScrolled(true);
       } else {
         setScrolled(false);
@@ -182,6 +182,7 @@ const NavBar = ({ isBatterySavingOn, addTab }) => {
       // initial={{ opacity: 0 }}
       // animate={{ opacity: 1 }}
       // transition={{ duration: 0.5 }}
+      style={menuOpen && !scrolled ? { backgroundColor: "#212529" } : {}}
     >
       <div className="navbar-container">
         <motion.a
