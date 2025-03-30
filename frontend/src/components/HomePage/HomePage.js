@@ -135,17 +135,18 @@ function HomePage({ isBatterySavingOn, scrolled }) {
           key={scrollYProgress}
           ref={HomeBGRef}
           style={
-            isBatterySavingOn
-              ? {}
-              : {
-                  // opacity,
-                  scale,
-                  filter: `blur(${appliedBlur}px)`,
-                  transformOrigin: "top top",
-                  zIndex: 0,
-                  willChange: "transform, filter",
-                  transform: "translateZ(0)",
-                }
+            // isBatterySavingOn
+            //   ? {}
+            //   :
+            {
+              // opacity,
+              scale,
+              filter: `blur(${appliedBlur}px)`,
+              transformOrigin: "top top",
+              zIndex: 0,
+              willChange: "transform, filter",
+              transform: "translateZ(0)",
+            }
           }
         />
       </div>
