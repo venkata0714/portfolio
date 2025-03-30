@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { styled } from "@stitches/react";
+import { motion } from "framer-motion";
+import { animated } from "@react-spring/web";
 import LikeButton from "../SpecialComponents/LikeButton";
 import axios from "axios";
 import "../../styles/FeedTab.css";
@@ -131,14 +133,40 @@ const FeedTab = () => {
                       <div className="feed-link">
                         {feed.feedLinks.map((link, idx) => (
                           <div className="feed-title">
-                            <a
+                            {feed.feedTitle}
+
+                            <motion.a
                               key={idx}
                               href={link}
                               target="_blank"
+                              className="feed-link-btn"
                               rel="noopener noreferrer"
+                              initial={{ opacity: 0, scale: 0 }}
+                              drag
+                              dragConstraints={{
+                                left: 0,
+                                right: 0,
+                                top: 0,
+                                bottom: 0,
+                              }}
+                              dragElastic={0.3}
+                              dragTransition={{
+                                bounceStiffness: 250,
+                                bounceDamping: 15,
+                              }}
+                              whileInView={{ opacity: 1, scale: 1 }}
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.9 }}
+                              transition={{ delay: 0, type: "spring" }}
                             >
-                              {feed.feedTitle}
-                            </a>
+                              <animated.img
+                                src={require("../../assets/img/icons/links.png")}
+                                alt="Links"
+                                className="feed-icon-img"
+                                draggable="false"
+                                loading="eager"
+                              />
+                            </motion.a>
                           </div>
                         ))}
                       </div>
