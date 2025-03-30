@@ -140,7 +140,7 @@ function HomePage({ isBatterySavingOn, scrolled }) {
             //   :
             {
               // opacity,
-              scale,
+              // scale,
               filter: `blur(${appliedBlur}px)`,
               transformOrigin: "top top",
               zIndex: 0,
