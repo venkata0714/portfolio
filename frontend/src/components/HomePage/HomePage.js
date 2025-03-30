@@ -132,7 +132,7 @@ function HomePage({ isBatterySavingOn, scrolled }) {
       <div className="homepage-bg-wrapper">
         <motion.div
           className="homepage-bg"
-          key={scrollYProgress}
+          // key={scrollYProgress}
           ref={HomeBGRef}
           style={
             isBatterySavingOn
