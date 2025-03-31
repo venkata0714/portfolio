@@ -8,6 +8,7 @@ const NavBar = ({ isBatterySavingOn, addTab }) => {
   const [activeLink, setActiveLink] = useState("home");
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
   const menuRef = useRef(null); // Reference to the navbar menu
 
   const onUpdateActiveLink = (link) => {
@@ -44,6 +45,15 @@ const NavBar = ({ isBatterySavingOn, addTab }) => {
     updateScale();
     window.addEventListener("resize", updateScale);
     return () => window.removeEventListener("resize", updateScale);
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setScreenWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   useEffect(() => {
@@ -243,8 +253,8 @@ const NavBar = ({ isBatterySavingOn, addTab }) => {
               className={
                 activeLink === "about" ? "active nav-item" : "nav-item"
               }
-              whileHover={{ scale: 1.1, rotate: -2 }}
-              whileTap={{ scale: 0.9, rotate: 2 }}
+              whileHover={screenWidth > 992 ? { scale: 1.1, rotate: -2 } : {}}
+              whileTap={screenWidth > 992 ? { scale: 0.9, rotate: 2 } : {}}
             >
               <a
                 href="#about"
@@ -265,8 +275,8 @@ const NavBar = ({ isBatterySavingOn, addTab }) => {
               className={
                 activeLink === "skills" ? "active nav-item" : "nav-item"
               }
-              whileHover={{ scale: 1.1, rotate: -2 }}
-              whileTap={{ scale: 0.9, rotate: 2 }}
+              whileHover={screenWidth > 992 ? { scale: 1.1, rotate: -2 } : {}}
+              whileTap={screenWidth > 992 ? { scale: 0.9, rotate: 2 } : {}}
             >
               <a
                 href="#skills"
@@ -287,8 +297,8 @@ const NavBar = ({ isBatterySavingOn, addTab }) => {
               className={
                 activeLink === "projects" ? "active nav-item" : "nav-item"
               }
-              whileHover={{ scale: 1.1, rotate: -2 }}
-              whileTap={{ scale: 0.9, rotate: 2 }}
+              whileHover={screenWidth > 992 ? { scale: 1.1, rotate: -2 } : {}}
+              whileTap={screenWidth > 992 ? { scale: 0.9, rotate: 2 } : {}}
             >
               <a
                 href="#projects"
@@ -311,8 +321,8 @@ const NavBar = ({ isBatterySavingOn, addTab }) => {
               className={
                 activeLink === "experience" ? "active nav-item" : "nav-item"
               }
-              whileHover={{ scale: 1.1, rotate: -2 }}
-              whileTap={{ scale: 0.9, rotate: 2 }}
+              whileHover={screenWidth > 992 ? { scale: 1.1, rotate: -2 } : {}}
+              whileTap={screenWidth > 992 ? { scale: 0.9, rotate: 2 } : {}}
             >
               <a
                 href="#experience"
@@ -335,8 +345,8 @@ const NavBar = ({ isBatterySavingOn, addTab }) => {
               className={
                 activeLink === "contact" ? "active nav-item" : "nav-item"
               }
-              whileHover={{ scale: 1.1, rotate: -2 }}
-              whileTap={{ scale: 0.9, rotate: 2 }}
+              whileHover={screenWidth > 992 ? { scale: 1.1, rotate: -2 } : {}}
+              whileTap={screenWidth > 992 ? { scale: 0.9, rotate: 2 } : {}}
             >
               <a
                 href="#contact"
@@ -357,8 +367,8 @@ const NavBar = ({ isBatterySavingOn, addTab }) => {
             </motion.li>
             <motion.li
               className={activeLink === "feed" ? "active nav-item" : "nav-item"}
-              whileHover={{ scale: 1.1, rotate: -2 }}
-              whileTap={{ scale: 0.9, rotate: 2 }}
+              whileHover={screenWidth > 992 ? { scale: 1.1, rotate: -2 } : {}}
+              whileTap={screenWidth > 992 ? { scale: 0.9, rotate: 2 } : {}}
             >
               <a
                 href="#feed"
@@ -374,8 +384,8 @@ const NavBar = ({ isBatterySavingOn, addTab }) => {
             </motion.li>
             <motion.li
               className="nav-item"
-              whileHover={{ scale: 1.1, rotate: -2 }}
-              whileTap={{ scale: 0.9, rotate: 2 }}
+              whileHover={screenWidth > 992 ? { scale: 1.1, rotate: -2 } : {}}
+              whileTap={screenWidth > 992 ? { scale: 0.9, rotate: 2 } : {}}
             >
               <a
                 download="Kartavya-Singh-Resume-2025.pdf"

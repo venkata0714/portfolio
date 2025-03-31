@@ -1,175 +1,230 @@
 // routes/dataRoutes.js
-async function routes(fastify, options) {
-  const {
-    getProjects,
-    getProjectByLink,
-    getInvolvements,
-    getInvolvementByLink,
-    getExperiences,
-    getExperienceByLink,
-    getYearInReviews,
-    getYearInReviewByLink,
-    getHonorsExperiences,
-    getHonorsExperienceByLink,
-    getSkills,
-    getSkillComponents,
-    compareAdminName,
-    compareAdminPassword,
-    compareOTP,
-    logoutAdmin,
-    getCollectionCounts,
-    setAdminCredentials,
-    addProject,
-    updateProject,
-    deleteProject,
-    addInvolvement,
-    updateInvolvement,
-    deleteInvolvement,
-    addExperience,
-    updateExperience,
-    deleteExperience,
-    addYearInReview,
-    updateYearInReview,
-    deleteYearInReview,
-    addHonorsExperience,
-    updateHonorsExperience,
-    deleteHonorsExperience,
-    addSkill,
-    updateSkill,
-    deleteSkill,
-    addSkillComponent,
-    updateSkillComponent,
-    deleteSkillComponent,
-    getFeeds,
-    addFeed,
-    deleteFeed,
-    editFeed,
-    addLike,
-  } = require("../controllers/dataController");
+const dataController = require("../controllers/dataController");
+const verifyJWT = require("../controllers/middlewareController");
 
-  const verifyJWT = require("../controllers/middlewareController");
+async function dataRoutes(fastify, options) {
+  // Protected route to check if admin cookie/JWT is valid
+  fastify.get(
+    "/check-cookie",
+    { preHandler: [verifyJWT] },
+    (request, reply) => {
+      reply.send({
+        message: "Protected Cookie. Logged In as Admin!",
+        valid: true,
+        user: request.user,
+      });
+    }
+  );
+
+  // Simple health check routes
+  fastify.get("/ping", (request, reply) => {
+    reply.send({ message: "Backend is active" });
+  });
+  fastify.get("/db-ping", async (request, reply) => {
+    try {
+      const db = require("../config/mongodb").getDB();
+      // Simple query to test DB connection
+      await db.collection("someCollection").findOne({});
+      reply.send({ message: "MongoDB is active" });
+    } catch (error) {
+      reply
+        .code(500)
+        .send({ message: "MongoDB is not connected", error: error });
+    }
+  });
 
   // Projects
-  fastify.get("/getprojects", getProjects);
-  fastify.get("/getprojects/:projectLink", getProjectByLink);
-  fastify.post("/addproject", { preHandler: verifyJWT }, addProject);
-  fastify.put("/updateproject/:id", { preHandler: verifyJWT }, updateProject);
+  fastify.get("/getprojects", dataController.getProjects);
+  fastify.get("/getprojects/:projectLink", dataController.getProjectByLink);
+  fastify.post(
+    "/addproject",
+    { preHandler: [verifyJWT] },
+    dataController.addProject
+  );
+  fastify.put(
+    "/updateproject/:id",
+    { preHandler: [verifyJWT] },
+    dataController.updateProject
+  );
   fastify.delete(
     "/deleteproject/:id",
-    { preHandler: verifyJWT },
-    deleteProject
+    { preHandler: [verifyJWT] },
+    dataController.deleteProject
   );
 
   // Involvements
-  fastify.get("/getinvolvements", getInvolvements);
-  fastify.get("/getinvolvements/:involvementLink", getInvolvementByLink);
-  fastify.post("/addinvolvement", { preHandler: verifyJWT }, addInvolvement);
+  fastify.get("/getinvolvements", dataController.getInvolvements);
+  fastify.get(
+    "/getinvolvements/:involvementLink",
+    dataController.getInvolvementByLink
+  );
+  fastify.post(
+    "/addinvolvement",
+    { preHandler: [verifyJWT] },
+    dataController.addInvolvement
+  );
   fastify.put(
     "/updateinvolvement/:id",
-    { preHandler: verifyJWT },
-    updateInvolvement
+    { preHandler: [verifyJWT] },
+    dataController.updateInvolvement
   );
   fastify.delete(
     "/deleteinvolvement/:id",
-    { preHandler: verifyJWT },
-    deleteInvolvement
+    { preHandler: [verifyJWT] },
+    dataController.deleteInvolvement
   );
 
   // Experiences
-  fastify.get("/getexperiences", getExperiences);
-  fastify.get("/getexperiences/:experienceLink", getExperienceByLink);
-  fastify.post("/addexperience", { preHandler: verifyJWT }, addExperience);
+  fastify.get("/getexperiences", dataController.getExperiences);
+  fastify.get(
+    "/getexperiences/:experienceLink",
+    dataController.getExperienceByLink
+  );
+  fastify.post(
+    "/addexperience",
+    { preHandler: [verifyJWT] },
+    dataController.addExperience
+  );
   fastify.put(
     "/updateexperience/:id",
-    { preHandler: verifyJWT },
-    updateExperience
+    { preHandler: [verifyJWT] },
+    dataController.updateExperience
   );
   fastify.delete(
     "/deleteexperience/:id",
-    { preHandler: verifyJWT },
-    deleteExperience
+    { preHandler: [verifyJWT] },
+    dataController.deleteExperience
   );
 
   // Year In Reviews
-  fastify.get("/getyearinreviews", getYearInReviews);
-  fastify.get("/getyearinreviews/:yearInReviewLink", getYearInReviewByLink);
-  fastify.post("/addyearinreview", { preHandler: verifyJWT }, addYearInReview);
+  fastify.get("/getyearinreviews", dataController.getYearInReviews);
+  fastify.get(
+    "/getyearinreviews/:yearInReviewLink",
+    dataController.getYearInReviewByLink
+  );
+  fastify.post(
+    "/addyearinreview",
+    { preHandler: [verifyJWT] },
+    dataController.addYearInReview
+  );
   fastify.put(
     "/updateyearinreview/:id",
-    { preHandler: verifyJWT },
-    updateYearInReview
+    { preHandler: [verifyJWT] },
+    dataController.updateYearInReview
   );
   fastify.delete(
     "/deleteyearinreview/:id",
-    { preHandler: verifyJWT },
-    deleteYearInReview
+    { preHandler: [verifyJWT] },
+    dataController.deleteYearInReview
   );
 
   // Honors Experiences
-  fastify.get("/gethonorsexperiences", getHonorsExperiences);
+  fastify.get("/gethonorsexperiences", dataController.getHonorsExperiences);
   fastify.get(
     "/gethonorsexperiences/:honorsExperienceLink",
-    getHonorsExperienceByLink
+    dataController.getHonorsExperienceByLink
   );
   fastify.post(
     "/addhonorsexperience",
-    { preHandler: verifyJWT },
-    addHonorsExperience
+    { preHandler: [verifyJWT] },
+    dataController.addHonorsExperience
   );
   fastify.put(
     "/updatehonorsexperience/:id",
-    { preHandler: verifyJWT },
-    updateHonorsExperience
+    { preHandler: [verifyJWT] },
+    dataController.updateHonorsExperience
   );
   fastify.delete(
     "/deletehonorsexperience/:id",
-    { preHandler: verifyJWT },
-    deleteHonorsExperience
+    { preHandler: [verifyJWT] },
+    dataController.deleteHonorsExperience
   );
 
   // Skills
-  fastify.get("/getskills", getSkills);
-  fastify.get("/getskillcomponents", getSkillComponents);
-  fastify.post("/addskill", { preHandler: verifyJWT }, addSkill);
-  fastify.put("/updateskill/:id", { preHandler: verifyJWT }, updateSkill);
-  fastify.delete("/deleteskill/:id", { preHandler: verifyJWT }, deleteSkill);
+  fastify.get("/getskills", dataController.getSkills);
+  fastify.get("/getskillcomponents", dataController.getSkillComponents);
+  fastify.post(
+    "/addskill",
+    { preHandler: [verifyJWT] },
+    dataController.addSkill
+  );
+  fastify.put(
+    "/updateskill/:id",
+    { preHandler: [verifyJWT] },
+    dataController.updateSkill
+  );
+  fastify.delete(
+    "/deleteskill/:id",
+    { preHandler: [verifyJWT] },
+    dataController.deleteSkill
+  );
   fastify.post(
     "/addskillcomponent",
-    { preHandler: verifyJWT },
-    addSkillComponent
+    { preHandler: [verifyJWT] },
+    dataController.addSkillComponent
   );
   fastify.put(
     "/updateskillcomponent/:id",
-    { preHandler: verifyJWT },
-    updateSkillComponent
+    { preHandler: [verifyJWT] },
+    dataController.updateSkillComponent
   );
   fastify.delete(
     "/deleteskillcomponent/:id",
-    { preHandler: verifyJWT },
-    deleteSkillComponent
+    { preHandler: [verifyJWT] },
+    dataController.deleteSkillComponent
   );
 
   // Feeds
-  fastify.get("/getFeeds", getFeeds);
-  fastify.post("/addFeed", { preHandler: verifyJWT }, addFeed);
-  fastify.delete("/deleteFeed/:id", { preHandler: verifyJWT }, deleteFeed);
-  fastify.put("/updateFeed/:id", { preHandler: verifyJWT }, editFeed);
+  fastify.get("/getFeeds", dataController.getFeeds);
+  fastify.post("/addFeed", { preHandler: [verifyJWT] }, dataController.addFeed);
+  fastify.put(
+    "/updateFeed/:id",
+    { preHandler: [verifyJWT] },
+    dataController.editFeed
+  );
+  fastify.delete(
+    "/deleteFeed/:id",
+    { preHandler: [verifyJWT] },
+    dataController.deleteFeed
+  );
+  fastify.post("/addLike", dataController.addLike);
+  // fastify.post("/resetLikes", dataController.resetLikes);
+  // Invoke-RestMethod -Method Post -Uri "http://127.0.0.1:5000/api/resetLikes" -Headers @{ "Content-Type" = "application/json" }
 
   // Admin Management
   fastify.post(
     "/setAdminCredentials",
-    { preHandler: verifyJWT },
-    setAdminCredentials
+    { preHandler: [verifyJWT] },
+    dataController.setAdminCredentials
   );
-  fastify.post("/compareAdminName", compareAdminName);
-  fastify.post("/compareAdminPassword", compareAdminPassword);
-  fastify.post("/compareOTP", compareOTP);
-  fastify.get("/logout", logoutAdmin);
+  fastify.post("/compareAdminName", dataController.compareAdminName);
+  fastify.post("/compareAdminPassword", dataController.compareAdminPassword);
+  fastify.post("/compareOTP", dataController.compareOTP);
+  fastify.get("/logout", dataController.logoutAdmin);
 
-  fastify.get("/collection-counts", getCollectionCounts);
+  fastify.get("/collection-counts", dataController.getCollectionCounts);
 
-  // Likes
-  fastify.post("/addLike", addLike);
+  // GitHub Stats routes
+  fastify.get("/github-stats/top-langs", dataController.getTopLanguages);
+  fastify.get("/top-langs", async (request, reply) => {
+    // This route fetches an SVG from GitHub Readme Stats for the user's top languages
+    const githubAPIUrl =
+      "https://github-readme-stats.vercel.app/api/top-langs/?username=Kartavya904&langs_count=8&layout=compact&theme=react&hide_border=true&bg_color=1F222E&title_color=F85D7F&icon_color=F8D866&hide=Jupyter%20Notebook,Roff";
+    try {
+      const fetch = (await import("node-fetch")).default;
+      const response = await fetch(githubAPIUrl);
+      if (!response.ok) {
+        throw new Error(
+          `Failed to fetch data from GitHub API: ${response.status}`
+        );
+      }
+      const svg = await response.text();
+      reply.header("Content-Type", "image/svg+xml").send(svg);
+    } catch (error) {
+      console.error("Error fetching GitHub stats:", error.message);
+      reply.code(500).send("Failed to fetch GitHub stats");
+    }
+  });
 }
 
-module.exports = routes;
+module.exports = dataRoutes;
