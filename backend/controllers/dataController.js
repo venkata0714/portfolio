@@ -945,6 +945,7 @@ const compareOTP = async (request, reply) => {
     });
     // Set secure HTTP-only cookie with the JWT token
     reply.setCookie("token", token, {
+      path: "/",
       httpOnly: true,
       secure: true,
       sameSite: "none",
@@ -959,7 +960,7 @@ const compareOTP = async (request, reply) => {
 };
 const logoutAdmin = (request, reply) => {
   reply.clearCookie("token", {
-    path: "/api",
+    path: "/",
     httpOnly: true,
     secure: true, // use true only in production
     sameSite: "none",
@@ -967,7 +968,6 @@ const logoutAdmin = (request, reply) => {
   });
   reply.send({ success: true, message: "Logged out successfully!" });
 };
-
 const setAdminCredentials = async (request, reply) => {
   const { userName, password, currentPassword } = request.body;
   const db = getDB();
