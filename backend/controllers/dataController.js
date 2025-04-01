@@ -67,7 +67,6 @@ async function fetchRepoLanguages(languagesUrl) {
 }
 
 // 1) Define your static must-load images
-// Do not enter the url before.
 const MUST_LOAD_IMAGES = [
   "/home-bg.jpg",
   "/Kartavya.jpg",
