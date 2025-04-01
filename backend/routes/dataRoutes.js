@@ -33,6 +33,12 @@ async function dataRoutes(fastify, options) {
     }
   });
 
+  // Must-load static images
+  fastify.get("/must-load-images", dataController.getMustLoadImages);
+
+  // Dynamic images
+  fastify.get("/dynamic-images", dataController.getDynamicImages);
+
   // Projects
   fastify.get("/getprojects", dataController.getProjects);
   fastify.get("/getprojects/:projectLink", dataController.getProjectByLink);

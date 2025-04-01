@@ -83,6 +83,13 @@ function ContactPage({ isBatterySavingOn, addTab }) {
           id="contact"
           className="contact-page"
           ref={containerRef}
+          style={{
+            backgroundImage: `url('${process.env.PUBLIC_URL}/contact-bg.png')`,
+            backgroundSize: "cover",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center",
+            backgroundAttachment: "fixed",
+          }}
         >
           <div className="contact-container">
             <div className="contact-div">

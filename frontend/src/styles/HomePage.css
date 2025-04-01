@@ -30,7 +30,7 @@
   height: 100vh;
   min-height: 100vh;
   z-index: 1; /* Ensure it stays behind all content */
-  background: linear-gradient(
+  /* background: linear-gradient(
       to bottom,
       rgba(0, 0, 0, 0.4),
       rgba(0, 0, 0, 0.35),
@@ -41,11 +41,11 @@
       rgba(0, 0, 0, 0.1),
       rgba(0, 0, 0, 0.1)
     ),
-    url("../assets/img/background/home-bg.jpg");
-  background-repeat: no-repeat;
+    url("../../public/home-bg.jpg"); */
+  /* background-repeat: no-repeat;
   background-attachment: fixed;
   background-position: center;
-  background-size: cover; /* Default size */
+  background-size: cover; Default size */
   scroll-behavior: smooth;
   transition: scale 1ms ease-in-out, filter 0.25ms ease-in-out;
   overflow: hidden;

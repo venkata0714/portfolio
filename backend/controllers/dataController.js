@@ -66,6 +66,115 @@ async function fetchRepoLanguages(languagesUrl) {
   return response.json();
 }
 
+// 1) Define your static must-load images
+const MUST_LOAD_IMAGES = [
+  "/home-bg.jpg",
+  "/Kartavya.jpg",
+  "/Kartavya-Profile-Photo.jpg",
+  "/contact-bg.png",
+  // "/favicon.ico",
+];
+
+// 2) Set up two separate caches
+let mustLoadImagesCache = {
+  data: null,
+  lastUpdated: 0,
+};
+
+let dynamicImagesCache = {
+  data: null,
+  lastUpdated: 0,
+};
+
+// 3) Update functions
+
+/**
+ * Update the mustLoadImagesCache.
+ * In this case, it simply loads the static array into cache.
+ */
+function updateMustLoadImagesCache() {
+  mustLoadImagesCache = {
+    data: [...MUST_LOAD_IMAGES],
+    lastUpdated: Date.now(),
+  };
+  console.log(`Must-load images cache updated at ${new Date()}`);
+}
+
+/**
+ * Update the dynamicImagesCache by reading from your database fields.
+ */
+async function updateDynamicImagesCache() {
+  try {
+    const db = getDB();
+    const collections = [
+      { name: "experienceTable", field: "experienceImages" },
+      { name: "honorsExperienceTable", field: "honorsExperienceImages" },
+      { name: "involvementTable", field: "involvementImages" },
+      { name: "projectTable", field: "projectImages" },
+      { name: "yearInReviewTable", field: "yearInReviewImages" },
+      { name: "FeedTable", field: "feedImageURL" },
+    ];
+
+    let dynamicUrls = [];
+    for (const { name, field } of collections) {
+      const docs = await db
+        .collection(name)
+        .find({ [field]: { $exists: true } })
+        .toArray();
+
+      docs.forEach((doc) => {
+        let url = null;
+        if (Array.isArray(doc[field]) && doc[field].length > 0) {
+          url = doc[field][0];
+        } else if (typeof doc[field] === "string") {
+          url = doc[field];
+        }
+        if (url) dynamicUrls.push(url);
+      });
+    }
+
+    // Deduplicate the dynamic URLs
+    const uniqueDynamicUrls = Array.from(new Set(dynamicUrls));
+
+    dynamicImagesCache = {
+      data: uniqueDynamicUrls,
+      lastUpdated: Date.now(),
+    };
+    console.log(`Dynamic images cache updated at ${new Date()}`);
+  } catch (error) {
+    console.error("Error updating dynamic images cache:", error);
+  }
+}
+
+// 4) Initialize both caches and schedule updates every 12 hours
+updateMustLoadImagesCache();
+updateDynamicImagesCache();
+
+setInterval(updateMustLoadImagesCache, 12 * 60 * 60 * 1000);
+setInterval(updateDynamicImagesCache, 12 * 60 * 60 * 1000);
+
+// 5) API handlers
+
+/**
+ * Returns the must-load images (static).
+ */
+function getMustLoadImages(request, reply) {
+  if (!mustLoadImagesCache.data) {
+    updateMustLoadImagesCache();
+  }
+  reply.send(mustLoadImagesCache.data);
+}
+
+/**
+ * Returns the dynamic images from the database.
+ */
+async function getDynamicImages(request, reply) {
+  if (!dynamicImagesCache.data) {
+    await updateDynamicImagesCache();
+  }
+  reply.send(dynamicImagesCache.data);
+}
+
 // Fetch all documents from a collection (excluding soft-deleted items)
 const getAllDocuments = async (collectionName) => {
   const db = getDB();
@@ -945,12 +1054,13 @@ const compareOTP = async (request, reply) => {
     });
     // Set secure HTTP-only cookie with the JWT token
     reply.setCookie("token", token, {
-      path: "/",
+      path: "/", // Force the cookie to be available at root
       httpOnly: true,
       secure: true,
       sameSite: "none",
-      maxAge: rememberMe ? 365 * 24 * 60 * 60 * 1000 : 60 * 60 * 1000, // 1 year vs 1 hour
+      maxAge: rememberMe ? 365 * 24 * 60 * 60 * 1000 : 60 * 60 * 1000,
     });
+
     // Invalidate the OTP after use
     await db.collection("KartavyaPortfolioOTP").deleteOne({});
     return reply.send({ success: true, message: "Logged in successfully!" });
@@ -958,16 +1068,16 @@ const compareOTP = async (request, reply) => {
     reply.code(500).send({ message: "Server error" });
   }
 };
-const logoutAdmin = (request, reply) => {
+const logoutAdmin = (req, reply) => {
   reply.clearCookie("token", {
-    path: "/",
+    path: "/", // Must match the path used when setting the cookie
     httpOnly: true,
-    secure: true, // use true only in production
+    secure: true,
     sameSite: "none",
-    expires: new Date(0),
   });
   reply.send({ success: true, message: "Logged out successfully!" });
 };
+
 const setAdminCredentials = async (request, reply) => {
   const { userName, password, currentPassword } = request.body;
   const db = getDB();
@@ -1065,6 +1175,8 @@ const getTopLanguages = async (request, reply) => {
 };
 
 module.exports = {
+  getMustLoadImages,
+  getDynamicImages,
   getProjects,
   getProjectByLink,
   getInvolvements,

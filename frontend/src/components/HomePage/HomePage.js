@@ -11,7 +11,7 @@ import {
 } from "framer-motion";
 import { zoomIn } from "../../services/variants";
 import "../../styles/HomePage.css";
-import ProfilePhoto from "../../assets/img/media/Kartavya.jpg";
+// import ProfilePhoto from `${process.env.PUBLIC_URL}/Kartavya.jpg`;
 
 function HomePage({ isBatterySavingOn, scrolled }) {
   const [clicked, setClicked] = useState(false);
@@ -32,7 +32,7 @@ function HomePage({ isBatterySavingOn, scrolled }) {
   const blur = useTransform(scrollYProgress, [0, 1], [1, 20]);
   const currentBlur = blur.current !== undefined ? blur.current : 0;
   const appliedBlur = scrolled && currentBlur > 0.3 ? currentBlur : 0;
-  const scale = useTransform(scrollYProgress, [0, 0.1, 1], [1.05, 1.05, 1.6]);
+  const scale = useTransform(scrollYProgress, [0, 0.1, 1], [1.01, 1.01, 1.6]);
   // const opacity = useTransform(scrollYProgress, [0.25, 1], [1, 1]);
 
   const handleProfileClick = () => {
@@ -136,8 +136,39 @@ function HomePage({ isBatterySavingOn, scrolled }) {
           ref={HomeBGRef}
           style={
             isBatterySavingOn
-              ? {}
+              ? {
+                  background: `linear-gradient(
+                to bottom,
+                rgba(0, 0, 0, 0.4),
+                rgba(0, 0, 0, 0.35),
+                rgba(0, 0, 0, 0.3),
+                rgba(0, 0, 0, 0.25),
+                rgba(0, 0, 0, 0.2),
+                rgba(0, 0, 0, 0.25),
+                rgba(0, 0, 0, 0.1),
+                rgba(0, 0, 0, 0.1)
+              ), url('${process.env.PUBLIC_URL}/home-bg.jpg'))`,
+                  backgroundRepeat: "no-repeat",
+                  backgroundAttachment: "fixed",
+                  backgroundPosition: "center",
+                  backgroundSize: "cover",
+                }
               : {
+                  background: `linear-gradient(
+                  to bottom,
+                  rgba(0, 0, 0, 0.4),
+                  rgba(0, 0, 0, 0.35),
+                  rgba(0, 0, 0, 0.3),
+                  rgba(0, 0, 0, 0.25),
+                  rgba(0, 0, 0, 0.2),
+                  rgba(0, 0, 0, 0.25),
+                  rgba(0, 0, 0, 0.1),
+                  rgba(0, 0, 0, 0.1)
+                ), url('${process.env.PUBLIC_URL}/home-bg.jpg')`,
+                  backgroundRepeat: "no-repeat",
+                  backgroundAttachment: "fixed",
+                  backgroundPosition: "center",
+                  backgroundSize: "cover",
                   // opacity,
                   scale,
                   filter: `blur(${appliedBlur}px)`,
@@ -171,7 +202,7 @@ function HomePage({ isBatterySavingOn, scrolled }) {
                 whileInView={"show"}
               >
                 <animated.img
-                  src={ProfilePhoto}
+                  src={`${process.env.PUBLIC_URL}/Kartavya.jpg`}
                   alt="Profile"
                   className={`profile-picture img-responsive img-circle${frames[frameIndex]}`}
                   draggable="false"

@@ -21,9 +21,16 @@ app.register(require("@fastify/cors"), {
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 });
 app.register(require("@fastify/cookie"), {
-  // You can set a secret if you want to sign cookies
-  // secret: "your-secret-key"
+  cookie: {
+    path: "/",
+    secure: true,
+    httpOnly: true,
+    sameSite: "none",
+    // maxAge: 60 * 60, // optional default maxAge in seconds
+    // expires: new Date(Date.now() + 60 * 60 * 1000), // optional default expiry
+  },
 });
+
 app.register(require("@fastify/formbody")); // parse URL-encoded form bodies
 
 // Connect to MongoDB

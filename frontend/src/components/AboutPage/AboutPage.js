@@ -4,7 +4,7 @@ import { zoomIn, fadeIn } from "../../services/variants";
 import { styled } from "@stitches/react";
 import "../../styles/AboutPage.css";
 import { SpotlightBG } from "./SpotlightBG";
-import AboutImg from "../../assets/img/media/Kartavya-Profile-Photo.jpg";
+// import AboutImg from "../../../public/Kartavya-Profile-Photo.jpg";
 import Resume from "../../assets/Singh_Kartavya_Resume2025.pdf";
 
 const aboutData = [
@@ -75,7 +75,7 @@ function AboutPage({ isBatterySavingOn, isWindowModalVisible }) {
           <div className="about-container">
             <motion.div className="about-row">
               <motion.img
-                src={AboutImg}
+                src={`${process.env.PUBLIC_URL}/Kartavya-Profile-Photo.jpg`}
                 className="about-image"
                 alt="Profile"
                 variants={isBatterySavingOn ? {} : fadeIn("right", 200, 0)}

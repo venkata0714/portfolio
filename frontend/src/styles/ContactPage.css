@@ -6,12 +6,12 @@
   justify-content: center;
   align-items: center;
   background-color: #212529;
-  background-image: url("../assets/img/background/contact-bg.png");
+  /* background-image: url("../../public/contact-bg.png");
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed;
+  background-position: center; */
   scroll-behavior: smooth;
-  background-position: center;
   min-height: calc(100vh - 52px);
   font-family: "Montserrat", sans-serif;
   color: #edeeef;

@@ -8,6 +8,12 @@ const greetings = ["Hello", "नमस्ते", "Bonjour", "こんにちは", 
 const Loading = ({ isBatterySavingOn, setIsBatterySavingOn, onComplete }) => {
   const [status, setStatus] = useState({ backend: false, database: false });
   const [loaded, setLoaded] = useState(false);
+  const [imagesReady, setImagesReady] = useState(false); // Condition based solely on must-load images
+  const [mustLoadImageStatus, setMustLoadImageStatus] = useState({
+    loaded: 0,
+    total: 0,
+    error: false,
+  });
   const [currentGreetingIndex, setCurrentGreetingIndex] = useState(0);
   const [allGreetingsShown, setAllGreetingsShown] = useState(false);
   const [stats, setStats] = useState({
@@ -20,7 +26,7 @@ const Loading = ({ isBatterySavingOn, setIsBatterySavingOn, onComplete }) => {
     cpuTestDuration: null,
   });
 
-  // Rotate greetings every 400ms and track when all greetings are shown
+  // Rotate greetings every 400ms and mark when all have been shown.
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentGreetingIndex((prevIndex) => {
@@ -30,25 +36,72 @@ const Loading = ({ isBatterySavingOn, setIsBatterySavingOn, onComplete }) => {
         return (prevIndex + 1) % greetings.length;
       });
     }, 400);
-
     return () => clearInterval(interval);
   }, []);
 
-  // Check backend and database status
+  // Check backend and database status and then fire image preloading APIs.
   useEffect(() => {
     const checkStatus = async () => {
       try {
-        const backendStatus = await pingBackend();
+        // const backendStatus = await pingBackend();
         const databaseStatus = await pingDatabase();
-
-        setStatus({
-          backend: backendStatus,
-          database: databaseStatus,
-        });
-
-        // Transition to "loaded" state after checks are complete
+        const backendStatus = databaseStatus;
+        setStatus({ backend: backendStatus, database: databaseStatus });
         if (backendStatus && databaseStatus) {
           setLoaded(true);
+          // Start must-load images preloading (these block loading completion)
+          async function preloadMustLoadImages() {
+            try {
+              const response = await fetch("/api/must-load-images");
+              const urls = await response.json();
+              // console.log("Must-load Image URLs: ", urls);
+
+              // For each must-load image, create and append a preload link.
+              urls.forEach((url) => {
+                const link = document.createElement("link");
+                link.rel = "preload";
+                link.as = "image";
+                link.href = url;
+                document.head.appendChild(link);
+              });
+
+              // Mark images as ready (we assume the browser will handle preloading).
+              setMustLoadImageStatus({
+                loaded: urls.length,
+                total: urls.length,
+                error: false,
+              });
+              setImagesReady(true);
+            } catch (error) {
+              console.error("Error preloading must-load images:", error);
+              setMustLoadImageStatus((prev) => ({ ...prev, error: true }));
+              setImagesReady(true);
+            }
+          }
+          preloadMustLoadImages();
+
+          // Start dynamic images preloading (non-blocking)
+          async function preloadDynamicImages() {
+            try {
+              fetch("/api/dynamic-images")
+                .then((response) => response.json())
+                .then((urls) => {
+                  urls.forEach((url) => {
+                    const link = document.createElement("link");
+                    link.rel = "preload";
+                    link.as = "image";
+                    link.href = url;
+                    document.head.appendChild(link);
+                  });
+                })
+                .catch((err) =>
+                  console.error("Error preloading dynamic images:", err)
+                );
+            } catch (error) {
+              console.error("Error preloading dynamic images:", error);
+            }
+          }
+          preloadDynamicImages();
         }
       } catch (error) {
         console.error("Error checking backend or database status:", error);
@@ -60,61 +113,37 @@ const Loading = ({ isBatterySavingOn, setIsBatterySavingOn, onComplete }) => {
     }
   }, [loaded]);
 
+  // Check device performance and capabilities (unchanged)
   useEffect(() => {
     const checkPerformanceAndCapabilities = async () => {
-      // Check for prefers-reduced-motion
       const prefersReducedMotion = window.matchMedia(
         "(prefers-reduced-motion: reduce)"
       ).matches;
-
-      // Check battery status if available
       const isLowBattery = navigator.getBattery
         ? await navigator
             .getBattery()
-            .then((battery) => {
-              return battery.level < 0.2;
-            })
+            .then((battery) => battery.level < 0.2)
             .catch(() => false)
         : false;
-
-      // Check hardware concurrency (number of CPU cores)
       const hardwareConcurrency = navigator.hardwareConcurrency || 0;
       const lowPerformanceDevice = hardwareConcurrency < 4;
-
-      // Check for CPU throttling
       const testCpuPerformance = () => {
         const start = performance.now();
         for (let i = 0; i < 1e7; i++) Math.sqrt(i);
-        const duration = performance.now() - start;
-        return duration;
+        return performance.now() - start;
       };
       const cpuTestDuration = testCpuPerformance();
-      const isCpuThrottled = cpuTestDuration > 20; // Threshold for CPU throttling
-
-      // Check for device memory (if supported)
+      const isCpuThrottled = cpuTestDuration > 20;
       const deviceMemory = navigator.deviceMemory || "Unknown";
       const lowMemoryDevice = deviceMemory !== "Unknown" && deviceMemory < 4;
-
-      // Check for touch device
       const isTouchDevice =
         "ontouchstart" in window || navigator.maxTouchPoints > 0;
-
-      // Combine all checks
       const isSavingMode =
         prefersReducedMotion ||
         isLowBattery ||
         lowPerformanceDevice ||
         isCpuThrottled ||
-        // isTouchDevice ||
         lowMemoryDevice;
-      // console.log("Prefers Reduced Motion:", prefersReducedMotion);
-      // console.log("Low Battery:", isLowBattery);
-      // console.log("Low Performance Device:", lowPerformanceDevice);
-      // console.log("Low Memory Device:", lowMemoryDevice);
-      // console.log("CPU Throttled:", isCpuThrottled);
-      // console.log("CPU Test Duration:", cpuTestDuration);
-      // console.log("Overall Saving Mode:", isSavingMode);
-
       setStats({
         prefersReducedMotion,
         isLowBattery,
@@ -124,13 +153,10 @@ const Loading = ({ isBatterySavingOn, setIsBatterySavingOn, onComplete }) => {
         isTouchDevice,
         cpuTestDuration: cpuTestDuration.toFixed(2),
       });
-
       setIsBatterySavingOn(isSavingMode);
     };
 
     checkPerformanceAndCapabilities();
-
-    // Listen to changes in prefers-reduced-motion
     const reducedMotionMediaQuery = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     );
@@ -138,7 +164,6 @@ const Loading = ({ isBatterySavingOn, setIsBatterySavingOn, onComplete }) => {
       "change",
       checkPerformanceAndCapabilities
     );
-
     return () => {
       reducedMotionMediaQuery.removeEventListener(
         "change",
@@ -147,13 +172,14 @@ const Loading = ({ isBatterySavingOn, setIsBatterySavingOn, onComplete }) => {
     };
   }, [setIsBatterySavingOn]);
 
-  // Trigger onComplete when loading is done and all greetings are shown
+  // Trigger onComplete when backend/database loaded, greetings are shown, and must-load images are ready.
   useEffect(() => {
-    if (loaded && allGreetingsShown && onComplete) {
+    if (loaded && allGreetingsShown && imagesReady && onComplete) {
       onComplete();
     }
-  }, [loaded, allGreetingsShown, onComplete]);
+  }, [loaded, allGreetingsShown, imagesReady, onComplete]);
 
+  // Update scale for loading content.
   useEffect(() => {
     const updateScale = () => {
       const loadingContainer = document.querySelector(".loading-content");
@@ -166,13 +192,12 @@ const Loading = ({ isBatterySavingOn, setIsBatterySavingOn, onComplete }) => {
       }
       loadingContainer.style.zoom = `${scaleValue}`;
     };
-
     updateScale();
     window.addEventListener("resize", updateScale);
     return () => window.removeEventListener("resize", updateScale);
   }, []);
 
-  return !loaded || !allGreetingsShown ? (
+  return !loaded || !allGreetingsShown || !imagesReady ? (
     <motion.div
       className="loading-container"
       initial={{ opacity: 0 }}
@@ -253,6 +278,15 @@ const Loading = ({ isBatterySavingOn, setIsBatterySavingOn, onComplete }) => {
               : "ontouchstart" in window || navigator.maxTouchPoints > 0
               ? "Reducing Animations for Touch Devices ✅"
               : "Amplifying Animations ✅"}
+          </motion.p>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 1.4 }}
+          >
+            {mustLoadImageStatus.error
+              ? "Loading Must-Load Images Failed ❌"
+              : `Loading Must-Load Images (${mustLoadImageStatus.loaded}/${mustLoadImageStatus.total})`}
           </motion.p>
         </div>
       </div>
