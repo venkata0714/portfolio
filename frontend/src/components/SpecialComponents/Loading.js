@@ -52,7 +52,9 @@ const Loading = ({ isBatterySavingOn, setIsBatterySavingOn, onComplete }) => {
           // Start must-load images preloading (these block loading completion)
           async function preloadMustLoadImages() {
             try {
-              const response = await fetch("/api/must-load-images");
+              const response = await fetch(
+                `${process.env.REACT_APP_API_URI}/must-load-images`
+              );
               const urls = await response.json();
               // console.log("Must-load Image URLs: ", urls);
 
@@ -83,7 +85,7 @@ const Loading = ({ isBatterySavingOn, setIsBatterySavingOn, onComplete }) => {
           // Start dynamic images preloading (non-blocking)
           async function preloadDynamicImages() {
             try {
-              fetch("/api/dynamic-images")
+              fetch(`${process.env.REACT_APP_API_URI}/dynamic-images`)
                 .then((response) => response.json())
                 .then((urls) => {
                   urls.forEach((url) => {
