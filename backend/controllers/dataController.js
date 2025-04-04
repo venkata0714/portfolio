@@ -103,9 +103,16 @@ function updateMustLoadImagesCache() {
 /**
  * Update the dynamicImagesCache by reading from your database fields.
  */
-async function updateDynamicImagesCache() {
+async function updateDynamicImagesCache(retryInterval = 1000) {
+  const db = getDB();
+  if (!db) {
+    console.log(`Database not connected. Retrying in ${retryInterval}ms...`);
+    return setTimeout(
+      () => updateDynamicImagesCache(retryInterval),
+      retryInterval
+    );
+  }
   try {
-    const db = getDB();
     const collections = [
       { name: "experienceTable", field: "experienceImages" },
       { name: "honorsExperienceTable", field: "honorsExperienceImages" },
@@ -121,7 +128,6 @@ async function updateDynamicImagesCache() {
         .collection(name)
         .find({ [field]: { $exists: true } })
         .toArray();
-
       docs.forEach((doc) => {
         let url = null;
         if (Array.isArray(doc[field]) && doc[field].length > 0) {

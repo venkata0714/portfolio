@@ -1,6 +1,13 @@
 // routes/dataRoutes.js
 const dataController = require("../controllers/dataController");
 const verifyJWT = require("../controllers/middlewareController");
+// const {
+//   getDbContextFile,
+//   getGithubContextFile,
+//   getResumeContextFile,
+//   getRelevantContext,
+//   askLLM,
+// } = require("../controllers/aiContextManager");
 
 async function dataRoutes(fastify, options) {
   // Protected route to check if admin cookie/JWT is valid
@@ -231,6 +238,72 @@ async function dataRoutes(fastify, options) {
       reply.code(500).send("Failed to fetch GitHub stats");
     }
   });
+
+  // fastify.get("/get-db-context", async (request, reply) => {
+  //   try {
+  //     const context = await getDbContextFile();
+  //     reply.send(JSON.parse(context));
+  //   } catch (error) {
+  //     reply
+  //       .code(500)
+  //       .send({ message: "Error retrieving DB context", error: error.message });
+  //   }
+  // });
+
+  // fastify.get("/get-github-context", async (request, reply) => {
+  //   try {
+  //     const context = await getGithubContextFile();
+  //     reply.send(JSON.parse(context));
+  //   } catch (error) {
+  //     reply.code(500).send({
+  //       message: "Error retrieving GitHub context",
+  //       error: error.message,
+  //     });
+  //   }
+  // });
+
+  // fastify.get("/get-resume-context", async (request, reply) => {
+  //   try {
+  //     const context = await getResumeContextFile();
+  //     reply.send(JSON.parse(context));
+  //   } catch (error) {
+  //     reply.code(500).send({
+  //       message: "Error retrieving Resume context",
+  //       error: error.message,
+  //     });
+  //   }
+  // });
+
+  // fastify.post("/get-relevant-context", async (request, reply) => {
+  //   try {
+  //     const { query, topK } = request.body;
+  //     if (!query) {
+  //       return reply.code(400).send({ message: "Query is required" });
+  //     }
+  //     const relevant = await getRelevantContext(query, topK || 5);
+  //     reply.send({ relevant });
+  //   } catch (error) {
+  //     reply.code(500).send({
+  //       message: "Error retrieving relevant context",
+  //       error: error.message,
+  //     });
+  //   }
+  // });
+
+  // fastify.post("/ask-ai", async (request, reply) => {
+  //   try {
+  //     const { query } = request.body;
+  //     if (!query) {
+  //       return reply.code(400).send({ message: "Query is required" });
+  //     }
+  //     const answer = await askLLM(query);
+  //     reply.send({ answer });
+  //   } catch (error) {
+  //     reply
+  //       .code(500)
+  //       .send({ message: "Error processing query", error: error.message });
+  //   }
+  // });
 }
 
 module.exports = dataRoutes;

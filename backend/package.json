@@ -27,6 +27,8 @@
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.10.0",
     "node-fetch": "^3.3.2",
+    "pdf-parse": "^1.1.1",
+    "puppeteer": "^24.6.0",
     "winston": "^3.17.0"
   },
   "devDependencies": {

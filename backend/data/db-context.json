@@ -1,0 +1,705 @@
+{
+  "experienceTable": [
+    {
+      "experienceTitle": "Data Science Intern",
+      "experienceSubTitle": "Byte Link Systems | Houston, TX",
+      "experienceTimeline": "May 2022 - July 2022",
+      "experienceTagline": "Designed and deployed a global Pneumonia growth analysis PowerBI dashboard with advanced Python and Machine Learning proficiency, utilizing various algorithms and tools.",
+      "experienceParagraphs": [
+        "My internship at Byte Link Systems from May 2022 to July 2022 was a pivotal experience, marking my first foray into the professional world as well as my introduction to AI and machine learning. As a Data Science Intern, I was tasked with understanding the core concepts of AI, data analysis, and model development—all of which were new territories for me. During this phase, I learned to handle real-world datasets, clean and preprocess data, and structure data pipelines, which laid a strong foundation in Python with libraries like NumPy and Pandas.",
+        "As I advanced in the role, I had the opportunity to work with a team of highly skilled and supportive colleagues who guided me through the complexities of model development. Together, we tackled challenges ranging from logistic regression to more intricate algorithms like gradient boosting and neural networks. This collaborative environment not only broadened my technical knowledge but also taught me how to choose the right algorithm for specific data, evaluate model performance, and iteratively improve prediction accuracy.",
+        "Our primary project focused on building a PowerBI dashboard to analyze global pneumonia growth patterns. By incorporating advanced machine learning models, we identified critical factors and trends in the spread of pneumonia across cities, countries, and continents, ultimately achieving a 20% increase in prediction accuracy. This project required the seamless integration of tools such as SQL, Tableau, and PySpark, significantly enhancing my technical proficiency through the creation of a comprehensive, end-to-end solution.",
+        "Reflecting on this internship, I realize it was an incredible learning experience that not only strengthened my technical abilities but also underscored the value of collaboration and open communication in complex projects. This formative experience fueled my passion for data-driven solutions and set a strong foundation for my career in AI and machine learning."
+      ]
+    },
+    {
+      "experienceTitle": "Python/Flask Application Developer",
+      "experienceSubTitle": "iCDCU Lab | Cincinnati, OH",
+      "experienceTimeline": "May 2023 - August 2023",
+      "experienceTagline": "Led the development of ResDash webpages, optimizing code, integrating libraries, and enhancing user experience for University of Cincinnati Resident Doctors.",
+      "experienceParagraphs": [
+        "My role as a Python/Flask App Developer at the iCDCU Lab from May to August 2023 marked my first professional foray into full‑stack development—a journey filled with both challenges and rewarding milestones. I was tasked with leading the development of the ResDash project, which aimed to improve the digital experience for over 700 resident doctors at the University of Cincinnati.",
+        "I collaborated closely with a multidisciplinary team, working alongside designers and fellow developers to craft dynamic, responsive webpages. This collaboration not only deepened my technical expertise in HTML, CSS, Python, and JavaScript, but also highlighted the importance of clear communication and teamwork in building user‑centric applications.",
+        "Weekly team meetings and cross‑departmental sessions were instrumental in refining our approach, as we shared insights, tackled challenges together, and celebrated incremental successes. These experiences strengthened my ability to manage tight schedules and maintain high standards under pressure.",
+        "By streamlining the codebase—eliminating redundancies and implementing reusable components—I achieved a 45% improvement in efficiency. Integrating libraries such as D3, Flask Breadcrumbs, and Bootstrap further optimized performance and scalability, reinforcing my passion for innovative, full‑stack development."
+      ]
+    },
+    {
+      "experienceTitle": "Systems Architect & Digital Technology Director",
+      "experienceSubTitle": "Pendleton Premier Properties & Ty Hogan for Ohio State Senate | Cincinnati, OH",
+      "experienceTimeline": "January 2024 - April 2024",
+      "experienceTagline": "Drove digital transformation by redeveloping websites, implementing automated outreach systems, and building robust digital infrastructures that enhanced user engagement and operational efficiency.",
+      "experienceParagraphs": [
+        "At Pendleton Premier Properties and for the Ty Hogan for Ohio State Senate campaign, I held dual roles that combined systems architecture, web development, and digital technology leadership. These positions challenged me to deliver high‑quality, scalable solutions under tight deadlines while catering to diverse industry needs.",
+        "For Pendleton Premier Properties, I led the redevelopment of the corporate website—optimizing user experience, searchability, and metadata for better discovery—and developed automated web scrapers to analyze property valuations, ensuring accurate pricing strategies and streamlined business operations.",
+        "In my role with the Ty Hogan for Ohio Senate campaign, I spearheaded the design and development of the official campaign website, implemented automated outreach systems for weekly messaging, and oversaw digital communication platforms, all of which refined my technical support skills and deepened my understanding of strategic digital engagement.",
+        "These experiences taught me the value of collaboration, innovation, and adaptive problem‑solving. Balancing high standards with pragmatic solutions enhanced my time management, stress resilience, and communication skills—qualities that continue to shape my professional growth and leadership in dynamic environments."
+      ]
+    },
+    {
+      "experienceTitle": "Computer Science Co-op | Council on Aging",
+      "experienceSubTitle": "Live Well Collaborative | Cincinnati, OH",
+      "experienceTimeline": "January 2025 - May 2025",
+      "experienceTagline": "Driving operational innovation and elevating senior care experiences through data‑driven workflow optimizations.",
+      "experienceParagraphs": [
+        "As part of my co-op at Live Well Collaborative, I drive innovation by analyzing and co-creating efficient workflows for the Council on Aging. I identify key automation opportunities that streamline daily operations, leveraging rigorous workflow analysis and employing state-of-the-art tools and methodologies.",
+        "I actively collaborate with a dynamic, cross-functional team to unify complex data streams and ideate practical, sustainable solutions that integrate seamlessly into existing processes. Every enhancement we co-develop is designed to deliver a more responsive, community-focused service that exemplifies the transformative power of efficient technology.",
+        "By harnessing cutting-edge automation and data-driven insights, I co-create streamlined core workflows and test for overall operational efficiency. This collaborative effort reinforces my conviction in the power of technology to drive positive change within service-based organizations."
+      ]
+    },
+    {
+      "experienceTitle": "Computer Science Co-op | Proctor & Gamble",
+      "experienceSubTitle": "Live Well Collaborative | Cincinnati, OH",
+      "experienceTimeline": "January 2025 - May 2025",
+      "experienceTagline": "Enhancing consumer engagement and fueling product innovation through cutting‑edge Interactive AI personas and prompt engineering.",
+      "experienceParagraphs": [
+        "Within my co-op at Live Well Collaborative, I lead the co-creation of interactive AI personas designed to elevate product interaction. This dynamic role deepens my prompt engineering expertise while immersing me in advanced research initiatives.",
+        "I actively refine and ideate persona attributes while seamlessly integrating user feedback, ensuring our AI solutions remain both intuitive and impactful. This process demands a balanced blend of technical precision and creative problem-solving to effectively address real-world challenges.",
+        "I value how this project continuously broadens my skill set and showcases the transformative power of AI-driven strategies. Through close collaboration with a diverse team, I co-create and refine solutions that drive innovation and set new benchmarks in product development."
+      ]
+    },
+    {
+      "experienceTitle": "Computer Science Co-op | Elastic Search",
+      "experienceSubTitle": "Live Well Collaborative | Cincinnati, OH",
+      "experienceTimeline": "January 2025 - May 2025",
+      "experienceTagline": "Revolutionizing multi‑year research management with advanced LLM‑powered search solutions, empowering teams with instant insights and seamless collaboration.",
+      "experienceParagraphs": [
+        "At Live Well Collaborative, I spearhead and co-create the development of a multi-modal data stream LLM chatbot designed to support a comprehensive research repository spanning multiple years of projects. My primary objective is to elevate team productivity and streamline onboarding for future peers through innovative, data-driven solutions.",
+        "On the technical front, I leverage a Flask backend integrated with a suite of APIs for secure user authentication, while utilizing React and Tailwind CSS to build a dynamic, responsive interface. AWS RDS PostgreSQL acts as a robust foundation for data management, facilitating real-time interactions that I continuously refine and optimize.",
+        "Implementing this full‑stack application empowers me to tackle advanced search functionalities and complex data indexing challenges. By ideating and refining each component—from designing an efficient database schema to enhancing the user experience—I deliver a solution that optimizes team collaboration and ensures rapid access to critical research insights.",
+        "I take immense pride in our collaborative efforts that simplify complex processes and foster efficient teamwork. This ongoing project not only enriches my full‑stack development skills but also stands as a testament to how integrated technologies, when co‑created and refined through strong team dynamics, drive transformative and meaningful results."
+      ]
+    }
+  ],
+  "honorsExperienceTable": [
+    {
+      "honorsExperienceTitle": "Discord Bot Developer",
+      "honorsExperienceSubTitle": "University of Cincinnati Honors Experience",
+      "honorsExperienceTimeline": "October 2020 - August 2021",
+      "honorsExperienceTagline": "Created a robust Discord utility bot with music, games, and data storage capabilities, and an unique Card Game Appplication.",
+      "honorsExperienceParagraphs": [
+        "As a programming enthusiast, I have always been fascinated by the world of bots and automation. And what better way to apply my skills than to develop my own Discord bot application. In October 2020, I embarked on this project, determined to create a comprehensive and functional bot that would enhance the Discord experience for users.",
+        "I started by researching the various libraries available for Discord bot development, and after evaluating several options, I settled on using Discord.js and Discord.py. These libraries provided an extensive set of tools and resources for building a versatile and reliable bot. I also decided to use the Math.js library of JavaScript to enable the bot to perform mathematical calculations and computations.",
+        "One of the primary goals of my bot was to create a utility tool that would allow users to manage and customize their Discord channels, roles, and other server settings. With this in mind, I began developing the bot's core functions, which included the ability to create, delete, and modify channels and roles. I also added several other useful features, such as setting custom welcome messages, adding or removing members, and assigning roles based on specific criteria.",
+        "As the bot took shape, I realized that it would be incomplete without a music bot component. Thus, I started working on integrating a music player into the bot, allowing users to play their favorite songs and playlists. I made sure to include features such as volume control, skip and repeat functions, and the ability to create and manage playlists.",
+        "Another aspect of my bot that I wanted to develop was the gaming component. I started by creating a two-player tic-tac-toe game that users could play against each other. I then moved on to developing a single-player word scramble game, where users had to unscramble words to score points. To add more excitement, I created a single-player fighting game that allowed users to battle against a bot opponent. And to take things to the next level, I developed a multiplayer card fighting game, called AniCard Bot, where users could select action anime characters and fight against each other.",
+        "As the bot continued to evolve, I added more features, such as user data storage on MongoDB, enabling the bot to store user preferences and settings. I also created a help command that provided users with a list of available commands and their functions. I made sure to test and debug the bot thoroughly to ensure that it functioned correctly and efficiently.",
+        "Over the next few months, the bot gained popularity and attracted a growing community of users. As the number of users increased, I realized that I needed to improve the bot's scalability and performance. I restructured the code and optimized the algorithms, which resulted in a significant improvement in the bot's response time.",
+        "Throughout the development process, I encountered several challenges and obstacles that tested my programming skills and patience. One of the biggest challenges was dealing with the various errors and bugs that inevitably arise in complex software projects. I had to learn to debug and troubleshoot effectively to ensure that the bot ran smoothly.",
+        "Another challenge was keeping up with the ever-evolving Discord platform and its changing APIs. Discord frequently releases updates and changes to its APIs, which can affect the bot's functionality. I had to stay up to date with the latest developments and adapt my code accordingly.",
+        "Despite these challenges, I found the development process to be incredibly rewarding and fulfilling. The bot became a labor of love, and I spent countless hours refining and improving its features. The positive feedback from the users and their appreciation for the bot made all the effort worthwhile.",
+        "In August 2021, I decided to take a break from any further advancements to the project and focus on each functionality to develop it at its best. However, the experience of developing a Discord bot application taught me valuable skills in programming, problem-solving, and project management. It also allowed me to interact with a diverse and vibrant community of Discord users and learn about their needs and preferences.",
+        "Although currently, in 2023, I am no longer actively developing the bot, I still receive messages from users asking for assistance or suggesting new features. It is heartening to see that the bot has made a positive impact on the Discord community, and I am proud to have contributed to it.",
+        "Looking back at the project, I realized that the most crucial factor in its success was my passion for programming and my willingness to learn and explore new technologies. As I navigated the challenges and obstacles that came my way, I constantly reminded myself of the reasons why I started the project and the goals that I wanted to achieve. This kept me motivated and focused, even when the going got tough.",
+        "In conclusion, the experience of developing a Discord bot application has been one of the most rewarding and fulfilling projects I have undertaken. It allowed me to apply my programming skills to practical and real-world problems, and it taught me valuable lessons in project management, problem-solving, and teamwork. I encourage anyone who is interested in programming and bot development to try their hand at building a Discord bot application. With the right mindset and determination, anyone can create a functional and versatile bot that can enhance the Discord experience for users."
+      ]
+    },
+    {
+      "honorsExperienceTitle": "COOP 1000 Course",
+      "honorsExperienceSubTitle": "University of Cincinnati Honors Experience",
+      "honorsExperienceTimeline": "December 2022 - January 2023",
+      "honorsExperienceTagline": "Engaged in COOP 1000 course for personal growth and shared my expertise as an SRS Leader to empower fellow students.",
+      "honorsExperienceParagraphs": [
+        "As a Computer Science major, I embarked on the COOP 1000 course with a mixture of excitement and curiosity. I knew that this opportunity would not only enhance my academic knowledge but also provide valuable insights into the world of professional development. Little did I know that this course would profoundly impact my understanding of my aptitudes, strengths, weaknesses, preferences, and values, while simultaneously equipping me with essential professional skills that would prove invaluable in my chosen field.",
+        "One of the most significant takeaways from the COOP 1000 course was the chance to articulate my aptitudes, strengths, weaknesses, preferences, and values as they relate to my professional development. Through introspective exercises and guided discussions, I gained a deeper understanding of my own skill set and the areas in which I excel. This self-awareness empowered me to make informed career choices and align my aspirations with my personal values. During the course, we engaged in self-reflection activities and assessments that helped me identify my aptitudes, strengths, and weaknesses. Through group discussions and feedback from peers and instructors, I gained a better understanding of my preferences and values in terms of professional development. For instance, I discovered that my strengths lie in logical thinking and problem-solving, which aligned perfectly with my passion for computer science and programming.",
+        "The COOP 1000 course fostered an environment where I could recognize the importance of professional behaviors, both in oral and written communication, as well as workplace etiquette. I learned the significance of clear and concise communication, adapting my message to different audiences, and effectively collaborating with colleagues. Through simulated workplace scenarios and feedback from experienced professionals, I honed my ability to present ideas coherently and navigate challenging workplace dynamics.",
+        "In the context of the workplace, I realized the crucial role that cross-cutting skills play in achieving success. The COOP 1000 course highlighted the importance of skills such as critical thinking, problem-solving, time management, and adaptability. These skills are not specific to any particular discipline but are essential across various industries. Understanding the significance of these cross-cutting skills enabled me to broaden my perspective and actively seek opportunities to develop them further.",
+        "The COOP 1000 course emphasized the importance of diversity and inclusion policies and practices in work environments, both within the United States and globally. Through engaging discussions and case studies, I came to appreciate the immense value that diversity brings to teams and organizations. I learned to appreciate different perspectives, challenge my biases, and contribute to creating inclusive spaces where everyone's voices are heard and respected. These invaluable lessons have helped me become a more empathetic and open-minded professional. For example, we engaged in discussions that explored the benefits of diverse teams. Additionally, we had the opportunity to work in diverse teams, collaborating with individuals from different backgrounds and perspectives. Through these experiences, I learned to appreciate different viewpoints, challenge my own biases, and actively contribute to creating inclusive work environments. This helped me become a more empathetic and inclusive team member.",
+        "The knowledge and skills I acquired through the COOP 1000 course directly translated into tangible benefits within my Computer Science major. Effective communication skills, both written and oral, have allowed me to clearly articulate complex technical concepts to my peers and collaborate seamlessly in group projects. The ability to think critically and problem-solve has been instrumental in tackling programming challenges and approaching complex algorithms. Moreover, my enhanced time management and adaptability skills have enabled me to juggle multiple projects and meet tight deadlines without compromising the quality of my work. The skills and traits developed in COOP 1000 directly impacted my performance in my Computer Science major. For example, by improving my communication skills, I was able to effectively explain complex technical concepts to my peers and professors, enhancing my ability to collaborate and contribute to group projects. The critical thinking and problem-solving skills acquired in the course enabled me to tackle programming challenges more efficiently and approach algorithmic problem-solving with a strategic mindset. Furthermore, the emphasis on diversity and inclusion has motivated me to actively seek out opportunities to collaborate with individuals from different backgrounds, bringing diverse perspectives to my work in computer science.",
+        "Participating in the COOP 1000 course as a Computer Science major has been a transformative experience. I have gained a deeper understanding of my own strengths, weaknesses, and values, and have cultivated essential professional skills that will serve me well in my future career. This course has underscored the significance of effective communication, cross-cutting skills, and embracing diversity and inclusion in the workplace. I am confident that the knowledge and insights I have acquired through this course will continue to guide me as I embark on my journey as a Computer Science professional, enabling me to make a positive impact in the field and contribute meaningfully to the diverse teams I will be a part of."
+      ]
+    }
+  ],
+  "involvementTable": [
+    {
+      "involvementTitle": "UC Blue Ash Admissions Office",
+      "involvementSubTitle": "University of Cincinnati | Blue Ash, OH",
+      "involvementTimeline": "August 2022 - December 2023",
+      "involvementTagline": "Enhancing the admissions process through proactive outreach, meticulous organization, and dynamic communication to connect prospective students with academic opportunities.",
+      "involvementParagraphs": [
+        "At the UC Blue Ash Admissions Office, I play a pivotal role in assisting prospective students and their families with the admissions process. I provide expert guidance on program selection, enrollment procedures, and general inquiries through in-person interactions, emails, and phone calls.",
+        "I take charge of reviewing and approving transcripts while efficiently managing admission-related communications. By directing students to essential campus resources for academic and financial aid support, I ensure a smooth and informed enrollment experience.",
+        "In addition to my administrative responsibilities, I actively represent UC Blue Ash at Open Houses and college fairs, engaging with students to promote university programs and assist with major selection. I also coordinate and prepare outreach materials for high school recruitment events, ensuring that our initiatives effectively reach potential students.",
+        "Through these diverse responsibilities, I continuously refine my communication, organizational, and teamwork skills, contributing to a welcoming and informative admissions environment that positively impacts the university community."
+      ]
+    },
+    {
+      "involvementTitle": "Learning Commons - SRS Leader & MASS Tutor",
+      "involvementSubTitle": "University of Cincinnati | Cincinnati, OH",
+      "involvementTimeline": "December 2022 - Current",
+      "involvementTagline": "Been a Part Of The University of Cincinnati Learning Commons as an Supplemental Review Session Leader & Math & Science Support Tutor",
+      "involvementParagraphs": [
+        "As a Supplemental Review Session (SRS) Leader and Math and Science Support (MASS) Tutor at the University of Cincinnati's Learning Commons, I've had the rewarding experience of educating and supporting my peers in their academic journeys. Leading sessions for over 90 students in CALC II, I create engaging, educational lectures that break down complex topics into easily understandable concepts. I take pride in ensuring that every student feels heard and supported, making it my priority to address each question and foster an inclusive learning environment where everyone feels comfortable to participate.",
+        "Working one-on-one and in group settings, I implement individualized lesson plans for students requiring extra help in math, science, and computer science courses. I love explaining complex topics, especially as I see students gain clarity and confidence in challenging subjects. This role has strengthened my ability to communicate effectively, adapt my teaching approach to various learning styles, and cultivate a supportive community where students feel empowered to succeed."
+      ]
+    },
+    {
+      "involvementTitle": "RevolutionUC",
+      "involvementSubTitle": "University of Cincinnati | Cincinnati, OH",
+      "involvementTimeline": "February 2022 - Current",
+      "involvementTagline": "RevolutionUC is a platform where I push my boundaries, lead impactful projects, and grow through collaboration and innovation in technology.",
+      "involvementParagraphs": [
+        "RevolutionUC has been an incredible platform for me to challenge myself, build unique projects, and grow as a team leader and developer. Over the years, I participated in three RevolutionUC hackathons, winning awards in each and embracing the opportunity to lead teams, organize workflows, and create dynamic schedules to ensure each project was completed with high standards. I enjoyed working alongside motivated peers, assisting team members whenever needed, and ensuring smooth project flow.",
+        "My first hackathon project, Virtual Office Space, created a calming digital environment that allowed users, especially researchers, to display and explore data interactively. Inspired by data presentation tools like Jupyter notebooks and VR environments like VR Chat, we developed a virtual space with Unity and C#, enabling users to explore the web and learn through immersive experiences. Despite technical challenges, like integrating VR support and loading web pages correctly, we achieved a significant milestone with our “spawn web browser” feature, allowing users to position virtual displays. This project won the Digital Futures Storytelling Prize, and as my first project, it marked the beginning of my passion for hackathons and virtual environments.",
+        "Next came BearChat, an offline chatbot tailored for University of Cincinnati students. BearChat served as a campus-specific assistant, offering navigation, event updates, weather information, and mental health support resources. Using NLTK, TensorFlow, and PyTorch for the chatbot's backend and integrating it with Flask for the frontend, we built a functional prototype that resonated with the university’s needs. We faced challenges with integrating TensorFlow and Flask, yet our perseverance paid off, and BearChat won the Best Use of Google Cloud award. This project underscored my enthusiasm for creating tools that simplify campus life, and I loved coordinating our team’s efforts toward a meaningful end product.",
+        "My latest project, HealthSphere, was inspired by the goal of providing users with data-driven wellness insights. Built with Flask, PostgreSQL, and Taipy, HealthSphere empowers users to track their health metrics and receive personalized wellness recommendations. The project presented technical challenges, including seamless data integration, complex data visualizations, and real-time analytics, all while adhering to data privacy standards. Through iterative design and rigorous testing, we developed a user-friendly platform that received the Best Digital Solution to Improve the Clinical Trial Process and Best Use of Taipy awards. This experience deepened my appreciation for the potential of technology to positively impact health and well-being and strengthened my skills in data management and user-centric design.",
+        "These RevolutionUC hackathons have been transformative, allowing me to lead teams, tackle complex challenges, and contribute to projects that aim to make a real difference. Each hackathon has not only been a step forward in my technical journey but also a reminder of the importance of collaboration, creativity, and perseverance."
+      ]
+    },
+    {
+      "involvementTitle": "MakeUC",
+      "involvementSubTitle": "University of Cincinnati | Cincinnati, OH",
+      "involvementTimeline": "October 2022 - Current",
+      "involvementTagline": "MakeUC is my platform for innovative problem-solving, team leadership, and pushing creative boundaries in technology.",
+      "involvementParagraphs": [
+        "MakeUC is a transformative platform where I continually push my creative boundaries and lead dynamic projects that challenge conventional thinking. Participating in these hackathons has allowed me to co-create, ideate, and refine innovative solutions while working in a highly collaborative, fast-paced environment.",
+        "During my first MakeUC hackathon, I co-created LibRestricted—a virtual library designed to provide discreet access to banned texts. Although we encountered challenges with database integration, our agile team refined the multiplayer experience to deliver a robust, interactive platform. While LibRestricted did not secure an award, the invaluable lessons in teamwork and technical adaptability have profoundly shaped my approach to innovation.",
+        "Building on that foundation, I later co-developed FaunaFinder, an AI-powered animal breed recognition platform that earned the Best Use of AI in Education award. By leveraging Python, Flask, and the Google Cloud Vision API, our team ideated and refined an immersive tool that not only identifies species from user-uploaded images but also provides comprehensive insights, reinforcing my passion for practical AI applications.",
+        "In addition, I contributed to Cleanify, an educational game that challenges players to clean virtual ecosystems and promotes environmental awareness. Through this project, I collaborated closely with my team to design modular game levels, optimize interactive gameplay, and enhance user engagement. Although Cleanify did not secure a prize, it remains a testament to our commitment to social impact and creative problem-solving in game development.",
+        "Overall, these RevolutionUC hackathons have been a powerful catalyst for my technical and personal growth. By co-creating and refining solutions across diverse projects, I continually hone my leadership, teamwork, and problem-solving skills. Each experience fuels my drive to push creative boundaries and deliver technological solutions that make a meaningful impact."
+      ]
+    },
+    {
+      "involvementTitle": "University of Cincinnati RED Department ",
+      "involvementSubTitle": "Resident Advisor | Cincinnati, OH",
+      "involvementTimeline": "January 2023 – Present",
+      "involvementTagline": "Fostering a supportive, inclusive, and vibrant residential community that empowers students to thrive academically, socially, and personally.",
+      "involvementParagraphs": [
+        "In my role as a Resident Advisor at the University of Cincinnati RED Department, I manage a residence hall of over 50 residents, ensuring a safe and inclusive environment while effectively resolving roommate conflicts. I provide continuous peer advising and direct support on academic resources, personal development, and campus involvement, laying a strong foundation for students transitioning into college life.",
+        "I actively collaborate with hall staff, university departments, and fellow RAs to design and facilitate a diverse range of educational, recreational, and social programs. These events—including study sessions, wellness workshops, and community gatherings—enhance the overall residential experience and foster a dynamic, inclusive community.",
+        "I take great pride in engaging with my residents, always striving to build meaningful connections through open communication and personalized support. My enthusiasm for interaction is reflected in the various events I organize, which encourage students to share ideas, voice concerns, and build lasting relationships.",
+        "Recently, I created a team introduction video that showcases our RA team's commitment to service and collaboration. This initiative has significantly strengthened our community spirit and improved communication, allowing residents to connect more closely with the team and further enhancing the supportive environment we work hard to maintain."
+      ]
+    },
+    {
+      "involvementTitle": "Bearcat Tech Innovators",
+      "involvementSubTitle": "Vice President & Tech Track Chair | Cincinnati, OH",
+      "involvementTimeline": "August 2024 - Current",
+      "involvementTagline": "Driving collaborative innovation and technical excellence through proactive leadership and strategic communication at Bearcat Tech Innovators.",
+      "involvementParagraphs": [
+        "In my role as Vice President and Tech Track Chair at Bearcat Tech Innovators, I lead by ensuring that communication flows seamlessly across the executive board. I serve as the first point of contact for board members, coordinating initiatives and providing timely support to maintain efficient operations and drive our club's mission forward.",
+        "I have spearheaded the development of nine GitHub template projects that act as comprehensive guides for our teams. These templates streamline project planning, promote best practices, and serve as a reliable resource for tackling challenges during the development process.",
+        "I actively facilitate team meetings, organize cross-functional discussions, and collaborate with diverse tech enthusiasts to ideate and refine innovative solutions. This role demands a balance of strategic planning and hands-on technical leadership, ensuring that our projects are executed with precision and creativity.",
+        "Overall, my involvement at Bearcat Tech Innovators not only enhances my leadership and technical skills but also fosters a culture of collaboration and continuous improvement. This experience is pivotal in preparing me for future challenges in the tech industry, as I help build a dynamic community that thrives on innovation and teamwork."
+      ]
+    }
+  ],
+  "projectTable": [
+    {
+      "projectTitle": "Discord Bot Developer",
+      "projectSubTitle": "COVID Time Learning",
+      "projectTimeline": "October 2020 - August 2021",
+      "projectTagline": "Created a robust Discord utility bot built during the COVID era, offering comprehensive server management, engaging games, and scalable data storage, including a unique multiplayer card game experience.",
+      "projectParagraphs": [
+        "In October 2020, amidst the rapid transition to online learning and limited resources, I began exploring Discord bot development as a productive way to enhance my time at home. I started with Discord.js, briefly experimented with Discord.py, and ultimately returned to Discord.js for its superior security and performance. This journey marked the beginning of a formative learning experience in bot automation and teamwork.",
+        "As the project evolved, the bot's functionality expanded to include essential server management tools—such as customizable roles, channels, and welcome messages—along with a music player offering volume control and playlist management. Engaging mini-games like tic-tac-toe and word scramble were introduced, culminating in the creation of a unique multiplayer card game known as AniCard Bot, which enriched the community experience.",
+        "Reflecting on this period, I value how the project honed my skills in API integration, algorithm optimization, and database management with MongoDB. It was a transformative experience that not only deepened my technical expertise but also enhanced my leadership, project management, and community engagement abilities."
+      ],
+      "featured": true
+    },
+    {
+      "projectTitle": "Virtual Office Space",
+      "projectSubTitle": "RevUC Hackathon 2022",
+      "projectTimeline": "February 2022",
+      "projectTagline": "projectTagline: Crafted a transformative virtual office space that redefined web exploration and collaboration, and was honored for Digital Futures Storytelling Prize at RevolutionUC Spring 2022.",
+      "projectParagraphs": [
+        "In February 2022, during my first hackathon at the University of Cincinnati, I conceptualized Virtual Office Space as a refuge to explore the web. Inspired by data presentation tools like Jupyter notebooks and immersive platforms such as VR Chat and Rec Room, I aimed to create an environment where researchers could display data in visually engaging ways.",
+        "Using Unity and C#, I built an application that enabled users to interact with multiple virtual displays. Leveraging art assets from BrokenVector and the ZFBrowser package, the platform offered custom experiences—ranging from educational finance games to dedicated research rooms featuring curated content from Digital Futures.",
+        "Despite challenges such as ensuring seamless web page integration and incorporating VR support, the project provided invaluable lessons in plugin management, prefabrication, and technical troubleshooting. I take pride in the spawn web browser feature that empowers users to customize their workspace and envision future enhancements like multiplayer collaboration to further elevate the experience."
+      ],
+      "featured": "true"
+    },
+    {
+      "projectTitle": "Lift & Locate: A Precision-Engineered Lego Robot",
+      "projectSubTitle": "Engineering Design Course",
+      "projectTimeline": "November 2021 - May 2022",
+      "projectTagline": "Designed and programmed a precision-engineered Lego robot with Python that showcased advanced capabilities, including precise movement, object lifting, and barcode scanning for item localization.",
+      "projectParagraphs": [
+        "From November 2021 to May 2022, I led the design and programming of A Precision-Engineered Lego Robot as part of an Engineering Design Course at the University of Cincinnati. This project was my first ever class where I truly enjoyed working in a professional team on a large-scale project that demanded dedication and hard work.",
+        "Working collaboratively with a talented team, we meticulously planned and executed every stage of development. Countless hours were dedicated to refining the code, calibrating sensor inputs, and perfecting motion control algorithms, ensuring that the robot performed with exceptional precision during its showcase.",
+        "Reflecting on the experience, the robot’s performance on showcase day became a testament to our collective resilience and innovative spirit. The project not only honed my technical skills in Python, sensor integration, and motion control but also instilled invaluable lessons in teamwork and professional collaboration, laying a strong foundation for my future endeavors in engineering and robotics."
+      ],
+      "featured": "true"
+    },
+    {
+      "projectTitle": "BearChat: YUCY AI ChatBot ",
+      "projectSubTitle": "RevUC Hackathon 2023",
+      "projectTimeline": "February 2023",
+      "projectTagline": "Developed an offline full-stack AI chatbot for UC students that delivered personalized campus support with 99% query accuracy, showcased at RevUC Hackathon 2023, and earned the Best Use of Google Cloud (MLH) award.",
+      "projectParagraphs": [
+        "In February 2023, BearChat emerged as the first AI chatbot tailored specifically for the University of Cincinnati community. Designed to offer personalized campus navigation, resource discovery, weather updates, and even therapy suggestions, the platform addressed the unique needs of UC students by blending innovation with practical utility.",
+        "Leveraging a robust tech stack including Python, Flask, TensorFlow, and PyTorch, the backend was meticulously engineered to deliver accurate, context-aware responses. Various Google APIs—such as text-to-speech and weather services—were seamlessly integrated to enhance user interactivity, ensuring the chatbot consistently achieved 99% accuracy in understanding queries.",
+        "Reflecting on the journey, this project marked my first full-stack AI application, where I led most of the backend, NLP, and DNN integration efforts. Despite facing significant challenges and working up until the last hour of submission, the team and I navigated these hurdles to secure the Best Use of Google Cloud (MLH) award—a milestone that boosted my confidence and fueled my passion for future AI-driven innovations."
+      ],
+      "featured": "true"
+    },
+    {
+      "projectTitle": "First Personal Portfolio Website",
+      "projectSubTitle": "FARM Stack Self-Learning",
+      "projectTimeline": "June 2023 - August 2023",
+      "projectTagline": "Built a personal portfolio website using FARM stack technologies that marked my first large-scale full-stack development project in my 2nd year of university, showcasing my projects, involvements, and technical growth.",
+      "projectParagraphs": [
+        "In June 2023, I embarked on my first large-scale full-stack development project during my 2nd year at university by building a personal portfolio website using HTML, CSS, Python, and Flask.",
+        "Designing and coding the website from scratch was both challenging and rewarding, as I applied higher-level Python logic to the Flask backend and crafted a responsive, visually appealing frontend. This venture drew heavily on my previous experience as a Python/Flask Web App Developer, integrating lessons learned into a cohesive and functional design.",
+        "Reflecting on this journey, the project not only served as a dynamic platform for showcasing my work and networking but also solidified my technical prowess and creative vision—marking a significant milestone in my personal growth as a developer."
+      ],
+      "featured": "true"
+    },
+    {
+      "projectTitle": "FaunaFinder: AI-Powered Animal Breed Recognition",
+      "projectSubTitle": "MakeUC Hackathon 2023",
+      "projectTimeline": "October 2023",
+      "projectTagline": "Engineered an award-winning AI-powered animal breed recognition platform that integrated Google Cloud Vision, Wikipedia, and GBIF APIs for dynamic wildlife exploration, honored as Winner Best Use of AI in Education at MakeUC Hackathon 2023.",
+      "projectParagraphs": [
+        "During MakeUC Hackathon 2023, FaunaFinder was developed as an innovative web application that identifies animal species from user-uploaded photos while delivering rich educational content about wildlife. By harnessing Google Cloud Vision for image recognition and aggregating data from Wikipedia and the GBIF API, the platform enabled users to discover, learn, and explore the animal kingdom in an engaging manner.",
+        "Leading a dedicated team under tight deadlines, I orchestrated the seamless integration of multiple APIs and crafted a fluid user experience using Python, Flask, HTML, CSS, and JavaScript. My role involved strategic delegation, proactive troubleshooting, and continuous support to ensure every feature—from precise image analysis to comprehensive data display—was executed flawlessly within the limited timeframe.",
+        "Reflecting on this high-pressure yet rewarding experience, FaunaFinder not only showcased my technical leadership and innovative problem-solving skills but also demonstrated the potential of AI-driven solutions in bridging technology with education. The project’s success, marked by winning the Best Use of AI in Education award, underscores my ability to deliver impactful, user-centric applications under challenging conditions."
+      ],
+      "featured": "true"
+    },
+    {
+      "projectTitle": "HealthSphere: Data-Driven Wellness Solutions",
+      "projectSubTitle": "RevUC Hackathon 2024",
+      "projectTimeline": "February 2024",
+      "projectTagline": "Engineered a holistic health and wellness platform that integrated real-time data analysis, personalized insights, and a user-centric design, earning the Winner Best Digital Solution to Improve the Clinical Trial Process (Medpace) and Winner Best Use of Taipy awards at RevolutionUC Hackathon 2024.",
+      "projectParagraphs": [
+        "In February 2024 at RevUC Hackathon 2024, I led the development of HealthSphere—a comprehensive platform designed to empower individuals to manage their health through real-time data analysis, personalized insights, and interactive visualizations. Utilizing Python, Flask, PostgreSQL, and Taipy, we built a system that enabled users to track daily activities, monitor vital signs, and make informed decisions about their wellness.",
+        "The development process was a tough battle as initial plans frequently went south. Our team faced significant challenges, from unifying diverse data formats into a secure PostgreSQL database to designing intuitive, interactive dashboards for real-time analytics. By staying calm under pressure and fostering strong team collaboration, I ensured we adapted quickly and implemented effective solutions despite the tight timeframe.",
+        "Reflecting on this journey, HealthSphere not only transformed our approach to wellness technology but also garnered significant accolades—winning both the Winner Best Digital Solution to Improve the Clinical Trial Process (Medpace) and Winner Best Use of Taipy awards. This project is a testament to our resilience, technical prowess, and commitment to creating impactful, user-centric solutions in the face of adversity."
+      ],
+      "featured": "true"
+    },
+    {
+      "projectTitle": "FinVest: Budget Smart, Invest Sharp",
+      "projectSubTitle": "Future of Data Hackathon 2024",
+      "projectTimeline": "August 2024 – September 2024",
+      "projectTagline": "Engineered a dynamic financial platform unifying budgeting, spending, and investment tracking with real-time 3D visualizations, honored as Best Finance Software at Future of Data Hackathon 2024 – MidwestCon 2024.",
+      "projectParagraphs": [
+        "In August 2024, at the Future of Data Hackathon, our team—including Phani Bharadwaj, Saarthak Sinha, Shivam Kharangate,and myself—developed FinVest, a comprehensive platform that consolidates budgeting, spending, and investment data into one unified experience. FinVest empowers users with interactive 3D charts and a risk-free environment to learn stock trading by integrating real-time financial data via Plaid and Alpha Vantage APIs.",
+        "The development journey was a rigorous battle against time and complexity, where every challenge—ranging from managing vast financial datasets to ensuring a responsive, user-friendly interface—tested our technical and collaborative skills. Utilizing .NET with C# for backend development, Razor Pages with Bootstrap for the frontend, and visualization tools like Chart.js and Plotly, our team persevered through setbacks and refined our approach in real time.",
+        "Ultimately, FinVest not only delivered actionable financial insights to non-experts but also achieved significant recognition, winning the Best Finance Software award and ranking in the Top 20 teams at MidwestCon 2024. This accomplishment has inspired plans for future enhancements, including advanced analytics, predictive features, and social functionalities to further empower users on their journey toward financial literacy."
+      ],
+      "featured": "true"
+    },
+    {
+      "projectTitle": "Personal MERN Stack Portfolio Website",
+      "projectSubTitle": "Full-Stack Development",
+      "projectTimeline": "August 2024 – January 2025",
+      "projectTagline": "Engineered a fully revamped, feature-rich MERN Stack portfolio website that seamlessly showcases my projects, experiences, and honors—marking a significant evolution in my professional full-stack development journey.",
+      "projectParagraphs": [
+        "Between August 2024 and January 2025, I embarked on an ambitious project to completely overhaul my personal portfolio website using the MERN stack. Balancing job applications, classes, and exams, I transformed a simple update into a deep dive into professional full-stack development.",
+        "Leveraging MongoDB, Express, React, and Node.js, I architected the platform with clear separation between backend API routes, controllers, and configuration, and the frontend’s UI components and services. This structure ensured real-time data retrieval and a dynamic, responsive experience for every visitor.",
+        "A key highlight was the integration of advanced features such as customized responsive backgrounds, engaging frontend animations, and a secure Admin Portal with OAuth and two-factor authentication. I even implemented a Windows File Explorer-style UI to manage portfolio details with precision and ease.",
+        "Throughout this journey, I learned invaluable lessons in time management, perseverance, and modular design—refining my technical skills and strategic approach to complex challenges. This project stands as a testament to my growth as a developer and my commitment to continuous innovation, and I am excited to share my enhanced portfolio at kartavya-singh.com."
+      ],
+      "featured": "true"
+    }
+  ],
+  "skillsCollection": [
+    {
+      "title": "Programming & Development",
+      "description": "Showcasing expertise in modern programming languages and frameworks.",
+      "skills": [
+        {
+          "logo": "javascript",
+          "name": "JavaScript",
+          "proficiency": "proficient"
+        },
+        {
+          "logo": "python",
+          "name": "Python",
+          "proficiency": "proficient"
+        },
+        {
+          "logo": "cpp",
+          "name": "C++",
+          "proficiency": "proficient"
+        },
+        {
+          "logo": "typescript",
+          "name": "TypeScript",
+          "proficiency": "intermediate"
+        },
+        {
+          "logo": "c",
+          "name": "C",
+          "proficiency": "intermediate"
+        },
+        {
+          "logo": "java",
+          "name": "Java",
+          "proficiency": "intermediate"
+        },
+        {
+          "logo": "go",
+          "name": "Go",
+          "proficiency": "beginner"
+        }
+      ]
+    },
+    {
+      "title": "Data & AI",
+      "description": "Specialized in data manipulation, machine learning, and AI frameworks.",
+      "skills": [
+        {
+          "logo": "tensorflow",
+          "name": "TensorFlow",
+          "proficiency": "proficient"
+        },
+        {
+          "logo": "sklearn",
+          "name": "Logistic Regression",
+          "proficiency": "proficient"
+        },
+        {
+          "logo": "d3",
+          "name": "D3",
+          "proficiency": "proficient"
+        },
+        {
+          "logo": "sql",
+          "name": "SQL",
+          "proficiency": "proficient"
+        },
+        {
+          "logo": "matplotlib",
+          "name": "Matplotlib",
+          "proficiency": "intermediate"
+        },
+        {
+          "logo": "pyspark",
+          "name": "PySpark",
+          "proficiency": "beginner"
+        },
+        {
+          "logo": "hive",
+          "name": "Hive",
+          "proficiency": "beginner"
+        }
+      ]
+    },
+    {
+      "title": "Spoken Language",
+      "description": "Bi-lingual by birth and always eager to learn more.",
+      "skills": [
+        {
+          "logo": "english",
+          "name": "English",
+          "proficiency": "proficient"
+        },
+        {
+          "logo": "hindi",
+          "name": "Hindi",
+          "proficiency": "proficient"
+        },
+        {
+          "logo": "japanese",
+          "name": "Japanese",
+          "proficiency": "intermediate"
+        },
+        {
+          "logo": "french",
+          "name": "French",
+          "proficiency": "intermediate"
+        },
+        {
+          "logo": "arabic",
+          "name": "Arabic",
+          "proficiency": "beginner"
+        }
+      ]
+    },
+    {
+      "title": "Tools & Platforms",
+      "description": "Proficient with industry-standard tools and platforms.",
+      "skills": [
+        {
+          "logo": "powerbi",
+          "name": "Power BI",
+          "proficiency": "proficient"
+        },
+        {
+          "logo": "windows",
+          "name": "Windows",
+          "proficiency": "proficient"
+        },
+        {
+          "logo": "macos",
+          "name": "MacOS",
+          "proficiency": "proficient"
+        },
+        {
+          "logo": "ms_office",
+          "name": "MS Office",
+          "proficiency": "intermediate"
+        },
+        {
+          "logo": "labview",
+          "name": "LabView",
+          "proficiency": "intermediate"
+        },
+        {
+          "logo": "tableau",
+          "name": "Tableau",
+          "proficiency": "beginner"
+        },
+        {
+          "logo": "unity",
+          "name": "Unity",
+          "proficiency": "beginner"
+        },
+        {
+          "logo": "kali",
+          "name": "Kali Systems",
+          "proficiency": "beginner"
+        },
+        {
+          "logo": "linux",
+          "name": "Linux",
+          "proficiency": "beginner"
+        }
+      ]
+    },
+    {
+      "title": "Full Stack Development",
+      "description": "Experience with robust front-end and back-end technologies.",
+      "skills": [
+        {
+          "logo": "mongodb",
+          "name": "MongoDB",
+          "proficiency": "proficient"
+        },
+        {
+          "logo": "express",
+          "name": "Express",
+          "proficiency": "proficient"
+        },
+        {
+          "logo": "react",
+          "name": "React",
+          "proficiency": "proficient"
+        },
+        {
+          "logo": "nodejs",
+          "name": "Node JS",
+          "proficiency": "proficient"
+        },
+        {
+          "logo": "flask",
+          "name": "Flask",
+          "proficiency": "proficient"
+        },
+        {
+          "logo": "css",
+          "name": "CSS",
+          "proficiency": "proficient"
+        },
+        {
+          "logo": "framermotion",
+          "name": "Framer Motion",
+          "proficiency": "intermediate"
+        },
+        {
+          "logo": "angular",
+          "name": "AngularJS",
+          "proficiency": "beginner"
+        }
+      ]
+    }
+  ],
+  "skillsTable": [
+    {
+      "Labels": [
+        "Problem Solving",
+        "Data Analysis",
+        "Flexibility",
+        "Efficiency",
+        "Optimization"
+      ],
+      "Scores": [
+        4.9,
+        4.8,
+        4.8,
+        4.9,
+        4.8
+      ],
+      "skillTitle": "Python",
+      "skillDescription": "Expert in Python, leveraging its versatility for data manipulation, algorithm design, and efficient problem solving to deliver scalable, real-world solutions."
+    },
+    {
+      "Labels": [
+        "Frontend Design",
+        "Backend Logic",
+        "API Integration",
+        "Responsiveness",
+        "User Experience"
+      ],
+      "Scores": [
+        4.9,
+        5,
+        4.9,
+        4.9,
+        4.8
+      ],
+      "skillTitle": "Web Development",
+      "skillDescription": "Experienced in full-stack web development, creating seamless, responsive applications that integrate robust backend logic with engaging, user-centric frontends."
+    },
+    {
+      "Labels": [
+        "Model Building",
+        "Data Processing",
+        "Algorithm Design",
+        "Evaluation",
+        "Deployment"
+      ],
+      "Scores": [
+        4.8,
+        4.7,
+        4.8,
+        4.9,
+        4.6
+      ],
+      "skillTitle": "Machine Learning",
+      "skillDescription": "Skilled in designing, training, and deploying machine learning models that drive impactful, data-driven insights and innovative solutions."
+    },
+    {
+      "Labels": [
+        "Natural Language Processing",
+        "Deep Learning",
+        "Automation",
+        "Innovation",
+        "Real-world Impact"
+      ],
+      "Scores": [
+        4.8,
+        4.9,
+        4.9,
+        4.8,
+        4.8
+      ],
+      "skillTitle": "Artificial Intelligence",
+      "skillDescription": "Dedicated to applying AI to create transformative, real-world solutions with expertise in NLP, deep learning, and innovative automation."
+    },
+    {
+      "Labels": [
+        "PowerBI",
+        "Tableau",
+        "Chart.js",
+        "Clarity",
+        "Insight Extraction"
+      ],
+      "Scores": [
+        4.8,
+        4.7,
+        4.8,
+        4.7,
+        4.7
+      ],
+      "skillTitle": "Data Visualization",
+      "skillDescription": "Expert in crafting interactive data visualizations that transform complex datasets into clear, actionable insights using advanced visualization tools."
+    },
+    {
+      "Labels": [
+        "Deployment",
+        "Scalability",
+        "Security",
+        "Efficiency",
+        "Cost Optimization"
+      ],
+      "Scores": [
+        4.6,
+        4.6,
+        4.7,
+        4.4,
+        4.5
+      ],
+      "skillTitle": "Cloud Computing",
+      "skillDescription": "Proficient in deploying and managing secure, scalable cloud solutions that optimize performance and cost efficiency across diverse environments."
+    },
+    {
+      "Labels": [
+        "AWS",
+        "Docker",
+        "Kubernetes",
+        "CI/CD",
+        "Monitoring"
+      ],
+      "Scores": [
+        4.8,
+        4.8,
+        4.6,
+        4.5,
+        4.6
+      ],
+      "skillTitle": "Cloud & DevOps",
+      "skillDescription": "Skilled in designing, deploying, and managing cloud-based solutions using modern DevOps practices, ensuring scalability, reliability, and continuous delivery."
+    },
+    {
+      "Labels": [
+        "Wireframing",
+        "Prototyping",
+        "User Research",
+        "Responsive Design",
+        "Accessibility"
+      ],
+      "Scores": [
+        4.7,
+        4.7,
+        4.7,
+        4.8,
+        4.6
+      ],
+      "skillTitle": "UI/UX Design",
+      "skillDescription": "Adept at creating intuitive, user-centric designs that enhance engagement and accessibility across digital platforms."
+    },
+    {
+      "Labels": [
+        "Communication",
+        "Team Collaboration",
+        "Problem Solving",
+        "Time Management",
+        "Adaptability"
+      ],
+      "Scores": [
+        4.8,
+        4.9,
+        4.9,
+        4.8,
+        4.8
+      ],
+      "skillTitle": "Soft Skills & Leadership",
+      "skillDescription": "Proven ability to lead teams, communicate effectively, and manage complex projects with a calm and strategic approach under pressure."
+    }
+  ],
+  "yearInReviewTable": [
+    {
+      "yearInReviewTitle": "Year-In-Review 2022 - 2023",
+      "yearInReviewTagline": "My Year-In-Review for 2022-2023 highlights a transformative journey filled with academic achievements, personal growth, and impactful projects. From excelling in hackathons like MakeUC and Rev UC to embracing new cultural experiences, each milestone has strengthened my skills, confidence, and passion for continual learning and community impact.",
+      "yearInReviewParagraphs": [
+        "As I reflect on the past year, I am filled with an immense sense of pride and accomplishment. The year 2022-2023 has been a transformative journey, both personally and professionally, marked by a multitude of extraordinary experiences and significant personal growth. In this comprehensive year-in-review, I will take you through the remarkable moments and noteworthy achievements that have shaped my path and propelled me forward.",
+        "Let me begin by highlighting one of the standout moments of the year – my participation in the MakeUC Hackathon. Joined by a team of four exceptionally talented individuals, we embarked on a remarkable project that would make a lasting impact. Our endeavor involved the development of a virtual library utilizing Unity Game Developer and C#. The objective was to make educational books, which were previously inaccessible to the citizens of the United States, available to the public. Through this captivating journey, not only did I acquire invaluable knowledge in game development, but I also discovered a newfound fascination with various subjects explored within these books. It was an immensely gratifying experience to create something that had the potential to enhance knowledge and make a positive impact on the lives of others.",
+        "Another pivotal milestone in my journey of personal and professional growth was the COOP 1000 course. This extraordinary course revolutionized my perspective as a computer science student, equipping me with essential skills that have had a profound impact on my journey. Among these vital skills were effective communication, problem-solving prowess, and impeccable time management. Moreover, the course emphasized the significance of setting realistic goals and breaking down seemingly insurmountable challenges into smaller, manageable tasks. This newfound knowledge instilled in me an unwavering sense of confidence and determination, making me realize that with dedication and perseverance, I possess the ability to achieve greatness in my chosen career field.​",
+        "In addition to my academic pursuits, I embarked on a personal odyssey to learn the beautiful Japanese language. Fueled by my unwavering interest in Japanese culture and my passion for anime, I undertook the remarkable journey of learning Japanese to expand my horizons and deepen my understanding of a different culture. With the aid of various online resources and courses offered by the esteemed University of Cincinnati, I delved into the intricacies of mastering Hiragana and Katakana, laying a solid foundation for my future language explorations. This endeavor not only sharpened my communication skills but also nurtured a profound appreciation for the rich tapestry of Japanese culture.",
+        "Participating in the highly anticipated Rev UC Hackathon was yet another significant milestone that fortified my journey of growth and achievement. During this immersive experience, I devoted my skills to the creation of an ingenious voice assistant specifically tailored for UC students, which we fondly named BearChat. This remarkable project served as a testament to my expertise in machine learning, natural language processing, and web development. Leveraging the power of Python and employing a plethora of cutting-edge machine learning techniques, I successfully crafted a comprehensive voice assistant capable of providing real-time weather updates, precise time information, user location data, text-to-speech functionality, and even detailed building information for the prestigious University of Cincinnati. The recognition and accolades bestowed upon our project for the best use of Google APIs validated the extensive knowledge and expertise I had cultivated in my chosen field of study.",
+        "Beyond the realms of academia, I had the distinct honor of being an integral part of the esteemed National Residence Hall Honorary (NRHH). Immersing myself in this incredible organization provided me with unparalleled opportunities to contribute meaningfully to the residential community and create life-changing experiences for my fellow students. As a passionate advocate for the needs and concerns of international students, I worked tirelessly to foster inclusivity and promote cultural exchange on campus. My dedication and unwavering commitment were acknowledged, and I subsequently applied for an executive board position. With great delight, I was accepted as the Director of Values for the upcoming Fall 2023 semester. This tremendous opportunity fills me with immense enthusiasm as I eagerly anticipate the chance to continue contributing to the organization's growth and making a positive impact within the residential community.",
+        "Looking ahead, I am brimming with excitement and an insatiable thirst for new opportunities and challenges that lie on the horizon. Building upon the strong foundation I have established; I intend to seize every chance to further my personal and professional growth. The experiences of the past year have indubitably transformed me into a more confident, resilient, and well-rounded individual. I am grateful for the tremendous growth and accomplishments I have achieved, and I remain resolute in my determination to continually push the boundaries of my potential and reach new heights in all my future endeavors.",
+        "In conclusion, the year 2022-2023 stands as a pivotal period characterized by profound personal growth and remarkable achievements. From participating in awe-inspiring hackathons to broadening my cultural horizons, each experience has contributed to my overall development as an individual. I am grateful for the countless opportunities that have graced my path and the invaluable lessons I have learned along this remarkable journey. The year gone by has laid the groundwork for a future brimming with endless possibilities, and I embark upon the upcoming chapter of my life with unwavering excitement and anticipation."
+      ]
+    },
+    {
+      "yearInReviewTitle": "Year-In-Review 2023 - 2024",
+      "yearInReviewTagline": "My Year-In-Review for 2023-2024 highlights a transformative year filled with impactful projects, leadership roles, and meaningful accomplishments. From innovative hackathons to significant contributions at the iCDCU Lab, each experience has fueled my growth and prepared me for new challenges ahead.",
+      "yearInReviewParagraphs": [
+        "As I reflect on the past year, I am filled with an immense sense of pride and accomplishment. The year 2023-2024 has been a transformative journey, both personally and professionally, marked by a multitude of extraordinary experiences and significant personal growth. In this comprehensive year-in-review, I will take you through the remarkable moments and noteworthy achievements that have shaped my path and propelled me forward.",
+        "One of the most impactful experiences of the year was my COOP placement at the iCDCU Lab as a Python/Flask App Developer from May 2023 to August 2023. This role offered me a unique opportunity to hone my skills and contribute meaningfully to a significant project. I led the development of dynamic webpages for the ResDash Project, aimed at enhancing the user experience for University of Cincinnati Resident Doctors. Utilizing HTML, CSS, Python, and JavaScript, I successfully launched the first website, which was met with positive feedback for its usability and design. This project involved not only technical development but also a deep understanding of user needs and seamless integration of various technologies. Additionally, I streamlined the codebase by eliminating redundant segments and implementing reusable components, which significantly improved the efficiency of the application by 45%. The integration of D3, Flask, Django, Flask Breadcrumbs, and Bootstrap further optimized the project, showcasing my ability to handle complex development tasks and deliver impactful solutions. This experience taught me the importance of efficient coding practices and the value of creating a user-friendly interface, which are essential skills in my career as a developer.",
+        "The MakeUC Hackathon in 2024 marked another significant milestone in my journey. This year, I had the opportunity to create FaunaFinder: AI-Powered Animal Breed Recognition, a project that marries my passion for wildlife with cutting-edge technology. Inspired by a deep love for animals and a desire to explore their beauty, my team and I developed a web application that allows users to identify and learn about various animal species through images and names. The inspiration behind FaunaFinder was our deep passion for wildlife and the desire to capture the essence of animals around the world. As avid travelers and wildlife enthusiasts, we envisioned creating a program that goes beyond just taking pictures. This program empowers users to unravel the mysteries of the animal kingdom by instantly identifying animals, learning about their species, discovering their unique characteristics, and accessing a wealth of information. We were particularly excited about sharing this remarkable experience with others who share our fascination with wildlife.",
+        "FaunaFinder is a captivating web application that serves as a gateway to the enchanting world of wildlife. Whether you've captured a mesmerizing image of an animal in the wild or simply have the name of an animal in mind, our platform brings you closer to nature's most wondrous creatures. Using Google Cloud Vision, Python, Flask, and a host of other technologies, we built a platform that not only identifies animals but also provides comprehensive information about them via Wikipedia integration and similar species through the GBIF API. Users can also explore the world of random animals, adding an element of surprise and education to the mix. Throughout the development process, we encountered several challenges, such as ensuring accurate animal recognition from user-uploaded images and handling cases where the API's results included breeds and subcategories. We also faced complexities in gathering and presenting comprehensive information about animals from multiple sources. Overcoming these challenges required extensive problem-solving and fine-tuning of our application. Despite these hurdles, we achieved a high degree of precision and enriched the user experience with educational surprises. Our efforts were recognized with the Best Use of AI in Education award, a testament to our innovative approach and technical expertise.",
+        "In addition to my hackathon successes, I had the distinct honor of becoming the Director of Values at the National Residence Hall Honorary (NRHH). This role allowed me to engage with a diverse group of eager students and lead numerous service and recognition projects. As Director of Values, I was deeply involved in organizing events that fostered a sense of community and appreciation within the residential halls. One notable event was the team recognition for the RED Staff, who ensure the wellbeing of residence hall students, and another for the CAPS (Counsel of Psychological Services), who support student mental health. These events highlighted the critical roles these teams play in maintaining a supportive and inclusive environment for students. Additionally, our service project involved creating and donating 300 bookmarks to the local public library, fostering a sense of community and giving back. This project was particularly rewarding as it brought together volunteers who were passionate about making a difference. These experiences have deepened my appreciation for service and leadership, and I look forward to continuing my contributions in the upcoming semester. The opportunity to lead and work with such dedicated individuals has been incredibly fulfilling, and I am excited to see what the future holds for the NRHH.",
+        "The RevUC Hackathon presented another opportunity for growth and innovation. Our project, HealthSphere, aimed to revolutionize health and wellness through data-driven insights and personalized recommendations. Inspired by the desire to empower individuals in their health journeys, we built a platform using Python Flask, PostgreSQL, Taipy, HTML, CSS, and JavaScript. HealthSphere offers users a comprehensive approach to health management, from tracking daily activities to visualizing data through interactive graphs. The inspiration behind HealthSphere stemmed from a desire to revolutionize the way people approach their health and well-being. We wanted to create a platform that seamlessly integrates data-driven insights, personalized recommendations, and holistic wellness practices to empower individuals to take control of their health journey like never before. The platform leverages cutting-edge technology and data analytics to provide users with personalized insights, actionable recommendations, and interactive tools to optimize their physical, mental, and emotional well-being. From tracking daily activities and monitoring vital signs to visualizing data using graphs, HealthSphere offers a holistic approach to health management.",
+        "HealthSphere was meticulously crafted using a diverse set of technologies to ensure a comprehensive and effective solution for our users. For the backend development, we utilized Python Flask to build the backend infrastructure, PostgreSQL for data storage and management, and Taipy for data analysis and manipulation. On the frontend, HTML and CSS were used to design the user interface, while JavaScript was employed to implement dynamic and interactive elements. Python served as the primary language for data analysis and integration tasks, with libraries like pandas. We also sourced relevant datasets and insights from Kaggle. Throughout the development process, we relied on tools such as GitHub for version control, and Visual Studio Code for code editing and debugging. Our iterative prototyping, rigorous testing, and continuous refinement ensured a seamless and user-friendly experience for HealthSphere users. During the development process, we faced several challenges. One of the significant challenges was integrating disparate data sources seamlessly into our PostgreSQL database. We encountered varying data formats and structures, requiring careful normalization and transformation to ensure consistency and accuracy. Additionally, leveraging Taipy for data analysis posed its own challenges, particularly in visualizing complex datasets effectively. We needed to create insightful graphs and charts to present data-driven insights to users in an understandable format. Moreover, optimizing the platform's performance for real-time analytics while maintaining data security and privacy compliance was a multifaceted challenge. Balancing the need for speed with stringent data protection measures required meticulous fine-tuning and rigorous testing. Furthermore, designing an intuitive user interface that caters to diverse user needs and preferences proved to be a nuanced endeavor. We navigated through feedback loops and user testing sessions to refine the interface iteratively, ensuring a seamless and engaging user experience. Despite these challenges, our team's collaboration, innovation, and perseverance enabled us to overcome obstacles and deliver a robust and reliable solution with HealthSphere. We were proud to have developed a sophisticated health and wellness platform that has the potential to make a meaningful impact on people's lives. Our platform empowers individuals to proactively manage their health, make informed decisions, and adopt healthy habits that contribute to long-term well-being. Furthermore, we're proud of the seamless integration of technology and data analytics to deliver personalized experiences that resonate with our users. Our efforts were rewarded with two prestigious awards: Best Digital Solution to Improve the Clinical Trial Process (Medpace) and Best Use of Taipy. These accolades highlight our commitment to leveraging technology for impactful health solutions.",
+        "Looking ahead, I am brimming with excitement and an insatiable thirst for new opportunities and challenges that lie on the horizon. Building upon the strong foundation I have established; I intend to seize every chance to further my personal and professional growth. The experiences of the past year have indubitably transformed me into a more confident, resilient, and well-rounded individual. I am grateful for the tremendous growth and accomplishments I have achieved, and I remain resolute in my determination to continually push the boundaries of my potential and reach new heights in all my future endeavors.",
+        "In conclusion, the year 2023-2024 stands as a pivotal period characterized by profound personal growth and remarkable achievements. From participating in awe-inspiring hackathons to broadening my cultural horizons, each experience has contributed to my overall development as an individual. I am grateful for the countless opportunities that have graced my path and the invaluable lessons I have learned along this remarkable journey. The year gone by has laid the groundwork for a future brimming with endless possibilities, and I embark upon the upcoming chapter of my life with unwavering excitement and anticipation."
+      ]
+    }
+  ]
+}

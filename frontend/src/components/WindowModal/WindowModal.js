@@ -10,6 +10,7 @@ import HonorsTab from "./HonorsTab";
 import YearInReviewTab from "./YearInReviewTab";
 import ProjectsListView from "../ProjectPage/ProjectsListView";
 import FeedTab from "./FeedTab";
+import AIChatTab from "./AIChatTab";
 
 const WindowModal = ({
   tabs,
@@ -127,6 +128,8 @@ const WindowModal = ({
         );
       case "FeedTab":
         return <FeedTab isBatterySavingOn={isBatterySavingOn} />;
+      case "AIChatTab":
+        return <AIChatTab />;
       default:
         return null;
     }
