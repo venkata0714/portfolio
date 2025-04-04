@@ -83,10 +83,10 @@ const PauseTimer = ({
 
       interval = setInterval(() => {
         if (isHovered) {
-          setCountdown(5.0); // Keep countdown at 5.00
+          setCountdown(4.0); // Keep countdown at 5.00
         } else {
           const elapsed = performance.now() - startTime;
-          const remaining = Math.max(5 - elapsed / 1000, 0);
+          const remaining = Math.max(4 - elapsed / 1000, 0);
           setCountdown(remaining.toFixed(1)); // Update countdown
 
           if (remaining <= 0) {
@@ -112,7 +112,7 @@ const PauseTimer = ({
       whileHover={{ scale: 0.99, opacity: 1 }}
       whileTap={{ scale: 1.01, opacity: 0.5 }}
       onClick={() => setAutoplay((prev) => !prev)}
-      drag
+      drag={false}
       dragConstraints
       transition={{ duration: 0.3, ease: "easeInOut" }}
     >
@@ -140,7 +140,7 @@ const SkillSection = ({ isBatterySavingOn }) => {
     window.innerWidth <= 992 && window.innerWidth > 768
   );
   const [autoplay, setAutoplay] = useState(true); // Autoplay state
-  const [countdown, setCountdown] = useState(5); // Countdown timer
+  const [countdown, setCountdown] = useState(4); // Countdown timer
   const [isSmallWidth, setIsSmallWidth] = useState(window.innerWidth <= 768);
   const [skillCategories, setSkillCategories] = useState([]);
 
@@ -191,7 +191,7 @@ const SkillSection = ({ isBatterySavingOn }) => {
       startAt: 0,
       perView: 1,
       gap: 0,
-      autoplay: autoplay ? 5000 : false,
+      autoplay: autoplay ? 4000 : false,
       peek: isMediumWidth ? 50 : isSmallWidth ? 0 : 100,
       responsive: true,
       rewind: true,
@@ -236,7 +236,7 @@ const SkillSection = ({ isBatterySavingOn }) => {
                   >
                     <motion.h2
                       className="skill-card-title"
-                      variants={isBatterySavingOn ? {} : zoomIn(0.4)}
+                      variants={isBatterySavingOn ? {} : zoomIn(0.1)}
                       initial="hidden"
                       whileInView="show"
                       exit="hidden"
@@ -245,7 +245,7 @@ const SkillSection = ({ isBatterySavingOn }) => {
                     </motion.h2>
                     <motion.p
                       className="skill-card-description"
-                      variants={isBatterySavingOn ? {} : zoomIn(0.4)}
+                      variants={isBatterySavingOn ? {} : zoomIn(0.1)}
                       initial="hidden"
                       whileInView="show"
                       exit="hidden"
@@ -265,7 +265,7 @@ const SkillSection = ({ isBatterySavingOn }) => {
                           key={`${category.title}-${skillIndex}`}
                           className="skill-item"
                           variants={
-                            isBatterySavingOn ? {} : zoomIn(skillIndex * 0.2)
+                            isBatterySavingOn ? {} : zoomIn(skillIndex * 0.075)
                           } // Add consistent stagger effect
                           initial="hidden"
                           whileInView="show"
@@ -294,7 +294,7 @@ const SkillSection = ({ isBatterySavingOn }) => {
                                     "right",
                                     50, // Reduced size for a more subtle animation
                                     skillIndex * 0.075, // Stagger delay for each skill
-                                    1.5 // Shorter duration for smoother animations
+                                    0.4 // Shorter duration for smoother animations
                                   )
                             }
                             initial="hidden"
@@ -316,7 +316,7 @@ const SkillSection = ({ isBatterySavingOn }) => {
                                 }`,
                               ],
                               transition: {
-                                duration: 2,
+                                duration: 1, // Duration for the boxShadow animation
                                 repeat: Infinity,
                                 ease: "easeInOut",
                               },
@@ -332,7 +332,7 @@ const SkillSection = ({ isBatterySavingOn }) => {
                                     "left",
                                     50, // Reduced size for a more subtle animation
                                     skillIndex * 0.075, // Match stagger delay
-                                    1.5 // Match duration for consistent animations
+                                    0.4 // Match duration for consistent animations
                                   )
                             }
                             initial="hidden"

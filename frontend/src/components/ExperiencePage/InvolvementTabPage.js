@@ -10,8 +10,8 @@ import { styled } from "@stitches/react";
 // ---------------- Slide Variants & Transition ----------------
 const slideVariants = {
   hidden: { opacity: 0, scale: 0.6, x: 0, rotateY: 0, z: -400, zIndex: 7 },
-  prev: { opacity: 0.8, scale: 0.8, x: -240, rotateY: 15, z: -200, zIndex: 9 },
-  next: { opacity: 0.8, scale: 0.8, x: 240, rotateY: -15, z: -200, zIndex: 9 },
+  prev: { opacity: 0.8, scale: 0.8, x: -160, rotateY: 15, z: -200, zIndex: 9 },
+  next: { opacity: 0.8, scale: 0.8, x: 160, rotateY: -15, z: -200, zIndex: 9 },
   active: { opacity: 1, scale: 1, x: 0, rotateY: 0, z: 0, zIndex: 10 },
 };
 const slideTransition = {

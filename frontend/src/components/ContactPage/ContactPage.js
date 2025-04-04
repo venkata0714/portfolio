@@ -158,7 +158,9 @@ function ContactPage({ isBatterySavingOn, addTab }) {
                     name="from_name"
                     placeholder="Your Name *"
                     required
-                    initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
+                    initial={
+                      isBatterySavingOn ? {} : { opacity: 0, scale: 0.75 }
+                    }
                     drag={isTouchDevice ? false : true}
                     dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
                     dragElastic={0.3}
@@ -180,7 +182,9 @@ function ContactPage({ isBatterySavingOn, addTab }) {
                     name="from_email"
                     placeholder="Your Email *"
                     required
-                    initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
+                    initial={
+                      isBatterySavingOn ? {} : { opacity: 0, scale: 0.75 }
+                    }
                     drag={isTouchDevice ? false : true}
                     dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
                     dragElastic={0.3}
@@ -201,7 +205,9 @@ function ContactPage({ isBatterySavingOn, addTab }) {
                     type="tel"
                     name="from_phone"
                     placeholder="Your Phone"
-                    initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
+                    initial={
+                      isBatterySavingOn ? {} : { opacity: 0, scale: 0.75 }
+                    }
                     drag={isTouchDevice ? false : true}
                     dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
                     dragElastic={0.3}
@@ -232,7 +238,9 @@ function ContactPage({ isBatterySavingOn, addTab }) {
                     name="message"
                     placeholder="Your Message *"
                     required
-                    initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
+                    initial={
+                      isBatterySavingOn ? {} : { opacity: 0, scale: 0.75 }
+                    }
                     drag={isTouchDevice ? false : true}
                     dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
                     dragElastic={0.3}

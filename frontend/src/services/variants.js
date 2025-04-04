@@ -15,7 +15,7 @@ export const AppLoad = (direction) => {
   };
 };
 
-export const fadeIn = (direction, size, delay, duration = 1) => {
+export const fadeIn = (direction, size, delay, duration = 0.4) => {
   return {
     hidden: {
       y: direction === "up" ? size : direction === "down" ? -size : 0,
@@ -66,7 +66,7 @@ export const zoomIn = (delay) => {
       scale: 1,
       opacity: 1,
       transition: {
-        duration: 1,
+        duration: 0.4,
         delay: delay,
         ease: [0.6, 0.01, 0, 0.9],
       },
@@ -84,7 +84,7 @@ export const rotate = (delay) => {
       rotate: 0,
       opacity: 1,
       transition: {
-        duration: 1,
+        duration: 0.4,
         delay: delay,
         ease: [0.25, 0.1, 0.25, 1],
       },
