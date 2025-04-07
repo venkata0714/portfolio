@@ -257,7 +257,7 @@ const updateTopLanguagesCache = async () => {
     const languagesArray = await Promise.all(languagePromises);
     for (const languagesData of languagesArray) {
       for (const [language, bytes] of Object.entries(languagesData)) {
-        if (language === "C#") continue;
+        if (language === "C#" || language === "Rust") continue;
         languageTotals[language] = (languageTotals[language] || 0) + bytes;
         totalBytes += bytes;
       }
