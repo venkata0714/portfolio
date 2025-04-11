@@ -1,47 +1,69 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
-const API_URL = `${process.env.REACT_APP_API_URI}`;
+const API_URL = process.env.REACT_APP_API_URI;
 
 const AIChatTab = () => {
   const [query, setQuery] = useState("");
   const [chatHistory, setChatHistory] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  // This ref will be used to auto-scroll the chat container to the bottom
+  const chatContainerRef = useRef(null);
+
+  // Scroll to the latest message every time chatHistory changes
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
+    }
+  }, [chatHistory]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!query.trim()) return;
+    const trimmedQuery = query.trim();
+    if (!trimmedQuery) return;
 
-    // Append user's query to chat history
-    setChatHistory((prev) => [...prev, { sender: "user", text: query }]);
-    console.log("User Query:", query);
-
+    // Add user query to chat history with a unique id
+    const userMessage = {
+      id: Date.now(),
+      sender: "user",
+      text: trimmedQuery,
+    };
+    setChatHistory((prev) => [...prev, userMessage]);
     setLoading(true);
+
     try {
-      const response = await axios.post(`${API_URL}/ask-ai`, { query });
-      const answer = response.data.answer;
-      // Append AI's response to chat history
-      setChatHistory((prev) => [...prev, { sender: "ai", text: answer }]);
+      // Make the API call to your backend (adjust endpoint as needed)
+      const response = await axios.post(`${API_URL}/ai/ask-chat`, {
+        query: trimmedQuery,
+      });
+      const aiMessage = {
+        id: Date.now() + 1, // Ensure a unique id
+        sender: "ai",
+        text: response.data.answer,
+      };
+      setChatHistory((prev) => [...prev, aiMessage]);
     } catch (error) {
       console.error("Error processing query:", error);
-      setChatHistory((prev) => [
-        ...prev,
-        {
-          sender: "ai",
-          text: "Sorry, there was an error processing your query.",
-        },
-      ]);
+      const errorMsg = {
+        id: Date.now() + 2,
+        sender: "ai",
+        text: "Sorry, there was an error processing your query.",
+      };
+      setChatHistory((prev) => [...prev, errorMsg]);
+    } finally {
+      setLoading(false);
+      setQuery("");
     }
-    setLoading(false);
-    setQuery("");
   };
 
   return (
     <div style={styles.container}>
-      <div style={styles.chatBox}>
-        {chatHistory.map((msg, index) => (
+      <div ref={chatContainerRef} style={styles.chatBox}>
+        {chatHistory.map((msg) => (
           <div
-            key={index}
+            key={msg.id}
             style={{
               ...styles.message,
               alignSelf: msg.sender === "user" ? "flex-end" : "flex-start",
@@ -71,9 +93,10 @@ const AIChatTab = () => {
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Ask me something..."
           style={styles.input}
+          disabled={loading}
         />
-        <button type="submit" style={styles.button}>
-          Send
+        <button type="submit" style={styles.button} disabled={loading}>
+          {loading ? "Sending..." : "Send"}
         </button>
       </form>
     </div>

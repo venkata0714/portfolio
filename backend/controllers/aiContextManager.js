@@ -552,7 +552,7 @@ module.exports = {
   updateResumeContextFile,
   // Memory embedding & retrieval functions
   buildMemoryIndex,
-  getRelevantContext,
+  // getRelevantContext,
   // LLM query function
-  askLLM,
+  // askLLM,
 };

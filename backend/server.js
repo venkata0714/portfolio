@@ -101,6 +101,16 @@ app.addHook("onResponse", (request, reply, done) => {
 const dataRoutes = require("./routes/dataRoutes");
 app.register(dataRoutes, { prefix: "/api" });
 
+// Register the new AI routes for creating the index
+const aiRoutes = require("./routes/aiRoutes");
+app.register(aiRoutes, { prefix: "/api/ai" });
+
+// Import the main function from aiChatBotManager
+const { main: initializeIndex } = require("./controllers/aiChatBotManager");
+
+// Call initializeIndex() when the backend starts
+// initializeIndex();
+
 // Base routes
 app.get("/", (request, reply) => {
   reply.send("Welcome to Kartavya's MERN Portfolio Backend");
