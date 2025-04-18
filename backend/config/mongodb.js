@@ -1,97 +1,129 @@
 // config/mongodb.js
 const { MongoClient } = require("mongodb");
 const dotenv = require("dotenv");
-
 dotenv.config();
 
 const uri = process.env.MONGO_URI;
+if (!uri) {
+  console.error("❌ MONGO_URI must be set in .env");
+  process.exit(1);
+}
+
+// DB names from env (fallbacks if you leave them undefined)
+const primaryDbName = process.env.MONGO_DB_NAME || "KartavyaPortfolioDB";
+const aiDbName = process.env.MONGO_DB_NAME_AI || "KartavyaPortfolioDBAI";
+
 const client = new MongoClient(uri, {
+  // these driver options are no‑ops in v4+ but harmless
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
 
-let db;
-// Internal counters for DB operations (for logging)
+let dbPrimary, dbAI;
 let dbOpsCount = 0;
 let dbOpsByCollection = {};
 
 /**
- * Connect to MongoDB and set up the database connection.
+ * Connects to Mongo once and sets up two Proxy‐wrapped Db instances.
  */
-const connectDB = async () => {
+async function connectDB() {
   try {
     await client.connect();
-    let rawDb = client.db("KartavyaPortfolioDB"); // replace with your database name
-    console.log("Connected to MongoDB");
 
-    // Wrap the DB instance in a Proxy to count operations per collection
-    db = new Proxy(rawDb, {
-      get(target, prop) {
-        if (prop === "collection") {
-          return function (...args) {
-            const collName = args[0];
-            const collection = target.collection.apply(target, args);
-            // Return a proxy for the collection to intercept DB operations
-            return new Proxy(collection, {
-              get(collTarget, collProp) {
-                const originalMethod = collTarget[collProp];
-                if (
-                  typeof originalMethod === "function" &&
-                  [
-                    "find",
-                    "findOne",
-                    "insertOne",
-                    "insertMany",
-                    "updateOne",
-                    "updateMany",
-                    "deleteOne",
-                    "deleteMany",
-                    "countDocuments",
-                    "aggregate",
-                  ].includes(collProp)
-                ) {
-                  return function (...methodArgs) {
-                    // Increment global counters for DB metrics
-                    dbOpsCount++;
-                    dbOpsByCollection[collName] =
-                      (dbOpsByCollection[collName] || 0) + 1;
-                    // Call the original method
-                    return originalMethod.apply(collTarget, methodArgs);
-                  };
-                }
-                return originalMethod;
-              },
-            });
-          };
-        }
-        return target[prop];
-      },
-    });
-  } catch (error) {
-    console.error("MongoDB connection error:", error);
+    const rawPrimary = client.db(primaryDbName);
+    const rawAI = client.db(aiDbName);
+
+    function makeProxy(rawDb) {
+      return new Proxy(rawDb, {
+        get(target, prop) {
+          if (prop === "collection") {
+            return (collName, ...rest) => {
+              const coll = target.collection(collName, ...rest);
+              return new Proxy(coll, {
+                get(cTarget, method) {
+                  const orig = cTarget[method];
+                  if (
+                    typeof orig === "function" &&
+                    [
+                      "find",
+                      "findOne",
+                      "insertOne",
+                      "insertMany",
+                      "updateOne",
+                      "updateMany",
+                      "deleteOne",
+                      "deleteMany",
+                      "countDocuments",
+                      "aggregate",
+                    ].includes(method)
+                  ) {
+                    return (...args) => {
+                      dbOpsCount++;
+                      dbOpsByCollection[collName] =
+                        (dbOpsByCollection[collName] || 0) + 1;
+                      return orig.apply(cTarget, args);
+                    };
+                  }
+                  return orig;
+                },
+              });
+            };
+          }
+          return target[prop];
+        },
+      });
+    }
+
+    dbPrimary = makeProxy(rawPrimary);
+    dbAI = makeProxy(rawAI);
+
+    console.log(`✅ Connected to primary DB: ${primaryDbName}`);
+    console.log(`✅ Connected to AI      DB: ${aiDbName}`);
+  } catch (err) {
+    console.error("❌ MongoDB connection error:", err);
     process.exit(1);
   }
-};
+}
 
 /**
- * Get the connected database instance.
+ * Returns the proxied primary database instance.
+ * @throws if connectDB() has not completed yet.
  */
-const getDB = () => db;
+function getDB() {
+  if (!dbPrimary) {
+    throw new Error(
+      "Primary MongoDB not connected yet. Call connectDB() first."
+    );
+  }
+  return dbPrimary;
+}
 
 /**
- * Get current database metrics (operation counts).
+ * Returns the proxied AI database instance.
+ * @throws if connectDB() has not completed yet.
  */
-const getDBMetrics = () => ({
-  dbOpsCount,
-  dbOpsByCollection,
-});
+function getDBAI() {
+  if (!dbAI) {
+    throw new Error("AI MongoDB not connected yet. Call connectDB() first.");
+  }
+  return dbAI;
+}
 
-/**
- * Reset the collected database metrics (to be called after each logging interval).
- */
-const resetDBMetrics = () => {
+function getDBMetrics() {
+  return { dbOpsCount, dbOpsByCollection };
+}
+
+function resetDBMetrics() {
   dbOpsCount = 0;
   dbOpsByCollection = {};
-};
+}
 
-module.exports = { connectDB, getDB, getDBMetrics, resetDBMetrics };
+module.exports = {
+  connectDB,
+  getDB,
+  getDBAI,
+  getDBMetrics,
+  resetDBMetrics,
+  getPrimaryDBName: () => primaryDbName,
+  getAIDBName: () => aiDbName,
+};

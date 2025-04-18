@@ -1,558 +1,836 @@
+// controllers/aiContextManager.js
 const fs = require("fs");
 const path = require("path");
-const { getDB } = require("../config/mongodb");
+const { getDB, getDBAI } = require("../config/mongodb");
 const pdfParse = require("pdf-parse");
-
-// For external API calls
 const fetch = (...args) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
+const openai = require("../config/openai");
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-const PER_PAGE = 100;
 
-// Define file paths for contexts
-const dbContextFilePath = path.join(__dirname, "../data", "db-context.json");
-const githubContextFilePath = path.join(
-  __dirname,
-  "../data",
-  "github-context.json"
-);
-const resumeContextFilePath = path.join(
-  __dirname,
-  "../data",
-  "resume-context.json"
-);
-const memoryIndexFilePath = path.join(
-  __dirname,
-  "../data",
-  "memory-index.json"
-);
-
-// Path to the resume PDF file
+// Path to your resume PDF in data/
 const resumeFilePath = path.join(
   __dirname,
-  "../data",
-  "Singh_Kartavya_Resume2025.pdf"
+  "../data/Singh_Kartavya_Resume2025.pdf"
 );
 
+// In-memory caches
+let memoryIndex = [];
+let contextMeta = {};
+let memoryIndexMeta = {};
+
 /**
- * Recursively remove empty properties.
+ * Recursively remove empty or null fields from objects/arrays.
  */
 function removeEmptyFields(obj) {
   if (Array.isArray(obj)) {
-    const newArr = obj
-      .map((item) => removeEmptyFields(item))
-      .filter((item) => {
-        if (item === null || item === undefined) return false;
-        if (typeof item === "string" && item.trim() === "") return false;
-        if (Array.isArray(item) && item.length === 0) return false;
-        if (
-          typeof item === "object" &&
-          !Array.isArray(item) &&
-          Object.keys(item).length === 0
-        )
-          return false;
-        return true;
-      });
-    return newArr;
-  } else if (typeof obj === "object" && obj !== null) {
-    Object.keys(obj).forEach((key) => {
-      obj[key] = removeEmptyFields(obj[key]);
+    return obj
+      .map(removeEmptyFields)
+      .filter(
+        (x) =>
+          x != null &&
+          !(typeof x === "string" && x.trim() === "") &&
+          !(Array.isArray(x) && x.length === 0) &&
+          !(
+            typeof x === "object" &&
+            !Array.isArray(x) &&
+            !Object.keys(x).length
+          )
+      );
+  } else if (obj && typeof obj === "object") {
+    for (const k of Object.keys(obj)) {
+      obj[k] = removeEmptyFields(obj[k]);
       if (
-        obj[key] === null ||
-        obj[key] === undefined ||
-        (typeof obj[key] === "string" && obj[key].trim() === "") ||
-        (Array.isArray(obj[key]) && obj[key].length === 0) ||
-        (typeof obj[key] === "object" &&
-          !Array.isArray(obj[key]) &&
-          Object.keys(obj[key]).length === 0)
+        obj[k] == null ||
+        (typeof obj[k] === "string" && obj[k].trim() === "") ||
+        (Array.isArray(obj[k]) && obj[k].length === 0) ||
+        (typeof obj[k] === "object" &&
+          !Array.isArray(obj[k]) &&
+          !Object.keys(obj[k]).length)
       ) {
-        delete obj[key];
+        delete obj[k];
       }
-    });
+    }
     return obj;
   }
   return obj;
 }
 
-/* ============================
-   Database Context Functions
-   ============================ */
-async function aggregateDbContextFromDB() {
-  try {
-    const db = getDB();
-    const experienceData = await db
-      .collection("experienceTable")
-      .find(
-        { deleted: { $ne: true } },
-        {
-          projection: {
-            _id: 0,
-            experienceLink: 0,
-            experienceURLs: 0,
-            likesCount: 0,
-            experienceImages: 0,
-          },
-        }
-      )
-      .toArray();
-    const honorsData = await db
-      .collection("honorsExperienceTable")
-      .find(
-        { deleted: { $ne: true } },
-        {
-          projection: {
-            _id: 0,
-            honorsExperienceLink: 0,
-            honorsExperienceURLs: 0,
-            likesCount: 0,
-            honorsExperienceImages: 0,
-          },
-        }
-      )
-      .toArray();
-    const involvementData = await db
-      .collection("involvementTable")
-      .find(
-        { deleted: { $ne: true } },
-        {
-          projection: {
-            _id: 0,
-            involvementLink: 0,
-            involvementURLs: 0,
-            likesCount: 0,
-            involvementImages: 0,
-          },
-        }
-      )
-      .toArray();
-    const projectData = await db
-      .collection("projectTable")
-      .find(
-        { deleted: { $ne: true } },
-        {
-          projection: {
-            _id: 0,
-            projectLink: 0,
-            projectURLs: 0,
-            likesCount: 0,
-            projectImages: 0,
-          },
-        }
-      )
-      .toArray();
-    const skillsCollectionData = await db
-      .collection("skillsCollection")
-      .find({}, { projection: { _id: 0 } })
-      .toArray();
-    const skillsTableData = await db
-      .collection("skillsTable")
-      .find({}, { projection: { _id: 0 } })
-      .toArray();
-    const yearData = await db
-      .collection("yearInReviewTable")
-      .find(
-        { deleted: { $ne: true } },
-        {
-          projection: {
-            _id: 0,
-            yearInReviewLink: 0,
-            yearInReviewURLs: 0,
-            likesCount: 0,
-            yearInReviewImages: 0,
-          },
-        }
-      )
-      .toArray();
-    const aggregated = {
-      experienceTable: experienceData,
-      honorsExperienceTable: honorsData,
-      involvementTable: involvementData,
-      projectTable: projectData,
-      skillsCollection: skillsCollectionData,
-      skillsTable: skillsTableData,
-      yearInReviewTable: yearData,
-    };
-    return removeEmptyFields(aggregated);
-  } catch (error) {
-    console.error("Error aggregating DB context:", error);
-    throw error;
-  }
+/*===============================================
+  Context Meta (single‐doc in collection "contextMeta")
+===============================================*/
+async function loadContextMeta() {
+  const db = getDBAI();
+  const doc = await db
+    .collection("contextMeta")
+    .findOne({ _id: "contextMeta" });
+  contextMeta = doc || {};
 }
 
+async function saveContextMeta() {
+  const db = getDBAI();
+  await db
+    .collection("contextMeta")
+    .updateOne(
+      { _id: "contextMeta" },
+      { $set: { ...contextMeta, _id: "contextMeta" } },
+      { upsert: true }
+    );
+}
+
+/*===============================================
+  DB Context Snapshots ("dbContexts")
+===============================================*/
+async function aggregateDbContext() {
+  const db = getDB();
+  // Fetch data from each collection, excluding unwanted fields
+  const experienceData = await db
+    .collection("experienceTable")
+    .find(
+      { deleted: { $ne: true } },
+      {
+        projection: {
+          _id: 0,
+          experienceLink: 0,
+          experienceURLs: 0,
+          likesCount: 0,
+          experienceImages: 0,
+        },
+      }
+    )
+    .toArray();
+  const honorsData = await db
+    .collection("honorsExperienceTable")
+    .find(
+      { deleted: { $ne: true } },
+      {
+        projection: {
+          _id: 0,
+          honorsExperienceLink: 0,
+          honorsExperienceURLs: 0,
+          likesCount: 0,
+          honorsExperienceImages: 0,
+        },
+      }
+    )
+    .toArray();
+  const involvementData = await db
+    .collection("involvementTable")
+    .find(
+      { deleted: { $ne: true } },
+      {
+        projection: {
+          _id: 0,
+          involvementLink: 0,
+          involvementURLs: 0,
+          likesCount: 0,
+          involvementImages: 0,
+        },
+      }
+    )
+    .toArray();
+  const projectData = await db
+    .collection("projectTable")
+    .find(
+      { deleted: { $ne: true } },
+      {
+        projection: {
+          _id: 0,
+          projectLink: 0,
+          projectURLs: 0,
+          likesCount: 0,
+          projectImages: 0,
+        },
+      }
+    )
+    .toArray();
+  const skillsCollectionData = await db
+    .collection("skillsCollection")
+    .find({}, { projection: { _id: 0 } })
+    .toArray();
+  const skillsTableData = await db
+    .collection("skillsTable")
+    .find({}, { projection: { _id: 0 } })
+    .toArray();
+  const yearData = await db
+    .collection("yearInReviewTable")
+    .find(
+      { deleted: { $ne: true } },
+      {
+        projection: {
+          _id: 0,
+          yearInReviewLink: 0,
+          yearInReviewURLs: 0,
+          likesCount: 0,
+          yearInReviewImages: 0,
+        },
+      }
+    )
+    .toArray();
+  const aggregated = {
+    experienceTable: experienceData,
+    honorsExperienceTable: honorsData,
+    involvementTable: involvementData,
+    projectTable: projectData,
+    skillsCollection: skillsCollectionData,
+    skillsTable: skillsTableData,
+    yearInReviewTable: yearData,
+  };
+  return removeEmptyFields(aggregated);
+}
 async function updateDbContextFile() {
-  try {
-    const dir = path.dirname(dbContextFilePath);
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    const aggregatedData = await aggregateDbContextFromDB();
-    const jsonContent = JSON.stringify(aggregatedData, null, 2);
-    await fs.promises.writeFile(dbContextFilePath, jsonContent, "utf8");
-    console.log(`DB context updated at ${new Date().toISOString()}`);
-  } catch (error) {
-    console.error("Error updating DB context file:", error);
-  }
+  const db = getDBAI();
+  const snapshot = await aggregateDbContext();
+  await db.collection("dbContexts").insertOne({
+    data: snapshot,
+    createdAt: new Date(),
+  });
+  contextMeta.dbContextLastUpdate = new Date().toISOString();
+  await saveContextMeta();
+  console.log(
+    `✅ dbContexts snapshot saved (${Object.keys(snapshot).length} tables)`
+  );
 }
 
 async function getDbContextFile() {
-  try {
-    if (!fs.existsSync(dbContextFilePath)) {
-      console.log("DB context file does not exist. Creating one.");
-      await updateDbContextFile();
-    }
-    const content = await fs.promises.readFile(dbContextFilePath, "utf8");
-    if (!content || content.trim().length === 0) {
-      console.log("DB context file is empty. Updating file.");
-      await updateDbContextFile();
-      return fs.promises.readFile(dbContextFilePath, "utf8");
-    }
-    return content;
-  } catch (error) {
-    console.error("Error reading DB context file:", error.message);
-    throw error;
+  const db = getDBAI();
+  const doc = await db
+    .collection("dbContexts")
+    .find()
+    .sort({ createdAt: -1 })
+    .limit(1)
+    .next();
+  if (!doc) {
+    await updateDbContextFile();
+    return JSON.stringify(await aggregateDbContext());
   }
+  return JSON.stringify(doc.data);
 }
 
-/* ============================
-   GitHub Context Functions
-   ============================ */
+/*===============================================
+  GitHub Context Snapshots ("githubContexts")
+===============================================*/
 async function fetchAllRepos() {
-  let repos = [];
-  let page = 1;
-  let hasMore = true;
-  while (hasMore) {
-    const url = `https://api.github.com/user/repos?per_page=${PER_PAGE}&page=${page}`;
-    const response = await fetch(url, {
-      headers: {
-        Authorization: `token ${GITHUB_TOKEN}`,
-        Accept: "application/vnd.github.v3+json",
-      },
-    });
-    if (!response.ok) {
-      throw new Error(`Failed to fetch repos: ${response.status}`);
-    }
-    const data = await response.json();
-    repos = repos.concat(data);
-    if (data.length < PER_PAGE) {
-      hasMore = false;
-    } else {
-      page++;
-    }
+  if (!GITHUB_TOKEN) throw new Error("GITHUB_TOKEN not set");
+  let repos = [],
+    page = 1;
+  while (1) {
+    const res = await fetch(
+      `https://api.github.com/user/repos?per_page=100&page=${page}`,
+      { headers: { Authorization: `token ${GITHUB_TOKEN}` } }
+    );
+    if (!res.ok) throw new Error(`GitHub API ${res.status}`);
+    const arr = await res.json();
+    if (!arr.length) break;
+    repos = repos.concat(arr);
+    page++;
   }
   return repos;
 }
 
-async function aggregateGithubContextFromAPI() {
-  try {
-    const repos = await fetchAllRepos();
-    const githubContext = repos.map((repo) => ({
-      name: repo.name,
-      full_name: repo.full_name,
-      description: repo.description,
-      html_url: repo.html_url,
-      language: repo.language,
-      visibility: repo.private ? "private" : "public",
-      created_at: repo.created_at,
-      updated_at: repo.updated_at,
-      pushed_at: repo.pushed_at,
-      stargazers_count: repo.stargazers_count,
-      forks_count: repo.forks_count,
-      // If available, add: push_count: repo.pushes_count,
-    }));
-    return removeEmptyFields(githubContext);
-  } catch (error) {
-    console.error("Error aggregating GitHub context:", error);
-    throw error;
+async function fetchRepoReadme(fullName) {
+  const res = await fetch(`https://api.github.com/repos/${fullName}/readme`, {
+    headers: {
+      Authorization: `token ${GITHUB_TOKEN}`,
+      Accept: "application/vnd.github.v3.raw",
+    },
+  });
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error(`GitHub README ${res.status}`);
+  return (await res.text()).trim();
+}
+
+async function aggregateGithubContext() {
+  const repos = await fetchAllRepos();
+  const out = [];
+  for (const r of repos) {
+    const info = {
+      name: r.name,
+      full_name: r.full_name,
+      description: r.description || "",
+      html_url: r.html_url,
+      language: r.language || "",
+      visibility: r.private ? "private" : "public",
+      created_at: r.created_at,
+      updated_at: r.updated_at,
+      pushed_at: r.pushed_at,
+      stargazers_count: r.stargazers_count,
+      forks_count: r.forks_count,
+    };
+    try {
+      const md = await fetchRepoReadme(r.full_name);
+      if (md) info.readme = md;
+    } catch (e) {
+      console.error(`README error ${r.full_name}:`, e.message);
+    }
+    out.push(removeEmptyFields(info));
   }
+  return out;
 }
 
 async function updateGithubContextFile() {
-  try {
-    const dir = path.dirname(githubContextFilePath);
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    const aggregatedData = await aggregateGithubContextFromAPI();
-    const jsonContent = JSON.stringify(aggregatedData, null, 2);
-    await fs.promises.writeFile(githubContextFilePath, jsonContent, "utf8");
-    console.log(`GitHub context updated at ${new Date().toISOString()}`);
-  } catch (error) {
-    console.error("Error updating GitHub context file:", error);
-  }
+  const db = getDBAI();
+  const snapshot = await aggregateGithubContext();
+  await db.collection("githubContexts").insertOne({
+    data: snapshot,
+    createdAt: new Date(),
+  });
+  contextMeta.githubContextLastUpdate = new Date().toISOString();
+  await saveContextMeta();
+  console.log(`✅ githubContexts snapshot saved (${snapshot.length} repos)`);
 }
 
 async function getGithubContextFile() {
-  try {
-    if (!fs.existsSync(githubContextFilePath)) {
-      console.log("GitHub context file does not exist. Creating one.");
-      await updateGithubContextFile();
-    }
-    const content = await fs.promises.readFile(githubContextFilePath, "utf8");
-    if (!content || content.trim().length === 0) {
-      console.log("GitHub context file is empty. Updating file.");
-      await updateGithubContextFile();
-      return fs.promises.readFile(githubContextFilePath, "utf8");
-    }
-    return content;
-  } catch (error) {
-    console.error("Error reading GitHub context file:", error.message);
-    throw error;
+  const db = getDBAI();
+  const doc = await db
+    .collection("githubContexts")
+    .find()
+    .sort({ createdAt: -1 })
+    .limit(1)
+    .next();
+  if (!doc) {
+    await updateGithubContextFile();
+    return JSON.stringify(await aggregateGithubContext());
   }
+  return JSON.stringify(doc.data);
 }
 
-/* ============================
-   Resume Context Functions
-   ============================
-*/
-async function aggregateResumeContextFromPDF() {
-  try {
-    if (!fs.existsSync(resumeFilePath)) {
-      console.warn("Resume PDF not found.");
-      return {};
-    }
-    const dataBuffer = await fs.promises.readFile(resumeFilePath);
-    const pdfData = await pdfParse(dataBuffer);
-    // Optionally, further formatting/summarization can be applied here.
-    return { resume_text: pdfData.text.trim() };
-  } catch (error) {
-    console.error("Error aggregating resume context:", error);
-    throw error;
-  }
+/*===============================================
+  Resume Context Snapshots ("resumeContexts")
+===============================================*/
+async function aggregateResumeContext() {
+  if (!fs.existsSync(resumeFilePath)) return { resume_text: "" };
+  const pdf = await pdfParse(await fs.promises.readFile(resumeFilePath));
+  return { resume_text: pdf.text.trim() };
 }
 
 async function updateResumeContextFile() {
-  try {
-    const dir = path.dirname(resumeContextFilePath);
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    const aggregatedData = await aggregateResumeContextFromPDF();
-    const jsonContent = JSON.stringify(aggregatedData, null, 2);
-    await fs.promises.writeFile(resumeContextFilePath, jsonContent, "utf8");
-    console.log(`Resume context updated at ${new Date().toISOString()}`);
-  } catch (error) {
-    console.error("Error updating resume context file:", error);
-  }
+  const db = getDBAI();
+  const snapshot = await aggregateResumeContext();
+  await db.collection("resumeContexts").insertOne({
+    data: snapshot,
+    createdAt: new Date(),
+  });
+  contextMeta.resumeContextLastUpdate = new Date().toISOString();
+  await saveContextMeta();
+  console.log(
+    `✅ resumeContexts snapshot saved (${snapshot.resume_text.length} chars)`
+  );
 }
 
 async function getResumeContextFile() {
-  try {
-    if (!fs.existsSync(resumeContextFilePath)) {
-      console.log("Resume context file does not exist. Creating one.");
-      await updateResumeContextFile();
-    }
-    const content = await fs.promises.readFile(resumeContextFilePath, "utf8");
-    if (!content || content.trim().length === 0) {
-      console.log("Resume context file is empty. Updating file.");
-      await updateResumeContextFile();
-      return fs.promises.readFile(resumeContextFilePath, "utf8");
-    }
-    return content;
-  } catch (error) {
-    console.error("Error reading resume context file:", error.message);
-    throw error;
+  const db = getDBAI();
+  const doc = await db
+    .collection("resumeContexts")
+    .find()
+    .sort({ createdAt: -1 })
+    .limit(1)
+    .next();
+  if (!doc) {
+    await updateResumeContextFile();
+    return JSON.stringify(await aggregateResumeContext());
   }
+  return JSON.stringify(doc.data);
 }
 
-/* ============================
-   Memory Embedding & Retrieval
-   ============================
-*/
-
-// Global in-memory vector index
-let memoryIndex = [];
-
-/**
- * getEmbedding - Uses OpenAI's embedding API (text-embedding-ada-002) to get an embedding for a text.
- */
-async function getEmbedding(text) {
-  if (!OPENAI_API_KEY) {
-    throw new Error("OPENAI_API_KEY not set");
-  }
-  const url = "https://api.openai.com/v1/embeddings";
-  const body = {
-    model: "text-embedding-ada-002",
-    input: text,
-  };
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${OPENAI_API_KEY}`,
-    },
-    body: JSON.stringify(body),
-  });
-  if (!response.ok) {
-    throw new Error(`Failed to get embedding: ${response.status}`);
-  }
-  const data = await response.json();
-  return data.data[0].embedding;
-}
-
-/**
- * splitTextIntoChunks - Splits a long text into chunks based on a maximum length.
- */
-function splitTextIntoChunks(text, maxLength = 300) {
-  const paragraphs = text.split("\n").filter((p) => p.trim().length > 0);
+/*===============================================
+  Chunking Functions (unchanged implementation)
+===============================================*/
+function chunkDbItem(tableName, item) {
   const chunks = [];
-  let currentChunk = "";
-  paragraphs.forEach((paragraph) => {
-    if ((currentChunk + paragraph).length > maxLength) {
-      if (currentChunk) chunks.push(currentChunk.trim());
-      currentChunk = paragraph;
-    } else {
-      currentChunk += " " + paragraph;
+  let summaryLines = [];
+  let longTextFields = {};
+
+  let itemLabel = "";
+  for (const key of Object.keys(item)) {
+    if (/title|name/i.test(key) && typeof item[key] === "string") {
+      itemLabel = item[key];
+      break;
     }
-  });
-  if (currentChunk) chunks.push(currentChunk.trim());
+  }
+
+  for (const [key, value] of Object.entries(item)) {
+    if (value == null) continue;
+    if (Array.isArray(value)) {
+      if (!value.length) continue;
+      if (typeof value[0] === "string") {
+        if (value.length > 1 || value[0].length > 200) {
+          longTextFields[key] = value;
+        } else {
+          summaryLines.push(`${key}: ${value[0]}`);
+        }
+      } else {
+        summaryLines.push(`${key}: ${JSON.stringify(value)}`);
+      }
+    } else if (typeof value === "string") {
+      if (value.length > 200 || value.includes("\n")) {
+        longTextFields[key] = value;
+      } else {
+        summaryLines.push(`${key}: ${value}`);
+      }
+    } else {
+      summaryLines.push(`${key}: ${value}`);
+    }
+  }
+
+  if (summaryLines.length) {
+    chunks.push(`${tableName} - ${itemLabel}\n${summaryLines.join("\n")}`);
+  }
+
+  for (const [fieldKey, value] of Object.entries(longTextFields)) {
+    if (Array.isArray(value)) {
+      const paragraphs = value.map((p) => p.trim()).filter(Boolean);
+      let subchunks = [];
+      if (paragraphs.length <= 3) {
+        subchunks = paragraphs;
+      } else {
+        const groupSize = Math.ceil(paragraphs.length / 3);
+        for (let i = 0; i < paragraphs.length; i += groupSize) {
+          subchunks.push(paragraphs.slice(i, i + groupSize).join(" "));
+        }
+      }
+      for (const sub of subchunks) {
+        if (sub) chunks.push(`${tableName} - ${itemLabel}: ${sub}`);
+      }
+    } else {
+      const text = value.trim();
+      if (text.length <= 400) {
+        chunks.push(`${tableName} - ${itemLabel}: ${text}`);
+      } else {
+        const sentences = text.split(/(?<=[.?!])\s+(?=[A-Z])/);
+        let part = "";
+        const subchunks = [];
+        for (const sent of sentences) {
+          if ((part + sent).length > 400) {
+            if (part) subchunks.push(part.trim());
+            part = sent;
+          } else {
+            part += (part ? " " : "") + sent;
+          }
+        }
+        if (part) subchunks.push(part.trim());
+        if (subchunks.length > 3) {
+          const merged = [];
+          const gs = Math.ceil(subchunks.length / 3);
+          for (let i = 0; i < subchunks.length; i += gs) {
+            merged.push(subchunks.slice(i, i + gs).join(" "));
+          }
+          subchunks.splice(0, subchunks.length, ...merged);
+        }
+        for (const sub of subchunks) {
+          if (sub) chunks.push(`${tableName} - ${itemLabel}: ${sub}`);
+        }
+      }
+    }
+  }
+
   return chunks;
 }
 
-/**
- * buildMemoryIndex - Loads all contexts, splits them into chunks, gets embeddings for each, and saves them in a global index.
- */
-async function buildMemoryIndex() {
-  memoryIndex = [];
-  try {
-    const dbContext = JSON.parse(await getDbContextFile());
-    const githubContext = JSON.parse(await getGithubContextFile());
-    const resumeContext = JSON.parse(await getResumeContextFile());
+function chunkDbContext(dbContextObj) {
+  return Object.entries(dbContextObj)
+    .flatMap(([tableName, items]) =>
+      Array.isArray(items)
+        ? items.flatMap((it) => chunkDbItem(tableName, it))
+        : []
+    )
+    .map((text) => ({ category: "db", text }));
+}
 
-    // Extract text representations from contexts
-    const dbText = JSON.stringify(dbContext);
-    const githubText = JSON.stringify(githubContext);
-    const resumeText = resumeContext.resume_text || "";
-
-    const dbChunks = splitTextIntoChunks(dbText);
-    const githubChunks = splitTextIntoChunks(githubText);
-    const resumeChunks = splitTextIntoChunks(resumeText);
-
-    for (const chunk of [...dbChunks, ...githubChunks, ...resumeChunks]) {
-      if (chunk.trim().length === 0) continue;
-      try {
-        const embedding = await getEmbedding(chunk);
-        memoryIndex.push({ text: chunk, embedding });
-      } catch (embedError) {
-        console.error("Error embedding chunk:", embedError);
+function chunkGithubContext(repoArray) {
+  const chunks = [];
+  for (const repo of repoArray) {
+    const name = repo.name || repo.full_name || "Repository";
+    let baseText = `Repository: ${name}`;
+    if (repo.description) baseText += `\nDescription: ${repo.description}`;
+    if (repo.language) baseText += `\nLanguage: ${repo.language}`;
+    const readme = repo.readme || "";
+    if (!readme) {
+      chunks.push({ category: "github", text: baseText });
+    } else {
+      const paras = readme
+        .split(/\n\s*\n/)
+        .map((p) => p.trim())
+        .filter(Boolean);
+      let current = "",
+        first = true;
+      for (const p of paras) {
+        const withNewline = p + "\n";
+        if ((current + withNewline).length > 1000) {
+          const label = first ? "README:" : "README (contd):";
+          chunks.push({
+            category: "github",
+            text: `${baseText}\n${label}\n${current.trim()}`,
+          });
+          first = false;
+          current = withNewline;
+        } else {
+          current += withNewline;
+        }
+      }
+      if (current.trim()) {
+        const label = first ? "README:" : "README (contd):";
+        chunks.push({
+          category: "github",
+          text: `${baseText}\n${label}\n${current.trim()}`,
+        });
       }
     }
-    console.log(`Memory index built with ${memoryIndex.length} chunks.`);
-    // Save memory index to file for inspection
-    const memIndexJson = JSON.stringify(memoryIndex, null, 2);
-    const memIndexDir = path.dirname(memoryIndexFilePath);
-    if (!fs.existsSync(memIndexDir))
-      fs.mkdirSync(memIndexDir, { recursive: true });
-    await fs.promises.writeFile(memoryIndexFilePath, memIndexJson, "utf8");
-    console.log(`Memory index saved to ${memoryIndexFilePath}`);
-  } catch (error) {
-    console.error("Error building memory index:", error);
   }
+  return chunks;
 }
 
-/**
- * computeCosineSimilarity - Computes cosine similarity between two vectors.
- */
-function computeCosineSimilarity(vecA, vecB) {
-  const dotProduct = vecA.reduce((sum, a, i) => sum + a * vecB[i], 0);
-  const normA = Math.sqrt(vecA.reduce((sum, a) => sum + a * a, 0));
-  const normB = Math.sqrt(vecB.reduce((sum, b) => sum + b * b, 0));
-  if (normA === 0 || normB === 0) return 0;
-  return dotProduct / (normA * normB);
-}
+function chunkResumeContext(resumeText) {
+  const chunks = [];
+  if (!resumeText.trim()) return chunks;
 
-/**
- * getRelevantContext - Given a query, computes its embedding and returns the topK most similar chunks.
- */
-async function getRelevantContext(query, topK = 5) {
-  try {
-    const queryEmbedding = await getEmbedding(query);
-    const similarities = memoryIndex.map((item) => ({
-      text: item.text,
-      score: computeCosineSimilarity(queryEmbedding, item.embedding),
-    }));
-    similarities.sort((a, b) => b.score - a.score);
-    return similarities.slice(0, topK).map((item) => item.text);
-  } catch (error) {
-    console.error("Error retrieving relevant context:", error);
-    throw error;
+  const lines = resumeText.split("\n");
+  const headingIndices = [];
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (
+      line &&
+      line === line.toUpperCase() &&
+      /^[A-Z\s&]+$/.test(line) &&
+      line.length < 60 &&
+      !(i < 5 && /\d/.test(lines[i + 1] || ""))
+    ) {
+      headingIndices.push(i);
+    }
   }
+  if (!headingIndices.length) {
+    chunks.push({ category: "resume", text: resumeText.trim() });
+    return chunks;
+  }
+
+  const firstHeadingIdx = headingIndices[0];
+  const sections = headingIndices.map((start, idx) => {
+    const end =
+      idx < headingIndices.length - 1 ? headingIndices[idx + 1] : lines.length;
+    return {
+      heading: lines[start].trim(),
+      content: lines.slice(start + 1, end),
+    };
+  });
+
+  for (const { heading, content } of sections) {
+    const merged = [];
+    for (let i = 0; i < content.length; i++) {
+      let line = content[i];
+      if (!line.trim()) {
+        merged.push("");
+      } else if (line.trim().endsWith(":")) {
+        let agg = line.trim();
+        while (
+          i + 1 < content.length &&
+          content[i + 1].trim() &&
+          !content[i + 1].trim().endsWith(":") &&
+          !content[i + 1].trim().startsWith("•")
+        ) {
+          agg += " " + content[++i].trim();
+        }
+        merged.push(agg);
+      } else if (line.trim().startsWith("•")) {
+        merged.push(line.trim());
+      } else {
+        if (
+          merged.length &&
+          merged[merged.length - 1] &&
+          !merged[merged.length - 1].startsWith("•") &&
+          !merged[merged.length - 1].endsWith(":")
+        ) {
+          merged[merged.length - 1] += " " + line.trim();
+        } else {
+          merged.push(line.trim());
+        }
+      }
+    }
+
+    let i = 0;
+    while (i < merged.length) {
+      if (!merged[i]) {
+        i++;
+        continue;
+      }
+      if (!merged[i].startsWith("•")) {
+        const entryLines = [merged[i++]];
+        while (i < merged.length && merged[i] && !merged[i].startsWith("•")) {
+          break;
+        }
+        const bullets = [];
+        while (i < merged.length && merged[i].startsWith("•")) {
+          let b = merged[i++];
+          while (i < merged.length && merged[i] && !merged[i].startsWith("•")) {
+            b += " " + merged[i++];
+          }
+          bullets.push(b);
+        }
+        let text = `${heading}\n${entryLines.join("\n")}`;
+        if (bullets.length) text += "\n" + bullets.join("\n");
+        chunks.push({ category: "resume", text: text.trim() });
+      } else {
+        const b = merged[i++];
+        chunks.push({ category: "resume", text: `${heading}\n${b}` });
+      }
+    }
+  }
+
+  return chunks;
 }
 
-/* ============================
-   LLM Query Function
-   ============================
-*/
-/**
- * askLLM - Given a query, retrieves relevant context chunks, builds a prompt, sends it to OpenAI's completions endpoint,
- * logs the query, and returns the generated answer.
- */
+/*===============================================
+  Load & Persist Chunks ("chunkContents")
+===============================================*/
+async function loadAndChunkData() {
+  const dbData = JSON.parse(await getDbContextFile());
+  const ghData = JSON.parse(await getGithubContextFile());
+  const resData = JSON.parse(await getResumeContextFile());
+  let chunksDbContext = chunkDbContext(dbData);
+  let chunksGithubContext = chunkGithubContext(ghData);
+  let chunksResumeContext = chunkResumeContext(resData.resume_text || "");
+
+  const allChunks = [
+    ...chunksDbContext,
+    ...chunksGithubContext,
+    ...chunksResumeContext,
+  ];
+
+  const db = getDBAI();
+  await db.collection("chunkContents").deleteMany({});
+  if (allChunks.length) {
+    const now = new Date();
+    await db.collection("chunkContents").insertMany(
+      allChunks.map((c) => ({
+        category: c.category,
+        text: c.text,
+        createdAt: now,
+      }))
+    );
+  }
+  console.log(`✅ Stored ${chunksDbContext.length} chunks in dbContexts`);
+  console.log(
+    `✅ Stored ${chunksGithubContext.length} chunks in githubContexts`
+  );
+  console.log(
+    `✅ Stored ${chunksResumeContext.length} chunks in resumeContexts`
+  );
+  console.log(`✅ Stored ${allChunks.length} chunks in chunkContents`);
+  return allChunks;
+}
+
+/*===============================================
+  Embedding & Memory Index ("memoryIndex", "memoryIndexMeta")
+===============================================*/
+async function loadMemoryIndexMeta() {
+  const db = getDBAI();
+  const doc = await db
+    .collection("memoryIndexMeta")
+    .findOne({ _id: "memoryIndexMeta" });
+  memoryIndexMeta = doc || {};
+}
+
+async function getEmbedding(text) {
+  if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY not set");
+  const res = await openai.embeddings.create({
+    model: "text-embedding-ada-002",
+    input: text,
+  });
+  return res.data[0].embedding;
+}
+
+function computeCosineSimilarity(a, b) {
+  let dot = 0,
+    na = 0,
+    nb = 0;
+  for (let i = 0; i < a.length; i++) {
+    dot += a[i] * b[i];
+    na += a[i] * a[i];
+    nb += b[i] * b[i];
+  }
+  return na && nb ? dot / Math.sqrt(na * nb) : 0;
+}
+
+async function buildMemoryIndex(forceRebuild = false) {
+  const db = getDBAI();
+  const now = new Date();
+  const currentMonth = now.getFullYear() * 12 + now.getMonth();
+  let lastUpdateMonth = -1;
+  if (memoryIndexMeta.lastUpdate) {
+    const d = new Date(memoryIndexMeta.lastUpdate);
+    lastUpdateMonth = d.getFullYear() * 12 + d.getMonth();
+  }
+
+  const existingCount = await db.collection("memoryIndex").countDocuments();
+  if (!forceRebuild && lastUpdateMonth === currentMonth && existingCount > 0) {
+    memoryIndex = await db.collection("memoryIndex").find().toArray();
+    console.log(
+      `Memory index up‑to‑date (${memoryIndex.length} items), skipping rebuild.`
+    );
+    return;
+  }
+
+  console.log("🔄 Rebuilding memory index…");
+  const chunks = await loadAndChunkData();
+  const out = [];
+  for (const { category, text } of chunks) {
+    if (!text.trim()) continue;
+    try {
+      const embedding = await getEmbedding(text);
+      out.push({
+        category,
+        text,
+        embedding,
+        createdAt: now,
+      });
+    } catch (e) {
+      console.error("Embed error:", e.message);
+    }
+  }
+
+  await db.collection("memoryIndex").deleteMany({});
+  if (out.length) await db.collection("memoryIndex").insertMany(out);
+  memoryIndex = out;
+
+  memoryIndexMeta.lastUpdate = now.toISOString();
+  await db
+    .collection("memoryIndexMeta")
+    .updateOne(
+      { _id: "memoryIndexMeta" },
+      { $set: { lastUpdate: memoryIndexMeta.lastUpdate } },
+      { upsert: true }
+    );
+
+  console.log(`✅ Memory index rebuilt (${out.length} items)`);
+}
+
 async function askLLM(query) {
-  console.log("Received query:", query);
-  const relevantChunks = await getRelevantContext(query, 5);
-  const contextText = relevantChunks.join("\n\n");
-  const prompt = `
-Use only the following context to answer the query.
+  if (!query.trim()) throw new Error("Query cannot be empty");
 
-CONTEXT:
-${contextText}
+  if (!memoryIndex.length) {
+    const db = getDBAI();
+    const cnt = await db.collection("memoryIndex").countDocuments();
+    if (cnt) {
+      memoryIndex = await db.collection("memoryIndex").find().toArray();
+    } else {
+      await buildMemoryIndex(true);
+    }
+  }
 
-QUERY:
-${query}
-`;
-  const url = "https://api.openai.com/v1/completions";
-  const body = {
-    model: "gpt-4-0-mini", // Adjust the model name as needed.
-    prompt,
+  const qemb = await getEmbedding(query);
+  const buckets = { db: [], github: [], resume: [] };
+  for (const item of memoryIndex) {
+    const score = computeCosineSimilarity(qemb, item.embedding);
+    buckets[item.category].push({ text: item.text, score });
+  }
+  for (const k of ["db", "github", "resume"]) {
+    buckets[k].sort((a, b) => b.score - a.score);
+  }
+
+  const selected = [
+    ...buckets.db.slice(0, 5),
+    ...buckets.github.slice(0, 2),
+    ...buckets.resume.slice(0, 3),
+  ].sort((a, b) => b.score - a.score);
+
+  console.log(
+    `Selected ${selected.length} context chunks for query "${query}"\nSelected chunks:\n` +
+      selected
+        .map((s) => `- ${s.text.slice(0, 50)}... (${s.score.toFixed(3)})`)
+        .join("\n")
+  );
+
+  let ctx = "";
+  const MAX_CHARS = 8000;
+  for (const { text } of selected) {
+    const addition = (ctx ? "\n\n" : "") + text;
+    if (ctx.length + addition.length > MAX_CHARS) break;
+    ctx += addition;
+  }
+
+  const comp = await openai.chat.completions.create({
+    model: "gpt-4o-mini",
+    messages: [
+      {
+        role: "system",
+        content:
+          "Use only the following context to answer the query.\n\n" +
+          "CONTEXT:\n" +
+          ctx +
+          "\n\nQUERY:\n" +
+          query,
+      },
+      // (You could also split system vs user, or add a user message)
+    ],
     max_tokens: 200,
     temperature: 0.7,
-  };
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${OPENAI_API_KEY}`,
-    },
-    body: JSON.stringify(body),
   });
-  if (!response.ok) {
-    throw new Error(`LLM request failed: ${response.status}`);
+
+  return comp.choices[0].message.content;
+}
+
+/*===============================================
+  Initialization & Scheduling
+===============================================*/
+async function initContext() {
+  await loadContextMeta();
+  await loadMemoryIndexMeta();
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  if (
+    !contextMeta.dbContextLastUpdate ||
+    new Date(contextMeta.dbContextLastUpdate) < today
+  )
+    await updateDbContextFile();
+  if (
+    !contextMeta.githubContextLastUpdate ||
+    new Date(contextMeta.githubContextLastUpdate) < today
+  )
+    await updateGithubContextFile();
+  if (
+    !contextMeta.resumeContextLastUpdate ||
+    new Date(contextMeta.resumeContextLastUpdate) < today
+  )
+    await updateResumeContextFile();
+
+  await buildMemoryIndex(false);
+
+  function scheduleDaily(fn, name, hourUTC = 5) {
+    const now = new Date();
+    const next = new Date(now);
+    next.setUTCHours(hourUTC, 0, 0, 0);
+    if (next <= now) next.setUTCDate(next.getUTCDate() + 1);
+    const delay = next - now;
+    console.log(`⏱ Scheduled ${name} in ${Math.round(delay / 1000)}s`);
+    setTimeout(() => {
+      fn().catch(console.error);
+      setInterval(() => fn().catch(console.error), 24 * 3600 * 1000);
+    }, delay);
   }
-  const data = await response.json();
-  return data.choices[0].text.trim();
-}
 
-/* ======================================
-   Daily Update Scheduling
-   ====================================== */
-function scheduleDailyUpdate(updateFn) {
-  const now = new Date();
-  const nextUpdate = new Date(now);
-  nextUpdate.setUTCHours(5, 0, 0, 0); // 5:00 AM UTC (12:00 AM EST)
-  if (nextUpdate <= now) nextUpdate.setUTCDate(nextUpdate.getUTCDate() + 1);
-  const delay = nextUpdate.getTime() - now.getTime();
-  console.log(`Scheduled update in ${Math.round(delay / 1000)} seconds.`);
-  setTimeout(() => {
-    updateFn();
-    setInterval(updateFn, 24 * 60 * 60 * 1000);
-  }, delay);
+  scheduleDaily(
+    () =>
+      Promise.all([
+        updateDbContextFile(),
+        updateGithubContextFile(),
+        updateResumeContextFile(),
+      ]),
+    "daily context update"
+  );
+  scheduleDaily(
+    () => buildMemoryIndex(false),
+    "daily memoryIndex rebuild",
+    5.083
+  );
 }
-
-// Schedule daily updates for context files and rebuild the memory index.
-scheduleDailyUpdate(updateDbContextFile);
-scheduleDailyUpdate(updateGithubContextFile);
-scheduleDailyUpdate(updateResumeContextFile);
-scheduleDailyUpdate(buildMemoryIndex);
-// Build the memory index on startup.
-buildMemoryIndex();
 
 module.exports = {
-  // DB context functions
-  getDbContextFile,
+  initContext,
   updateDbContextFile,
-  // GitHub context functions
-  getGithubContextFile,
   updateGithubContextFile,
-  // Resume context functions
-  getResumeContextFile,
   updateResumeContextFile,
-  // Memory embedding & retrieval functions
   buildMemoryIndex,
-  // getRelevantContext,
-  // LLM query function
-  // askLLM,
+  askLLM,
 };

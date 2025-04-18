@@ -1,0 +1,7 @@
+chunkContents        ← stores each chunk `{ _id, category, text, createdAt }`
+contextMeta          ← single‐doc meta `{ _id:"contextMeta", dbContextLastUpdate, … }`
+dbContexts           ← raw db‐context JSON snapshots
+githubContexts       ← raw github‐context JSON snapshots
+resumeContexts       ← raw resume‐context JSON snapshots
+memoryIndex          ← each embedded chunk `{ _id, category, text, embedding, createdAt }`
+memoryIndexMeta      ← single‐doc meta `{ _id:"memoryIndexMeta", lastUpdate }`
