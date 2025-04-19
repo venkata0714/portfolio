@@ -72,6 +72,9 @@ const MUST_LOAD_IMAGES = [
   "/Kartavya.jpg",
   "/Kartavya-Profile-Photo.jpg",
   "/contact-bg.png",
+  "/system-user.jpg",
+  "/user-icon.svg",
+
   // "/favicon.ico",
 ];
 

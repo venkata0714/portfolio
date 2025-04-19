@@ -9,6 +9,23 @@ const openai = require("../config/openai");
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
+// Vector Search index name and definition
+const SEARCH_INDEX_NAME = "chunkEmbeddingsIndex";
+const SEARCH_INDEX_DEF = {
+  mappings: {
+    dynamic: false,
+    fields: {
+      category: { type: "string" },
+      embedding: {
+        type: "knnVector",
+        dimensions: 1536,
+        similarity: "cosine",
+      },
+      text: { type: "string" },
+    },
+  },
+};
+
 // Path to your resume PDF in data/
 const resumeFilePath = path.join(
   __dirname,
@@ -633,7 +650,7 @@ async function loadMemoryIndexMeta() {
 async function getEmbedding(text) {
   if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY not set");
   const res = await openai.embeddings.create({
-    model: "text-embedding-ada-002",
+    model: "text-embedding-3-small",
     input: text,
   });
   return res.data[0].embedding;
@@ -649,6 +666,44 @@ function computeCosineSimilarity(a, b) {
     nb += b[i] * b[i];
   }
   return na && nb ? dot / Math.sqrt(na * nb) : 0;
+}
+
+/**
+ * Ensure MongoDB Atlas Search index exists with correct mappings.
+ */
+async function ensureSearchIndex() {
+  const db = getDBAI();
+  // 1) List existing search indexes on memoryIndex
+  const { indexes } = await db.command({ listSearchIndexes: "memoryIndex" });
+  const existing = indexes.find((i) => i.name === SEARCH_INDEX_NAME);
+
+  // 2) If exists but mappings differ, drop it
+  if (existing) {
+    const same =
+      JSON.stringify(existing.definition) === JSON.stringify(SEARCH_INDEX_DEF);
+    if (!same) {
+      console.log(`🔄 Updating index ${SEARCH_INDEX_NAME} mappings`);
+      await db.command({
+        dropSearchIndex: { collection: "memoryIndex", name: SEARCH_INDEX_NAME },
+      });
+    } else if (
+      (await db.collection("memoryIndex").countDocuments()) ===
+      memoryIndex.length
+    ) {
+      console.log(`✅ ${SEARCH_INDEX_NAME} is up to date`);
+      return;
+    }
+  }
+
+  // 3) Create or recreate the index
+  console.log(`🛠 Creating index ${SEARCH_INDEX_NAME}`);
+  await db.command({
+    createSearchIndexes: {
+      collection: "memoryIndex",
+      indexes: [{ name: SEARCH_INDEX_NAME, definition: SEARCH_INDEX_DEF }],
+    },
+  });
+  console.log(`✅ ${SEARCH_INDEX_NAME} created, reindexing...`);
 }
 
 async function buildMemoryIndex(forceRebuild = false) {
@@ -704,9 +759,93 @@ async function buildMemoryIndex(forceRebuild = false) {
   console.log(`✅ Memory index rebuilt (${out.length} items)`);
 }
 
-async function askLLM(query) {
+/**
+ * Use Atlas Vector Search to retrieve top-K per category.
+ */
+async function semanticSearchWithAtlas(
+  queryEmbedding,
+  topK = { db: 10, github: 5, resume: 3 }
+) {
+  const db = getDBAI();
+  const pipelines = Object.entries(topK).map(async ([cat, k]) => {
+    const hits = await db
+      .collection("memoryIndex")
+      .aggregate([
+        {
+          $vectorSearch: {
+            index: SEARCH_INDEX_NAME,
+            queryVector: queryEmbedding,
+            path: "embedding",
+            filter: { term: { category: cat } },
+            k,
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            text: 1,
+            score: { $meta: "vectorSearchScore" },
+            category: "$" + cat,
+          },
+        },
+      ])
+      .toArray();
+    return hits.map((h) => ({ ...h, category: cat }));
+  });
+  const resultsArr = await Promise.all(pipelines);
+  return resultsArr.flat();
+}
+
+/**
+ * RAG-style prompt: retrieve via Atlas and generate answer.
+ */
+async function askWithRAG(query) {
   if (!query.trim()) throw new Error("Query cannot be empty");
 
+  // 1) Ensure memoryIndex loaded
+  if (!memoryIndex.length) await buildMemoryIndex(false);
+
+  // 2) Create embedding for query
+  const qemb = await getEmbedding(query);
+
+  // 3) Retrieve top hits
+  const hits = await semanticSearchWithAtlas(qemb);
+
+  // 4) Sort by score and pick top overall (e.g. 15)
+  const top = hits.sort((a, b) => b.score - a.score).slice(0, 15);
+
+  // 5) Build numbered context
+  const ctx = top
+    .map(
+      (c, i) => `[${i + 1}] (${c.category}) ${c.text.replace(/\n+/g, " ")}
+`
+    )
+    .join("\n");
+
+  // 6) Call LLM with citations
+  const messages = [
+    {
+      role: "system",
+      content:
+        "You are a precise assistant. Use ONLY the context below, cite by [n].",
+    },
+    { role: "user", content: `CONTEXT:\n${ctx}\nQUESTION: ${query}` },
+  ];
+
+  const resp = await openai.chat.completions.create({
+    model: "gpt-4o-mini",
+    messages,
+    temperature: 0,
+    max_tokens: 300,
+  });
+
+  return resp.choices[0].message.content;
+}
+
+async function askLLM(query, conversationMemory = "") {
+  if (!query.trim()) throw new Error("Query cannot be empty");
+
+  // Ensure memory index is loaded (for context retrieval)
   if (!memoryIndex.length) {
     const db = getDBAI();
     const cnt = await db.collection("memoryIndex").countDocuments();
@@ -717,16 +856,17 @@ async function askLLM(query) {
     }
   }
 
+  // Embed the user query and compute similarity against stored context chunks
   const qemb = await getEmbedding(query);
   const buckets = { db: [], github: [], resume: [] };
   for (const item of memoryIndex) {
     const score = computeCosineSimilarity(qemb, item.embedding);
     buckets[item.category].push({ text: item.text, score });
   }
-  for (const k of ["db", "github", "resume"]) {
+  for (const k of Object.keys(buckets)) {
     buckets[k].sort((a, b) => b.score - a.score);
   }
-
+  // Select top relevant chunks from each category (e.g., top 5 DB, 2 GitHub, 3 Resume)
   const selected = [
     ...buckets.db.slice(0, 5),
     ...buckets.github.slice(0, 2),
@@ -734,12 +874,9 @@ async function askLLM(query) {
   ].sort((a, b) => b.score - a.score);
 
   console.log(
-    `Selected ${selected.length} context chunks for query "${query}"\nSelected chunks:\n` +
-      selected
-        .map((s) => `- ${s.text.slice(0, 50)}... (${s.score.toFixed(3)})`)
-        .join("\n")
+    `Selected ${selected.length} context chunks for query "${query}"`
   );
-
+  // Concatenate selected context texts (up to MAX_CHARS limit)
   let ctx = "";
   const MAX_CHARS = 8000;
   for (const { text } of selected) {
@@ -748,25 +885,86 @@ async function askLLM(query) {
     ctx += addition;
   }
 
-  const comp = await openai.chat.completions.create({
-    model: "gpt-4o-mini",
+  // Build the prompt with conversation memory if available
+  let userPrompt;
+  if (conversationMemory && conversationMemory.trim().length > 0) {
+    userPrompt = `MEMORY:\n${conversationMemory}\nCONTEXT:\n${ctx}\n\nQUESTION: ${query}`;
+  } else {
+    userPrompt = `CONTEXT:\n${ctx}\n\nQUESTION: ${query}`;
+  }
+
+  // Call OpenAI chat completion API
+  const completion = await openai.chat.completions.create({
+    model: "gpt-4.1-nano", // same model used throughout
     messages: [
       {
         role: "system",
         content:
-          "Use only the following context to answer the query.\n\n" +
-          "CONTEXT:\n" +
-          ctx +
-          "\n\nQUERY:\n" +
-          query,
+          "You are a precise assistant. Answer the question using ONLY the provided context.",
       },
-      // (You could also split system vs user, or add a user message)
+      {
+        role: "user",
+        content: userPrompt,
+      },
     ],
-    max_tokens: 200,
-    temperature: 0.7,
+    max_tokens: 256,
+    temperature: 0.3,
   });
+  return completion.choices[0].message.content;
+}
 
-  return comp.choices[0].message.content;
+// New helper: generate follow-up questions
+async function suggestFollowUpQuestions(query, answer) {
+  // Formulate a prompt for follow-up question generation
+  const messages = [
+    {
+      role: "system",
+      content:
+        "You are an assistant that suggests follow-up questions to continue the conversation.",
+    },
+    {
+      role: "user",
+      content: `The user asked: "${query}"\nYou answered: "${answer}".\nNow suggest 3 brief intelligent follow-up questions the user might ask next.`,
+    },
+  ];
+  const completion = await openai.chat.completions.create({
+    model: "gpt-4.1-nano",
+    messages,
+    max_tokens: 60,
+    temperature: 0.6,
+  });
+  const rawOutput = completion.choices[0].message.content;
+  // Split the output into individual questions (assuming separated by newlines or bullet points)
+  const suggestions = rawOutput
+    .split(/\r?\n/)
+    .map((s) => s.replace(/^[\-\d\.\)\s]+/, "").trim()) // remove any list numbering or dashes
+    .filter((s) => s); // remove empty lines
+  // If the model returned more than 3 lines, take the first 3
+  return suggestions.slice(0, 3);
+}
+
+// New helper: update conversation memory summary
+async function snapshotMemoryUpdate(previousMemory, query, answer) {
+  const messages = [
+    {
+      role: "system",
+      content:
+        "You are a helpful assistant that maintains a brief memory of the conversation.",
+    },
+    {
+      role: "user",
+      content: `Previous memory: ${
+        previousMemory || "(none)"
+      }\nUser just asked: "${query}"\nAssistant answered: "${answer}"\nUpdate the conversation memory to include this exchange, in 2-3 sentences.`,
+    },
+  ];
+  const completion = await openai.chat.completions.create({
+    model: "gpt-4.1-nano",
+    messages,
+    max_tokens: 150,
+    temperature: 0.2,
+  });
+  return completion.choices[0].message.content.trim();
 }
 
 /*===============================================
@@ -833,4 +1031,7 @@ module.exports = {
   updateResumeContextFile,
   buildMemoryIndex,
   askLLM,
+  askWithRAG,
+  suggestFollowUpQuestions,
+  snapshotMemoryUpdate,
 };

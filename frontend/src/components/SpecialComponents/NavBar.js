@@ -413,7 +413,9 @@ const NavBar = ({ isBatterySavingOn, addTab }) => {
                   setMenuOpen(false);
                 }}
               >
-                <span className="navbar-text">FEED</span>
+                <span className="navbar-text">
+                  <i className="fa fa-search"></i> {menuOpen ? "AI Chat" : ""}
+                </span>
               </a>
             </motion.li>
           </motion.ul>
