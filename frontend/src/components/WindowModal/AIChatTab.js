@@ -294,7 +294,7 @@ const AIChatBot = () => {
                   <img
                     src={`${process.env.PUBLIC_URL}/user-icon.svg`}
                     alt="You"
-                    className="avatar user-avatar"
+                    className="avatar user-avatar-followup"
                   />
                 </div>
               )}
