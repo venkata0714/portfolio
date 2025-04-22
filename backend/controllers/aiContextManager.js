@@ -9,6 +9,23 @@ const openai = require("../config/openai");
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
+// ─────────── PRIORITIZATION CONFIG ───────────
+const CATEGORY_WEIGHTS = { db: 0.7, resume: 0.3, github: 0.1 };
+const QUERY_BOOST = { db: 0.1, resume: 0.1, github: 0.1 };
+const DB_TERMS = [
+  "experience",
+  "project",
+  "honors",
+  "skills",
+  "involvement",
+  "yearInReview",
+];
+const MAX_COUNTS = { db: 6, resume: 3, github: 3 };
+const TOTAL_BUDGET = 12;
+const MIN_SCORE_THRESH = 0.075; // drop anything below 0.15 after weighting
+const MAX_CONTEXT_CHARS = 8000;
+// ─────────────────────────────────────────────
+
 // Vector Search index name and definition
 const SEARCH_INDEX_NAME = "chunkEmbeddingsIndex";
 const SEARCH_INDEX_DEF = {
@@ -72,6 +89,74 @@ function removeEmptyFields(obj) {
     return obj;
   }
   return obj;
+}
+
+function mmrSelect(candidates, k, lambda = 0.7) {
+  if (!candidates.length || k <= 0) return [];
+  const selected = [];
+  // init: pick highest‐weighted
+  candidates.sort((a, b) => b.weightedScore - a.weightedScore);
+  selected.push(candidates.shift());
+  while (selected.length < k && candidates.length) {
+    let bestIdx = 0,
+      bestScore = -Infinity;
+    for (let i = 0; i < candidates.length; i++) {
+      const cand = candidates[i];
+      const relevance = cand.weightedScore;
+      // dissimilarity = max cosine to any already‐selected
+      const maxSim = Math.max(
+        ...selected.map((s) =>
+          computeCosineSimilarity(cand.embedding, s.embedding)
+        )
+      );
+      const mmrScore = lambda * relevance - (1 - lambda) * maxSim;
+      if (mmrScore > bestScore) {
+        bestScore = mmrScore;
+        bestIdx = i;
+      }
+    }
+    selected.push(candidates.splice(bestIdx, 1)[0]);
+  }
+  return selected;
+}
+
+/**
+ * Given per-category “signal” scores and a total budget,
+ * returns integer allocations that (1) sum to TOTAL_BUDGET,
+ * (2) are proportional to signals, (3) honor optional min/max.
+ */
+function allocateBudget(signals, totalBudget, minPerCat = {}, maxPerCat = {}) {
+  // 1) compute float allocations
+  const totalSignal = Object.values(signals).reduce((a, b) => a + b, 0) || 1;
+  const floats = Object.fromEntries(
+    Object.entries(signals).map(([cat, sig]) => [
+      cat,
+      (sig / totalSignal) * totalBudget,
+    ])
+  );
+
+  // 2) floor them
+  let allocs = Object.fromEntries(
+    Object.entries(floats).map(([cat, f]) => [cat, Math.floor(f)])
+  );
+
+  // 3) distribute leftover by largest fractional
+  let left = totalBudget - Object.values(allocs).reduce((a, b) => a + b, 0);
+  const fracs = Object.entries(floats)
+    .map(([cat, f]) => [cat, f - Math.floor(f)])
+    .sort((a, b) => b[1] - a[1]);
+  for (let i = 0; i < left; i++) {
+    allocs[fracs[i][0]]++;
+  }
+
+  // 4) clamp to per-cat min/max if given
+  for (const cat of Object.keys(allocs)) {
+    if (minPerCat[cat] != null)
+      allocs[cat] = Math.max(allocs[cat], minPerCat[cat]);
+    if (maxPerCat[cat] != null)
+      allocs[cat] = Math.min(allocs[cat], maxPerCat[cat]);
+  }
+  return allocs;
 }
 
 /*===============================================
@@ -199,10 +284,18 @@ async function aggregateDbContext() {
 async function updateDbContextFile() {
   const db = getDBAI();
   const snapshot = await aggregateDbContext();
-  await db.collection("dbContexts").insertOne({
-    data: snapshot,
-    createdAt: new Date(),
-  });
+  // await db.collection("dbContexts").deleteMany({});
+  // Upsert a single 'current' document
+  await db.collection("dbContexts").updateOne(
+    { _id: "current" },
+    {
+      $set: {
+        data: snapshot,
+        createdAt: new Date(),
+      },
+    },
+    { upsert: true }
+  );
   contextMeta.dbContextLastUpdate = new Date().toISOString();
   await saveContextMeta();
   console.log(
@@ -212,17 +305,15 @@ async function updateDbContextFile() {
 
 async function getDbContextFile() {
   const db = getDBAI();
-  const doc = await db
-    .collection("dbContexts")
-    .find()
-    .sort({ createdAt: -1 })
-    .limit(1)
-    .next();
-  if (!doc) {
+  const doc = await db.collection("dbContexts").findOne({ _id: "current" });
+
+  if (doc) {
+    return JSON.stringify(doc.data);
+  } else {
+    // fallback: build & upsert
     await updateDbContextFile();
     return JSON.stringify(await aggregateDbContext());
   }
-  return JSON.stringify(doc.data);
 }
 
 /*===============================================
@@ -277,7 +368,7 @@ async function aggregateGithubContext() {
     };
     try {
       const md = await fetchRepoReadme(r.full_name);
-      if (md) info.readme = md;
+      if (md) info.readme = md.length > 3000 ? md.slice(0, 2995) + "..." : md;
     } catch (e) {
       console.error(`README error ${r.full_name}:`, e.message);
     }
@@ -289,10 +380,14 @@ async function aggregateGithubContext() {
 async function updateGithubContextFile() {
   const db = getDBAI();
   const snapshot = await aggregateGithubContext();
-  await db.collection("githubContexts").insertOne({
-    data: snapshot,
-    createdAt: new Date(),
-  });
+  // await db.collection("githubContexts").deleteMany({});
+  await db
+    .collection("githubContexts")
+    .updateOne(
+      { _id: "current" },
+      { $set: { data: snapshot, createdAt: new Date() } },
+      { upsert: true }
+    );
   contextMeta.githubContextLastUpdate = new Date().toISOString();
   await saveContextMeta();
   console.log(`✅ githubContexts snapshot saved (${snapshot.length} repos)`);
@@ -300,17 +395,11 @@ async function updateGithubContextFile() {
 
 async function getGithubContextFile() {
   const db = getDBAI();
-  const doc = await db
-    .collection("githubContexts")
-    .find()
-    .sort({ createdAt: -1 })
-    .limit(1)
-    .next();
-  if (!doc) {
-    await updateGithubContextFile();
-    return JSON.stringify(await aggregateGithubContext());
-  }
-  return JSON.stringify(doc.data);
+  const doc = await db.collection("githubContexts").findOne({ _id: "current" });
+
+  if (doc) return JSON.stringify(doc.data);
+  await updateGithubContextFile();
+  return JSON.stringify(await aggregateGithubContext());
 }
 
 /*===============================================
@@ -325,10 +414,14 @@ async function aggregateResumeContext() {
 async function updateResumeContextFile() {
   const db = getDBAI();
   const snapshot = await aggregateResumeContext();
-  await db.collection("resumeContexts").insertOne({
-    data: snapshot,
-    createdAt: new Date(),
-  });
+  // await db.collection("resumeContexts").deleteMany({});
+  await db
+    .collection("resumeContexts")
+    .updateOne(
+      { _id: "current" },
+      { $set: { data: snapshot, createdAt: new Date() } },
+      { upsert: true }
+    );
   contextMeta.resumeContextLastUpdate = new Date().toISOString();
   await saveContextMeta();
   console.log(
@@ -338,111 +431,114 @@ async function updateResumeContextFile() {
 
 async function getResumeContextFile() {
   const db = getDBAI();
-  const doc = await db
-    .collection("resumeContexts")
-    .find()
-    .sort({ createdAt: -1 })
-    .limit(1)
-    .next();
-  if (!doc) {
-    await updateResumeContextFile();
-    return JSON.stringify(await aggregateResumeContext());
-  }
-  return JSON.stringify(doc.data);
+  const doc = await db.collection("resumeContexts").findOne({ _id: "current" });
+
+  if (doc) return JSON.stringify(doc.data);
+  await updateResumeContextFile();
+  return JSON.stringify(await aggregateResumeContext());
 }
 
 /*===============================================
   Chunking Functions (unchanged implementation)
 ===============================================*/
+// function chunkDbItem(tableName, item) {
+//   const chunks = [];
+//   let summaryLines = [];
+//   let longTextFields = {};
+
+//   let itemLabel = "";
+//   for (const key of Object.keys(item)) {
+//     if (/title|name/i.test(key) && typeof item[key] === "string") {
+//       itemLabel = item[key];
+//       break;
+//     }
+//   }
+
+//   for (const [key, value] of Object.entries(item)) {
+//     if (value == null) continue;
+//     if (Array.isArray(value)) {
+//       if (!value.length) continue;
+//       if (typeof value[0] === "string") {
+//         if (value.length > 1 || value[0].length > 200) {
+//           longTextFields[key] = value;
+//         } else {
+//           summaryLines.push(`${key}: ${value[0]}`);
+//         }
+//       } else {
+//         summaryLines.push(`${key}: ${JSON.stringify(value)}`);
+//       }
+//     } else if (typeof value === "string") {
+//       if (value.length > 200 || value.includes("\n")) {
+//         longTextFields[key] = value;
+//       } else {
+//         summaryLines.push(`${key}: ${value}`);
+//       }
+//     } else {
+//       summaryLines.push(`${key}: ${value}`);
+//     }
+//   }
+
+//   if (summaryLines.length) {
+//     chunks.push(`${tableName} - ${itemLabel}\n${summaryLines.join("\n")}`);
+//   }
+
+//   for (const [fieldKey, value] of Object.entries(longTextFields)) {
+//     if (Array.isArray(value)) {
+//       const paragraphs = value.map((p) => p.trim()).filter(Boolean);
+//       let subchunks = [];
+//       if (paragraphs.length <= 3) {
+//         subchunks = paragraphs;
+//       } else {
+//         const groupSize = Math.ceil(paragraphs.length / 3);
+//         for (let i = 0; i < paragraphs.length; i += groupSize) {
+//           subchunks.push(paragraphs.slice(i, i + groupSize).join(" "));
+//         }
+//       }
+//       for (const sub of subchunks) {
+//         if (sub) chunks.push(`${tableName} - ${itemLabel}: ${sub}`);
+//       }
+//     } else {
+//       const text = value.trim();
+//       if (text.length <= 400) {
+//         chunks.push(`${tableName} - ${itemLabel}: ${text}`);
+//       } else {
+//         const sentences = text.split(/(?<=[.?!])\s+(?=[A-Z])/);
+//         let part = "";
+//         const subchunks = [];
+//         for (const sent of sentences) {
+//           if ((part + sent).length > 400) {
+//             if (part) subchunks.push(part.trim());
+//             part = sent;
+//           } else {
+//             part += (part ? " " : "") + sent;
+//           }
+//         }
+//         if (part) subchunks.push(part.trim());
+//         if (subchunks.length > 3) {
+//           const merged = [];
+//           const gs = Math.ceil(subchunks.length / 3);
+//           for (let i = 0; i < subchunks.length; i += gs) {
+//             merged.push(subchunks.slice(i, i + gs).join(" "));
+//           }
+//           subchunks.splice(0, subchunks.length, ...merged);
+//         }
+//         for (const sub of subchunks) {
+//           if (sub) chunks.push(`${tableName} - ${itemLabel}: ${sub}`);
+//         }
+//       }
+//     }
+//   }
+
+//   return chunks;
+// }
 function chunkDbItem(tableName, item) {
-  const chunks = [];
-  let summaryLines = [];
-  let longTextFields = {};
-
-  let itemLabel = "";
-  for (const key of Object.keys(item)) {
-    if (/title|name/i.test(key) && typeof item[key] === "string") {
-      itemLabel = item[key];
-      break;
-    }
-  }
-
-  for (const [key, value] of Object.entries(item)) {
-    if (value == null) continue;
-    if (Array.isArray(value)) {
-      if (!value.length) continue;
-      if (typeof value[0] === "string") {
-        if (value.length > 1 || value[0].length > 200) {
-          longTextFields[key] = value;
-        } else {
-          summaryLines.push(`${key}: ${value[0]}`);
-        }
-      } else {
-        summaryLines.push(`${key}: ${JSON.stringify(value)}`);
-      }
-    } else if (typeof value === "string") {
-      if (value.length > 200 || value.includes("\n")) {
-        longTextFields[key] = value;
-      } else {
-        summaryLines.push(`${key}: ${value}`);
-      }
-    } else {
-      summaryLines.push(`${key}: ${value}`);
-    }
-  }
-
-  if (summaryLines.length) {
-    chunks.push(`${tableName} - ${itemLabel}\n${summaryLines.join("\n")}`);
-  }
-
-  for (const [fieldKey, value] of Object.entries(longTextFields)) {
-    if (Array.isArray(value)) {
-      const paragraphs = value.map((p) => p.trim()).filter(Boolean);
-      let subchunks = [];
-      if (paragraphs.length <= 3) {
-        subchunks = paragraphs;
-      } else {
-        const groupSize = Math.ceil(paragraphs.length / 3);
-        for (let i = 0; i < paragraphs.length; i += groupSize) {
-          subchunks.push(paragraphs.slice(i, i + groupSize).join(" "));
-        }
-      }
-      for (const sub of subchunks) {
-        if (sub) chunks.push(`${tableName} - ${itemLabel}: ${sub}`);
-      }
-    } else {
-      const text = value.trim();
-      if (text.length <= 400) {
-        chunks.push(`${tableName} - ${itemLabel}: ${text}`);
-      } else {
-        const sentences = text.split(/(?<=[.?!])\s+(?=[A-Z])/);
-        let part = "";
-        const subchunks = [];
-        for (const sent of sentences) {
-          if ((part + sent).length > 400) {
-            if (part) subchunks.push(part.trim());
-            part = sent;
-          } else {
-            part += (part ? " " : "") + sent;
-          }
-        }
-        if (part) subchunks.push(part.trim());
-        if (subchunks.length > 3) {
-          const merged = [];
-          const gs = Math.ceil(subchunks.length / 3);
-          for (let i = 0; i < subchunks.length; i += gs) {
-            merged.push(subchunks.slice(i, i + gs).join(" "));
-          }
-          subchunks.splice(0, subchunks.length, ...merged);
-        }
-        for (const sub of subchunks) {
-          if (sub) chunks.push(`${tableName} - ${itemLabel}: ${sub}`);
-        }
-      }
-    }
-  }
-
-  return chunks;
+  // emit the entire JSON of the item as one chunk
+  const label =
+    Object.entries(item).find(
+      ([k, v]) => /title|name/i.test(k) && typeof v === "string"
+    )?.[1] || "";
+  const text = `${tableName} - ${label}: ${JSON.stringify(item)}`;
+  return [text];
 }
 
 function chunkDbContext(dbContextObj) {
@@ -720,7 +816,7 @@ async function buildMemoryIndex(forceRebuild = false) {
   if (!forceRebuild && lastUpdateMonth === currentMonth && existingCount > 0) {
     memoryIndex = await db.collection("memoryIndex").find().toArray();
     console.log(
-      `Memory index up‑to‑date (${memoryIndex.length} items), skipping rebuild.`
+      `Memory index up-to-date (${memoryIndex.length} items), skipping rebuild.`
     );
     return;
   }
@@ -844,8 +940,7 @@ async function askWithRAG(query) {
 
 async function askLLM(query, conversationMemory = "") {
   if (!query.trim()) throw new Error("Query cannot be empty");
-
-  // Ensure memory index is loaded (for context retrieval)
+  // 1) Ensure memoryIndex loaded
   if (!memoryIndex.length) {
     const db = getDBAI();
     const cnt = await db.collection("memoryIndex").countDocuments();
@@ -856,60 +951,205 @@ async function askLLM(query, conversationMemory = "") {
     }
   }
 
-  // Embed the user query and compute similarity against stored context chunks
+  // 2) Embed the user query & compute raw cosine scores
   const qemb = await getEmbedding(query);
-  const buckets = { db: [], github: [], resume: [] };
-  for (const item of memoryIndex) {
+  const buckets = { db: [], resume: [], github: [] };
+  memoryIndex.forEach((item) => {
     const score = computeCosineSimilarity(qemb, item.embedding);
-    buckets[item.category].push({ text: item.text, score });
-  }
-  for (const k of Object.keys(buckets)) {
-    buckets[k].sort((a, b) => b.score - a.score);
-  }
-  // Select top relevant chunks from each category (e.g., top 5 DB, 2 GitHub, 3 Resume)
-  const selected = [
-    ...buckets.db.slice(0, 5),
-    ...buckets.github.slice(0, 2),
-    ...buckets.resume.slice(0, 3),
-  ].sort((a, b) => b.score - a.score);
+    buckets[item.category].push({
+      text: item.text,
+      score,
+      embedding: item.embedding,
+    });
+  });
 
-  console.log(
-    `Selected ${selected.length} context chunks for query "${query}"`
+  // 3) Apply category weights
+  ["db", "resume", "github"].forEach((cat) => {
+    buckets[cat] = buckets[cat].map((item) => ({
+      ...item,
+      weightedScore: item.score * CATEGORY_WEIGHTS[cat],
+    }));
+  });
+
+  const ql = query.toLowerCase();
+  // 4) Query‐based boosts
+  if (/resume/.test(ql))
+    buckets.resume.forEach((i) => (i.weightedScore += QUERY_BOOST.resume));
+  if (/github/.test(ql))
+    buckets.github.forEach((i) => (i.weightedScore += QUERY_BOOST.github));
+  if (DB_TERMS.some((t) => ql.includes(t.toLowerCase())))
+    buckets.db.forEach((i) => (i.weightedScore += QUERY_BOOST.db));
+
+  // 5) Demote DB‐subcategories not mentioned in query
+  // 5a) Exclude honors/yearInReview unless query explicitly includes them
+  buckets.db = buckets.db.filter((item) => {
+    const tableName = item.text.split(" - ")[0].toLowerCase();
+    // if this chunk is from honors or yearInReview and query has no mention → drop
+    if (
+      /(honors|year\s*in\s*review)/.test(tableName) &&
+      !/(honors|year\s*in\s*review)/.test(ql)
+    ) {
+      return false;
+    }
+    return true;
+  });
+
+  // 5b) Demote other DB subcategories not mentioned in query
+  buckets.db = buckets.db.map((item) => {
+    const tableName = item.text.split(" - ")[0].toLowerCase();
+    const term = DB_TERMS.find((t) => tableName.includes(t.toLowerCase()));
+    if (term && ql.includes(term.toLowerCase())) {
+      item.weightedScore *= 1.2;
+    }
+    return item;
+  });
+
+  const RESUME_TERMS = [
+    "education",
+    "experience",
+    "skills",
+    "projects",
+    "honors",
+    "involvement",
+    "year in review",
+  ];
+  buckets.resume = buckets.resume.filter((item) => {
+    const heading = item.text
+      .split("\n")[0]
+      .toLowerCase()
+      .replace(/[^a-z0-9\s]/g, "");
+    // if it's one of our known headings but the query doesn't mention it → drop
+    if (
+      RESUME_TERMS.includes(heading) &&
+      !RESUME_TERMS.some((term) => ql.includes(term))
+    ) {
+      return false;
+    }
+    return true;
+  });
+
+  // 5c) Boost any resume chunk whose heading appears in the query
+  buckets.resume = buckets.resume.map((item) => {
+    const heading = item.text
+      .split("\n")[0]
+      .toLowerCase()
+      .replace(/[^a-z0-9\s]/g, "");
+    if (ql.includes(heading)) {
+      item.weightedScore *= 1.2;
+    }
+    return item;
+  });
+
+  // 6) Sort & cap to MAX_COUNTS
+  Object.entries(buckets).forEach(([cat, arr]) => {
+    arr.sort((a, b) => b.weightedScore - a.weightedScore);
+    buckets[cat] = arr.slice(0, MAX_COUNTS[cat]);
+  });
+
+  // 7) Selection & minimum guarantees
+  // const selected = [];
+  const take = (cat, n) => {
+    const out = [];
+    while (out.length < n && buckets[cat].length) {
+      const nxt = buckets[cat].shift();
+      if (nxt.weightedScore >= MIN_SCORE_THRESH) out.push(nxt);
+    }
+    return out;
+  };
+
+  // // 7a) ensure minima
+  // selected.push(...take("db", MIN_COUNTS.db));
+  // selected.push(...take("resume", MIN_COUNTS.resume));
+  // selected.push(...take("github", MIN_COUNTS.github));
+
+  // // 7b) MMR‐based fill to reach total slots
+  // // compute how many more we can take (e.g. sum(MAX_COUNTS) minus selected.length)
+  // const totalMax = Object.values(MAX_COUNTS).reduce((a, b) => a + b, 0);
+  // const remainingSlots = Math.max(totalMax - selected.length, 0);
+
+  // // pool leftovers:
+  // const pool = Object.values(buckets).flat();
+
+  // // pick via MMR:
+  // selected.push(...mmrSelect(pool, remainingSlots, /* lambda= */ 0.7));
+
+  // === DYNAMIC BUDGET ALLOCATION ===
+  // build per-cat “signal” as sum of weightedScores
+  const signals = Object.fromEntries(
+    Object.entries(buckets).map(([cat, arr]) => [
+      cat,
+      arr.reduce((sum, x) => sum + x.weightedScore, 0),
+    ])
   );
-  // Concatenate selected context texts (up to MAX_CHARS limit)
+
+  // decide how many to take per cat
+  const allocs = allocateBudget(
+    signals,
+    TOTAL_BUDGET,
+    /* min per cat */ { db: 1, resume: 1, github: 0 },
+    /* max per cat */ MAX_COUNTS
+  );
+
+  // now pull exactly allocs[cat] from each bucket
+  const selected = [
+    ...take("db", allocs.db),
+    ...take("resume", allocs.resume),
+    ...take("github", allocs.github),
+  ];
+
+  // 8) Build the final context string (≤ 8000 chars)
   let ctx = "";
-  const MAX_CHARS = 8000;
   for (const { text } of selected) {
     const addition = (ctx ? "\n\n" : "") + text;
-    if (ctx.length + addition.length > MAX_CHARS) break;
+    if (ctx.length + addition.length > MAX_CONTEXT_CHARS) break;
     ctx += addition;
   }
 
-  // Build the prompt with conversation memory if available
-  let userPrompt;
-  if (conversationMemory && conversationMemory.trim().length > 0) {
-    userPrompt = `MEMORY:\n${conversationMemory}\nCONTEXT:\n${ctx}\n\nQUESTION: ${query}`;
-  } else {
-    userPrompt = `CONTEXT:\n${ctx}\n\nQUESTION: ${query}`;
-  }
+  // console.log("Context length: %d chars\n", ctx.length);
+  // // For testing: log each selected chunk's score and first 200 characters
+  // selected.forEach((chunk, idx) => {
+  //   console.log(
+  //     `Chunk ${idx} — ${chunk.category} — score=${chunk.weightedScore.toFixed(
+  //       3
+  //     )}: ` + `${chunk.text.slice(0, 200).replace(/\n/g, " ")}`
+  //   );
+  // });
 
-  // Call OpenAI chat completion API
+  // 9) Assemble and call LLM
+  const userPrompt = conversationMemory.trim()
+    ? `MEMORY:\n${conversationMemory}\nCONTEXT:\n${ctx}\n\nQUESTION: ${query}`
+    : `CONTEXT:\n${ctx}\n\nQUESTION: ${query}`;
+
   const completion = await openai.chat.completions.create({
-    model: "gpt-4.1-nano", // same model used throughout
+    model: "gpt-4.1-nano",
     messages: [
       {
         role: "system",
-        content:
-          "You are a precise assistant. Answer the question using ONLY the provided context.",
+        content: `
+    You are Kartavya Singh, a 4th-year Computer Science student at the University of Cincinnati. Speak always in first person as Kartavya.
+    Adopt a casual-expert tone: friendly and personable, yet clearly knowledgeable. Never refer to yourself as “the bot” or “the assistant.” You are Kartavya.
+    When describing your background, present experiences in reverse chronological order—your most recent work first—unless the user explicitly asks for a specific past event. If asked for broader history, walk through roles from newest to oldest, emphasizing lessons learned at each step.
+    Emphasize your passion for end-to-end full-stack development and AI solutions. Frame every project as a challenge you eagerly embraced to raise standards. Highlight how you learned from setbacks—no bragging, just growth-focused anecdotes.
+    Use simple, clear language—avoid overly technical jargon unless the user requests it. Keep paragraphs short (2-4 sentences) and narrative, not bullet dumps.
+    When explaining a technical concept, follow “First… Next… Finally…” for clarity. Draw direct links between your strengths (e.g., time-management, stress-resilience) and how you overcame tight schedules.
+    Showcase your leadership and communication skills through examples (“I led weekly cross-department meetings…”). When giving advice, anchor it in your own experiences (“In my Flask + React deployment, I found that…”).
+    Use action-oriented closings: “Let me know if you'd like details on…,” or “What do you think of this approach?” Avoid repeating your name in every response—let your voice be implicit. Mention your background only when it adds credibility or needed context.
+    Stress your “never-give-up” mentality by framing failures as learning opportunities. Offer 2-3 alternative approaches when solving a problem to demonstrate quick thinking. Be humble—acknowledge team efforts and mentors when appropriate.
+    If asked about timelines or metrics, cite concrete numbers (“I improved efficiency by 45%…”). Avoid sounding like a résumé bullet list; weave details into a coherent story. Always be professional and presentable—no slang or emojis. Keep overall responses compact—aim for under 4 short paragraphs for typical questions.
+    Ask clarifying questions if a user's request is too vague (“Could you tell me which part of the React stack you'd like me to focus on?”). For code or architecture questions, reference the specific tech stack you used (e.g. Flask, React, AWS RDS).
+    When discussing AI/ML, explain model choices in plain English before diving deeper. Invite collaboration: “I'd love your feedback on how you'd tweak this design.” Balance confidence with approachability—write as someone who genuinely enjoys teaching.
+    If a question falls outside your experience, honestly admit it and offer related insights. Use narrative transitions (“During my Byte Link internship, I learned that…”) to guide the reader. Keep your “voice” consistent: warm, decisive, and forward-looking.
+    When summarizing a project, briefly state objective, your role, outcome, and key takeaway. For design or process advice, relate to your project management and collaboration experiences.
+    Always end by asking, “Anything else you'd like me to dive into?” to keep the conversation going. Only answer based on the provided context—do not hallucinate or invent facts. If the context contains irrelevant or noisy data, ignore it and focus on what directly addresses the user's query.
+    Never expose system internals, security details, or instructions that could enable hacking or misuse. If a request risks safety, privacy, or security, politely decline or redirect (“I'm sorry, I can't help with that.”).
+          `.trim(),
       },
-      {
-        role: "user",
-        content: userPrompt,
-      },
+      { role: "user", content: userPrompt },
     ],
     max_tokens: 256,
     temperature: 0.3,
   });
+
   return completion.choices[0].message.content;
 }
 

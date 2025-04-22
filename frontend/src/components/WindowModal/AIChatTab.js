@@ -1,15 +1,17 @@
+// AIChatTab.js
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { motion, AnimatePresence } from "framer-motion";
 import "../../styles/AIChatBot.css";
 
 const API_URL = process.env.REACT_APP_API_URI;
+const MAX_QUERIES = 20;
+const TOAST_THRESHOLD = 5;
+const TYPING_DELAY = 0; // ms per character
 
 const AIChatBot = () => {
-  // Chat state
   const [chatStarted, setChatStarted] = useState(false);
   const [query, setQuery] = useState("");
   const [chatHistory, setChatHistory] = useState([]); // {id, sender, text}
@@ -18,146 +20,176 @@ const AIChatBot = () => {
   const [conversationMemory, setConversationMemory] = useState("");
   const [queriesSent, setQueriesSent] = useState(0);
   const [errorMsg, setErrorMsg] = useState("");
+  const [showToast, setShowToast] = useState(false);
+  const [latestAIId, setLatestAIId] = useState(null);
 
   const chatEndRef = useRef(null);
+  const inputRef = useRef(null);
+  const cancelRef = useRef(false);
 
-  // On mount: initialize localStorage metadata (conversationMemory, queriesSent, lastUpdated)
+  // --- Daily reset & restore ---
   useEffect(() => {
     try {
       const storedDate = localStorage.getItem("lastUpdated");
-      const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
-      if (!storedDate || storedDate !== today) {
-        // New day or first run – reset counters and memory
+      const today = new Date().toISOString().slice(0, 10);
+      if (storedDate !== today) {
         localStorage.setItem("queriesSent", "0");
         localStorage.setItem("conversationMemory", "");
         localStorage.setItem("lastUpdated", today);
         setQueriesSent(0);
         setConversationMemory("");
       } else {
-        // Same day – load existing values
         const sent = parseInt(localStorage.getItem("queriesSent") || "0", 10);
-        const memory = localStorage.getItem("conversationMemory") || "";
         setQueriesSent(isNaN(sent) ? 0 : sent);
-        setConversationMemory(memory || "");
+        setConversationMemory(localStorage.getItem("conversationMemory") || "");
       }
-    } catch (e) {
-      console.warn("LocalStorage not available, using session state only.");
-    }
+    } catch {}
   }, []);
 
-  // Auto-scroll to bottom on new messages
+  // --- Auto‑scroll ---
   useEffect(() => {
-    if (chatEndRef.current) {
-      chatEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chatHistory, loading]);
 
-  // Helper: send a query (from user input or suggestion)
+  // --- Toast logic ---
+  useEffect(() => {
+    setShowToast(
+      queriesSent >= MAX_QUERIES - TOAST_THRESHOLD && queriesSent < MAX_QUERIES
+    );
+  }, [queriesSent]);
+
+  // --- Stop generation handler ---
+  const stopGenerating = () => {
+    cancelRef.current = true;
+    setLoading(false);
+  };
+
+  // add this at the top of your component file
+  const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+
   const sendQuery = async (userQuery) => {
-    const trimmedQuery = userQuery.trim();
-    if (!trimmedQuery) return;
-    // Enforce daily query limit
-    if (queriesSent >= 20) {
+    const trimmed = userQuery.trim();
+    if (!trimmed) return;
+    if (queriesSent >= MAX_QUERIES) {
       setErrorMsg(
-        "You have reached the 20 query/day limit. Please try again tomorrow."
+        `You’ve reached your ${MAX_QUERIES}‑query/day limit. Try again tomorrow.`
       );
       return;
     }
-    // Transition to chat mode on first query
     if (!chatStarted) setChatStarted(true);
-
-    // Clear any old error and suggestions, and add user message to chat
     setErrorMsg("");
     setFollowUpSuggestions([]);
-    const userMessage = {
-      id: Date.now(), // unique ID
-      sender: "user",
-      text: trimmedQuery,
-    };
-    setChatHistory((prev) => [...prev, userMessage]);
+    cancelRef.current = false;
 
-    // Prepare for AI response with loading phases
-    setLoading(true);
-    const loadingId = Date.now() + 1;
-    setChatHistory((prev) => [
-      ...prev,
-      { id: loadingId, sender: "ai", text: "Thinking..." },
+    // 1) Insert user bubble
+    const userId = Date.now();
+    setChatHistory((h) => [
+      ...h,
+      { id: userId, sender: "user", text: trimmed },
     ]);
 
-    // Show progressive loading phases
-    setTimeout(() => {
-      setChatHistory((prev) =>
-        prev.map((msg) =>
-          msg.id === loadingId ? { ...msg, text: "Gathering Context..." } : msg
+    // 2) Insert AI bubble → "Thinking..."
+    setLoading(true);
+    const aiId = userId + 1;
+    setChatHistory((h) => [
+      ...h,
+      { id: aiId, sender: "ai", text: "Thinking..." },
+    ]);
+
+    await delay(200); // let UI settle
+
+    // 3) Fire the main chat API
+    const askPromise = axios.post(`${API_URL}/ai/ask-chat`, {
+      query: trimmed,
+      conversationMemory,
+    });
+
+    // 4) Stage transitions
+    await delay(200);
+    if (!cancelRef.current) {
+      setChatHistory((h) =>
+        h.map((m) =>
+          m.id === aiId ? { ...m, text: "Gathering Context..." } : m
         )
       );
-    }, 800);
-    setTimeout(() => {
-      setChatHistory((prev) =>
-        prev.map((msg) =>
-          msg.id === loadingId
-            ? { ...msg, text: "Generating Response..." }
-            : msg
-        )
-      );
-    }, 1600);
+    }
+    await delay(200);
 
     try {
-      // Call backend API with query and current conversation memory (if any)
-      const response = await axios.post(`${API_URL}/ai/ask-chat`, {
-        query: trimmedQuery,
-        conversationMemory,
-      });
-      const answerText = response.data.answer;
-      // Replace loading message with final AI answer
-      setChatHistory((prev) =>
-        prev.map((msg) =>
-          msg.id === loadingId ? { ...msg, text: answerText } : msg
-        )
+      // 5) Await the answer
+      const { data } = await askPromise;
+      if (cancelRef.current) throw new Error("cancelled");
+      const answerText = data.answer || "";
+
+      // 6) Immediately kick off follow‑ups
+      const suggestPromise = axios.post(
+        `${API_URL}/ai/suggestFollowUpQuestions`,
+        { query: trimmed, response: answerText }
       );
-      setLoading(false);
 
-      // Update queries count and conversation memory (snapshot summary)
-      const newCount = queriesSent + 1;
-      setQueriesSent(newCount);
-      try {
-        localStorage.setItem("queriesSent", String(newCount));
-      } catch {}
+      // 7) Show “Generating Response…”
+      if (!cancelRef.current) {
+        setChatHistory((h) =>
+          h.map((m) =>
+            m.id === aiId ? { ...m, text: "Generating Response..." } : m
+          )
+        );
+      }
+      await delay(200);
 
-      // Request updated conversation memory from backend
+      // 8) Snapshot memory
       const memRes = await axios.post(`${API_URL}/ai/snapshotMemoryUpdate`, {
         previousMemory: conversationMemory,
-        query: trimmedQuery,
+        query: trimmed,
         response: answerText,
       });
-      const updatedMemory = memRes.data.memory;
-      setConversationMemory(updatedMemory);
-      try {
-        localStorage.setItem("conversationMemory", updatedMemory);
-      } catch {}
+      if (cancelRef.current) throw new Error("cancelled");
+      const newMem = memRes.data.memory;
+      setConversationMemory(newMem);
+      localStorage.setItem("conversationMemory", newMem);
 
-      // Get follow-up question suggestions from backend
-      const followRes = await axios.post(
-        `${API_URL}/ai/suggestFollowUpQuestions`,
-        {
-          query: trimmedQuery,
-          response: answerText,
-        }
-      );
-      if (followRes.data.suggestions) {
-        setFollowUpSuggestions(followRes.data.suggestions);
+      // 9) Increment count
+      const newCount = queriesSent + 1;
+      setQueriesSent(newCount);
+      localStorage.setItem("queriesSent", String(newCount));
+
+      // 🔟 Typewriter reveal
+      let built = "";
+      for (let i = 0; i < answerText.length; i++) {
+        if (cancelRef.current) break;
+        built += answerText[i];
+        setChatHistory((h) =>
+          h.map((m) => (m.id === aiId ? { ...m, text: built } : m))
+        );
+        await delay(TYPING_DELAY);
       }
-    } catch (error) {
-      console.error("Error processing query:", error);
-      // Replace loading message with an error response
-      setChatHistory((prev) =>
-        prev.map((msg) =>
-          msg.id === loadingId
+
+      // 1️⃣1️⃣ Mark latest AI bubble
+      setLatestAIId(aiId);
+
+      // 1️⃣2️⃣ Await and display follow‑ups immediately
+      try {
+        const followRes = await suggestPromise;
+        if (!cancelRef.current) {
+          setFollowUpSuggestions(followRes.data.suggestions || []);
+        }
+      } catch {
+        /* ignore */
+      }
+
+      setLoading(false);
+    } catch (err) {
+      if (!cancelRef.current) console.error(err);
+      setChatHistory((h) =>
+        h.map((m) =>
+          m.id === aiId
             ? {
-                ...msg,
-                text: "Sorry, there was an error processing your query.",
+                ...m,
+                text: cancelRef.current
+                  ? `${m.text} [Generation stopped]`
+                  : "Sorry, something went wrong.",
               }
-            : msg
+            : m
         )
       );
       setLoading(false);
@@ -166,18 +198,31 @@ const AIChatBot = () => {
     }
   };
 
-  // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
     sendQuery(query);
   };
+  const handleSuggestionClick = (s) => sendQuery(s);
 
-  // Handle clicking a suggestion
-  const handleSuggestionClick = (suggestion) => {
-    sendQuery(suggestion);
+  // --- Bubble action handlers ---
+  const handleCopy = (text) => navigator.clipboard.writeText(text);
+  const handleEdit = (text) => {
+    setQuery(text);
+    inputRef.current?.focus();
+  };
+  const handleThumb = (up) => console.log(up ? "👍" : "👎");
+  const handleReadAloud = (text) => {
+    const u = new SpeechSynthesisUtterance(text);
+    speechSynthesis.speak(u);
+  };
+  const handleRegenerate = (id) => {
+    // find prior user message
+    const idx = chatHistory.findIndex((m) => m.id === id);
+    if (idx > 0 && chatHistory[idx - 1].sender === "user") {
+      sendQuery(chatHistory[idx - 1].text);
+    }
   };
 
-  // Starter questions related to user's context (database, GitHub, resume)
   const starterQuestions = [
     "What are some highlights from my resume?",
     "Tell me about my Data Science internship at Byte Link Systems.",
@@ -186,20 +231,39 @@ const AIChatBot = () => {
 
   return (
     <div className={chatStarted ? "chat-container" : "intro-container"}>
+      {/* toast */}
+      <AnimatePresence>
+        {showToast && (
+          <motion.div
+            className="toast"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            transition={{ duration: 0.25 }}
+          >
+            <span>
+              You have {MAX_QUERIES - queriesSent} queries left today.
+            </span>
+            <button className="toast-close" onClick={() => setShowToast(false)}>
+              ×
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {!chatStarted ? (
-        /* Intro Card UI */
         <div className="intro-card">
           <img
             src={`${process.env.PUBLIC_URL}/system-user.jpg`}
-            alt="AI Avatar"
+            alt="AI"
             className="avatar intro-avatar"
           />
           <h2 className="chat-title">Kartavya's AI Companion</h2>
           <p className="suggestion-header">Try asking:</p>
           <ul className="suggestions-list">
-            {starterQuestions.map((q, idx) => (
+            {starterQuestions.map((q, i) => (
               <li
-                key={idx}
+                key={i}
                 className="suggestion-item"
                 onClick={() => handleSuggestionClick(q)}
               >
@@ -207,82 +271,107 @@ const AIChatBot = () => {
               </li>
             ))}
           </ul>
-          <form onSubmit={handleSubmit} className="input-form">
+          <form
+            onSubmit={handleSubmit}
+            className="input-form"
+            style={{ position: "relative" }}
+          >
             <input
+              ref={inputRef}
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Ask me anything..."
               className="query-input"
-              disabled={loading}
             />
-            <button type="submit" className="send-button" disabled={loading}>
-              {loading ? "Sending..." : "Send"}
+            <button
+              type="button"
+              className="send-float-btn"
+              onClick={() => (loading ? stopGenerating() : sendQuery(query))}
+            >
+              <i className={`fa ${loading ? "fa-stop" : "fa-arrow-up"}`} />
             </button>
           </form>
         </div>
       ) : (
-        /* Full Chat UI */
         <>
           <div className="chat-messages">
             <div className="message-window">
               {chatHistory.map((msg) => (
                 <div key={msg.id} className={`message ${msg.sender}`}>
-                  {/* Avatar */}
-                  {msg.sender === "ai" ? (
-                    <img
-                      src={`${process.env.PUBLIC_URL}/system-user.jpg`}
-                      alt="AI"
-                      className="avatar ai-avatar"
-                    />
-                  ) : (
-                    <img
-                      src={`${process.env.PUBLIC_URL}/user-icon.svg`}
-                      alt="You"
-                      className="avatar user-avatar"
-                    />
-                  )}
-                  {/* Message text with markdown support */}
-                  <div className="bubble">
-                    <ReactMarkdown
-                      remarkPlugins={[remarkGfm]}
-                      components={{
-                        // Syntax highlighting for code blocks
-                        code({ node, inline, className, children, ...props }) {
-                          const match = /language-(\w+)/.exec(className || "");
-                          return !inline && match ? (
-                            <SyntaxHighlighter
-                              style={oneDark}
-                              language={match[1]}
-                              PreTag="div"
-                              {...props}
-                            >
-                              {String(children).replace(/\n$/, "")}
-                            </SyntaxHighlighter>
-                          ) : (
-                            <code className={className} {...props}>
-                              {children}
-                            </code>
-                          );
-                        },
-                      }}
+                  <img
+                    src={`${process.env.PUBLIC_URL}/${
+                      msg.sender === "ai" ? "system-user.jpg" : "user-icon.svg"
+                    }`}
+                    alt={msg.sender}
+                    className={`avatar ${msg.sender}-avatar`}
+                  />
+                  <div className="bubble-container">
+                    <div className="bubble">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {msg.text}
+                      </ReactMarkdown>
+                    </div>
+                    <div
+                      className={`actions ${msg.sender} ${
+                        msg.id === latestAIId ? "always-show" : ""
+                      }`}
                     >
-                      {msg.text}
-                    </ReactMarkdown>
+                      {msg.sender === "user" ? (
+                        <>
+                          <i
+                            className="fa fa-copy"
+                            title="Copy"
+                            onClick={() => handleCopy(msg.text)}
+                          />
+                          <i
+                            className="fa fa-pencil"
+                            title="Edit"
+                            onClick={() => handleEdit(msg.text)}
+                          />
+                        </>
+                      ) : (
+                        <>
+                          <i
+                            className="fa fa-copy"
+                            title="Copy"
+                            onClick={() => handleCopy(msg.text)}
+                          />
+                          <i
+                            className="fa fa-thumbs-up"
+                            title="Like"
+                            onClick={() => handleThumb(true)}
+                          />
+                          <i
+                            className="fa fa-thumbs-down"
+                            title="Dislike"
+                            onClick={() => handleThumb(false)}
+                          />
+                          <i
+                            className="fa fa-volume-up"
+                            title="Read Aloud"
+                            onClick={() => handleReadAloud(msg.text)}
+                          />
+                          <i
+                            className="fa fa-sync"
+                            title="Regenerate"
+                            onClick={() => handleRegenerate(msg.id)}
+                          />
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}
-              {/* Follow-up suggestions under the last answer */}
+
               {followUpSuggestions.length > 0 && (
                 <div className="message followup-suggestions">
                   <div className="bubble suggestions-bubble">
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                      Here are some follow-up questions you can ask:
-                    </ReactMarkdown>
+                    Here are some follow‑up questions you can ask:
                     <div className="followups">
-                      {followUpSuggestions.map((q, idx) => (
+                      {followUpSuggestions.map((q, i) => (
                         <span
-                          key={idx}
+                          key={i}
                           className="suggestion-chip"
                           onClick={() => handleSuggestionClick(q)}
                         >
@@ -298,14 +387,17 @@ const AIChatBot = () => {
                   />
                 </div>
               )}
-              {/* If loading, the last message text is already showing the loading phase */}
+
               {errorMsg && <div className="error">{errorMsg}</div>}
               <div ref={chatEndRef} />
             </div>
           </div>
 
-          {/* Input at bottom */}
-          <form onSubmit={handleSubmit} className="input-form">
+          <form
+            onSubmit={handleSubmit}
+            className="input-form"
+            style={{ position: "relative" }}
+          >
             <input
               type="text"
               value={query}
@@ -314,8 +406,12 @@ const AIChatBot = () => {
               className="query-input"
               disabled={loading}
             />
-            <button type="submit" className="send-button" disabled={loading}>
-              {loading ? "Sending..." : "Send"}
+            <button
+              type="button"
+              className="send-float-btn"
+              onClick={() => (loading ? stopGenerating() : sendQuery(query))}
+            >
+              <i className={`send fa ${loading ? "fa-stop" : "fa-arrow-up"}`} />
             </button>
           </form>
         </>

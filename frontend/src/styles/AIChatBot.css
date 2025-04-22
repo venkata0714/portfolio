@@ -8,10 +8,36 @@
   background-color: #212529;
   width: 100%;
   height: calc(100vh - 52px - 0.8rem - 40px - 20px);
-  flex: 1;
-  /* padding: 20px; */
   box-sizing: border-box;
-  scrollbar-gutter: stable;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  top: calc(52px + 0.8rem + 20px + 40px);
+  right: 0px;
+  transform: translateX(-50%);
+  background: #343a40;
+  color: #edeeef;
+  border-left: 4px solid #fcbc1d;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 1000;
+  pointer-events: all;
+}
+.toast-close {
+  background: transparent;
+  border: none;
+  color: #edeeef;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
 }
 
 /* Centered card before chat starts */
@@ -24,17 +50,17 @@
   width: auto;
 }
 .intro-card .avatar.intro-avatar {
-  width: 80px;
-  height: 80px;
+  width: 150px;
+  height: 150px;
   border-radius: 50%;
   margin-bottom: 15px;
 }
 .chat-title {
-  color: #fff;
+  color: #edeeef;
   margin-bottom: 10px;
 }
 .suggestion-header {
-  color: #ddd;
+  color: #bbbbbb;
   font-weight: 500;
   margin: 15px 0 5px;
 }
@@ -49,7 +75,7 @@
 }
 .suggestion-item {
   background: #495057;
-  color: #fff;
+  color: #edeeef;
   padding: 8px 12px;
   border-radius: 50px;
   cursor: pointer;
@@ -112,7 +138,8 @@
   height: 30px;
   border-radius: 50%;
   position: absolute;
-  align-self: end;
+  /* align-self: end; */
+  bottom: -15px;
 }
 .intro-avatar.avatar {
   position: relative;
@@ -139,59 +166,72 @@
 }
 .bubble {
   background-color: #343a40;
-  color: #fff;
+  color: #edeeef;
   padding: 10px 15px;
   border-radius: 20px;
   word-break: break-word;
-  line-height: 1.4;
+  line-height: normal;
   user-select: auto !important;
+  margin-top: 15px;
 }
 
 .bubble p {
-  user-select: auto;
+  user-select: text !important;
 }
 .message.user .bubble {
   background-color: #fcbc1d;
   color: #212529;
   font-weight: 500;
-  border-radius: 20px 20px 0 20px;
+  border-radius: 20px 20px 5px 20px;
 }
 .message.ai .bubble {
   background-color: #495057;
-  color: #fff;
-  border-radius: 20px 20px 20px 0;
-  padding-left: 45px;
+  color: #edeeef;
+  border-radius: 20px 20px 20px 5px;
+  /* padding-left: 45px; */
 }
 
 .suggestions-bubble.bubble {
   font-weight: 500;
-  border-radius: 20px 20px 0 20px;
+  border-radius: 20px 20px 5px 20px;
 }
 /* Follow-up suggestions in chat mode */
 .followups {
-  width: 90%;
+  width: 100%;
   text-align: left;
-  margin: 5px 0 15px;
-  padding-left: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+  line-height: normal;
 }
 .suggestion-chip {
-  display: inline-block;
   background: #495057;
-  color: #fff;
+  color: #edeeef;
   padding: 6px 12px;
   border-radius: 15px;
-  margin: 5px 5px 5px 0;
   cursor: pointer;
-  font-size: 0.9rem;
+  transition: background 0.2s;
 }
 .suggestion-chip:hover {
   background: #5a6268;
 }
 
+/* Error */
+.error {
+  color: #f8d7da;
+  background: #721c24;
+  padding: 8px;
+  border-radius: 5px;
+  margin: 5px 0;
+  align-self: center;
+}
+
 /* Input form (used in both intro and chat) */
 
-.intro-card.input-form {
+.intro-card .input-form {
   width: 100%;
+  flex-grow: 1;
 }
 
 .input-form {
@@ -203,10 +243,21 @@
   flex: 1;
   padding: 10px 15px;
   border: none;
-  border-radius: 15px 0 0 15px;
+  border-radius: 15px;
   font-size: 1rem;
   outline: none;
+  background: #edeeef;
+  color: #212529;
 }
+
+.input-form .query-input {
+  padding-right: 50px;
+}
+
+.send {
+  color: #212529;
+}
+
 .send-button {
   padding: 10px 20px;
   border: none;
@@ -220,13 +271,91 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
-.error {
-  color: #f8d7da;
-  background: #721c24;
-  padding: 8px;
-  border-radius: 5px;
-  align-self: center;
-  margin: 5px 0;
+
+.bubble-container {
+  position: relative;
+  display: inline-flex;
+  /* padding-bottom: 30px; */
+}
+.actions {
+  display: none;
+  position: absolute;
+  bottom: -24px;
+  left: 10px;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: #d3d3d3;
+  cursor: pointer;
+}
+/* 1) Always show actions on the latest AI bubble */
+.actions.always-show {
+  display: flex !important;
+}
+
+/* 2) Tweak icon appearance, transitions & staggered delays */
+.actions i {
+  color: #a1a1a1; /* greyish */
+  font-size: 14px; /* cap at 10px */
+  opacity: 0;
+  transform: translateY(5px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: auto;
+}
+.actions i:hover {
+  color: #fcbc1d; /* yellow on hover */
+  transform: translateY(0);
+}
+/* Show icons on hover or for the latest AI bubble */
+.bubble-container:hover .actions,
+.bubble-container:hover .actions i,
+.actions.always-show i {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* Staggered delays */
+.actions i:nth-child(1) {
+  transition-delay: 0.05s;
+}
+.actions i:nth-child(2) {
+  transition-delay: 0.1s;
+}
+.actions i:nth-child(3) {
+  transition-delay: 0.15s;
+}
+.actions i:nth-child(4) {
+  transition-delay: 0.2s;
+}
+.actions i:nth-child(5) {
+  transition-delay: 0.25s;
+}
+
+/* 3) Floating send/stop button */
+.send-float-btn {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  border-radius: 100px;
+  transform: translateY(-50%);
+  background: #fcbc1d;
+  border: none;
+  color: #212529;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  pointer-events: auto;
+  z-index: 10;
+}
+
+.send-float-btn:hover {
+  background: #e0a800;
+}
+
+.send-float-btn i {
+  color: #212529;
 }
 
 @media (max-width: 768px) {
@@ -241,5 +370,45 @@
   }
   .send-button {
     font-size: 0.9rem;
+  }
+  .toast {
+    padding: 8px 12px;
+  }
+  .message.user {
+    max-width: 80%;
+  }
+  .message.ai {
+    max-width: 80%;
+  }
+  .message.followup-suggestions {
+    max-width: 80%;
+  }
+  .bubble {
+    font-size: 0.75rem;
+  }
+  .intro-card {
+    width: 95%;
+  }
+  .intro-card .avatar.intro-avatar {
+    width: 120px;
+    height: 120px;
+  }
+  .intro-card .chat-title {
+    font-size: 1.2rem;
+  }
+  .suggestion-item {
+    padding: 6px 10px;
+    font-size: 0.9rem;
+  }
+  .suggestion-header {
+    font-size: 0.9rem;
+  }
+  .suggestion-chip {
+    padding: 4px 8px;
+    font-size: 0.9rem;
+  }
+  .error {
+    font-size: 0.9rem;
+    padding: 6px;
   }
 }
