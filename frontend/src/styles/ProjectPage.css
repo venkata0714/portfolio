@@ -9,8 +9,8 @@
   justify-content: flex-start;
   /* overflow: auto; Ensure the page scrolls */
   /* height: auto; */
-  min-height: calc(100vh - 52px);
-  /* max-height: calc(100vh - 52px); */
+  min-height: calc(100dvh - 52px);
+  /* max-height: calc(100dvh - 52px); */
   background: transparent;
   scroll-behavior: smooth;
   scrollbar-width: none;

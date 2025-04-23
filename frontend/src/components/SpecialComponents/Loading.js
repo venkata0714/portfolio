@@ -155,7 +155,8 @@ const Loading = ({ isBatterySavingOn, setIsBatterySavingOn, onComplete }) => {
         isTouchDevice,
         cpuTestDuration: cpuTestDuration.toFixed(2),
       });
-      setIsBatterySavingOn(isSavingMode);
+      //setIsBatterySavingOn(isSavingMode);
+      setIsBatterySavingOn(false);
     };
 
     checkPerformanceAndCapabilities();

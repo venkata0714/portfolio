@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import "../../styles/Links.css";
 import { animated } from "@react-spring/web";
 
-const Links = ({ isBatterySavingOn }) => {
+const Links = ({ isBatterySavingOn, isWindowModalVisible }) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
 
@@ -100,6 +100,7 @@ const Links = ({ isBatterySavingOn }) => {
       <motion.div
         className={`link-btn ${isOpen ? "active" : ""}`}
         onClick={() => setIsOpen((prev) => !prev)}
+        style={isWindowModalVisible ? { display: "none" } : { display: "flex" }}
         title="Links"
         initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
         drag

@@ -39,7 +39,7 @@ export const slideIn = (direction, delay) => {
   return {
     hidden: {
       x: direction === "left" ? "-100vw" : direction === "right" ? "100vw" : 0,
-      y: direction === "up" ? "-100vh" : direction === "down" ? "100vh" : 0,
+      y: direction === "up" ? "-100dvh" : direction === "down" ? "100dvh" : 0,
     },
     show: {
       x: 0,

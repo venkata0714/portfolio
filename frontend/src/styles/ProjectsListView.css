@@ -17,7 +17,7 @@
   align-items: center;
   justify-content: flex-start;
   width: 100%;
-  /* height: calc(100vh - 52px - <titleHeight> ); -- removed fixed height */
+  /* height: calc(100dvh - 52px - <titleHeight> ); -- removed fixed height */
   overflow: visible; /* allow content to extend naturally */
   scrollbar-width: none; /* hide scrollbar (no overflow anyway) */
   margin-top: 20px;

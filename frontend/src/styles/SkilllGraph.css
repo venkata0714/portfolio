@@ -24,8 +24,8 @@
 .skill-image:hover {
   box-shadow: 0px 6px 30px rgba(0, 0, 0, 0.7),
     0px 0px 10px rgba(108, 188, 252, 0.7); /* Stronger glow on hover */
-    border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border for the glass effect */
-    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.5),
+  border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border for the glass effect */
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.5),
     0px 0px 7.5px rgba(108, 188, 252, 0.4);
 }
 
@@ -96,17 +96,17 @@
   }
 
   .skill-graph {
-    max-height: calc((40vh - 52px) / 2);
+    max-height: calc((40dvh - 52px) / 2);
     max-width: 90%;
   }
 
   .skill-image {
     box-shadow: 0px 6px 30px rgba(0, 0, 0, 0.7),
-    0px 0px 10px rgba(108, 188, 252, 0.7); /* Stronger glow on hover */
+      0px 0px 10px rgba(108, 188, 252, 0.7); /* Stronger glow on hover */
     border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border for the glass effect */
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.5),
-    0px 0px 7.5px rgba(108, 188, 252, 0.4);
-    max-height: calc((40vh - 52px) / 2);
+      0px 0px 7.5px rgba(108, 188, 252, 0.4);
+    max-height: calc((40dvh - 52px) / 2);
     max-width: 90%;
   }
 }

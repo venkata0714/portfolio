@@ -204,7 +204,7 @@ function HomePage({ isBatterySavingOn, scrolled }) {
                 <animated.img
                   src={`${process.env.PUBLIC_URL}/Kartavya.jpg`}
                   alt="Profile"
-                  className={`profile-picture img-responsive img-circle${frames[frameIndex]}`}
+                  className={`profile-picture img-circle${frames[frameIndex]}`}
                   draggable="false"
                   style={{
                     boxShadow,
@@ -214,6 +214,8 @@ function HomePage({ isBatterySavingOn, scrolled }) {
                       ? `translate3d(${mousePosition.x}px, ${mousePosition.y}px, 0) scale3d(1.03, 1.03, 1.03)`
                       : "translate3d(0px, 0px, 0) scale3d(1, 1, 1)",
                     transition: "transform 0.1s ease-out",
+                    height: "250px !important",
+                    width: "250px !important",
                   }}
                   onMouseMove={handleMouseMove}
                   onMouseEnter={handleMouseEnter}

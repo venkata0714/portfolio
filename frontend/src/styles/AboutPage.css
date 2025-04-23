@@ -6,7 +6,7 @@
   scroll-snap-type: y mandatory;
   align-items: center;
   justify-content: center;
-  height: calc(100vh - 52px);
+  height: calc(100dvh - 52px);
   background: transparent; /* Allow the beams to show through */
   font-family: "Montserrat", sans-serif;
   color: #212529;

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { animated } from "@react-spring/web";
 import { AppLoad } from "./services/variants";
 import "./App.css";
 import Links from "./components/SpecialComponents/Links";
@@ -22,6 +23,16 @@ function App({ isBatterySavingOn, setIsBatterySavingOn }) {
   const [isMinimized, setIsMinimized] = useState(false); // Track if modal is minimized
   const [lastActiveIndex, setLastActiveIndex] = useState(0); // Track active tab index
   const [isWindowModalVisible, setIsWindowModalVisible] = useState(false);
+  const [chatHistory, setChatHistory] = useState([]); // {id, sender, text}
+  const [showChatTip, setShowChatTip] = useState(() => {
+    // hide forever if user previously closed
+    return localStorage.getItem("hideAIChatTip") !== "true";
+  });
+
+  const dismissChatTip = () => {
+    setShowChatTip(false);
+    localStorage.setItem("hideAIChatTip", "true");
+  };
 
   // useEffect(() => {
   //   const cleanupInterval = setInterval(() => {
@@ -187,14 +198,62 @@ function App({ isBatterySavingOn, setIsBatterySavingOn }) {
           isWindowModalVisible={isWindowModalVisible}
         />
         <ContactPage isBatterySavingOn={isBatterySavingOn} addTab={addTab} />
-        <Links isBatterySavingOn={isBatterySavingOn} />
-        <a
+        <Links
+          isBatterySavingOn={isBatterySavingOn}
+          isWindowModalVisible={isWindowModalVisible}
+        />
+        {/* <a
           className={`scroll-to-top ${scrolled ? "show" : ""}`}
           href="#page-top"
           onClick={scrollToTop}
         >
           <i className="fa fa-angle-up"></i>
-        </a>
+        </a> */}
+        {!isWindowModalVisible && (
+          <div className="ai-chat-container">
+            {/* Tooltip
+            {showChatTip && (
+              <div className="ai-chat-tooltip">
+                <span
+                  className="close-btn"
+                  onClick={dismissChatTip}
+                  aria-label="Close"
+                >
+                  x
+                </span>
+                Chat with my AI companion to explore my projects and
+                experiences.
+              </div>
+            )} */}
+            <motion.div
+              className={`ai-chat-btn`}
+              onClick={() => {
+                addTab("AIChatTab", { title: "Kartavya's AI Chat" });
+              }}
+              title="Links"
+              initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
+              drag
+              dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+              dragElastic={0.3}
+              dragTransition={{
+                bounceStiffness: 250,
+                bounceDamping: 15,
+              }}
+              whileInView={isBatterySavingOn ? {} : { opacity: 1, scale: 1 }}
+              whileHover={isBatterySavingOn ? {} : { scale: 1.1 }}
+              whileTap={isBatterySavingOn ? {} : { scale: 0.9 }}
+              transition={isBatterySavingOn ? {} : { delay: 0, type: "spring" }}
+            >
+              <animated.img
+                src={require("./assets/img/icons/aichat.png")}
+                alt="AI Chat Bot"
+                className="icon-img"
+                draggable="false"
+                loading="eager"
+              />
+            </motion.div>
+          </div>
+        )}
         <WindowModal
           tabs={tabs}
           addTab={addTab}
@@ -211,6 +270,8 @@ function App({ isBatterySavingOn, setIsBatterySavingOn }) {
           setLoggedIn={setLoggedIn}
           isWindowModalVisible={isWindowModalVisible}
           setIsWindowModalVisible={setIsWindowModalVisible}
+          chatHistory={chatHistory}
+          setChatHistory={setChatHistory}
         />
       </motion.div>
     </AnimatePresence>

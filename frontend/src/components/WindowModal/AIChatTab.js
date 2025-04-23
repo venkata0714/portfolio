@@ -1,8 +1,11 @@
 // AIChatTab.js
 import React, { useState, useEffect, useRef } from "react";
+import { useSpeechInput } from "../../hooks/useSpeechInput";
 import axios from "axios";
+import { useSpring, animated } from "@react-spring/web";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { zoomIn } from "../../services/variants";
 import { motion, AnimatePresence } from "framer-motion";
 import "../../styles/AIChatBot.css";
 
@@ -13,7 +16,16 @@ const TYPING_DELAY = 0; // ms per character
 
 const AIChatBot = () => {
   const [chatStarted, setChatStarted] = useState(false);
+  const [hasSavedChat, setHasSavedChat] = useState(false);
   const [query, setQuery] = useState("");
+  const [interimQuery, setInterimQuery] = useState("");
+  const { listening, start, stop } = useSpeechInput({
+    onResult: (transcript, isFinal) => {
+      setQuery(transcript);
+      if (!isFinal) setInterimQuery(transcript);
+      else setInterimQuery("");
+    },
+  });
   const [chatHistory, setChatHistory] = useState([]); // {id, sender, text}
   const [followUpSuggestions, setFollowUpSuggestions] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -35,16 +47,92 @@ const AIChatBot = () => {
       if (storedDate !== today) {
         localStorage.setItem("queriesSent", "0");
         localStorage.setItem("conversationMemory", "");
+        localStorage.removeItem("conversationHistory");
         localStorage.setItem("lastUpdated", today);
+        setChatStarted(false);
+        setChatHistory([]);
         setQueriesSent(0);
         setConversationMemory("");
       } else {
         const sent = parseInt(localStorage.getItem("queriesSent") || "0", 10);
         setQueriesSent(isNaN(sent) ? 0 : sent);
         setConversationMemory(localStorage.getItem("conversationMemory") || "");
+        const saved = localStorage.getItem("conversationHistory");
+        setHasSavedChat(!!(saved && JSON.parse(saved).length));
       }
     } catch {}
   }, []);
+
+  useEffect(() => {
+    if (chatHistory.length > 0) {
+      localStorage.setItem("conversationHistory", JSON.stringify(chatHistory));
+    } else {
+      // localStorage.removeItem("conversationHistory");
+    }
+  }, [chatHistory]);
+
+  // --- Load reactive avatar ---
+  const [clicked, setClicked] = useState(false);
+  const [isCooldown, setIsCooldown] = useState(false);
+  const clickCount = useRef(0); // Use useRef to keep track of click count across renders
+  const [key, setKey] = useState(0); // State to reset the animation on click
+  const [frameIndex, setFrameIndex] = useState(0); // Track current frame index
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isHovering, setIsHovering] = useState(false);
+  const frames = ["", " frame1", " frame2", " frame3"]; // Define frame styles
+  const handleProfileClick = () => {
+    setFrameIndex((prevIndex) => (prevIndex + 1) % frames.length); // Cycle frames
+  };
+
+  const handleMouseMove = (event) => {
+    const { clientX, clientY } = event;
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = (clientX - (rect.left + rect.width / 2)) / 10;
+    const y = (clientY - (rect.top + rect.height / 2)) / 10;
+    setMousePosition({ x, y });
+  };
+
+  const handleMouseEnter = () => setIsHovering(true);
+  const handleMouseLeave = () => {
+    setIsHovering(false);
+    setMousePosition({ x: 0, y: 0 });
+  };
+
+  const { boxShadow } = useSpring({
+    boxShadow: clicked
+      ? "0px 15px 30px rgba(0, 0, 0, 0.3)"
+      : "0px 8px 15px rgba(0, 0, 0, 0.1)",
+    config: { duration: 100, tension: 300, friction: 10 },
+    onRest: () => setClicked(false),
+  });
+
+  const handleClick = () => {
+    if (isCooldown) return; // Prevent clicks during cooldown
+
+    setClicked(true); // Trigger animation
+    clickCount.current += 1;
+
+    if (clickCount.current >= 5) {
+      setIsCooldown(true);
+      clickCount.current = 0; // Reset click count after reaching the limit
+
+      // End cooldown after 2 seconds
+      setTimeout(() => {
+        setIsCooldown(false);
+      }, 1000);
+    }
+  };
+
+  // Effect to reset click count if no further clicks are registered within 5 seconds
+  useEffect(() => {
+    if (clickCount.current > 0 && !isCooldown) {
+      const resetTimeout = setTimeout(() => {
+        clickCount.current = 0;
+      }, 5000);
+
+      return () => clearTimeout(resetTimeout); // Clean up timeout
+    }
+  }, [isCooldown]);
 
   // --- Auto‑scroll ---
   useEffect(() => {
@@ -224,9 +312,9 @@ const AIChatBot = () => {
   };
 
   const starterQuestions = [
-    "What are some highlights from my resume?",
-    "Tell me about my Data Science internship at Byte Link Systems.",
-    "What projects have I worked on recently?",
+    "What skills have your developed from your experiences?",
+    "Tell me about your full stack development experiences and projects journey.",
+    "What are your top skills, what is your proficiency and how did you acquire them?",
   ];
 
   return (
@@ -237,7 +325,7 @@ const AIChatBot = () => {
           <motion.div
             className="toast"
             initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
+            whileInView={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 50 }}
             transition={{ duration: 0.25 }}
           >
@@ -251,31 +339,183 @@ const AIChatBot = () => {
         )}
       </AnimatePresence>
 
+      {chatStarted && (
+        <div className="chat-header">
+          <i
+            className="fa fa-sync"
+            title="Restart Chat"
+            onClick={() => {
+              setChatStarted(false);
+              setChatHistory([]);
+              setConversationMemory("");
+              localStorage.removeItem("conversationHistory");
+              localStorage.removeItem("conversationMemory");
+            }}
+          />
+          <h2 className="chat-title proficient">Kartavya's AI Companion</h2>
+        </div>
+      )}
+
       {!chatStarted ? (
         <div className="intro-card">
-          <img
+          {/* If we have a saved chat, ask the user what they want: */}
+          {hasSavedChat ? (
+            <motion.div
+              className="continue-prompt"
+              initial={{ opacity: 0, scale: 0 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+            >
+              <button
+                className="btn-continue"
+                onClick={() => {
+                  // load the saved chat
+                  const saved = JSON.parse(
+                    localStorage.getItem("conversationHistory") || "[]"
+                  );
+                  setChatHistory(saved);
+                  setConversationMemory(
+                    localStorage.getItem("conversationMemory") || ""
+                  );
+                  setQueriesSent(
+                    parseInt(localStorage.getItem("queriesSent") || "0", 10)
+                  );
+                  setChatStarted(true);
+                }}
+              >
+                Continue from previous chat{" "}
+                <i className="fa fa-arrow-right" aria-hidden="true" />
+              </button>
+            </motion.div>
+          ) : null}
+          <motion.div
+            className={`profile-picture-container`}
+            variants={zoomIn(0)}
+            style={{
+              width: "fit-content",
+              height: "auto",
+              justifySelf: "center",
+              display: "flex",
+              marginBottom: "20px",
+            }}
+            initial="hidden"
+            drag
+            dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+            dragElastic={0.3}
+            dragTransition={{
+              bounceStiffness: 250,
+              bounceDamping: 15,
+            }}
+            whileTap={{ scale: 1.1 }}
+            whileInView={"show"}
+          >
+            <animated.img
+              src={`${process.env.PUBLIC_URL}/system-user.jpg`}
+              alt="Profile"
+              className={`profile-picture img-responsive img-circle${frames[frameIndex]}`}
+              draggable="false"
+              style={{
+                boxShadow,
+                transform: isHovering
+                  ? `translate3d(${mousePosition.x}px, ${mousePosition.y}px, 0) scale3d(1.03, 1.03, 1.03)`
+                  : "translate3d(0px, 0px, 0) scale3d(1, 1, 1)",
+                transition: "transform 0.1s ease-out",
+                border: "4px solid #edeeef",
+                height: "200px",
+                width: "200px",
+                filter:
+                  "grayscale(0%) brightness(0.9) contrast(1) saturate(0.6) hue-rotate(-30deg)",
+              }}
+              onHover={{ border: "4px solid #fcbc1d !important" }}
+              onMouseMove={handleMouseMove}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+              onClick={() => {
+                handleClick();
+                handleProfileClick();
+              }}
+            />
+          </motion.div>
+          {/* <img
             src={`${process.env.PUBLIC_URL}/system-user.jpg`}
             alt="AI"
             className="avatar intro-avatar"
-          />
-          <h2 className="chat-title">Kartavya's AI Companion</h2>
-          <p className="suggestion-header">Try asking:</p>
-          <ul className="suggestions-list">
-            {starterQuestions.map((q, i) => (
-              <li
-                key={i}
-                className="suggestion-item"
-                onClick={() => handleSuggestionClick(q)}
-              >
-                {q}
-              </li>
-            ))}
-          </ul>
-          <form
+          /> */}
+          <motion.h2
+            initial={{ opacity: 0, scale: 0 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.3 }}
+            className="chat-title proficient"
+          >
+            Kartavya's AI Companion
+          </motion.h2>
+          <motion.h4
+            initial={{ opacity: 0, scale: 0 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.5 }}
+            className="chat-subtitle"
+          >
+            Meet my AI Companion: He knows all about my journey and loves to
+            share.
+          </motion.h4>
+          <motion.p
+            initial={{ opacity: 0, scale: 0 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.7 }}
+            className="suggestion-header"
+          >
+            Try asking:
+          </motion.p>
+          <AnimatePresence>
+            <ul className="suggestions-list">
+              {starterQuestions.map((q, i) => (
+                <motion.li
+                  initial={{ opacity: 0, scale: 0 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.8 + i * 0.1 }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  key={i}
+                  className="suggestion-item"
+                  onClick={() => {
+                    handleSuggestionClick(q);
+                    setChatStarted(true);
+                    localStorage.setItem(
+                      "conversationHistory",
+                      JSON.stringify([])
+                    );
+                    localStorage.setItem("conversationMemory", "");
+                  }}
+                >
+                  {q}
+                </motion.li>
+              ))}
+            </ul>
+          </AnimatePresence>
+          <motion.form
+            initial={{ opacity: 0, scale: 0 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 1.2 }}
             onSubmit={handleSubmit}
-            className="input-form"
+            className="input-form glass"
             style={{ position: "relative" }}
           >
+            <motion.div
+              className="mic-btn-container"
+              whileInView={listening ? { scale: 1.2 } : { scale: 1 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            >
+              <button
+                type="button"
+                className={`mic-btn glass ${listening ? "active" : ""}`}
+                onMouseDown={start}
+                onMouseUp={stop}
+                onTouchStart={start}
+                onTouchEnd={stop}
+                aria-label={listening ? "Release to stop" : "Hold to talk"}
+              >
+                <i className={`fa fa-microphone${listening ? "" : "-slash"}`} />
+              </button>
+            </motion.div>
             <input
               ref={inputRef}
               type="text"
@@ -291,7 +531,7 @@ const AIChatBot = () => {
             >
               <i className={`fa ${loading ? "fa-stop" : "fa-arrow-up"}`} />
             </button>
-          </form>
+          </motion.form>
         </div>
       ) : (
         <>
@@ -398,9 +638,27 @@ const AIChatBot = () => {
             className="input-form"
             style={{ position: "relative" }}
           >
+            <motion.div
+              className="mic-btn-container"
+              whileInView={listening ? { scale: 1.2 } : { scale: 1 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            >
+              <button
+                type="button"
+                className={`mic-btn ${listening ? "active" : ""}`}
+                onMouseDown={start}
+                onMouseUp={stop}
+                onTouchStart={start}
+                onTouchEnd={stop}
+                aria-label={listening ? "Release to stop" : "Hold to talk"}
+              >
+                <i className={`fa fa-microphone${listening ? "" : "-slash"}`} />
+              </button>
+            </motion.div>
             <input
+              ref={inputRef}
               type="text"
-              value={query}
+              value={listening ? interimQuery : query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Ask another question..."
               className="query-input"

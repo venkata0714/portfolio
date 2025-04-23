@@ -28,6 +28,8 @@ const WindowModal = ({
   setLoggedIn,
   isWindowModalVisible,
   setIsWindowModalVisible,
+  chatHistory,
+  setChatHistory,
 }) => {
   const modalRef = useRef(null);
   const [totalTabs, setTotalTabs] = useState(0);
@@ -74,10 +76,10 @@ const WindowModal = ({
       if (modalElement) {
         if (scrolled) {
           modalElement.style.top = "52px";
-          modalElement.style.height = "calc(100vh - 52px)";
+          modalElement.style.height = "calc(100dvh - 52px)";
         } else {
           modalElement.style.top = "65px";
-          modalElement.style.height = "calc(100vh - 65px)";
+          modalElement.style.height = "calc(100dvh - 65px)";
         }
       }
     }
@@ -129,7 +131,12 @@ const WindowModal = ({
       case "FeedTab":
         return <FeedTab isBatterySavingOn={isBatterySavingOn} />;
       case "AIChatTab":
-        return <AIChatTab />;
+        return (
+          <AIChatTab
+            chatHistory={chatHistory}
+            setChatHistory={setChatHistory}
+          />
+        );
       default:
         return null;
     }

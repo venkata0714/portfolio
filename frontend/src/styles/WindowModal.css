@@ -4,7 +4,7 @@
   top: 52px;
   left: 0;
   width: calc(100%);
-  height: calc(100vh - 52px);
+  height: calc(100dvh - 52px);
   margin: 0 auto;
   background-color: #212529;
   border-radius: 10px;

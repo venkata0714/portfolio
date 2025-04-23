@@ -249,7 +249,7 @@ export const SpotlightBG = () => {
         top: 0,
         left: 0,
         width: "100%",
-        height: "100vh",
+        height: "100dvh",
         zIndex: 0,
         transform: "translateZ(0)", // Hardware acceleration hint
         willChange: "transform",

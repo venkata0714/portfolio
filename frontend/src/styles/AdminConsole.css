@@ -59,7 +59,7 @@
 
 .admin-dashboard {
   width: min(95%, 1140px);
-  height: calc(100vh - 250px);
+  height: calc(100dvh - 250px);
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(2, 1fr); /* exactly 2 elements per row */

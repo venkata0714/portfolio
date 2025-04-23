@@ -59,10 +59,10 @@ function ImagesCarousel({ data, title, isBatterySavingOn }) {
                 alignItems: "center",
                 width: `100%`,
                 minHeight: `${
-                  screenWidth <= 768 ? "calc(20vh)" : "calc(30vh)"
+                  screenWidth <= 768 ? "calc(20dvh)" : "calc(30dvh)"
                 }`,
                 maxHeight: `${
-                  screenWidth <= 768 ? "calc(35vh)" : "calc(40vh)"
+                  screenWidth <= 768 ? "calc(35dvh)" : "calc(40dvh)"
                 }`,
                 margin: "0 auto",
                 transition: "background-color 0.3s ease-in-out",
