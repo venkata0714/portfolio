@@ -4,7 +4,7 @@ import { useSpeechInput } from "../../hooks/useSpeechInput";
 import axios from "axios";
 import { useSpring, animated } from "@react-spring/web";
 import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
+// import remarkGfm from "remark-gfm";
 import { zoomIn } from "../../services/variants";
 import { motion } from "framer-motion";
 import "../../styles/AIChatBot.css";
@@ -594,7 +594,7 @@ const AIChatBot = ({ scrolled }) => {
                   />
                   <div className="bubble-container">
                     <div className="bubble">
-                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      <ReactMarkdown>
                         {msg.text}
                       </ReactMarkdown>
                     </div>
