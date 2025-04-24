@@ -101,6 +101,7 @@ function App({ isBatterySavingOn, setIsBatterySavingOn }) {
         };
 
         const result = [...updatedTabs, newTab];
+        setLastActiveIndex(result.length - 1); // Set the last active index to the new tab
         // console.log("Tabs after addition (3 tabs max):", result);
         return result;
       }
@@ -120,6 +121,7 @@ function App({ isBatterySavingOn, setIsBatterySavingOn }) {
           `Tab ${prev.length + 1}`,
       };
       const result = [...prev, newTab];
+      setLastActiveIndex(result.length - 1); // Set the last active index to the new tab
       // console.log("Tabs after addition:", result);
       return result;
     });

@@ -135,15 +135,20 @@
   margin-bottom: 20px;
 }
 .suggestion-item {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
   background: #495057;
   font-family: "Montserrat", sans-serif;
-
   color: #edeeef;
   padding: 8px 12px;
   border-radius: 50px;
   cursor: pointer;
   margin: 5px 0;
   width: fit-content;
+  transition: all 0.3s ease-in-out;
 }
 .suggestion-item:hover {
   background: #5a6268;
@@ -303,12 +308,14 @@
 }
 
 .input-form {
-  width: min(1140px, 75%);
+  width: min(1140px, 95%);
   min-height: 7vh;
   background: #343a40;
   display: flex;
   border-radius: 20px;
   margin: 10px auto;
+  /* border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); */
 }
 /* Change the placeholder color for your query input */
 .input-form .query-input::placeholder {
@@ -316,19 +323,19 @@
   opacity: 1;
 }
 .input-form .query-input::-webkit-input-placeholder {
-  color: #bbbbbb;
+  color: #edeeef;
   opacity: 1;
 }
 .input-form .query-input::-moz-placeholder {
-  color: #bbbbbb;
+  color: #edeeef;
   opacity: 1;
 }
 .input-form .query-input:-ms-input-placeholder {
-  color: #bbbbbb;
+  color: #edeeed;
   opacity: 1;
 }
 .input-form .query-input:-moz-placeholder {
-  color: #bbbbbb;
+  color: #edeeef;
   opacity: 1;
 }
 .query-input {
@@ -469,7 +476,7 @@
 
 .send-float-btn:hover {
   transform: scale(1.05) translateY(-50%);
-  transition: all 0.2s ease-in-out;
+  transition: all 0.3s ease-in-out;
 }
 
 .send-float-btn i {

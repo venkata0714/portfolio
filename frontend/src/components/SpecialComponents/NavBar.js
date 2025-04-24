@@ -379,7 +379,7 @@ const NavBar = ({ isBatterySavingOn, addTab }) => {
                   setMenuOpen(false);
                 }}
               >
-                <span className="navbar-text">FEED</span>
+                <span className="navbar-text feed-nav">FEED</span>
               </a>
             </motion.li>
             <motion.li
@@ -406,7 +406,7 @@ const NavBar = ({ isBatterySavingOn, addTab }) => {
             >
               <a
                 href="#feed"
-                className={"navbar-link"}
+                className={"navbar-link ai-chat-nav"}
                 onClick={(e) => {
                   e.preventDefault();
                   addTab("AIChatTab", { title: "Kartavya's AI Chat" });

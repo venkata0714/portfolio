@@ -1,12 +1,12 @@
 // AIChatTab.js
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
 import { useSpeechInput } from "../../hooks/useSpeechInput";
 import axios from "axios";
 import { useSpring, animated } from "@react-spring/web";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { zoomIn } from "../../services/variants";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import "../../styles/AIChatBot.css";
 
 const API_URL = process.env.REACT_APP_API_URI;
@@ -14,7 +14,8 @@ const MAX_QUERIES = 20;
 const TOAST_THRESHOLD = 5;
 const TYPING_DELAY = 0; // ms per character
 
-const AIChatBot = () => {
+const AIChatBot = ({ scrolled }) => {
+  const [containerHeight, setContainerHeight] = useState("auto");
   const [chatStarted, setChatStarted] = useState(false);
   const [hasSavedChat, setHasSavedChat] = useState(false);
   const [query, setQuery] = useState("");
@@ -70,6 +71,53 @@ const AIChatBot = () => {
       // localStorage.removeItem("conversationHistory");
     }
   }, [chatHistory]);
+
+  useLayoutEffect(() => {
+    const updateHeight = () => {
+      // grab each element by its class]
+      let navH = document.querySelector(".navbar")?.offsetHeight ?? 0;
+      if (!scrolled) {
+        navH += 13;
+      }
+      const headH = document.querySelector(".header-bar")?.offsetHeight ?? 0;
+      const titleH = document.querySelector(".title-bar")?.offsetHeight ?? 0;
+      const buffer = 3; // extra gap
+
+      // raw remaining space
+      let remaining = window.innerHeight - (navH + headH + titleH + buffer);
+
+      // clamp so we never go below 200px
+      if (remaining < 200) remaining = 200;
+
+      setContainerHeight(`${remaining}px`);
+    };
+
+    // measure once
+    updateHeight();
+    // re-measure on resize
+    window.addEventListener("resize", updateHeight);
+    return () => window.removeEventListener("resize", updateHeight);
+  }, [scrolled]);
+
+  // useEffect(() => {
+  //   const updateScale = () => {
+  //     const chatContainer = document.querySelector(".chat-container");
+  //     const introContainer = document.querySelector(".intro-container");
+  //     if (!chatContainer || !introContainer) return;
+  //     const screenHeight = window.innerHeight;
+  //     const screenWidth = window.innerWidth;
+  //     let scaleValue = 1;
+  //     if (screenHeight < 700 && screenWidth > 576) {
+  //       scaleValue = screenHeight / 700;
+  //     }
+  //     chatContainer.style.zoom = `${scaleValue}`;
+  //     introContainer.style.zoom = `${scaleValue}`;
+  //   };
+
+  //   updateScale();
+  //   window.addEventListener("resize", updateScale);
+  //   return () => window.removeEventListener("resize", updateScale);
+  // }, []);
 
   // --- Load reactive avatar ---
   const [clicked, setClicked] = useState(false);
@@ -318,26 +366,25 @@ const AIChatBot = () => {
   ];
 
   return (
-    <div className={chatStarted ? "chat-container" : "intro-container"}>
+    <div
+      className={chatStarted ? "chat-container" : "intro-container"}
+      style={{ height: containerHeight }}
+    >
       {/* toast */}
-      <AnimatePresence>
-        {showToast && (
-          <motion.div
-            className="toast"
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 50 }}
-            transition={{ duration: 0.25 }}
-          >
-            <span>
-              You have {MAX_QUERIES - queriesSent} queries left today.
-            </span>
-            <button className="toast-close" onClick={() => setShowToast(false)}>
-              ×
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {showToast && (
+        <motion.div
+          className="toast"
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 50 }}
+          transition={{ duration: 0.25 }}
+        >
+          <span>You have {MAX_QUERIES - queriesSent} queries left today.</span>
+          <button className="toast-close" onClick={() => setShowToast(false)}>
+            ×
+          </button>
+        </motion.div>
+      )}
 
       {chatStarted && (
         <div className="chat-header">
@@ -362,8 +409,9 @@ const AIChatBot = () => {
           {hasSavedChat ? (
             <motion.div
               className="continue-prompt"
-              initial={{ opacity: 0, scale: 0 }}
+              initial={{ opacity: 0, scale: 1 }}
               whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.4, duration: 0.3, ease: "easeInOut" }}
             >
               <button
                 className="btn-continue"
@@ -425,7 +473,7 @@ const AIChatBot = () => {
                 filter:
                   "grayscale(0%) brightness(0.9) contrast(1) saturate(0.6) hue-rotate(-30deg)",
               }}
-              onHover={{ border: "4px solid #fcbc1d !important" }}
+              // onHover={{ border: "4px solid #fcbc1d !important" }}
               onMouseMove={handleMouseMove}
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
@@ -441,60 +489,58 @@ const AIChatBot = () => {
             className="avatar intro-avatar"
           /> */}
           <motion.h2
-            initial={{ opacity: 0, scale: 0 }}
+            initial={{ opacity: 0, scale: 1 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.3 }}
+            transition={{ delay: 0.5 }}
             className="chat-title proficient"
           >
             Kartavya's AI Companion
           </motion.h2>
           <motion.h4
-            initial={{ opacity: 0, scale: 0 }}
+            initial={{ opacity: 0, scale: 1 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.5 }}
+            transition={{ delay: 0.6 }}
             className="chat-subtitle"
           >
             Meet my AI Companion: He knows all about my journey and loves to
             share.
           </motion.h4>
           <motion.p
-            initial={{ opacity: 0, scale: 0 }}
+            initial={{ opacity: 0, scale: 1 }}
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.7 }}
             className="suggestion-header"
           >
             Try asking:
           </motion.p>
-          <AnimatePresence>
-            <ul className="suggestions-list">
-              {starterQuestions.map((q, i) => (
-                <motion.li
-                  initial={{ opacity: 0, scale: 0 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.8 + i * 0.1 }}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  key={i}
-                  className="suggestion-item"
-                  onClick={() => {
-                    handleSuggestionClick(q);
-                    setChatStarted(true);
-                    localStorage.setItem(
-                      "conversationHistory",
-                      JSON.stringify([])
-                    );
-                    localStorage.setItem("conversationMemory", "");
-                  }}
-                >
-                  {q}
-                </motion.li>
-              ))}
-            </ul>
-          </AnimatePresence>
+          <ul className="suggestions-list">
+            {starterQuestions.map((q, i) => (
+              <motion.li
+                initial={{ opacity: 0, scale: 1 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.8, duration: 0.3, ease: "easeInOut" }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                key={i}
+                className="suggestion-item"
+                onClick={() => {
+                  handleSuggestionClick(q);
+                  setChatStarted(true);
+                  localStorage.setItem(
+                    "conversationHistory",
+                    JSON.stringify([])
+                  );
+                  localStorage.setItem("conversationMemory", "");
+                }}
+              >
+                {q}
+              </motion.li>
+            ))}
+          </ul>
           <motion.form
-            initial={{ opacity: 0, scale: 0 }}
+            initial={{ opacity: 0, scale: 1 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 1.2 }}
+            transition={{ delay: 1 }}
             onSubmit={handleSubmit}
             className="input-form glass"
             style={{ position: "relative" }}

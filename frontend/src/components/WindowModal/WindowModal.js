@@ -51,6 +51,12 @@ const WindowModal = ({
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
+        if (
+          event.target.closest(".feed-nav") ||
+          event.target.closest(".ai-chat-nav") ||
+          event.target.closest(".navbar-toggler")
+        )
+          return;
         setIsMinimized(true); // Minimize if clicking outside
       }
     };
@@ -135,6 +141,7 @@ const WindowModal = ({
           <AIChatTab
             chatHistory={chatHistory}
             setChatHistory={setChatHistory}
+            scrolled={scrolled}
           />
         );
       default:
