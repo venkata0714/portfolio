@@ -1,11 +1,11 @@
 // AIChatTab.js
-import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSpeechInput } from "../../hooks/useSpeechInput";
 import axios from "axios";
 import { useSpring, animated } from "@react-spring/web";
 import ReactMarkdown from "react-markdown";
 // import remarkGfm from "remark-gfm";
-import { zoomIn } from "../../services/variants";
+import { scale, zoomIn } from "../../services/variants";
 import { motion } from "framer-motion";
 import "../../styles/AIChatBot.css";
 
@@ -15,18 +15,25 @@ const TOAST_THRESHOLD = 5;
 const TYPING_DELAY = 0; // ms per character
 
 const AIChatBot = ({ scrolled }) => {
-  const [containerHeight, setContainerHeight] = useState("auto");
   const [chatStarted, setChatStarted] = useState(false);
   const [hasSavedChat, setHasSavedChat] = useState(false);
   const [query, setQuery] = useState("");
+  const [spoken, setSpoken] = useState(false);
   const [interimQuery, setInterimQuery] = useState("");
-  const { listening, start, stop } = useSpeechInput({
+  const { listening, supported, permission, start, stop } = useSpeechInput({
     onResult: (transcript, isFinal) => {
-      setQuery(transcript);
-      if (!isFinal) setInterimQuery(transcript);
-      else setInterimQuery("");
+      if (isFinal) {
+        setSpoken(true);
+        // append final transcript onto existing query
+        setQuery((q) => q + transcript);
+        setInterimQuery("");
+      } else {
+        setInterimQuery(transcript);
+      }
     },
   });
+  const micDisabled = !supported || permission === "denied";
+
   const [chatHistory, setChatHistory] = useState([]); // {id, sender, text}
   const [followUpSuggestions, setFollowUpSuggestions] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -71,53 +78,6 @@ const AIChatBot = ({ scrolled }) => {
       // localStorage.removeItem("conversationHistory");
     }
   }, [chatHistory]);
-
-  useLayoutEffect(() => {
-    const updateHeight = () => {
-      // grab each element by its class]
-      let navH = document.querySelector(".navbar")?.offsetHeight ?? 0;
-      if (!scrolled) {
-        navH += 13;
-      }
-      const headH = document.querySelector(".header-bar")?.offsetHeight ?? 0;
-      const titleH = document.querySelector(".title-bar")?.offsetHeight ?? 0;
-      const buffer = 3; // extra gap
-
-      // raw remaining space
-      let remaining = window.innerHeight - (navH + headH + titleH + buffer);
-
-      // clamp so we never go below 200px
-      if (remaining < 200) remaining = 200;
-
-      setContainerHeight(`${remaining}px`);
-    };
-
-    // measure once
-    updateHeight();
-    // re-measure on resize
-    window.addEventListener("resize", updateHeight);
-    return () => window.removeEventListener("resize", updateHeight);
-  }, [scrolled]);
-
-  // useEffect(() => {
-  //   const updateScale = () => {
-  //     const chatContainer = document.querySelector(".chat-container");
-  //     const introContainer = document.querySelector(".intro-container");
-  //     if (!chatContainer || !introContainer) return;
-  //     const screenHeight = window.innerHeight;
-  //     const screenWidth = window.innerWidth;
-  //     let scaleValue = 1;
-  //     if (screenHeight < 700 && screenWidth > 576) {
-  //       scaleValue = screenHeight / 700;
-  //     }
-  //     chatContainer.style.zoom = `${scaleValue}`;
-  //     introContainer.style.zoom = `${scaleValue}`;
-  //   };
-
-  //   updateScale();
-  //   window.addEventListener("resize", updateScale);
-  //   return () => window.removeEventListener("resize", updateScale);
-  // }, []);
 
   // --- Load reactive avatar ---
   const [clicked, setClicked] = useState(false);
@@ -204,6 +164,8 @@ const AIChatBot = ({ scrolled }) => {
   const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
   const sendQuery = async (userQuery) => {
+    setQuery("");
+    setInterimQuery("");
     const trimmed = userQuery.trim();
     if (!trimmed) return;
     if (queriesSent >= MAX_QUERIES) {
@@ -366,10 +328,7 @@ const AIChatBot = ({ scrolled }) => {
   ];
 
   return (
-    <div
-      className={chatStarted ? "chat-container" : "intro-container"}
-      style={{ height: containerHeight }}
-    >
+    <div className={chatStarted ? "chat-container" : "intro-container"}>
       {/* toast */}
       {showToast && (
         <motion.div
@@ -377,30 +336,67 @@ const AIChatBot = ({ scrolled }) => {
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 50 }}
+          whileHover={{
+            scale: 1.01,
+            transition: { delay: 0 },
+          }}
+          whileTap={{
+            scale: 0.99,
+            transition: { delay: 0 },
+          }}
           transition={{ duration: 0.25 }}
         >
           <span>You have {MAX_QUERIES - queriesSent} queries left today.</span>
-          <button className="toast-close" onClick={() => setShowToast(false)}>
+          <motion.button
+            whileHover={{
+              scale: 1.05,
+              transition: { delay: 0 },
+              color: "lightcoral",
+            }}
+            whileTap={{
+              scale: 0.95,
+              transition: { delay: 0 },
+            }}
+            className="toast-close"
+            onClick={() => setShowToast(false)}
+          >
             ×
-          </button>
+          </motion.button>
         </motion.div>
       )}
 
       {chatStarted && (
-        <div className="chat-header">
-          <i
+        <motion.div
+          className="chat-header"
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.5, type: "ease", duration: 0.2 }}
+        >
+          <motion.i
             className="fa fa-sync"
             title="Restart Chat"
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.7, type: "ease" }}
+            whileHover={{
+              scale: 1.1,
+              transition: { delay: 0 },
+            }}
+            whileTap={{
+              scale: 0.9,
+              transition: { delay: 0 },
+            }}
             onClick={() => {
               setChatStarted(false);
               setChatHistory([]);
+              setHasSavedChat(false);
               setConversationMemory("");
               localStorage.removeItem("conversationHistory");
               localStorage.removeItem("conversationMemory");
             }}
           />
           <h2 className="chat-title proficient">Kartavya's AI Companion</h2>
-        </div>
+        </motion.div>
       )}
 
       {!chatStarted ? (
@@ -409,9 +405,17 @@ const AIChatBot = ({ scrolled }) => {
           {hasSavedChat ? (
             <motion.div
               className="continue-prompt"
-              initial={{ opacity: 0, scale: 1 }}
+              initial={{ opacity: 0, scale: 0 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.4, duration: 0.3, ease: "easeInOut" }}
+              transition={{ delay: 0.5, type: "ease", scale: { delay: 0 } }}
+              whileHover={{
+                scale: 1.05,
+                transition: { delay: 0 },
+              }}
+              whileTap={{
+                scale: 0.95,
+                transition: { delay: 0 },
+              }}
             >
               <button
                 className="btn-continue"
@@ -437,7 +441,7 @@ const AIChatBot = ({ scrolled }) => {
           ) : null}
           <motion.div
             className={`profile-picture-container`}
-            variants={zoomIn(0)}
+            variants={zoomIn(0.6)}
             style={{
               width: "fit-content",
               height: "auto",
@@ -446,6 +450,7 @@ const AIChatBot = ({ scrolled }) => {
               marginBottom: "20px",
             }}
             initial="hidden"
+            animate="show"
             drag
             dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
             dragElastic={0.3}
@@ -453,8 +458,11 @@ const AIChatBot = ({ scrolled }) => {
               bounceStiffness: 250,
               bounceDamping: 15,
             }}
-            whileTap={{ scale: 1.1 }}
-            whileInView={"show"}
+            transition={{ scale: { delay: 0, type: "easeInOut" } }}
+            whileTap={{
+              scale: 1.1,
+              transition: { delay: 0, type: "spring" },
+            }}
           >
             <animated.img
               src={`${process.env.PUBLIC_URL}/system-user.jpg`}
@@ -467,11 +475,6 @@ const AIChatBot = ({ scrolled }) => {
                   ? `translate3d(${mousePosition.x}px, ${mousePosition.y}px, 0) scale3d(1.03, 1.03, 1.03)`
                   : "translate3d(0px, 0px, 0) scale3d(1, 1, 1)",
                 transition: "transform 0.1s ease-out",
-                border: "4px solid #edeeef",
-                height: "200px",
-                width: "200px",
-                filter:
-                  "grayscale(0%) brightness(0.9) contrast(1) saturate(0.6) hue-rotate(-30deg)",
               }}
               // onHover={{ border: "4px solid #fcbc1d !important" }}
               onMouseMove={handleMouseMove}
@@ -489,26 +492,26 @@ const AIChatBot = ({ scrolled }) => {
             className="avatar intro-avatar"
           /> */}
           <motion.h2
-            initial={{ opacity: 0, scale: 1 }}
+            initial={{ opacity: 0, scale: 0 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.5 }}
+            transition={{ delay: 0.7, type: "ease" }}
             className="chat-title proficient"
           >
             Kartavya's AI Companion
           </motion.h2>
           <motion.h4
-            initial={{ opacity: 0, scale: 1 }}
+            initial={{ opacity: 0, scale: 0 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.6 }}
+            transition={{ delay: 0.8, type: "ease" }}
             className="chat-subtitle"
           >
             Meet my AI Companion: He knows all about my journey and loves to
             share.
           </motion.h4>
           <motion.p
-            initial={{ opacity: 0, scale: 1 }}
+            initial={{ opacity: 0, scale: 0 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.7 }}
+            transition={{ delay: 0.9, type: "ease" }}
             className="suggestion-header"
           >
             Try asking:
@@ -516,11 +519,21 @@ const AIChatBot = ({ scrolled }) => {
           <ul className="suggestions-list">
             {starterQuestions.map((q, i) => (
               <motion.li
-                initial={{ opacity: 0, scale: 1 }}
+                initial={{ opacity: 0, scale: 0 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.8, duration: 0.3, ease: "easeInOut" }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                transition={{
+                  delay: 1 + 0.1 * i,
+                  type: "ease",
+                  scale: { delay: 0, type: "easeInOut" },
+                }}
+                whileHover={{
+                  scale: 1.05,
+                  transition: { delay: 0, type: "ease" },
+                }}
+                whileTap={{
+                  scale: 0.95,
+                  transition: { delay: 0, type: "ease" },
+                }}
                 key={i}
                 className="suggestion-item"
                 onClick={() => {
@@ -538,165 +551,44 @@ const AIChatBot = ({ scrolled }) => {
             ))}
           </ul>
           <motion.form
-            initial={{ opacity: 0, scale: 1 }}
+            initial={{ opacity: 0, scale: 0 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 1 }}
+            transition={{ delay: 1.3, scale: { delay: 0, type: "ease" } }}
+            whileHover={{
+              scale: 1.1,
+              transition: { delay: 0, type: "easeInOut" },
+            }}
+            whileTap={{
+              scale: 1.075,
+              transition: { delay: 0, type: "easeInOut" },
+            }}
             onSubmit={handleSubmit}
             className="input-form glass"
             style={{ position: "relative" }}
           >
             <motion.div
               className="mic-btn-container"
-              whileInView={listening ? { scale: 1.2 } : { scale: 1 }}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              drag
+              dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+              dragElastic={0.3}
+              dragTransition={{
+                bounceStiffness: 250,
+                bounceDamping: 15,
+              }}
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
             >
               <button
                 type="button"
                 className={`mic-btn glass ${listening ? "active" : ""}`}
-                onMouseDown={start}
-                onMouseUp={stop}
-                onTouchStart={start}
-                onTouchEnd={stop}
-                aria-label={listening ? "Release to stop" : "Hold to talk"}
-              >
-                <i className={`fa fa-microphone${listening ? "" : "-slash"}`} />
-              </button>
-            </motion.div>
-            <input
-              ref={inputRef}
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Ask me anything..."
-              className="query-input"
-            />
-            <button
-              type="button"
-              className="send-float-btn"
-              onClick={() => (loading ? stopGenerating() : sendQuery(query))}
-            >
-              <i className={`fa ${loading ? "fa-stop" : "fa-arrow-up"}`} />
-            </button>
-          </motion.form>
-        </div>
-      ) : (
-        <>
-          <div className="chat-messages">
-            <div className="message-window">
-              {chatHistory.map((msg) => (
-                <div key={msg.id} className={`message ${msg.sender}`}>
-                  <img
-                    src={`${process.env.PUBLIC_URL}/${
-                      msg.sender === "ai" ? "system-user.jpg" : "user-icon.svg"
-                    }`}
-                    alt={msg.sender}
-                    className={`avatar ${msg.sender}-avatar`}
-                  />
-                  <div className="bubble-container">
-                    <div className="bubble">
-                      <ReactMarkdown>
-                        {msg.text}
-                      </ReactMarkdown>
-                    </div>
-                    <div
-                      className={`actions ${msg.sender} ${
-                        msg.id === latestAIId ? "always-show" : ""
-                      }`}
-                    >
-                      {msg.sender === "user" ? (
-                        <>
-                          <i
-                            className="fa fa-copy"
-                            title="Copy"
-                            onClick={() => handleCopy(msg.text)}
-                          />
-                          <i
-                            className="fa fa-pencil"
-                            title="Edit"
-                            onClick={() => handleEdit(msg.text)}
-                          />
-                        </>
-                      ) : (
-                        <>
-                          <i
-                            className="fa fa-copy"
-                            title="Copy"
-                            onClick={() => handleCopy(msg.text)}
-                          />
-                          <i
-                            className="fa fa-thumbs-up"
-                            title="Like"
-                            onClick={() => handleThumb(true)}
-                          />
-                          <i
-                            className="fa fa-thumbs-down"
-                            title="Dislike"
-                            onClick={() => handleThumb(false)}
-                          />
-                          <i
-                            className="fa fa-volume-up"
-                            title="Read Aloud"
-                            onClick={() => handleReadAloud(msg.text)}
-                          />
-                          <i
-                            className="fa fa-sync"
-                            title="Regenerate"
-                            onClick={() => handleRegenerate(msg.id)}
-                          />
-                        </>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
-
-              {followUpSuggestions.length > 0 && (
-                <div className="message followup-suggestions">
-                  <div className="bubble suggestions-bubble">
-                    Here are some follow‑up questions you can ask:
-                    <div className="followups">
-                      {followUpSuggestions.map((q, i) => (
-                        <span
-                          key={i}
-                          className="suggestion-chip"
-                          onClick={() => handleSuggestionClick(q)}
-                        >
-                          {q}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  <img
-                    src={`${process.env.PUBLIC_URL}/user-icon.svg`}
-                    alt="You"
-                    className="avatar user-avatar-followup"
-                  />
-                </div>
-              )}
-
-              {errorMsg && <div className="error">{errorMsg}</div>}
-              <div ref={chatEndRef} />
-            </div>
-          </div>
-
-          <form
-            onSubmit={handleSubmit}
-            className="input-form"
-            style={{ position: "relative" }}
-          >
-            <motion.div
-              className="mic-btn-container"
-              whileInView={listening ? { scale: 1.2 } : { scale: 1 }}
-              transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            >
-              <button
-                type="button"
-                className={`mic-btn ${listening ? "active" : ""}`}
-                onMouseDown={start}
-                onMouseUp={stop}
-                onTouchStart={start}
-                onTouchEnd={stop}
-                aria-label={listening ? "Release to stop" : "Hold to talk"}
+                // onMouseDown={start}
+                // onMouseUp={stop}
+                // onTouchStart={start}
+                // onTouchEnd={stop}
+                onClick={() => (listening ? stop() : start())}
+                aria-label={listening ? "Click to stop" : "Click to talk"}
+                disabled={loading || micDisabled}
               >
                 <i className={`fa fa-microphone${listening ? "" : "-slash"}`} />
               </button>
@@ -706,18 +598,345 @@ const AIChatBot = ({ scrolled }) => {
               type="text"
               value={listening ? interimQuery : query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Ask another question..."
+              placeholder={`${
+                loading
+                  ? "Generating Response..."
+                  : listening
+                  ? "Listening your Question, Please Speak!"
+                  : "Ask another question!"
+              }`}
+              onKeyDown={(e) => {
+                // Enter=send, Shift+Enter=newline
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSubmit(e);
+                }
+              }}
               className="query-input"
               disabled={loading}
             />
-            <button
+            <motion.button
               type="button"
               className="send-float-btn"
+              animate={{ translateY: "-50%" }}
+              drag
+              dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+              dragElastic={0.3}
+              dragTransition={{
+                bounceStiffness: 250,
+                bounceDamping: 15,
+              }}
+              whileHover={{
+                scale: 1.1,
+                translateY: "-50%",
+                transition: { delay: 0 },
+              }}
+              whileTap={{
+                scale: 0.9,
+                translateY: "-50%",
+                transition: { delay: 0 },
+              }}
               onClick={() => (loading ? stopGenerating() : sendQuery(query))}
             >
-              <i className={`send fa ${loading ? "fa-stop" : "fa-arrow-up"}`} />
-            </button>
-          </form>
+              <motion.i
+                drag="false"
+                className={`fa ${loading ? "fa-stop" : "fa-arrow-up"}`}
+              />
+            </motion.button>
+          </motion.form>
+        </div>
+      ) : (
+        <>
+          <div className="chat-messages">
+            <div className="message-window">
+              {chatHistory.map((msg, id) => (
+                <motion.div
+                  whileHover={{ scale: 1.01 }}
+                  transition={{ scale: { delay: 0, type: "spring" } }}
+                  key={msg.id}
+                  className={`message ${msg.sender}`}
+                >
+                  <motion.img
+                    src={`${process.env.PUBLIC_URL}/${
+                      msg.sender === "ai" ? "system-user.jpg" : "user-icon.svg"
+                    }`}
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{
+                      delay: msg.sender === "ai" ? 0.5 : 0.3,
+                      type: "ease",
+                      scale: { delay: 0, type: "ease" },
+                    }}
+                    whileHover={{
+                      scale: 1.05,
+                      transition: { delay: 0 },
+                    }}
+                    whileTap={{
+                      scale: 0.95,
+                      transition: { delay: 0 },
+                    }}
+                    alt={msg.sender}
+                    className={`avatar ${msg.sender}-avatar`}
+                  />
+                  <motion.div
+                    className="bubble-container"
+                    initial={{
+                      opacity: 0,
+                      x: msg.sender === "ai" ? -40 : 40,
+                      y: 10,
+                      scale: 0.8,
+                    }}
+                    animate={{ opacity: 1, x: 0, y: 0, scale: 1 }}
+                    transition={{
+                      delay: msg.sender === "ai" ? 0.55 : 0.35,
+                      type: "easeInOut",
+                      duration: 0.2,
+                      scale: { delay: 0, type: "ease" },
+                    }}
+                  >
+                    <div className="bubble">
+                      <ReactMarkdown>{msg.text}</ReactMarkdown>
+                    </div>
+                    <div
+                      className={`actions ${
+                        msg.sender === "ai" ? "ai" : "user"
+                      } ${msg.id === latestAIId ? "always-show" : ""}`}
+                      initial={
+                        msg.id === latestAIId ? { opacity: 1 } : { opacity: 0 }
+                      }
+                      animate={
+                        msg.id === latestAIId ? { opacity: 1 } : { opacity: 0 }
+                      }
+                    >
+                      {msg.sender === "user" ? (
+                        <>
+                          <motion.i
+                            className="fa fa-copy"
+                            title="Copy"
+                            onClick={() => handleCopy(msg.text)}
+                            style={{ display: "inline-block" }}
+                            initial={{ opacity: 0, scale: 0 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: 0.05, type: "ease" }}
+                            whileHover={{
+                              scale: 1.1,
+                              transition: { type: "ease", delay: 0 },
+                            }}
+                            whileTap={{
+                              scale: 0.9,
+                              transition: { type: "ease", delay: 0 },
+                            }}
+                          />
+                          <motion.i
+                            className="fa fa-pencil"
+                            title="Edit"
+                            onClick={() => handleEdit(msg.text)}
+                            style={{ display: "inline-block" }}
+                            initial={{ opacity: 0, scale: 0 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: 0.1, type: "ease" }}
+                            whileHover={{
+                              scale: 1.1,
+                              transition: { type: "ease", delay: 0 },
+                            }}
+                            whileTap={{
+                              scale: 0.9,
+                              transition: { type: "ease", delay: 0 },
+                            }}
+                          />
+                        </>
+                      ) : (
+                        <>
+                          {[
+                            "copy",
+                            "thumbs-up",
+                            "thumbs-down",
+                            "volume-up",
+                            "sync",
+                          ].map((icon, id) => (
+                            <motion.i
+                              key={icon}
+                              className={`fa fa-${icon}`}
+                              title={icon}
+                              onClick={() => {
+                                if (icon === "copy") handleCopy(msg.text);
+                                if (icon === "thumbs-up") handleThumb(true);
+                                if (icon === "thumbs-down") handleThumb(false);
+                                if (icon === "volume-up")
+                                  handleReadAloud(msg.text);
+                                if (icon === "sync") handleRegenerate(msg.id);
+                              }}
+                              style={{ display: "inline-block" }}
+                              initial={{ opacity: 0, scale: 0 }}
+                              whileInView={{ opacity: 1, scale: 1 }}
+                              exit={{
+                                opacity: 0,
+                                transition: {
+                                  delay: 0,
+                                  type: "ease",
+                                },
+                              }}
+                              transition={{ delay: 0.25 - 0.05 * id }}
+                              whileHover={{
+                                scale: 1.1,
+                                transition: { type: "ease", delay: 0 },
+                              }}
+                              whileTap={{
+                                scale: 0.9,
+                                transition: { type: "ease", delay: 0 },
+                              }}
+                            />
+                          ))}
+                        </>
+                      )}
+                    </div>
+                  </motion.div>
+                </motion.div>
+              ))}
+
+              {followUpSuggestions.length > 0 && (
+                <motion.div
+                  whileHover={{ scale: 1.01 }}
+                  transition={{ scale: { delay: 0, type: "spring" } }}
+                  className="message followup-suggestions"
+                >
+                  <motion.div
+                    className="bubble suggestions-bubble"
+                    initial={{ opacity: 0, scale: 0.8, x: 40, y: 10 }}
+                    animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
+                    transition={{
+                      delay: 0.35,
+                      type: "easeInOut",
+                      duration: 0.2,
+                      scale: { delay: 0, type: "ease" },
+                    }}
+                  >
+                    Here are some follow-up questions you can ask:
+                    <div className="followups">
+                      {followUpSuggestions.map((q, i) => (
+                        <motion.span
+                          initial={{ opacity: 0, scale: 0 }}
+                          whileInView={{ opacity: 1, scale: 1 }}
+                          transition={{
+                            delay: 0.1 + 0.1 * i,
+                            scale: { delay: 0, type: "ease" },
+                          }}
+                          viewport={{ once: true }}
+                          whileHover={{
+                            scale: 1.01,
+                            transition: { delay: 0 },
+                          }}
+                          whileTap={{
+                            scale: 0.99,
+                            transition: { delay: 0 },
+                          }}
+                          key={i}
+                          className="suggestion-chip"
+                          onClick={() => handleSuggestionClick(q)}
+                        >
+                          {q}
+                        </motion.span>
+                      ))}
+                    </div>
+                  </motion.div>
+                  <img
+                    src={`${process.env.PUBLIC_URL}/user-icon.svg`}
+                    alt="You"
+                    className="avatar user-avatar-followup"
+                  />
+                </motion.div>
+              )}
+
+              {errorMsg && <div className="error">{errorMsg}</div>}
+              <div ref={chatEndRef} />
+            </div>
+          </div>
+
+          <motion.form
+            initial={{ opacity: 0, scale: 0 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.5, scale: { delay: 0, type: "ease" } }}
+            whileHover={{
+              scale: 1.01,
+              transition: { delay: 0, type: "easeInOut" },
+            }}
+            whileTap={{ scale: 1, transition: { delay: 0, type: "easeInOut" } }}
+            onSubmit={handleSubmit}
+            className="input-form glass"
+            style={{ position: "relative" }}
+            disabled={loading}
+          >
+            <motion.div
+              className="mic-btn-container"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              drag
+              dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+              dragElastic={0.3}
+              dragTransition={{
+                bounceStiffness: 250,
+                bounceDamping: 15,
+              }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            >
+              <button
+                type="button"
+                className={`mic-btn ${listening ? "active" : ""}`}
+                // onMouseDown={start}
+                // onMouseUp={stop}
+                // onTouchStart={start}
+                // onTouchEnd={stop}
+                onClick={() => (listening ? stop() : start())}
+                aria-label={listening ? "Click to stop" : "Click to talk"}
+                disabled={loading || micDisabled}
+              >
+                <i className={`fa fa-microphone${listening ? "" : "-slash"}`} />
+              </button>
+            </motion.div>
+            <input
+              ref={inputRef}
+              type="text"
+              value={listening ? interimQuery : query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder={`${
+                loading
+                  ? "Generating Response..."
+                  : listening
+                  ? "Listening your Question, Please Speak!"
+                  : "Ask another question!"
+              }`}
+              className="query-input"
+              disabled={loading}
+            />
+            <motion.button
+              type="button"
+              className="send-float-btn"
+              animate={{ translateY: "-50%" }}
+              drag
+              dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+              dragElastic={0.3}
+              dragTransition={{
+                bounceStiffness: 250,
+                bounceDamping: 15,
+              }}
+              whileHover={{
+                scale: 1.1,
+                translateY: "-50%",
+                transition: { delay: 0 },
+              }}
+              whileTap={{
+                scale: 0.9,
+                translateY: "-50%",
+                transition: { delay: 0 },
+              }}
+              onClick={() => (loading ? stopGenerating() : sendQuery(query))}
+            >
+              <motion.i
+                drag="false"
+                className={`fa ${loading ? "fa-stop" : "fa-arrow-up"}`}
+              />
+            </motion.button>
+          </motion.form>
         </>
       )}
     </div>

@@ -94,8 +94,14 @@ const FeedTab = () => {
 
         <div className="feed-items">
           {(globalExpanded ? currentFeeds : currentFeeds.slice(0, 3)).map(
-            (feed) => (
-              <div key={feed._id.$oid} className="feed-item glass">
+            (feed, id) => (
+              <motion.div
+                key={feed._id.$oid}
+                className="feed-item glass"
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.5 + 0.5 * id, type: "ease" }}
+              >
                 {feed.feedImageURL && (
                   <div
                     className="feed-item-image"
@@ -230,7 +236,7 @@ const FeedTab = () => {
                       new Date(feed.feedCreatedAt).toLocaleString()}
                   </span>
                 </div>
-              </div>
+              </motion.div>
             )
           )}
         </div>

@@ -7,7 +7,8 @@
   justify-content: center;
   background-color: #212529;
   width: 100%;
-  height: calc(100dvh - 52px - 0.8rem - 40px - 20px);
+  /* height: calc(100dvh - 52px - 0.8rem - 40px - 20px); */
+  height: 100%;
   box-sizing: border-box;
   position: relative;
   overflow: hidden;
@@ -20,7 +21,6 @@
   user-select: text !important;
   -webkit-user-select: text !important;
   -moz-user-select: text !important;
-  transition: all 0.3s ease-in-out;
 }
 
 /* Toast */
@@ -53,6 +53,10 @@
 
 /* Centered card before chat starts */
 .intro-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   /* background-color: #343a40; */
   background-color: transparent;
   border-radius: 12px;
@@ -148,7 +152,6 @@
   cursor: pointer;
   margin: 5px 0;
   width: fit-content;
-  transition: all 0.3s ease-in-out;
 }
 .suggestion-item:hover {
   background: #5a6268;
@@ -159,7 +162,7 @@
   flex: 1;
   width: 100%;
   font-family: "Montserrat", sans-serif;
-
+  overflow-x: hidden;
   /* max-width: 800px; */
   overflow-y: auto;
   padding: 10px;
@@ -182,7 +185,7 @@
 .message {
   display: flex;
   align-items: flex-start;
-  margin-bottom: 20px;
+  padding-bottom: 20px;
   position: relative;
 }
 .message.user {
@@ -201,7 +204,6 @@
 
 .message.followup-suggestions {
   align-self: flex-end;
-  width: 100%;
   padding-left: 20%;
   margin-right: 20px;
 }
@@ -211,7 +213,7 @@
   border-radius: 50%;
   position: absolute;
   /* align-self: end; */
-  bottom: -15px;
+  bottom: -5px;
 }
 .intro-avatar.avatar {
   position: relative;
@@ -221,21 +223,22 @@
   margin-left: 10px;
   background-color: #fcbc1d;
   padding: 5px;
-  bottom: -30px;
+  /* bottom: -30px; */
   right: -30px;
 }
 .ai-avatar {
   margin-right: 10px;
-  bottom: -30px;
+  /* bottom: -30px; */
   left: -30px;
 }
 .user-avatar-followup {
   margin-left: 10px;
   background-color: #fcbc1d;
   padding: 5px;
-  bottom: -30px;
+  /* bottom: -30px; */
   right: -30px;
 }
+
 .bubble {
   background-color: #343a40;
   color: #edeeef;
@@ -268,15 +271,22 @@
   font-weight: 500;
   border-radius: 20px 20px 5px 20px;
 }
+
+.suggestions-bubble {
+  display: inline-flex;
+  flex-direction: column;
+  width: fit-content !important;
+}
+
 /* Follow-up suggestions in chat mode */
 .followups {
-  width: 100%;
   text-align: left;
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
   margin-top: 8px;
   line-height: normal;
+  width: fit-content !important;
 }
 .suggestion-chip {
   background: #495057;
@@ -284,7 +294,6 @@
   padding: 6px 12px;
   border-radius: 15px;
   cursor: pointer;
-  transition: background 0.2s;
 }
 .suggestion-chip:hover {
   background: #5a6268;
@@ -349,6 +358,12 @@
   color: #edeeef;
 }
 
+.query-input:disabled,
+.mic-btn:disabled,
+.send-float-btn:disabled {
+  /* filter: blur(1px); */
+}
+
 .input-form .query-input {
   padding-right: 50px;
 }
@@ -358,6 +373,7 @@
   display: flex;
   align-items: center;
   margin-left: 10px;
+  border-radius: 50%;
 }
 
 /* Basic mic button styles */
@@ -372,25 +388,18 @@
   justify-content: center;
   cursor: pointer;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-  transition: background 0.2s ease-in-out, transform 0.2s ease-in-out;
+  transition: background ease-in-out, color ease-in-out;
 }
 
 .mic-btn i {
   color: #edeeef;
-  transition: transform 0.2s ease-in-out, color 0.2s ease-in-out;
 }
 
-.mic-btn:hover {
+.mic-btn-container:hover .mic-btn {
   background: #fcbc1d;
-  color: #212529;
-  transform: scale(1.05);
 }
 
-.mic-btn:active {
-  transform: scale(0.95);
-}
-
-.mic-btn:hover i {
+.mic-btn-container:hover i {
   color: #212529;
 }
 
@@ -401,56 +410,83 @@
   /* width: 100%; */
   /* padding-bottom: 30px; */
 }
+
 .actions {
   display: none;
   position: absolute;
-  bottom: -24px;
-  left: 10px;
+  bottom: -16px;
+  right: 10px;
   gap: 8px;
   font-size: 0.9rem;
   color: #d3d3d3;
   cursor: pointer;
 }
-/* 1) Always show actions on the latest AI bubble */
-.actions.always-show {
-  display: flex !important;
+
+.actions.user {
+  left: 10px;
 }
 
 /* 2) Tweak icon appearance, transitions & staggered delays */
 .actions i {
   color: #a1a1a1; /* greyish */
-  font-size: 14px; /* cap at 10px */
+  font-size: 12px; /* cap at 10px */
   opacity: 0;
   transform: translateY(5px);
   transition: opacity 0.2s ease, transform 0.2s ease;
   pointer-events: auto;
 }
+
 .actions i:hover {
   color: #fcbc1d; /* yellow on hover */
-  transform: translateY(0);
 }
-/* Show icons on hover or for the latest AI bubble */
-.bubble-container:hover .actions,
-.bubble-container:hover .actions i,
-.actions.always-show i {
+
+.actions.always-show,
+.actions.always-show .actions i {
+  display: flex !important;
+  color: #a1a1a1 !important;
   opacity: 1;
-  transform: translateY(0);
+  pointer-events: auto;
 }
-/* Staggered delays */
-.actions i:nth-child(1) {
-  transition-delay: 0.05s;
+
+/* Show icons on hover or for the latest AI bubble */
+.message .actions {
+  opacity: 0;
+  pointer-events: none;
 }
-.actions i:nth-child(2) {
-  transition-delay: 0.1s;
+
+.message:hover .actions,
+.message:hover .actions i {
+  display: flex !important;
+  opacity: 1 !important;
+  pointer-events: auto;
+  /* but you never turn display back on! */
 }
-.actions i:nth-child(3) {
-  transition-delay: 0.15s;
+
+.actions.always-show,
+.actions.always-show i {
+  display: flex !important; /* undo display:none */
+  opacity: 1 !important; /* override opacity:0 */
+  pointer-events: auto !important;
 }
-.actions i:nth-child(4) {
-  transition-delay: 0.2s;
+
+.query-wrapper {
+  width: 100%;
 }
-.actions i:nth-child(5) {
-  transition-delay: 0.25s;
+
+/* style the little clear button */
+.clear-all-btn {
+  position: absolute;
+  right: 0.75em;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  font-size: 1.2em;
+  color: #bbb;
+  cursor: pointer;
+}
+.clear-all-btn:hover {
+  color: #fff;
 }
 
 /* 3) Floating send/stop button */
@@ -474,17 +510,13 @@
   z-index: 10;
 }
 
-.send-float-btn:hover {
-  transform: scale(1.05) translateY(-50%);
-  transition: all 0.3s ease-in-out;
-}
-
 .send-float-btn i {
   color: #212529;
 }
 
 .continue-prompt {
   display: flex;
+  width: 100%;
   gap: 12px;
   margin-bottom: 20px;
   justify-content: flex-end;
@@ -501,7 +533,7 @@
   cursor: pointer;
   font-family: "Montserrat", sans-serif;
 
-  transition: background 0.2s;
+  transition: background ease-in-out, color ease-in-out;
   background: #495057;
   color: #edeeef;
 }
@@ -527,7 +559,13 @@
   width: 200px !important;
   height: 200px !important;
   border-radius: 50%;
-  transition: all 0.3s ease-in-out;
+  border: 4px solid #edeeef;
+  filter: grayscale(0%) brightness(0.9) contrast(1) saturate(0.6)
+    hue-rotate(-30deg);
+}
+
+.img-responsive:hover {
+  border: 4px solid #fcbc1d !important;
 }
 
 @media (max-width: 768px) {

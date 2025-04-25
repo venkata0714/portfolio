@@ -186,7 +186,7 @@ function HomePage({ isBatterySavingOn, scrolled }) {
           // style={{ zoom: "80%", height: "calc(100vh -52px)" }}
         >
           <div className="home-div">
-            <div className="home-row">
+            <div className="home-row" style={{ zIndex: 100000 }}>
               <motion.div
                 className={`profile-picture-container`}
                 variants={isBatterySavingOn ? {} : zoomIn(0)}
@@ -198,6 +198,7 @@ function HomePage({ isBatterySavingOn, scrolled }) {
                   bounceStiffness: 250,
                   bounceDamping: 15,
                 }}
+                transition={{ scale: { delay: 0, type: "spring" } }}
                 whileTap={isBatterySavingOn ? {} : { scale: 1.1 }}
                 whileInView={"show"}
               >
@@ -227,7 +228,7 @@ function HomePage({ isBatterySavingOn, scrolled }) {
                 />
               </motion.div>
             </div>
-            <div className="home-row info">
+            <div className="home-row info" style={{ zIndex: 99999 }}>
               <motion.h1
                 className="name"
                 variants={isBatterySavingOn ? {} : zoomIn(0)}
