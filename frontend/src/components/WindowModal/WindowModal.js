@@ -46,11 +46,18 @@ const WindowModal = ({
 
   // Helpers to add/remove toasts
   const addToast = (message, position) => {
-    const id = Date.now();
-    setToasts((prev) => [...prev, { id, message, position }]);
-    // Auto-remove after 3 seconds
-    setTimeout(() => removeToast(id), 1000);
+    setToasts((prev) => {
+      // don’t add if we already have a toast with the same message
+      if (prev.some((t) => t.message === message)) {
+        return prev;
+      }
+      const id = Date.now();
+      // schedule removal
+      setTimeout(() => removeToast(id), 1500);
+      return [...prev, { id, message, position }];
+    });
   };
+
   const removeToast = (id) => {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   };
