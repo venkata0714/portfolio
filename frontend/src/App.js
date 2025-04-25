@@ -160,7 +160,11 @@ function App({ isBatterySavingOn, setIsBatterySavingOn }) {
           scrolled={scrolled}
         />
         <NavBar isBatterySavingOn={isBatterySavingOn} addTab={addTab} />
-        <HomePage isBatterySavingOn={isBatterySavingOn} scrolled={scrolled} />
+        <HomePage
+          isBatterySavingOn={isBatterySavingOn}
+          scrolled={scrolled}
+          addTab={addTab}
+        />
         {/* {isWindowModalVisible && (
           <>
                   <AboutPage isBatterySavingOn={isBatterySavingOn} />
@@ -172,6 +176,7 @@ function App({ isBatterySavingOn, setIsBatterySavingOn }) {
         <AboutPage
           isBatterySavingOn={isBatterySavingOn}
           isWindowModalVisible={isWindowModalVisible}
+          addTab={addTab}
         />
         <SkillPage
           isBatterySavingOn={isBatterySavingOn}

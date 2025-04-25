@@ -25,7 +25,7 @@ const aboutData = [
   },
 ];
 
-function AboutPage({ isBatterySavingOn, isWindowModalVisible }) {
+function AboutPage({ isBatterySavingOn, isWindowModalVisible, addTab }) {
   useEffect(() => {
     const updateScale = () => {
       const aboutDiv = document.querySelector(".about-content");
@@ -135,7 +135,7 @@ function AboutPage({ isBatterySavingOn, isWindowModalVisible }) {
                 whileInView="show"
                 exit="hidden"
               >
-                Learn More About My
+                Learn More About Me From My:
               </motion.h2>
               <motion.div
                 className="button-container"
@@ -168,6 +168,20 @@ function AboutPage({ isBatterySavingOn, isWindowModalVisible }) {
                     <ButtonLabel>Projects</ButtonLabel>
                   </StyledButton>
                 </motion.a>
+                <motion.a
+                  href={Resume}
+                  download="Kartavya-Singh-Resume-2025.pdf"
+                  className="download-cv"
+                  style={{ userSelect: "none" }}
+                  draggable={false}
+                  onDragStart={(e) => e.preventDefault()}
+                >
+                  <StyledButton>
+                    <ButtonShadow />
+                    <ButtonEdge />
+                    <ButtonLabel>Resume</ButtonLabel>
+                  </StyledButton>
+                </motion.a>
               </motion.div>
               <motion.div
                 className="button-container"
@@ -188,18 +202,28 @@ function AboutPage({ isBatterySavingOn, isWindowModalVisible }) {
                     <ButtonLabel>Experience</ButtonLabel>
                   </StyledButton>
                 </motion.a>
-                <motion.a
-                  href={Resume}
-                  download="Kartavya-Singh-Resume-2025.pdf"
-                  className="download-cv"
-                  style={{ userSelect: "none" }}
-                  draggable={false}
-                  onDragStart={(e) => e.preventDefault()}
-                >
-                  <StyledButton>
+                <motion.a>
+                  <StyledButton
+                    onClick={(e) => {
+                      e.preventDefault();
+                      addTab("FeedTab", { title: "Kartavya's Feed" });
+                    }}
+                  >
                     <ButtonShadow />
                     <ButtonEdge />
-                    <ButtonLabel>Resume</ButtonLabel>
+                    <ButtonLabel>Feed</ButtonLabel>
+                  </StyledButton>
+                </motion.a>
+                <motion.a>
+                  <StyledButton
+                    onClick={(e) => {
+                      e.preventDefault();
+                      addTab("AIChatTab", { title: "Kartavya's AI Chat" });
+                    }}
+                  >
+                    <ButtonShadow />
+                    <ButtonEdge />
+                    <ButtonLabel>AI Companion</ButtonLabel>
                   </StyledButton>
                 </motion.a>
               </motion.div>
@@ -214,6 +238,8 @@ function AboutPage({ isBatterySavingOn, isWindowModalVisible }) {
 export default AboutPage;
 
 // Styled Components for Custom Button
+// Styled Components (Stitches / similar) for a responsive Custom Button
+
 const ButtonPart = styled("span", {
   position: "absolute",
   top: 0,
@@ -232,12 +258,12 @@ const ButtonShadow = styled(ButtonPart, {
 
 const ButtonEdge = styled(ButtonPart, {
   background: `linear-gradient(
-      to left,
-      hsl(0deg 0% 69%) 0%,
-      hsl(0deg 0% 85%) 8%,
-      hsl(0deg 0% 85%) 92%,
-      hsl(0deg 0% 69%) 100%
-    )`,
+    to left,
+    hsl(0deg 0% 69%) 0%,
+    hsl(0deg 0% 85%) 8%,
+    hsl(0deg 0% 85%) 92%,
+    hsl(0deg 0% 69%) 100%
+  )`,
   borderRadius: 5,
 });
 
@@ -261,6 +287,18 @@ const ButtonLabel = styled("span", {
     color: "#212529",
     transform: "scale(1.05)",
   },
+
+  // ——————————————————————————————
+  // Responsive adjustments
+  "@media (max-width: 992px)": {
+    fontSize: "15px",
+    padding: "0.6rem 1.2rem",
+  },
+  "@media (max-width: 576px)": {
+    fontSize: "12px",
+    padding: "0.5rem 1rem",
+  },
+  // ——————————————————————————————
 });
 
 const StyledButton = styled("button", {

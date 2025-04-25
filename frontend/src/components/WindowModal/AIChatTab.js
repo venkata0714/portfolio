@@ -14,7 +14,7 @@ const MAX_QUERIES = 20;
 const TOAST_THRESHOLD = 5;
 const TYPING_DELAY = 0; // ms per character
 
-const AIChatBot = ({ scrolled }) => {
+const AIChatBot = ({ scrolled, initialQuery }) => {
   const [chatStarted, setChatStarted] = useState(false);
   const [hasSavedChat, setHasSavedChat] = useState(false);
   const [query, setQuery] = useState("");
@@ -46,6 +46,16 @@ const AIChatBot = ({ scrolled }) => {
   const chatEndRef = useRef(null);
   const inputRef = useRef(null);
   const cancelRef = useRef(false);
+
+  // when the tab first mounts (or if initialQuery changes), fire the query
+  const didAutoSend = useRef(false);
+
+  useEffect(() => {
+    if (initialQuery && !didAutoSend.current) {
+      didAutoSend.current = true;
+      sendQuery(initialQuery);
+    }
+  }, [initialQuery]);
 
   // --- Daily reset & restore ---
   useEffect(() => {
@@ -467,7 +477,7 @@ const AIChatBot = ({ scrolled }) => {
             <animated.img
               src={`${process.env.PUBLIC_URL}/system-user.jpg`}
               alt="Profile"
-              className={`profile-picture img-responsive img-circle${frames[frameIndex]}`}
+              className={` img-responsive img-circle${frames[frameIndex]}`}
               draggable="false"
               style={{
                 boxShadow,
@@ -564,7 +574,7 @@ const AIChatBot = ({ scrolled }) => {
             }}
             onSubmit={handleSubmit}
             className="input-form glass"
-            style={{ position: "relative" }}
+            style={{ position: "relative", background: "#343a40" }}
           >
             <motion.div
               className="mic-btn-container"
@@ -863,7 +873,7 @@ const AIChatBot = ({ scrolled }) => {
             whileTap={{ scale: 1, transition: { delay: 0, type: "easeInOut" } }}
             onSubmit={handleSubmit}
             className="input-form glass"
-            style={{ position: "relative" }}
+            style={{ position: "relative", background: "#343a40" }}
             disabled={loading}
           >
             <motion.div

@@ -11,6 +11,56 @@
   z-index: 2;
 }
 
+.home-input-form {
+  width: min(1140px, 95%);
+  min-height: 7vh;
+  /* background: #343a40; */
+  display: flex;
+  border-radius: 20px;
+  margin: 0 auto;
+  position: relative;
+  /* background: linear-gradient(
+    135deg,
+    rgba(80, 80, 80, 0.6),
+    rgba(50, 50, 50, 0.4)
+  ); */
+  background: linear-gradient(
+    135deg,
+    rgba(33, 37, 41, 0.85) 0%,
+    rgba(33, 37, 41, 0.65) 50%,
+    rgba(33, 37, 41, 0.85) 100%
+  ) !important;
+  backdrop-filter: blur(6px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+}
+
+/* Change the placeholder color for your query input */
+.home-input-form .query-input::placeholder {
+  color: #edeeef;
+  opacity: 1;
+  font-size: large;
+}
+.home-input-form .query-input::-webkit-input-placeholder {
+  color: #edeeef;
+  opacity: 1;
+  font-size: large;
+}
+.home-input-form .query-input::-moz-placeholder {
+  color: #edeeef;
+  opacity: 1;
+  font-size: large;
+}
+.home-input-form .query-input:-ms-input-placeholder {
+  color: #edeeed;
+  opacity: 1;
+  font-size: large;
+}
+.home-input-form .query-input:-moz-placeholder {
+  color: #edeeef;
+  opacity: 1;
+  font-size: large;
+}
+
 .homepage-bg-wrapper {
   position: absolute; /* or fixed if you want it anchored to the viewport */
   top: 0;
@@ -226,5 +276,20 @@
 @media (max-width: 576px) {
   .name {
     font-size: 2.25rem;
+  }
+  .home-input-form .query-input::placeholder {
+    font-size: x-small;
+  }
+  .home-input-form .query-input::-webkit-input-placeholder {
+    font-size: x-small;
+  }
+  .home-input-form .query-input::-moz-placeholder {
+    font-size: x-small;
+  }
+  .home-input-form .query-input:-ms-input-placeholder {
+    font-size: x-small;
+  }
+  .home-input-form .query-input:-moz-placeholder {
+    font-size: x-small;
   }
 }
