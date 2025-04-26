@@ -1,5 +1,5 @@
 // AIChatTab.js
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useSpeechInput } from "../../hooks/useSpeechInput";
 import axios from "axios";
 import { useSpring, animated } from "@react-spring/web";
@@ -49,13 +49,6 @@ const AIChatBot = ({ scrolled, initialQuery }) => {
 
   // when the tab first mounts (or if initialQuery changes), fire the query
   const didAutoSend = useRef(false);
-
-  useEffect(() => {
-    if (initialQuery && !didAutoSend.current) {
-      didAutoSend.current = true;
-      sendQuery(initialQuery);
-    }
-  }, [initialQuery]);
 
   // --- Daily reset & restore ---
   useEffect(() => {
@@ -171,140 +164,174 @@ const AIChatBot = ({ scrolled, initialQuery }) => {
   };
 
   // add this at the top of your component file
-  const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+  const delay = useCallback(
+    (ms) => new Promise((res) => setTimeout(res, ms)),
+    []
+  );
 
-  const sendQuery = async (userQuery) => {
-    setQuery("");
-    setInterimQuery("");
-    const trimmed = userQuery.trim();
-    if (!trimmed) return;
-    if (queriesSent >= MAX_QUERIES) {
-      setErrorMsg(
-        `You’ve reached your ${MAX_QUERIES}‑query/day limit. Try again tomorrow.`
+  // memoize sendQuery so its identity only changes when its inputs change
+  const sendQuery = useCallback(
+    async (userQuery) => {
+      setQuery("");
+      setInterimQuery("");
+      const trimmed = userQuery.trim();
+      if (!trimmed) return;
+      if (queriesSent >= MAX_QUERIES) {
+        setErrorMsg(
+          `You’ve reached your ${MAX_QUERIES}‑query/day limit. Try again tomorrow.`
+        );
+        return;
+      }
+      if (!chatStarted) setChatStarted(true);
+      setErrorMsg("");
+      setFollowUpSuggestions([]);
+      cancelRef.current = false;
+
+      // 0) Insert user bubble
+      const userId = Date.now();
+      setChatHistory((h) => [
+        ...h,
+        { id: userId, sender: "user", text: trimmed },
+      ]);
+
+      // 1) Insert AI bubble → "Thinking..."
+      setLoading(true);
+      const aiId = userId + 1;
+      setChatHistory((h) => [
+        ...h,
+        { id: aiId, sender: "ai", text: "Thinking..." },
+      ]);
+      // 1) get optimized query
+      const { data: optRes } = await axios.post(
+        `${API_URL}/ai/optimize-query`,
+        { query: trimmed, conversationMemory }
       );
-      return;
-    }
-    if (!chatStarted) setChatStarted(true);
-    setErrorMsg("");
-    setFollowUpSuggestions([]);
-    cancelRef.current = false;
+      const optimized = optRes.optimizedQuery || trimmed;
+      console.log(optimized);
+      await delay(300); // let UI settle
 
-    // 1) Insert user bubble
-    const userId = Date.now();
-    setChatHistory((h) => [
-      ...h,
-      { id: userId, sender: "user", text: trimmed },
-    ]);
-
-    // 2) Insert AI bubble → "Thinking..."
-    setLoading(true);
-    const aiId = userId + 1;
-    setChatHistory((h) => [
-      ...h,
-      { id: aiId, sender: "ai", text: "Thinking..." },
-    ]);
-
-    await delay(200); // let UI settle
-
-    // 3) Fire the main chat API
-    const askPromise = axios.post(`${API_URL}/ai/ask-chat`, {
-      query: trimmed,
-      conversationMemory,
-    });
-
-    // 4) Stage transitions
-    await delay(200);
-    if (!cancelRef.current) {
-      setChatHistory((h) =>
-        h.map((m) =>
-          m.id === aiId ? { ...m, text: "Gathering Context..." } : m
-        )
-      );
-    }
-    await delay(200);
-
-    try {
-      // 5) Await the answer
-      const { data } = await askPromise;
-      if (cancelRef.current) throw new Error("cancelled");
-      const answerText = data.answer || "";
-
-      // 6) Immediately kick off follow‑ups
-      const suggestPromise = axios.post(
-        `${API_URL}/ai/suggestFollowUpQuestions`,
-        { query: trimmed, response: answerText }
-      );
-
-      // 7) Show “Generating Response…”
       if (!cancelRef.current) {
         setChatHistory((h) =>
           h.map((m) =>
-            m.id === aiId ? { ...m, text: "Generating Response..." } : m
+            m.id === aiId ? { ...m, text: "Gathering Context..." } : m
           )
         );
       }
-      await delay(200);
-
-      // 8) Snapshot memory
-      const memRes = await axios.post(`${API_URL}/ai/snapshotMemoryUpdate`, {
-        previousMemory: conversationMemory,
-        query: trimmed,
-        response: answerText,
+      // 3) Fire the main chat API
+      const askPromise = axios.post(`${API_URL}/ai/ask-chat`, {
+        query: optimized,
+        conversationMemory,
       });
-      if (cancelRef.current) throw new Error("cancelled");
-      const newMem = memRes.data.memory;
-      setConversationMemory(newMem);
-      localStorage.setItem("conversationMemory", newMem);
+      // 4) Stage transitions
+      await delay(300);
 
-      // 9) Increment count
-      const newCount = queriesSent + 1;
-      setQueriesSent(newCount);
-      localStorage.setItem("queriesSent", String(newCount));
-
-      // 🔟 Typewriter reveal
-      let built = "";
-      for (let i = 0; i < answerText.length; i++) {
-        if (cancelRef.current) break;
-        built += answerText[i];
-        setChatHistory((h) =>
-          h.map((m) => (m.id === aiId ? { ...m, text: built } : m))
-        );
-        await delay(TYPING_DELAY);
-      }
-
-      // 1️⃣1️⃣ Mark latest AI bubble
-      setLatestAIId(aiId);
-
-      // 1️⃣2️⃣ Await and display follow‑ups immediately
       try {
-        const followRes = await suggestPromise;
+        // 7) Show “Generating Response…”
         if (!cancelRef.current) {
-          setFollowUpSuggestions(followRes.data.suggestions || []);
+          setChatHistory((h) =>
+            h.map((m) =>
+              m.id === aiId ? { ...m, text: "Generating Response..." } : m
+            )
+          );
         }
-      } catch {
-        /* ignore */
-      }
+        // 5) Await the answer
+        const { data } = await askPromise;
+        if (cancelRef.current) throw new Error("cancelled");
+        const answerText = data.answer || "";
+        await delay(300);
 
-      setLoading(false);
-    } catch (err) {
-      if (!cancelRef.current) console.error(err);
-      setChatHistory((h) =>
-        h.map((m) =>
-          m.id === aiId
-            ? {
-                ...m,
-                text: cancelRef.current
-                  ? `${m.text} [Generation stopped]`
-                  : "Sorry, something went wrong.",
-              }
-            : m
-        )
-      );
-      setLoading(false);
-    } finally {
-      setQuery("");
-    }
-  };
+        // 6) Immediately kick off follow‑ups
+        const suggestPromise = axios.post(
+          `${API_URL}/ai/suggestFollowUpQuestions`,
+          {
+            query: optimized,
+            response: answerText,
+            conversationMemory: conversationMemory,
+          }
+        );
+
+        // 8) Snapshot memory
+        const memRes = await axios.post(`${API_URL}/ai/snapshotMemoryUpdate`, {
+          previousMemory: conversationMemory,
+          query: optimized,
+          response: answerText,
+        });
+        if (cancelRef.current) throw new Error("cancelled");
+        // 7) Show “Updating Conversation Memory & Formatting Response…”
+        if (!cancelRef.current) {
+          setChatHistory((h) =>
+            h.map((m) =>
+              m.id === aiId
+                ? { ...m, text: "Updating Conversation Memory…" }
+                : m
+            )
+          );
+        }
+        const newMem = memRes.data.memory;
+        setConversationMemory(newMem);
+        localStorage.setItem("conversationMemory", newMem);
+        await delay(300);
+
+        // 9) Increment count
+        const newCount = queriesSent + 1;
+        setQueriesSent(newCount);
+        localStorage.setItem("queriesSent", String(newCount));
+
+        // 🔟 Typewriter reveal, two letters at a time
+        let built = "";
+        for (let i = 0; i < answerText.length; i += 3) {
+          if (cancelRef.current) break;
+
+          // take 2 chars (or whatever remains)
+          built += answerText.slice(i, i + 3);
+
+          // capture the current snapshot
+          const textToShow = built;
+
+          // now this callback only ever references textToShow, which is
+          // a fresh const on each iteration
+          setChatHistory((h) =>
+            h.map((m) => (m.id === aiId ? { ...m, text: textToShow } : m))
+          );
+
+          await delay(TYPING_DELAY);
+        }
+
+        // 1️⃣1️⃣ Mark latest AI bubble
+        setLatestAIId(aiId);
+
+        // 1️⃣2️⃣ Await and display follow‑ups immediately
+        try {
+          const followRes = await suggestPromise;
+          if (!cancelRef.current) {
+            setFollowUpSuggestions(followRes.data.suggestions || []);
+          }
+        } catch {
+          /* ignore */
+        }
+
+        setLoading(false);
+      } catch (err) {
+        if (!cancelRef.current) console.error(err);
+        setChatHistory((h) =>
+          h.map((m) =>
+            m.id === aiId
+              ? {
+                  ...m,
+                  text: cancelRef.current
+                    ? `${m.text} [Generation stopped]`
+                    : "Sorry, something went wrong.",
+                }
+              : m
+          )
+        );
+        setLoading(false);
+      } finally {
+        setQuery("");
+      }
+    },
+    [chatStarted, conversationMemory, delay, queriesSent]
+  );
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -330,6 +357,13 @@ const AIChatBot = ({ scrolled, initialQuery }) => {
       sendQuery(chatHistory[idx - 1].text);
     }
   };
+
+  useEffect(() => {
+    if (initialQuery && !didAutoSend.current) {
+      didAutoSend.current = true;
+      sendQuery(initialQuery);
+    }
+  }, [initialQuery, sendQuery]);
 
   const starterQuestions = [
     "What skills have your developed from your experiences?",
@@ -612,8 +646,8 @@ const AIChatBot = ({ scrolled, initialQuery }) => {
                 loading
                   ? "Generating Response..."
                   : listening
-                  ? "Listening your Question, Please Speak!"
-                  : "Ask another question!"
+                  ? "Listening... Please ask!"
+                  : "Ask any question about me!"
               }`}
               onKeyDown={(e) => {
                 // Enter=send, Shift+Enter=newline

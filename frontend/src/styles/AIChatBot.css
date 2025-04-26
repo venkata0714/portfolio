@@ -187,10 +187,13 @@
   align-items: flex-start;
   padding-bottom: 20px;
   position: relative;
+  min-width: 150px !important;
 }
 .message.user {
   align-self: flex-end;
   width: 100%;
+  min-width: 150px !important;
+
   padding-left: 30%;
   flex-direction: row-reverse;
   margin-right: 20px;
@@ -198,6 +201,8 @@
 .message.ai {
   align-self: flex-start;
   width: 100%;
+  min-width: 150px !important;
+
   padding-right: 20%;
   margin-left: 20px;
 }
@@ -328,25 +333,48 @@
 }
 /* Change the placeholder color for your query input */
 .input-form .query-input::placeholder {
+  font-size: large;
   color: #edeeef;
-  opacity: 1;
+  opacity: 0.7;
 }
 .input-form .query-input::-webkit-input-placeholder {
+  font-size: large;
   color: #edeeef;
-  opacity: 1;
+  opacity: 0.7;
 }
 .input-form .query-input::-moz-placeholder {
+  font-size: large;
   color: #edeeef;
-  opacity: 1;
+  opacity: 0.7;
 }
 .input-form .query-input:-ms-input-placeholder {
+  font-size: large;
   color: #edeeed;
-  opacity: 1;
+  opacity: 0.7;
 }
 .input-form .query-input:-moz-placeholder {
+  font-size: large;
   color: #edeeef;
-  opacity: 1;
+  opacity: 0.7;
 }
+
+/* Hide placeholder while the input is focused or active */
+.query-input:focus::placeholder,
+.query-input:active::placeholder,
+.query-input:focus:-ms-input-placeholder,
+.query-input:active:-ms-input-placeholder,
+.query-input:focus::-ms-input-placeholder,
+.query-input:active::-ms-input-placeholder,
+.query-input:focus::-moz-placeholder,
+.query-input:active::-moz-placeholder,
+.query-input:focus:-moz-placeholder,
+.query-input:active:-moz-placeholder,
+.query-input:focus::-webkit-input-placeholder,
+.query-input:active::-webkit-input-placeholder {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
 .query-input {
   flex: 1;
   padding: 10px 15px;

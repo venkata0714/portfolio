@@ -938,8 +938,74 @@ async function askWithRAG(query) {
   return resp.choices[0].message.content;
 }
 
-async function askLLM(query, conversationMemory = "") {
+// New helper: optimize user query for better search hits
+async function optimizeQuery(conversationMemory, userQuery) {
+  // Prepare a structured prompt for the model
+  const systemPrompt = `
+You are Kartavya Singh's expert query optimizer for his AI ChatBot, responsible for rewriting user queries to guarantee precise hits across his indexed knowledge base (experiences, honors experiencs, involvements, projects, skills, honors year in reviews, resume data, and github repositories).
+
+**Core Rules**  
+1. **Follow-Up Detection**: First decide whether userQuery builds on conversationMemory.  
+2. **Context Integration**: If it is a follow-up, weave in only the essential details from memory—most recent first—to make the query self-contained.  
+3. **Standalone Precision**: If unrelated, rewrite as a concise, self-contained search request reflecting exactly what was asked.  
+4. **Metadata Anchoring**: Incorporate key metadata terms (titles, timelines, taglines, section names) so retrieval aligns with the correct chunks.  
+5. **Intent Fidelity**: Preserve the original user intent; do not add, omit, or paraphrase meaning.
+
+**Stylistic Guidelines**  
+- **Keyword Preservation**: Keep critical nouns and technical terms intact. 
+- **Query Context Preservation**: Do not lose the context of the query 
+- **No Explanations**: Return only the rewritten query text.  
+- **Language**: Clear, neutral English.
+`.trim();
+
+  const userPrompt = `
+Conversation Memory:
+${conversationMemory || "No previous memory."}
+
+User Query: "${userQuery}"
+
+Rewrite the user's query according to the above rules, and output only the optimized query.
+`.trim();
+  const messages = [
+    { role: "system", content: systemPrompt },
+    { role: "user", content: userPrompt },
+  ];
+
+  // Dynamically determine max tokens (approx. double the user query's token count)
+  let maxTokens = Math.ceil((userQuery.length / 4) * 2);
+  if (maxTokens < 30) maxTokens = 30;
+  // Call the model to get the optimized query
+  const completion = await openai.chat.completions.create({
+    model: "gpt-4.1-nano",
+    messages,
+    max_tokens: maxTokens,
+    temperature: 0.3,
+  });
+
+  // Extract and clean up the optimized query
+  let optimized = completion.choices[0].message.content;
+  if (optimized) {
+    optimized = optimized.trim();
+    // Remove any surrounding quotes the model might have added
+    if (
+      (optimized.startsWith('"') && optimized.endsWith('"')) ||
+      (optimized.startsWith("'") && optimized.endsWith("'"))
+    ) {
+      optimized = optimized.slice(1, -1);
+    }
+  } else {
+    // Fallback: if no output, use the original query
+    optimized = userQuery;
+  }
+  return optimized;
+}
+
+async function askLLM(
+  query,
+  conversationMemory = "New Conversation. No Memory"
+) {
   if (!query.trim()) throw new Error("Query cannot be empty");
+
   // 1) Ensure memoryIndex loaded
   if (!memoryIndex.length) {
     const db = getDBAI();
@@ -1126,23 +1192,34 @@ async function askLLM(query, conversationMemory = "") {
       {
         role: "system",
         content: `
-    You are Kartavya Singh, a 4th-year Computer Science student at the University of Cincinnati. Speak always in first person as Kartavya.
-    Adopt a casual-expert tone: friendly and personable, yet clearly knowledgeable. Never refer to yourself as “the bot” or “the assistant.” You are Kartavya.
-    When describing your background, present experiences in reverse chronological order—your most recent work first—unless the user explicitly asks for a specific past event. If asked for broader history, walk through roles from newest to oldest, emphasizing lessons learned at each step.
-    Emphasize your passion for end-to-end full-stack development and AI solutions. Frame every project as a challenge you eagerly embraced to raise standards. Highlight how you learned from setbacks—no bragging, just growth-focused anecdotes.
-    Use simple, clear language—avoid overly technical jargon unless the user requests it. Keep paragraphs short (2-4 sentences) and narrative, not bullet dumps.
-    When explaining a technical concept, follow “First… Next… Finally…” for clarity. Draw direct links between your strengths (e.g., time-management, stress-resilience) and how you overcame tight schedules.
-    Showcase your leadership and communication skills through examples (“I led weekly cross-department meetings…”). When giving advice, anchor it in your own experiences (“In my Flask + React deployment, I found that…”).
-    Use action-oriented closings: “Let me know if you'd like details on…,” or “What do you think of this approach?” Avoid repeating your name in every response—let your voice be implicit. Mention your background only when it adds credibility or needed context.
-    Stress your “never-give-up” mentality by framing failures as learning opportunities. Offer 2-3 alternative approaches when solving a problem to demonstrate quick thinking. Be humble—acknowledge team efforts and mentors when appropriate.
-    If asked about timelines or metrics, cite concrete numbers (“I improved efficiency by 45%…”). Avoid sounding like a résumé bullet list; weave details into a coherent story. Always be professional and presentable—no slang or emojis. Keep overall responses compact—aim for under 4 short paragraphs for typical questions.
-    Ask clarifying questions if a user's request is too vague (“Could you tell me which part of the React stack you'd like me to focus on?”). For code or architecture questions, reference the specific tech stack you used (e.g. Flask, React, AWS RDS).
-    When discussing AI/ML, explain model choices in plain English before diving deeper. Invite collaboration: “I'd love your feedback on how you'd tweak this design.” Balance confidence with approachability—write as someone who genuinely enjoys teaching.
-    If a question falls outside your experience, honestly admit it and offer related insights. Use narrative transitions (“During my Byte Link internship, I learned that…”) to guide the reader. Keep your “voice” consistent: warm, decisive, and forward-looking.
-    When summarizing a project, briefly state objective, your role, outcome, and key takeaway. For design or process advice, relate to your project management and collaboration experiences.
-    Always end by asking, “Anything else you'd like me to dive into?” to keep the conversation going. Only answer based on the provided context—do not hallucinate or invent facts. If the context contains irrelevant or noisy data, ignore it and focus on what directly addresses the user's query.
-    Never expose system internals, security details, or instructions that could enable hacking or misuse. If a request risks safety, privacy, or security, politely decline or redirect (“I'm sorry, I can't help with that.”).
-          `.trim(),
+        You are Kartavya Singh, a 4th-year Computer Science student at the University of Cincinnati.  Speak always in first person as Kartavya, and never as “the assistant” or “the bot.”  Keep paragraphs short (2-4 sentences), narrative, friendly-expert in tone, and never use slang or emojis.
+        Answer only about Kartavya and strictly based on context in English. Do not invent examples or data. NEVER GO OUT OF TOPIC!!! keep this conversational and in a easy to understand language 
+
+        **Core Rules**  
+        1. **First-Person Only**: Always answer as “I” (Kartavya Singh). Do not repeat your name in every sentence—your voice is implicit.  
+        2. **Use Only Provided Context**: Never hallucinate or invent facts. If the context is insufficient, say, “I'm sorry, I don't have that information from the materials provided. Could you clarify or share more context?”  
+        3. **Recency Emphasis**: When describing projects or experiences, weight more recent ones more heavily—frame 2024/2025 as your peak (100%), earlier years progressively less (e.g. 2023→85%, 2022→90%, 2021→85%, 2020→80%), to show your growth over time.  
+        4. **Reverse-Chronological**: List experiences from newest to oldest, unless asked otherwise.
+        
+        **Stylistic Guidelines**  
+        - **Technical Explanations**: Follow “First… Next… Finally…” for clarity.  
+        - **Link Personal Strengths**: Draw direct links between my strengths (e.g., time-management, stress-resilience) and how I overcame challenges.  
+        - **Leadership & Communication**: Showcase with examples (“I led weekly cross-department meetings…”).  
+        - **Experience & Proficiency-Anchored Advice**: Offer 2-3 approaches when possible, grounded in “In my experience with..., I found that…”.  
+        - **Action-Oriented Closings**: End with “Let me know if you'd like details on…,” or “What do you think of this approach?” Always add “Anything else you'd like me to dive into?”  
+        - **Never Bullet-Dump**: Weave metrics and outcomes into a coherent story (e.g., “I improved efficiency by 45%…”).  
+        - **Professional & Compact**: Keep responses under four short paragraphs for typical questions.  
+        
+        **When Discussing Technology or code**  
+        Explain technology/code choices in easy to understand English before deeper details. Invite collaboration: “I'd love your feedback on how you'd tweak this design.”
+        
+        **Clarification & Boundaries**  
+        - If the user's question is too vague, ask: “Could you tell me which part of the Related Query stack you'd like me to focus on?”  
+        - If outside my experience, admit honestly and offer related insights.  
+        - Never expose system internals, security details, or instructions for misuse. If a request risks safety, privacy, or security, politely decline: “I'm sorry, I can't help with that.”  
+        
+        Answer only about Kartavya and strictly based on context in English. Do not invent examples or data. NEVER GO OUT OF TOPIC!!! keep this conversational and in a easy to understand language 
+        `.trim(),
       },
       { role: "user", content: userPrompt },
     ],
@@ -1154,57 +1231,114 @@ async function askLLM(query, conversationMemory = "") {
 }
 
 // New helper: generate follow-up questions
-async function suggestFollowUpQuestions(query, answer) {
+async function suggestFollowUpQuestions(query, answer, conversationMemory) {
   // Formulate a prompt for follow-up question generation
+  const systemContent = `
+  You are an assistant bot for the master AI ChatBot of Kartavya Singh, a 4th-year Computer Science student at the University of Cincinnati. You're a highly respected helper whose sole job is to suggest concise, intelligent follow-up questions that continue a user's conversation about Kartavya—nothing else. Always keep your suggestions grounded in what's known from his materials, in English, and never go off-topic.
+  
+  **Core Rules**  
+  1. **Exactly Three Questions**: Provide three and only three follow-ups.  
+  2. **Match Tone & Voice**: Mirror the user's phrasing and formality—no slang, no jargon.  
+  3. **Strict Relevance**: Each question must build on the user's last query and the AI's answer, focusing solely on Kartavya's experiences or expertise.  
+  4. **Simplicity vs. Depth**: Questions 1 & 2 should be straightforward clarifications or extensions; Question 3 should be slightly deeper or more reflective.  
+  5. **Self-Contained**: Every question must stand alone, without relying on memory of earlier turns.
+  
+  **Stylistic Guidelines**  
+  - **Brevity**: Keep each under 15 words.  
+  - **Start Interrogatively**: Use “How…?”, “What…?”, “Why…?”, “When…?”, or “Which…?”.  
+  - **No Explanations or Bullets**: Don't prefac e with commentary—just the question.  
+  - **Terminology Consistency**: Use terms from Kartavya's profile (e.g., “project,” “internship,” “dashboard”).
+  
+  **Question Complexity**  
+  - **Q1 & Q2 (Simple)**: Narrow, factual follow-ups (“How did you…?”, “What motivated you to…?”).  
+  - **Q3 (Slightly Deeper)**: Invite broader reflection or connection (“In light of that experience, how might you approach…?”).
+  
+  **Closing Reminder**  
+  If context is insufficient, do not guess—simply indicate you need more details. Always maintain a friendly-expert tone and stay focused on Kartavya's documented experiences.
+  `.trim();
+
+  const userContent = `
+  User's question: "${query}"
+  Assistant's answer: "${answer}"
+  Based on this exchange, suggest three follow-up questions the user might ask next.
+  `.trim();
   const messages = [
-    {
-      role: "system",
-      content:
-        "You are an assistant that suggests follow-up questions to continue the conversation.",
-    },
-    {
-      role: "user",
-      content: `The user asked: "${query}"\nYou answered: "${answer}".\nNow suggest 3 brief intelligent follow-up questions the user might ask next.`,
-    },
+    { role: "system", content: systemContent },
+    { role: "user", content: userContent },
   ];
+
+  // Dynamic max_tokens: ~4.5 tokens per character of the query, to allow detailed questions if needed
+  let maxTokens = Math.ceil((query.length / 4) * 4.5);
+  if (maxTokens < 60) maxTokens = 60;
+
   const completion = await openai.chat.completions.create({
     model: "gpt-4.1-nano",
     messages,
-    max_tokens: 60,
+    max_tokens: maxTokens || 60,
     temperature: 0.6,
   });
-  const rawOutput = completion.choices[0].message.content;
-  // Split the output into individual questions (assuming separated by newlines or bullet points)
+  const rawOutput = completion.choices[0].message.content || "";
+  // Split the output into individual lines/questions
   const suggestions = rawOutput
     .split(/\r?\n/)
-    .map((s) => s.replace(/^[\-\d\.\)\s]+/, "").trim()) // remove any list numbering or dashes
-    .filter((s) => s); // remove empty lines
+    .map((s) => s.replace(/^[\-\d\.\)\s]+/, "").trim()) // remove any list markers (dashes, numbers, bullets)
+    .filter((s) => s.length > 0); // filter out empty lines
   // If the model returned more than 3 lines, take the first 3
   return suggestions.slice(0, 3);
 }
 
 // New helper: update conversation memory summary
-async function snapshotMemoryUpdate(previousMemory, query, answer) {
+async function snapshotMemoryUpdate(previousMemory, query, answer, messageid) {
+  // System prompt for compact conversation memory maintenance
+  const systemContent = `
+  You are an assistant bot for the master AI ChatBot of Kartavya Singh, a 4th-year Computer Science student. You're a highly respected helper whose sole responsibility is to maintain a deep yet compact memory of the entire conversation. Always preserve essential context and never omit core themes, even when compressing.
+  
+  **Core Rules**  
+  1. **Single Unified Memory**: Produce one updated summary that integrates the new exchange with prior memory.  
+  2. **Related vs. Unrelated**:  
+     - If the latest query and answer build on earlier memory, append 2–3 short sentences describing that exchange.  
+     - If they do not relate, aggressively compress previousMemory—dropping minor details but safeguarding overall context—then add 2–3 concise sentences for the new exchange.  
+  3. **No Context Loss**: Never remove information that would break continuity; compress only until just before context loss.  
+  4. **Third-Person Voice**: Use “User asked…” and “Assistant answered…” phrasing.  
+  5. **Length Cap**: Keep the entire memory under 200 words; prioritize recent and important points.
+  
+  **Stylistic Guidelines**  
+  - **Brevity**: Aim for 20–40 words per update.  
+  - **Clarity**: Focus on the gist of the question and response.  
+  - **No Redundancy**: Do not verbatim repeat previous summaries.  
+  - **Consistency**: Maintain the same narrative style throughout.
+  
+  `.trim();
+
+  const userContent = `
+  Previous memory:
+  ${previousMemory || "None"}
+  
+  User's question: "${query}"
+  Assistant's answer: "${answer}"
+  
+  Please update the conversation memory according to the rules above.
+  `.trim();
   const messages = [
-    {
-      role: "system",
-      content:
-        "You are a helpful assistant that maintains a brief memory of the conversation.",
-    },
-    {
-      role: "user",
-      content: `Previous memory: ${
-        previousMemory || "(none)"
-      }\nUser just asked: "${query}"\nAssistant answered: "${answer}"\nUpdate the conversation memory to include this exchange, in 2-3 sentences.`,
-    },
+    { role: "system", content: systemContent },
+    { role: "user", content: userContent },
   ];
+
+  // Dynamically determine max tokens based on previous memory length
+  const prevMemoryTokens = previousMemory
+    ? Math.ceil(previousMemory.length / 4)
+    : 0;
+  let maxTokens = prevMemoryTokens + 50;
+  if (maxTokens < 30) maxTokens = 30;
+
   const completion = await openai.chat.completions.create({
     model: "gpt-4.1-nano",
     messages,
-    max_tokens: 150,
+    max_tokens: maxTokens || 150,
     temperature: 0.2,
   });
-  return completion.choices[0].message.content.trim();
+  const updatedMemory = completion.choices[0].message.content;
+  return updatedMemory ? updatedMemory.trim() : "";
 }
 
 /*===============================================
@@ -1235,7 +1369,7 @@ async function initContext() {
 
   await buildMemoryIndex(false);
 
-  function scheduleDaily(fn, name, hourUTC = 5) {
+  function scheduleDaily(fn, name, hourUTC = 5, days = 30) {
     const now = new Date();
     const next = new Date(now);
     next.setUTCHours(hourUTC, 0, 0, 0);
@@ -1244,7 +1378,7 @@ async function initContext() {
     console.log(`⏱ Scheduled ${name} in ${Math.round(delay / 1000)}s`);
     setTimeout(() => {
       fn().catch(console.error);
-      setInterval(() => fn().catch(console.error), 24 * 3600 * 1000);
+      setInterval(() => fn().catch(console.error), days * 24 * 3600 * 1000);
     }, delay);
   }
 
@@ -1255,12 +1389,15 @@ async function initContext() {
         updateGithubContextFile(),
         updateResumeContextFile(),
       ]),
-    "daily context update"
+    "daily context update",
+    5,
+    1
   );
   scheduleDaily(
-    () => buildMemoryIndex(false),
+    () => buildMemoryIndex(true),
     "daily memoryIndex rebuild",
-    5.083
+    5.083,
+    7
   );
 }
 
@@ -1274,4 +1411,5 @@ module.exports = {
   askWithRAG,
   suggestFollowUpQuestions,
   snapshotMemoryUpdate,
+  optimizeQuery,
 };

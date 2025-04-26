@@ -305,7 +305,7 @@ function HomePage({ isBatterySavingOn, scrolled, addTab }) {
                   bounceStiffness: 250,
                   bounceDamping: 15,
                 }}
-                whileInView={{ opacity: 1, scale: 1 }}
+                animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0, scale: { delay: 0, type: "ease" } }}
                 whileHover={{
                   scale: 1.01,
@@ -355,7 +355,7 @@ function HomePage({ isBatterySavingOn, scrolled, addTab }) {
                   placeholder={`${
                     listening
                       ? "Transcribing... Ask your question"
-                      : "Learn About Me From My AI Companion!"
+                      : "Ask My AI Companion!"
                   }`}
                   onKeyDown={(e) => {
                     // Enter=send, Shift+Enter=newline
