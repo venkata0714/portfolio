@@ -4,11 +4,15 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100svh;
+  height: 100vh;
   font-family: "Montserrat", sans-serif;
   color: #edeeef;
   text-align: center;
   z-index: 2;
+}
+
+.home-input-form .query-input {
+  padding-right: 60px !important;
 }
 
 /* When the .query-input is focused or active, make its placeholder transparent */
@@ -304,6 +308,9 @@
 }
 
 @media (max-width: 576px) {
+  .home-input-form .query-input {
+    padding-right: 55px !important;
+  }
   .name {
     font-size: 2.25rem;
   }

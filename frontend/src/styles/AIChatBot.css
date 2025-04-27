@@ -393,7 +393,7 @@
 }
 
 .input-form .query-input {
-  padding-right: 50px;
+  padding-right: 60px;
 }
 
 /* Mic button container for better hit area */
@@ -423,12 +423,12 @@
   color: #edeeef;
 }
 
-.mic-btn-container:hover .mic-btn {
+.mic-btn:hover {
   background: #fcbc1d;
 }
 
 .mic-btn-container:hover i {
-  color: #212529;
+  color: #212529 !important;
 }
 
 .bubble-container {
@@ -599,6 +599,45 @@
   border: 4px solid #fcbc1d !important;
 }
 
+.audio-playbar {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: #343a40;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  z-index: 10;
+  margin: 0 0 0 auto;
+  /* width: min(1140px, 50%); */
+  width: fit-content;
+}
+
+.audio-playbar .audio-controls button {
+  margin-left: 8px;
+  background: transparent;
+  border: 1px solid #555;
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.audio-playbar .audio-controls button:hover {
+  background: #444;
+}
+
+.audio-playbar .audio-controls i {
+  margin-left: 12px;
+  cursor: pointer;
+  font-size: 1.1rem; /* match your other toast icons if desired */
+}
+
 @media (max-width: 768px) {
   /* .intro-card {
     width: 95%;
@@ -620,6 +659,10 @@
     font-size: 0.9rem;
   }
   .mic-btn {
+    width: 32px;
+    height: 32px;
+  }
+  .send-float-btn {
     width: 32px;
     height: 32px;
   }

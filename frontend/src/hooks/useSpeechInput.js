@@ -12,6 +12,17 @@ export function useSpeechInput({ onResult, lang = "en-US" } = {}) {
   const recognitionRef = useRef(null);
   const onResultRef = useRef(onResult);
 
+  /**
+   * Simple post‐processor to capitalize & punctuate final results
+   */
+  function punctuate(text) {
+    // capitalize first letter
+    text = text.charAt(0).toUpperCase() + text.slice(1);
+    // add a period if missing
+    if (!/[.!?]$/.test(text.trim())) text += ".";
+    return text;
+  }
+
   // keep the ref up to date
   useEffect(() => {
     onResultRef.current = onResult;
@@ -34,7 +45,7 @@ export function useSpeechInput({ onResult, lang = "en-US" } = {}) {
 
     recog.onresult = (evt) => {
       const result = evt.results[evt.resultIndex];
-      const text = result[0].transcript.trim();
+      const text = punctuate(result[0].transcript.trim());
       const isFinal = result.isFinal;
       onResultRef.current(text, isFinal);
       if (isFinal) recog.stop();

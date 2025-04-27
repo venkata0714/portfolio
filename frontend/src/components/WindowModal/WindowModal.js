@@ -81,10 +81,11 @@ const WindowModal = ({
   // Minimize handler
   const handleMinimize = () => {
     let tabName = tabs[lastActiveIndex]?.name || "";
-    if (tabName.length > 20) {
-      tabName = tabName.slice(0, 17) + "...";
+    if (tabName.length > 15) {
+      tabName = tabName.slice(0, 15) + "...";
     }
-    addToast(`Minimized ${tabName} Tab`, { top: "120px", right: "20px" });
+    const right = window.innerWidth < 768 ? "70px" : "80px";
+    addToast(`Minimized ${tabName} Tab`, { top: "65px", right });
     setIsMinimized(true);
     setIsClosed(false);
   };
@@ -93,9 +94,10 @@ const WindowModal = ({
   const handleRestore = () => {
     let tabName = tabs[lastActiveIndex]?.name || "";
     if (tabName.length > 20) {
-      tabName = tabName.slice(0, 17) + "...";
+      tabName = tabName.slice(0, 15) + "...";
     }
-    addToast(`Opened ${tabName} Tab`, { top: "130px", right: "20px" });
+    // const right = window.innerWidth < 768 ? "70px" : "80px";
+    // addToast(`Opened ${tabName} Tab`, { top: "65px", right });
     setIsMinimized(false);
   };
 
@@ -217,16 +219,17 @@ const WindowModal = ({
       setIsClosed(true);
       setIsMinimized(false); // Reset minimization
     } else if (lastActiveIndex >= index) {
-      if (tabName.length > 20) {
-        tabName = tabName.slice(0, 17) + "...";
+      if (tabName.length > 15) {
+        tabName = tabName.slice(0, 15) + "...";
       }
-      addToast(`Closed ${tabName} Tab`, { top: "65px", right: "20px" });
+      // const right = window.innerWidth < 768 ? "70px" : "80px";
+      // addToast(`Closed ${tabName} Tab`, { top: "65px", right });
       setLastActiveIndex((prev) => Math.max(0, prev - 1));
     }
   };
 
   const handleCloseModal = () => {
-    addToast(`Closed Portfolio Explorer`, { top: "65px", right: "20px" });
+    // addToast(`Closed Portfolio Explorer`, { top: "65px", right: "20px" });
     setTabs([]);
     setLastActiveIndex(0);
     setIsClosed(true);

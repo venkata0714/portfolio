@@ -14,7 +14,7 @@ const MAX_QUERIES = 20;
 const TOAST_THRESHOLD = 5;
 const TYPING_DELAY = 0; // ms per character
 
-const AIChatBot = ({ scrolled, initialQuery }) => {
+const AIChatBot = ({ scrolled, initialQuery, isMinimized, isClosed }) => {
   const [chatStarted, setChatStarted] = useState(false);
   const [hasSavedChat, setHasSavedChat] = useState(false);
   const [query, setQuery] = useState("");
@@ -25,7 +25,7 @@ const AIChatBot = ({ scrolled, initialQuery }) => {
       if (isFinal) {
         setSpoken(true);
         // append final transcript onto existing query
-        setQuery((q) => q + transcript);
+        setQuery((q) => q + " " + transcript);
         setInterimQuery("");
       } else {
         setInterimQuery(transcript);
@@ -33,6 +33,12 @@ const AIChatBot = ({ scrolled, initialQuery }) => {
     },
   });
   const micDisabled = !supported || permission === "denied";
+  // ── AUDIO PLAYBACK STATE ───────────────────────────────────────
+  const [audioPlaying, setAudioPlaying] = useState(false);
+  const [audioPaused, setAudioPaused] = useState(false);
+  const [audioCurrent, setAudioCurrent] = useState(0); // seconds elapsed
+  const [audioDuration, setAudioDuration] = useState(0); // total seconds
+  const timerRef = useRef(null);
 
   const [chatHistory, setChatHistory] = useState([]); // {id, sender, text}
   const [followUpSuggestions, setFollowUpSuggestions] = useState([]);
@@ -153,7 +159,7 @@ const AIChatBot = ({ scrolled, initialQuery }) => {
   // --- Toast logic ---
   useEffect(() => {
     setShowToast(
-      queriesSent >= MAX_QUERIES - TOAST_THRESHOLD && queriesSent < MAX_QUERIES
+      queriesSent >= MAX_QUERIES - TOAST_THRESHOLD && queriesSent <= MAX_QUERIES
     );
   }, [queriesSent]);
 
@@ -347,9 +353,66 @@ const AIChatBot = ({ scrolled, initialQuery }) => {
   };
   const handleThumb = (up) => console.log(up ? "👍" : "👎");
   const handleReadAloud = (text) => {
-    const u = new SpeechSynthesisUtterance(text);
-    speechSynthesis.speak(u);
+    // cancel any previous speech
+    speechSynthesis.cancel();
+    clearInterval(timerRef.current);
+
+    // estimate duration (words ÷ 2.5 words/sec)
+    const words = text.trim().split(/\s+/).length;
+    const duration = Math.max(1, words / 2.5);
+    setAudioDuration(duration);
+    setAudioCurrent(0);
+
+    // create utterance
+    const utt = new SpeechSynthesisUtterance(text);
+    utt.onend = () => {
+      clearInterval(timerRef.current);
+      setAudioPlaying(false);
+    };
+
+    // start speaking
+    speechSynthesis.speak(utt);
+    setAudioPlaying(true);
+    setAudioPaused(false);
+
+    // start timer to tick current time
+    timerRef.current = setInterval(() => {
+      setAudioCurrent((t) => {
+        if (t + 0.5 >= duration) {
+          clearInterval(timerRef.current);
+          return duration;
+        }
+        return t + 0.5;
+      });
+    }, 500);
   };
+
+  // Pause the speech
+  const handleAudioPause = () => {
+    speechSynthesis.pause();
+    clearInterval(timerRef.current);
+    setAudioPaused(true);
+  };
+
+  // Resume from pause
+  const handleAudioResume = () => {
+    speechSynthesis.resume();
+    setAudioPaused(false);
+    // restart timer
+    timerRef.current = setInterval(() => {
+      setAudioCurrent((t) => Math.min(t + 0.5, audioDuration));
+    }, 500);
+  };
+
+  // Fully stop playback
+  const handleAudioStop = () => {
+    speechSynthesis.cancel();
+    clearInterval(timerRef.current);
+    setAudioPlaying(false);
+    setAudioPaused(false);
+    setAudioCurrent(0);
+  };
+
   const handleRegenerate = (id) => {
     // find prior user message
     const idx = chatHistory.findIndex((m) => m.id === id);
@@ -358,6 +421,44 @@ const AIChatBot = ({ scrolled, initialQuery }) => {
     }
   };
 
+  // ── EXTRA PADDING ON LAST MESSAGE WHEN AUDIO PLAYING ────────────
+  useEffect(() => {
+    // 1) grab your messages container via chatEndRef
+    const container = chatEndRef.current?.parentElement;
+    if (!container) return;
+
+    // 2) get all .message nodes
+    const msgs = Array.from(container.querySelectorAll(".message"));
+    if (msgs.length === 0) return;
+
+    // 3) clear any inline padding-bottom we set before
+    msgs.forEach((m) => {
+      m.style.marginBottom = "";
+    });
+
+    // 4) if audio is playing, compute & add 20px to the last message
+    if (audioPlaying) {
+      const last = msgs[msgs.length - 1];
+      // read the computed CSS padding-bottom (e.g. "12px")
+      const comp = window.getComputedStyle(last).paddingBottom;
+      const current = parseFloat(comp) || 0;
+      last.style.marginBottom = `20px`;
+    }
+  }, [audioPlaying, chatHistory]);
+
+  // ── STOP AUDIO WHEN MINIMIZED, CLOSED, OR UNMOUNT ───────────
+  useEffect(() => {
+    // if the modal/tab is minimized or closed, stop playback immediately
+    if ((isMinimized || isClosed) && audioPlaying) {
+      handleAudioStop();
+    }
+    // cleanup on unmount as well
+    return () => {
+      handleAudioStop();
+    };
+  }, [isMinimized, isClosed]);
+
+  // Your existing auto-send effect:
   useEffect(() => {
     if (initialQuery && !didAutoSend.current) {
       didAutoSend.current = true;
@@ -623,19 +724,30 @@ const AIChatBot = ({ scrolled, initialQuery }) => {
               }}
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
             >
-              <button
+              <motion.button
                 type="button"
                 className={`mic-btn glass ${listening ? "active" : ""}`}
                 // onMouseDown={start}
                 // onMouseUp={stop}
                 // onTouchStart={start}
                 // onTouchEnd={stop}
+                style={
+                  listening
+                    ? { background: "#fcbc1d" }
+                    : { background: "#5a6268" }
+                }
+                whileHover={{ background: "#fcbc1d" }}
                 onClick={() => (listening ? stop() : start())}
                 aria-label={listening ? "Click to stop" : "Click to talk"}
                 disabled={loading || micDisabled}
               >
-                <i className={`fa fa-microphone${listening ? "" : "-slash"}`} />
-              </button>
+                <i
+                  style={
+                    listening ? { color: "#212529" } : { color: "#edeeef" }
+                  }
+                  className={`fa fa-microphone${listening ? "" : "-slash"}`}
+                />
+              </motion.button>
             </motion.div>
             <input
               ref={inputRef}
@@ -646,7 +758,7 @@ const AIChatBot = ({ scrolled, initialQuery }) => {
                 loading
                   ? "Generating Response..."
                   : listening
-                  ? "Listening... Please ask!"
+                  ? "Transcribing... Please ask!"
                   : "Ask any question about me!"
               }`}
               onKeyDown={(e) => {
@@ -910,6 +1022,42 @@ const AIChatBot = ({ scrolled, initialQuery }) => {
             style={{ position: "relative", background: "#343a40" }}
             disabled={loading}
           >
+            {audioPlaying && (
+              <div className="audio-playbar">
+                <span>
+                  {Math.floor(audioCurrent)} / {Math.ceil(audioDuration)} sec
+                </span>
+                <div className="audio-controls">
+                  {audioPaused ? (
+                    <motion.i
+                      drag="false"
+                      className="fa fa-play"
+                      title="Play"
+                      onClick={handleAudioResume}
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                    />
+                  ) : (
+                    <motion.i
+                      drag="false"
+                      className="fa fa-pause"
+                      title="Pause"
+                      onClick={handleAudioPause}
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                    />
+                  )}
+                  <motion.i
+                    drag="false"
+                    className="fa fa-stop"
+                    title="Stop"
+                    onClick={handleAudioStop}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                  />
+                </div>
+              </div>
+            )}
             <motion.div
               className="mic-btn-container"
               whileHover={{ scale: 1.1 }}
@@ -946,7 +1094,7 @@ const AIChatBot = ({ scrolled, initialQuery }) => {
                 loading
                   ? "Generating Response..."
                   : listening
-                  ? "Listening your Question, Please Speak!"
+                  ? "Transcribing... Please ask!"
                   : "Ask another question!"
               }`}
               className="query-input"

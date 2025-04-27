@@ -115,7 +115,7 @@ function HomePage({ isBatterySavingOn, scrolled, addTab }) {
   const { listening, supported, permission, start, stop } = useSpeechInput({
     onResult: (transcript, isFinal) => {
       if (isFinal) {
-        setQuery((q) => q + transcript);
+        setQuery((q) => q + " " + transcript);
         setInterimQuery("");
       } else {
         setInterimQuery(transcript);
@@ -338,14 +338,52 @@ function HomePage({ isBatterySavingOn, scrolled, addTab }) {
                     // onMouseUp={stop}
                     // onTouchStart={start}
                     // onTouchEnd={stop}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      addTab("AIChatTab", { title: "Kartavya's AI Chat" });
+                    }}
+                    aria-label={"Open AI Companion Tab"}
+                  >
+                    <i className={`fas fa-expand`} />
+                  </button>
+                </motion.div>
+                <motion.div
+                  className="mic-btn-container"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  drag
+                  dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+                  dragElastic={0.3}
+                  dragTransition={{
+                    bounceStiffness: 250,
+                    bounceDamping: 15,
+                  }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                >
+                  <motion.button
+                    type="button"
+                    className={`mic-btn glass ${listening ? "active" : ""}`}
+                    // onMouseDown={start}
+                    // onMouseUp={stop}
+                    // onTouchStart={start}
+                    // onTouchEnd={stop}
+                    style={
+                      listening
+                        ? { background: "#fcbc1d" }
+                        : { background: "#5a6268" }
+                    }
+                    whileHover={{ background: "#fcbc1d" }}
                     onClick={() => (listening ? stop() : start())}
                     aria-label={listening ? "Click to stop" : "Click to talk"}
                     disabled={micDisabled}
                   >
                     <i
+                      style={
+                        listening ? { color: "#212529" } : { color: "#edeeef" }
+                      }
                       className={`fa fa-microphone${listening ? "" : "-slash"}`}
                     />
-                  </button>
+                  </motion.button>
                 </motion.div>
                 <input
                   ref={inputRef}
@@ -353,9 +391,7 @@ function HomePage({ isBatterySavingOn, scrolled, addTab }) {
                   value={listening ? interimQuery : query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder={`${
-                    listening
-                      ? "Transcribing... Ask your question"
-                      : "Ask My AI Companion!"
+                    listening ? "Transcribing..." : "Ask My AI Companion!"
                   }`}
                   onKeyDown={(e) => {
                     // Enter=send, Shift+Enter=newline
