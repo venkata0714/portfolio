@@ -35,7 +35,7 @@
 .home-input-form {
   /* padding-right: 50px; */
   width: min(1140px, 95%);
-  min-height: 7vh;
+  height: 60px;
   /* background: #343a40; */
   display: flex;
   border-radius: 20px;

@@ -283,7 +283,7 @@ function SkillPage({ isBatterySavingOn, isWindowModalVisible }) {
 
   useEffect(() => {
     const fetchTopLangData = async () => {
-      const totalHours = 1200;
+      const totalHours = 1300;
       const url = `${process.env.REACT_APP_API_URI}/github-stats/top-langs`;
 
       // Fallback data if fetch fails or returns nothing

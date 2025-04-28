@@ -513,8 +513,8 @@ const AIChatBot = ({ scrolled, initialQuery, isMinimized, isClosed }) => {
       {chatStarted && (
         <motion.div
           className="chat-header"
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{ delay: 0.5, type: "ease", duration: 0.2 }}
         >
           <motion.i
@@ -540,7 +540,9 @@ const AIChatBot = ({ scrolled, initialQuery, isMinimized, isClosed }) => {
               localStorage.removeItem("conversationMemory");
             }}
           />
-          <h2 className="chat-title proficient">Kartavya's AI Companion</h2>
+          <h2 className="chat-title proficient" style={{ flexGrow: 1 }}>
+            Kartavya's AI Companion
+          </h2>
         </motion.div>
       )}
 
@@ -592,7 +594,7 @@ const AIChatBot = ({ scrolled, initialQuery, isMinimized, isClosed }) => {
               height: "auto",
               justifySelf: "center",
               display: "flex",
-              marginBottom: "20px",
+              // marginBottom: "20px",
             }}
             initial="hidden"
             animate="show"

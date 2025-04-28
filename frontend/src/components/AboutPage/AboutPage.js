@@ -11,7 +11,7 @@ const aboutData = [
   {
     icon: "bx bxs-hourglass about-icon",
     title: "Coding Hours",
-    subtitle: "1200+ Hours",
+    subtitle: "1300+ Hours",
   },
   {
     icon: "bx bx-trophy about-icon",
@@ -218,7 +218,7 @@ function AboutPage({ isBatterySavingOn, isWindowModalVisible, addTab }) {
                   <StyledButton
                     onClick={(e) => {
                       e.preventDefault();
-                      addTab("AIChatTab", { title: "Kartavya's AI Chat" });
+                      addTab("AIChatTab", { title: "Kartavya's AI Companion" });
                     }}
                   >
                     <ButtonShadow />

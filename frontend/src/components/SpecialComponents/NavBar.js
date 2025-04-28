@@ -409,12 +409,13 @@ const NavBar = ({ isBatterySavingOn, addTab }) => {
                 className={"navbar-link ai-chat-nav"}
                 onClick={(e) => {
                   e.preventDefault();
-                  addTab("AIChatTab", { title: "Kartavya's AI Chat" });
+                  addTab("AIChatTab", { title: "Kartavya's AI Companion" });
                   setMenuOpen(false);
                 }}
               >
                 <span className="navbar-text">
-                  <i className="fa fa-search"></i> {menuOpen ? "AI Chat" : ""}
+                  <i className="fa fa-search"></i>{" "}
+                  {menuOpen ? "AI COMPANION" : ""}
                 </span>
               </a>
             </motion.li>

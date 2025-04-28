@@ -47,3 +47,5 @@ backend/.cache/
 .next/
 .nuxt/
 dist/
+
+backend Go

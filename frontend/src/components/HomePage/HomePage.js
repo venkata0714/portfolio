@@ -131,7 +131,7 @@ function HomePage({ isBatterySavingOn, scrolled, addTab }) {
     if (!trimmed) return;
     // open the AIChatTab and pass the initialQuery in its data
     addTab("AIChatTab", {
-      title: "Kartavya's AI Chat",
+      title: "Kartavya's AI Companion",
       initialQuery: trimmed,
     });
     setQuery("");
@@ -340,7 +340,7 @@ function HomePage({ isBatterySavingOn, scrolled, addTab }) {
                     // onTouchEnd={stop}
                     onClick={(e) => {
                       e.preventDefault();
-                      addTab("AIChatTab", { title: "Kartavya's AI Chat" });
+                      addTab("AIChatTab", { title: "Kartavya's AI Companion" });
                     }}
                     aria-label={"Open AI Companion Tab"}
                   >
