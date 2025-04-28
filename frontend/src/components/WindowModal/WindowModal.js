@@ -28,8 +28,32 @@ const WindowModal = ({
   setLoggedIn,
   isWindowModalVisible,
   setIsWindowModalVisible,
+  API_URL,
+  MAX_QUERIES,
+  TYPING_DELAY,
+  chatStarted,
+  setChatStarted,
   chatHistory,
   setChatHistory,
+  loading,
+  setLoading,
+  query,
+  setQuery,
+  interimQuery,
+  setInterimQuery,
+  followUpSuggestions,
+  setFollowUpSuggestions,
+  conversationMemory,
+  setConversationMemory,
+  latestAIId,
+  setLatestAIId,
+  errorMsg,
+  setErrorMsg,
+  queriesSent,
+  setQueriesSent,
+  cancelRef,
+  sendQuery,
+  stopGenerating,
 }) => {
   const modalRef = useRef(null);
   // Toast state
@@ -86,6 +110,11 @@ const WindowModal = ({
     }
     const right = window.innerWidth < 768 ? "70px" : "80px";
     addToast(`Minimized ${tabName} Tab`, { top: "65px", right });
+    stopGenerating();
+    setChatHistory([]);
+    setConversationMemory("");
+    setFollowUpSuggestions([]);
+    setChatStarted(false);
     setIsMinimized(true);
     setIsClosed(false);
   };
@@ -110,6 +139,11 @@ const WindowModal = ({
           event.target.closest(".navbar-toggler")
         )
           return;
+        stopGenerating();
+        setChatHistory([]);
+        setConversationMemory("");
+        setFollowUpSuggestions([]);
+        setChatStarted(false);
         setIsMinimized(true); // Minimize if clicking outside
       }
     };
@@ -192,10 +226,35 @@ const WindowModal = ({
       case "AIChatTab":
         return (
           <AIChatTab
+            scrolled={scrolled}
+            isMinimized={isMinimized}
+            isClosed={isClosed}
+            API_URL={API_URL}
+            MAX_QUERIES={MAX_QUERIES}
+            TYPING_DELAY={TYPING_DELAY}
+            chatStarted={chatStarted}
+            setChatStarted={setChatStarted}
             chatHistory={chatHistory}
             setChatHistory={setChatHistory}
-            scrolled={scrolled}
-            initialQuery={data.initialQuery}
+            loading={loading}
+            setLoading={setLoading}
+            query={query}
+            setQuery={setQuery}
+            interimQuery={interimQuery}
+            setInterimQuery={setInterimQuery}
+            followUpSuggestions={followUpSuggestions}
+            setFollowUpSuggestions={setFollowUpSuggestions}
+            conversationMemory={conversationMemory}
+            setConversationMemory={setConversationMemory}
+            latestAIId={latestAIId}
+            setLatestAIId={setLatestAIId}
+            errorMsg={errorMsg}
+            setErrorMsg={setErrorMsg}
+            queriesSent={queriesSent}
+            setQueriesSent={setQueriesSent}
+            cancelRef={cancelRef}
+            sendQuery={sendQuery}
+            stopGenerating={stopGenerating}
           />
         );
       default:
@@ -230,6 +289,11 @@ const WindowModal = ({
 
   const handleCloseModal = () => {
     // addToast(`Closed Portfolio Explorer`, { top: "65px", right: "20px" });
+    stopGenerating();
+    setChatHistory([]);
+    setConversationMemory("");
+    setFollowUpSuggestions([]);
+    setChatStarted(false);
     setTabs([]);
     setLastActiveIndex(0);
     setIsClosed(true);

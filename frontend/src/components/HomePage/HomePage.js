@@ -15,7 +15,7 @@ import { zoomIn } from "../../services/variants";
 import "../../styles/HomePage.css";
 // import ProfilePhoto from `${process.env.PUBLIC_URL}/Kartavya.jpg`;
 
-function HomePage({ isBatterySavingOn, scrolled, addTab }) {
+function HomePage({ isBatterySavingOn, scrolled, addTab, sendQuery }) {
   const [clicked, setClicked] = useState(false);
   const [isCooldown, setIsCooldown] = useState(false);
   const clickCount = useRef(0); // Use useRef to keep track of click count across renders
@@ -132,9 +132,11 @@ function HomePage({ isBatterySavingOn, scrolled, addTab }) {
     // open the AIChatTab and pass the initialQuery in its data
     addTab("AIChatTab", {
       title: "Kartavya's AI Companion",
-      initialQuery: trimmed,
     });
+    sendQuery(trimmed);
+    // setQuery(trimmed);
     setQuery("");
+    setInterimQuery("");
   };
 
   useEffect(() => {
