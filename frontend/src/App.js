@@ -17,7 +17,7 @@ import PowerMode from "./components/SpecialComponents/PowerMode";
 // import { cleanupEventListeners } from "./services/eventListenerRegistry";
 
 function App({ isBatterySavingOn, setIsBatterySavingOn }) {
-  const [scrolled, setScrolled] = useState(false);
+  const [scrolled, setScrolled] = useState(window.scrollY > 100);
   const [loggedIn, setLoggedIn] = useState(false);
   const [tabs, setTabs] = useState([]); // Tabs state for WindowModal
   const [isClosed, setIsClosed] = useState(true);
@@ -339,15 +339,15 @@ function App({ isBatterySavingOn, setIsBatterySavingOn }) {
     setLoading(false);
   };
 
-  useEffect(() => {
-    const onScroll = () => {
-      setScrolled(window.scrollY > 100);
-    };
-    window.addEventListener("scroll", onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-    };
-  }, []);
+  // useEffect(() => {
+  //   const onScroll = () => {
+  //     setScrolled(window.scrollY > 100);
+  //   };
+  //   window.addEventListener("scroll", onScroll);
+  //   return () => {
+  //     window.removeEventListener("scroll", onScroll);
+  //   };
+  // }, []);
 
   return (
     <AnimatePresence>

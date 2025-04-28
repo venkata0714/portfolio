@@ -29,23 +29,23 @@ const NavBar = ({ isBatterySavingOn, addTab }) => {
     // onUpdateActiveLink(id);
   };
 
-  useEffect(() => {
-    const updateScale = () => {
-      const homeRow = document.querySelector(".navbar-container");
-      if (!homeRow) return;
-      const screenHeight = window.innerHeight;
-      const screenWidth = window.innerWidth;
-      let scaleValue = 1;
-      if (screenHeight < 826 && screenWidth > 576) {
-        scaleValue = screenHeight / 826;
-      }
-      homeRow.style.zoom = `${scaleValue}`;
-    };
+  // useEffect(() => {
+  //   const updateScale = () => {
+  //     const homeRow = document.querySelector(".navbar-container");
+  //     if (!homeRow) return;
+  //     const screenHeight = window.innerHeight;
+  //     const screenWidth = window.innerWidth;
+  //     let scaleValue = 1;
+  //     if (screenHeight < 826 && screenWidth > 576) {
+  //       scaleValue = screenHeight / 826;
+  //     }
+  //     homeRow.style.zoom = `${scaleValue}`;
+  //   };
 
-    updateScale();
-    window.addEventListener("resize", updateScale);
-    return () => window.removeEventListener("resize", updateScale);
-  }, []);
+  //   updateScale();
+  //   window.addEventListener("resize", updateScale);
+  //   return () => window.removeEventListener("resize", updateScale);
+  // }, []);
 
   useEffect(() => {
     const handleResize = () => {
