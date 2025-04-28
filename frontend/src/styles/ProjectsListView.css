@@ -156,6 +156,11 @@
   margin: 10px 0;
   color: #edeeef;
   font-weight: 500;
+  text-align: justify;
+  /* let long words break with hyphens instead of huge gaps */
+  hyphens: auto;
+  /* force the last line of each paragraph back to left alignment */
+  text-align-last: left;
 }
 
 .project-image {

@@ -406,6 +406,11 @@
   width: 100%;
   white-space: wrap;
   overflow: hidden;
+  text-align: justify;
+  /* let long words break with hyphens instead of huge gaps */
+  hyphens: auto;
+  /* force the last line of each paragraph back to left alignment */
+  text-align-last: left;
 }
 
 .career-learn-button-motioned {

@@ -181,17 +181,26 @@
 }
 
 .project-window-paragraphs {
-  width: min(980px, 95%);
+  width: min(980px, 100%);
   margin: 0 auto;
   padding: 20px;
   font-size: 1rem;
   line-height: 1.1;
   text-align: justify;
+  /* let long words break with hyphens instead of huge gaps */
+  hyphens: auto;
+  /* force the last line of each paragraph back to left alignment */
+  text-align-last: left;
   color: #edeeef;
 }
 
 .project-window-paragraph {
   margin-bottom: 1rem;
+  text-align: justify;
+  /* let long words break with hyphens instead of huge gaps */
+  hyphens: auto;
+  /* force the last line of each paragraph back to left alignment */
+  text-align-last: left;
 }
 
 /* Base styling for Swiper navigation buttons */
@@ -274,7 +283,7 @@
   .project-window-paragraphs {
     font-size: 0.9rem;
     line-height: 1;
-    text-align: justify;
+    padding: 10px;
   }
 
   /* .project-window-urls {

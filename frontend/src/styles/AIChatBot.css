@@ -256,10 +256,18 @@
   user-select: auto !important;
   margin-top: 15px;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .bubble p {
   user-select: text !important;
+  text-align: justify;
+  /* let long words break with hyphens instead of huge gaps */
+  hyphens: auto;
+  /* force the last line of each paragraph back to left alignment */
+  text-align-last: left;
 }
 .message.user .bubble {
   background-color: #fcbc1d;
