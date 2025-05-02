@@ -1,0 +1,98 @@
+Here’s a comprehensive, data-driven breakdown of your AI ChatBot’s OpenAI costs, covering **all** your API calls (askLLM, optimizeQuery, suggestFollowUpQuestions, snapshotMemoryUpdate) plus embeddings, with daily/weekly/monthly totals and key metrics.
+
+---
+
+## Assumptions & Methodology
+
+- **Usage Profile**:  
+  - 10 users/day × 20 queries each = **200 queries/day**  
+  - Weekly memory rebuild embeds **140 chunks** once per week  
+- **Models & Pricing**:  
+  - **Embeddings**: `text-embedding-3-small` @ $0.02 / 1 M tokens → $0.00002 / 1 k tokens  ([Pricing - OpenAI API](https://platform.openai.com/docs/pricing?utm_source=chatgpt.com))  
+  - **Completions**: `gpt-4.1-nano` (≈ GPT-4o mini) @ $0.15 / 1 M input tokens ($0.00015 / 1 k) & $0.60 / 1 M output tokens ($0.00060 / 1 k)  ([GPT-4o mini: advancing cost-efficient intelligence - OpenAI](https://openai.com/index/gpt-4o-mini-advancing-cost-efficient-intelligence/?utm_source=chatgpt.com))  
+- **Token Estimates per Call**:  
+  - **askLLM**: 2 500 input tokens; 256 output tokens  
+  - **optimizeQuery**: 320 input; 200 output  
+  - **suggestFollowUpQuestions**: 350 input; 60 output  
+  - **snapshotMemoryUpdate**: 400 input; 150 output  
+  - **Embeddings**:  
+    - Query embed: 300 tokens each  
+    - Chunk embed: 2 000 tokens each  
+
+---
+
+## 1. Per-Call Token Usage & Cost
+
+| **API Call**                  | **In** | **Out** | **In Cost**           | **Out Cost**          | **Total/Call**     |
+|-------------------------------|-------:|--------:|-----------------------|-----------------------|--------------------|
+| **askLLM**                    | 2 500  | 256     | 2 500×0.00015/1 000 = $0.000375  | 256×0.00060/1 000 = $0.000154  | **$0.000529**      |
+| **optimizeQuery**             | 320    | 200     | 320×0.00015/1 000 = $0.000048   | 200×0.00060/1 000 = $0.000120  | **$0.000168**      |
+| **suggestFollowUpQuestions**  | 350    | 60      | 350×0.00015/1 000 = $0.0000525  | 60×0.00060/1 000 = $0.000036   | **$0.0000885**     |
+| **snapshotMemoryUpdate**      | 400    | 150     | 400×0.00015/1 000 = $0.00006    | 150×0.00060/1 000 = $0.00009   | **$0.000150**      |
+| **Query Embedding (daily)**   | 300    | –       | 300×0.00002/1 000 = **$0.000006** | –                     | **$0.000006**      |
+| **Chunk Embedding (weekly)**  | 2 000  | –       | 2 000×0.00002/1 000 = **$0.00004**  | –                     | **$0.00004**       |
+
+---
+
+## 2. Aggregated Costs
+
+### Daily (200 queries)
+
+| **Operation**               | **Calls** | **Cost/Call** | **Total Daily**    |
+|-----------------------------|----------:|--------------:|--------------------|
+| askLLM                      |       200 | $0.0005286    | $0.10572           |
+| optimizeQuery               |       200 | $0.000168     | $0.03360           |
+| suggestFollowUpQuestions    |       200 | $0.0000885    | $0.01770           |
+| snapshotMemoryUpdate        |       200 | $0.000150     | $0.03000           |
+| **Query Embeddings**        |       200 | $0.000006     | $0.00120           |
+| **Total Daily**             |           |               | **$0.18822**       |
+
+### Weekly (7×Daily + 140 chunk embeds)
+
+- **7 × $0.18822** = $1.31754  
+- **+ 140 × $0.00004** = $0.00560  
+- **Total Weekly** = **$1.32314**
+
+### Monthly (30 days + 4.3 chunk weeks)
+
+- **30 × $0.18822** = $5.64660  
+- **+ 4.3 × $0.00004** = $0.02408  
+- **Total Monthly** ≈ **$5.67068**
+
+---
+
+## 3. Cost Breakdown by Feature (Monthly %)
+
+- **askLLM**: $3.17 → 56%  
+- **optimizeQuery**: $1.01 → 18%  
+- **suggestFollowUpQuestions**: $0.53 → 9%  
+- **snapshotMemoryUpdate**: $0.90 → 16%  
+- **Query Embeddings**: $0.04 → 1%  
+- **Chunk Embeddings**: $0.02 → <1%  
+
+---
+
+## 4. Key Metrics
+
+- **Cost per user/day**: $0.18822 ÷ 10 ≈ $0.0188  
+- **Cost per query**: $0.18822 ÷ 200 ≈ $0.00094  
+- **Queries per dollar**: 1 ÷ 0.00094 ≈ 1 064  
+- **askLLM calls per USD**: 1 ÷ 0.000529 ≈ 1 890  
+
+---
+
+## 5. Recommendations
+
+- **Context Pruning**: Reducing the 8 000-char context window cuts `askLLM` input cost linearly.  
+- **Batching & Caching**: Group related queries or cache repeated contexts to lower call volume.  
+- **Tune max_tokens**: Especially for `optimizeQuery` and memory updates—smaller outputs save money.  
+- **Monitor Real Usage**: Use your OpenAI dashboard to track actual token usage and refine these estimates.
+
+---
+
+#### Sources & URLs
+
+- **Embeddings Pricing** (`text-embedding-3-small`):  
+  https://platform.openai.com/docs/pricing  ([Pricing - OpenAI API](https://platform.openai.com/docs/pricing?utm_source=chatgpt.com))  
+- **GPT-4o mini Pricing** (≈ `gpt-4.1-nano`):  
+  https://openai.com/index/gpt-4o-mini-advancing-cost-efficient-intelligence  ([GPT-4o mini: advancing cost-efficient intelligence - OpenAI](https://openai.com/index/gpt-4o-mini-advancing-cost-efficient-intelligence/?utm_source=chatgpt.com))

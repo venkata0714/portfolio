@@ -187,8 +187,8 @@ function ProjectsListView({ addTab, isBatterySavingOn, showFeatured }) {
   const handleMouseMove = (event, index) => {
     const { clientX, clientY } = event;
     const rect = event.currentTarget.getBoundingClientRect();
-    const x = (clientX - (rect.left + rect.width / 2)) / 15;
-    const y = (clientY - (rect.top + rect.height / 2)) / 15;
+    const x = (clientX - (rect.left + rect.width / 2)) / 30;
+    const y = (clientY - (rect.top + rect.height / 2)) / 30;
     setCardStates((prevStates) =>
       prevStates.map((state, i) =>
         i === index ? { ...state, mousePosition: { x, y } } : state
@@ -281,8 +281,6 @@ function ProjectsListView({ addTab, isBatterySavingOn, showFeatured }) {
               {hoveredCard === index && (
                 <div className="hover-tooltip">{project.projectTitle}</div>
               )}
-              {/* {project.featured && <FaCrown className="featured-tag" />} */}
-
               {/* Like Button positioned at the top-right corner */}
               <div
                 style={{
@@ -306,64 +304,94 @@ function ProjectsListView({ addTab, isBatterySavingOn, showFeatured }) {
                   }
                 />
               </div>
-              <div className="project-info" id={project.projectLink}>
-                <div className="project-header">
-                  {project.projectSubTitle && (
-                    <span>{project.projectSubTitle} | </span>
-                  )}
-                  <span>{project.projectTimeline}</span>
-                </div>
-                <a
-                  className="project-title"
-                  href={`#${project.projectLink}`}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    scrollToCard(index);
-                  }}
-                >
-                  {project.projectTitle}
-                </a>
-                <hr />
-                <p className="project-tagline">{project.projectTagline}</p>
-
-                <motion.div
-                  className="learn-button-motioned"
-                  onClick={() => addTab("Project", project)}
-                  variants={zoomIn(1)}
-                  initial="hidden"
-                  animate="show"
-                  drag
-                  dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-                  dragElastic={0.3}
-                  dragTransition={{ bounceStiffness: 250, bounceDamping: 15 }}
-                >
-                  <StyledButton onClick={(e) => e.preventDefault()}>
-                    <ButtonShadow />
-                    <ButtonEdge />
-                    <ButtonLabel>Learn More →</ButtonLabel>
-                  </StyledButton>
-                </motion.div>
-              </div>
-
               <div
-                className="project-image"
-                style={{ backgroundImage: `url(${project.projectImages[0]})` }}
-              ></div>
-              {/* Like Count displayed at bottom-right if likesCount > 0 */}
-              {project.likesCount > 0 && (
+                className="card-content"
+                style={{
+                  height: "fit-content",
+                  transform: isHovering
+                    ? `translate3d(${-mousePosition.x}px, ${-mousePosition.y}px, 0)`
+                    : "translate3d(0,0,0)",
+                  transition: isBatterySavingOn
+                    ? "none"
+                    : "transform 0.1s ease-out",
+                }}
+              >
+                {/* {project.featured && <FaCrown className="featured-tag" />} */}
+
                 <div
                   style={{
-                    position: "absolute",
-                    bottom: "5px",
-                    right: "10px",
-                    color: "#edeeef",
-                    fontSize: "0.8em",
-                    zIndex: 150,
+                    display: "flex",
+                    flexDirection: `${
+                      window.innerWidth > 768 ? "row" : "column-reverse"
+                    }`,
                   }}
                 >
-                  Likes: {project.likesCount}
+                  <div className="project-info" id={project.projectLink}>
+                    <div className="project-header">
+                      {project.projectSubTitle && (
+                        <span>{project.projectSubTitle} | </span>
+                      )}
+                      <span>{project.projectTimeline}</span>
+                    </div>
+                    <a
+                      className="project-title"
+                      href={`#${project.projectLink}`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        scrollToCard(index);
+                      }}
+                    >
+                      {project.projectTitle}
+                    </a>
+                    <hr />
+                    <p className="project-tagline">{project.projectTagline}</p>
+
+                    <motion.div
+                      className="learn-button-motioned"
+                      onClick={() => addTab("Project", project)}
+                      variants={zoomIn(1)}
+                      initial="hidden"
+                      animate="show"
+                      drag
+                      dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+                      dragElastic={0.3}
+                      dragTransition={{
+                        bounceStiffness: 250,
+                        bounceDamping: 15,
+                      }}
+                    >
+                      <StyledButton onClick={(e) => e.preventDefault()}>
+                        <ButtonShadow />
+                        <ButtonEdge />
+                        <ButtonLabel>Learn More →</ButtonLabel>
+                      </StyledButton>
+                    </motion.div>
+                  </div>
+
+                  <div
+                    className="project-image"
+                    style={{
+                      backgroundImage: `url(${project.projectImages[0]})`,
+                    }}
+                  ></div>
                 </div>
-              )}
+
+                {/* Like Count displayed at bottom-right if likesCount > 0 */}
+                {project.likesCount > 0 && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      bottom: "5px",
+                      right: "10px",
+                      color: "#edeeef",
+                      fontSize: "0.8em",
+                      zIndex: 150,
+                    }}
+                  >
+                    Likes: {project.likesCount}
+                  </div>
+                )}
+              </div>
             </motion.div>
           );
         })}

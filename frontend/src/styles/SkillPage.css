@@ -19,7 +19,7 @@
   scroll-snap-align: center;
   scroll-snap-type: y mandatory;
   justify-content: center;
-  height: calc(100dvh - 52px);
+  height: calc(100vh - 52px);
   /* background-image: url("../assets/img/background/about-bg.png"); */
   /* background: linear-gradient(145deg, #212529, #181a1d); */
 
@@ -44,6 +44,8 @@
   margin: 0 auto;
   padding: 0 0px;
   z-index: 2;
+  height: calc(90vh - 52px);
+  overflow: hidden;
 }
 
 .skill-box {
@@ -64,6 +66,7 @@
   text-align: center;
   padding: 30px 20px;
   color: #edeeef;
+  height: 100%;
 }
 
 .skill-heading {

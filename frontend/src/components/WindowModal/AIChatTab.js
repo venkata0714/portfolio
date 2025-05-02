@@ -1,43 +1,72 @@
 // AIChatTab.js
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useSpeechInput } from "../../hooks/useSpeechInput";
-import axios from "axios";
 import { useSpring, animated } from "@react-spring/web";
 import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import { zoomIn } from "../../services/variants";
-import { motion, AnimatePresence } from "framer-motion";
+// import remarkGfm from "remark-gfm";
+import { scale, zoomIn } from "../../services/variants";
+import { motion } from "framer-motion";
 import "../../styles/AIChatBot.css";
 
-const API_URL = process.env.REACT_APP_API_URI;
-const MAX_QUERIES = 20;
 const TOAST_THRESHOLD = 5;
-const TYPING_DELAY = 0; // ms per character
 
-const AIChatBot = () => {
-  const [chatStarted, setChatStarted] = useState(false);
+const AIChatBot = ({
+  scrolled,
+  isMinimized,
+  isClosed,
+  API_URL,
+  MAX_QUERIES,
+  TYPING_DELAY,
+  chatStarted,
+  setChatStarted,
+  chatHistory,
+  setChatHistory,
+  loading,
+  setLoading,
+  query,
+  setQuery,
+  interimQuery,
+  setInterimQuery,
+  followUpSuggestions,
+  setFollowUpSuggestions,
+  conversationMemory,
+  setConversationMemory,
+  latestAIId,
+  setLatestAIId,
+  errorMsg,
+  setErrorMsg,
+  queriesSent,
+  setQueriesSent,
+  cancelRef,
+  sendQuery,
+  stopGenerating,
+}) => {
   const [hasSavedChat, setHasSavedChat] = useState(false);
-  const [query, setQuery] = useState("");
-  const [interimQuery, setInterimQuery] = useState("");
-  const { listening, start, stop } = useSpeechInput({
+  const [spoken, setSpoken] = useState(false);
+  const { listening, supported, permission, start, stop } = useSpeechInput({
     onResult: (transcript, isFinal) => {
-      setQuery(transcript);
-      if (!isFinal) setInterimQuery(transcript);
-      else setInterimQuery("");
+      if (isFinal) {
+        setSpoken(true);
+        // append final transcript onto existing query
+        setQuery((q) => q + " " + transcript);
+        setInterimQuery("");
+      } else {
+        setInterimQuery(transcript);
+      }
     },
   });
-  const [chatHistory, setChatHistory] = useState([]); // {id, sender, text}
-  const [followUpSuggestions, setFollowUpSuggestions] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [conversationMemory, setConversationMemory] = useState("");
-  const [queriesSent, setQueriesSent] = useState(0);
-  const [errorMsg, setErrorMsg] = useState("");
+  const micDisabled = !supported || permission === "denied";
+  // ── AUDIO PLAYBACK STATE ───────────────────────────────────────
+  const [audioPlaying, setAudioPlaying] = useState(false);
+  const [audioPaused, setAudioPaused] = useState(false);
+  const [audioCurrent, setAudioCurrent] = useState(0); // seconds elapsed
+  const [audioDuration, setAudioDuration] = useState(0); // total seconds
+  const timerRef = useRef(null);
+
   const [showToast, setShowToast] = useState(false);
-  const [latestAIId, setLatestAIId] = useState(null);
 
   const chatEndRef = useRef(null);
   const inputRef = useRef(null);
-  const cancelRef = useRef(false);
 
   // --- Daily reset & restore ---
   useEffect(() => {
@@ -142,149 +171,9 @@ const AIChatBot = () => {
   // --- Toast logic ---
   useEffect(() => {
     setShowToast(
-      queriesSent >= MAX_QUERIES - TOAST_THRESHOLD && queriesSent < MAX_QUERIES
+      queriesSent >= MAX_QUERIES - TOAST_THRESHOLD && queriesSent <= MAX_QUERIES
     );
   }, [queriesSent]);
-
-  // --- Stop generation handler ---
-  const stopGenerating = () => {
-    cancelRef.current = true;
-    setLoading(false);
-  };
-
-  // add this at the top of your component file
-  const delay = (ms) => new Promise((res) => setTimeout(res, ms));
-
-  const sendQuery = async (userQuery) => {
-    const trimmed = userQuery.trim();
-    if (!trimmed) return;
-    if (queriesSent >= MAX_QUERIES) {
-      setErrorMsg(
-        `You’ve reached your ${MAX_QUERIES}‑query/day limit. Try again tomorrow.`
-      );
-      return;
-    }
-    if (!chatStarted) setChatStarted(true);
-    setErrorMsg("");
-    setFollowUpSuggestions([]);
-    cancelRef.current = false;
-
-    // 1) Insert user bubble
-    const userId = Date.now();
-    setChatHistory((h) => [
-      ...h,
-      { id: userId, sender: "user", text: trimmed },
-    ]);
-
-    // 2) Insert AI bubble → "Thinking..."
-    setLoading(true);
-    const aiId = userId + 1;
-    setChatHistory((h) => [
-      ...h,
-      { id: aiId, sender: "ai", text: "Thinking..." },
-    ]);
-
-    await delay(200); // let UI settle
-
-    // 3) Fire the main chat API
-    const askPromise = axios.post(`${API_URL}/ai/ask-chat`, {
-      query: trimmed,
-      conversationMemory,
-    });
-
-    // 4) Stage transitions
-    await delay(200);
-    if (!cancelRef.current) {
-      setChatHistory((h) =>
-        h.map((m) =>
-          m.id === aiId ? { ...m, text: "Gathering Context..." } : m
-        )
-      );
-    }
-    await delay(200);
-
-    try {
-      // 5) Await the answer
-      const { data } = await askPromise;
-      if (cancelRef.current) throw new Error("cancelled");
-      const answerText = data.answer || "";
-
-      // 6) Immediately kick off follow‑ups
-      const suggestPromise = axios.post(
-        `${API_URL}/ai/suggestFollowUpQuestions`,
-        { query: trimmed, response: answerText }
-      );
-
-      // 7) Show “Generating Response…”
-      if (!cancelRef.current) {
-        setChatHistory((h) =>
-          h.map((m) =>
-            m.id === aiId ? { ...m, text: "Generating Response..." } : m
-          )
-        );
-      }
-      await delay(200);
-
-      // 8) Snapshot memory
-      const memRes = await axios.post(`${API_URL}/ai/snapshotMemoryUpdate`, {
-        previousMemory: conversationMemory,
-        query: trimmed,
-        response: answerText,
-      });
-      if (cancelRef.current) throw new Error("cancelled");
-      const newMem = memRes.data.memory;
-      setConversationMemory(newMem);
-      localStorage.setItem("conversationMemory", newMem);
-
-      // 9) Increment count
-      const newCount = queriesSent + 1;
-      setQueriesSent(newCount);
-      localStorage.setItem("queriesSent", String(newCount));
-
-      // 🔟 Typewriter reveal
-      let built = "";
-      for (let i = 0; i < answerText.length; i++) {
-        if (cancelRef.current) break;
-        built += answerText[i];
-        setChatHistory((h) =>
-          h.map((m) => (m.id === aiId ? { ...m, text: built } : m))
-        );
-        await delay(TYPING_DELAY);
-      }
-
-      // 1️⃣1️⃣ Mark latest AI bubble
-      setLatestAIId(aiId);
-
-      // 1️⃣2️⃣ Await and display follow‑ups immediately
-      try {
-        const followRes = await suggestPromise;
-        if (!cancelRef.current) {
-          setFollowUpSuggestions(followRes.data.suggestions || []);
-        }
-      } catch {
-        /* ignore */
-      }
-
-      setLoading(false);
-    } catch (err) {
-      if (!cancelRef.current) console.error(err);
-      setChatHistory((h) =>
-        h.map((m) =>
-          m.id === aiId
-            ? {
-                ...m,
-                text: cancelRef.current
-                  ? `${m.text} [Generation stopped]`
-                  : "Sorry, something went wrong.",
-              }
-            : m
-        )
-      );
-      setLoading(false);
-    } finally {
-      setQuery("");
-    }
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -300,9 +189,66 @@ const AIChatBot = () => {
   };
   const handleThumb = (up) => console.log(up ? "👍" : "👎");
   const handleReadAloud = (text) => {
-    const u = new SpeechSynthesisUtterance(text);
-    speechSynthesis.speak(u);
+    // cancel any previous speech
+    speechSynthesis.cancel();
+    clearInterval(timerRef.current);
+
+    // estimate duration (words ÷ 2.5 words/sec)
+    const words = text.trim().split(/\s+/).length;
+    const duration = Math.max(1, words / 2.5);
+    setAudioDuration(duration);
+    setAudioCurrent(0);
+
+    // create utterance
+    const utt = new SpeechSynthesisUtterance(text);
+    utt.onend = () => {
+      clearInterval(timerRef.current);
+      setAudioPlaying(false);
+    };
+
+    // start speaking
+    speechSynthesis.speak(utt);
+    setAudioPlaying(true);
+    setAudioPaused(false);
+
+    // start timer to tick current time
+    timerRef.current = setInterval(() => {
+      setAudioCurrent((t) => {
+        if (t + 0.5 >= duration) {
+          clearInterval(timerRef.current);
+          return duration;
+        }
+        return t + 0.5;
+      });
+    }, 500);
   };
+
+  // Pause the speech
+  const handleAudioPause = () => {
+    speechSynthesis.pause();
+    clearInterval(timerRef.current);
+    setAudioPaused(true);
+  };
+
+  // Resume from pause
+  const handleAudioResume = () => {
+    speechSynthesis.resume();
+    setAudioPaused(false);
+    // restart timer
+    timerRef.current = setInterval(() => {
+      setAudioCurrent((t) => Math.min(t + 0.5, audioDuration));
+    }, 500);
+  };
+
+  // Fully stop playback
+  const handleAudioStop = () => {
+    speechSynthesis.cancel();
+    clearInterval(timerRef.current);
+    setAudioPlaying(false);
+    setAudioPaused(false);
+    setAudioCurrent(0);
+  };
+
   const handleRegenerate = (id) => {
     // find prior user message
     const idx = chatHistory.findIndex((m) => m.id === id);
@@ -310,6 +256,43 @@ const AIChatBot = () => {
       sendQuery(chatHistory[idx - 1].text);
     }
   };
+
+  // ── EXTRA PADDING ON LAST MESSAGE WHEN AUDIO PLAYING ────────────
+  useEffect(() => {
+    // 1) grab your messages container via chatEndRef
+    const container = chatEndRef.current?.parentElement;
+    if (!container) return;
+
+    // 2) get all .message nodes
+    const msgs = Array.from(container.querySelectorAll(".message"));
+    if (msgs.length === 0) return;
+
+    // 3) clear any inline padding-bottom we set before
+    msgs.forEach((m) => {
+      m.style.marginBottom = "";
+    });
+
+    // 4) if audio is playing, compute & add 20px to the last message
+    if (audioPlaying) {
+      const last = msgs[msgs.length - 1];
+      // read the computed CSS padding-bottom (e.g. "12px")
+      const comp = window.getComputedStyle(last).paddingBottom;
+      const current = parseFloat(comp) || 0;
+      last.style.marginBottom = `20px`;
+    }
+  }, [audioPlaying, chatHistory]);
+
+  // ── STOP AUDIO WHEN MINIMIZED, CLOSED, OR UNMOUNT ───────────
+  useEffect(() => {
+    // if the modal/tab is minimized or closed, stop playback immediately
+    if ((isMinimized || isClosed) && audioPlaying) {
+      handleAudioStop();
+    }
+    // cleanup on unmount as well
+    return () => {
+      handleAudioStop();
+    };
+  }, [isMinimized, isClosed]);
 
   const starterQuestions = [
     "What skills have your developed from your experiences?",
@@ -320,40 +303,75 @@ const AIChatBot = () => {
   return (
     <div className={chatStarted ? "chat-container" : "intro-container"}>
       {/* toast */}
-      <AnimatePresence>
-        {showToast && (
-          <motion.div
-            className="toast"
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 50 }}
-            transition={{ duration: 0.25 }}
+      {showToast && (
+        <motion.div
+          className="toast"
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 50 }}
+          whileHover={{
+            scale: 1.01,
+            transition: { delay: 0 },
+          }}
+          whileTap={{
+            scale: 0.99,
+            transition: { delay: 0 },
+          }}
+          transition={{ duration: 0.25 }}
+        >
+          <span>You have {MAX_QUERIES - queriesSent} queries left today.</span>
+          <motion.button
+            whileHover={{
+              scale: 1.05,
+              transition: { delay: 0 },
+              color: "lightcoral",
+            }}
+            whileTap={{
+              scale: 0.95,
+              transition: { delay: 0 },
+            }}
+            className="toast-close"
+            onClick={() => setShowToast(false)}
           >
-            <span>
-              You have {MAX_QUERIES - queriesSent} queries left today.
-            </span>
-            <button className="toast-close" onClick={() => setShowToast(false)}>
-              ×
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            ×
+          </motion.button>
+        </motion.div>
+      )}
 
       {chatStarted && (
-        <div className="chat-header">
-          <i
+        <motion.div
+          className="chat-header"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5, type: "ease", duration: 0.2 }}
+        >
+          <motion.i
             className="fa fa-sync"
             title="Restart Chat"
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.7, type: "ease" }}
+            whileHover={{
+              scale: 1.1,
+              transition: { delay: 0 },
+            }}
+            whileTap={{
+              scale: 0.9,
+              transition: { delay: 0 },
+            }}
             onClick={() => {
               setChatStarted(false);
               setChatHistory([]);
+              setHasSavedChat(false);
               setConversationMemory("");
               localStorage.removeItem("conversationHistory");
               localStorage.removeItem("conversationMemory");
             }}
           />
-          <h2 className="chat-title proficient">Kartavya's AI Companion</h2>
-        </div>
+          <h2 className="chat-title proficient" style={{ flexGrow: 1 }}>
+            Kartavya's AI Companion
+          </h2>
+        </motion.div>
       )}
 
       {!chatStarted ? (
@@ -364,6 +382,15 @@ const AIChatBot = () => {
               className="continue-prompt"
               initial={{ opacity: 0, scale: 0 }}
               whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.5, type: "ease", scale: { delay: 0 } }}
+              whileHover={{
+                scale: 1.05,
+                transition: { delay: 0 },
+              }}
+              whileTap={{
+                scale: 0.95,
+                transition: { delay: 0 },
+              }}
             >
               <button
                 className="btn-continue"
@@ -389,15 +416,16 @@ const AIChatBot = () => {
           ) : null}
           <motion.div
             className={`profile-picture-container`}
-            variants={zoomIn(0)}
+            variants={zoomIn(0.6)}
             style={{
               width: "fit-content",
               height: "auto",
               justifySelf: "center",
               display: "flex",
-              marginBottom: "20px",
+              // marginBottom: "20px",
             }}
             initial="hidden"
+            animate="show"
             drag
             dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
             dragElastic={0.3}
@@ -405,13 +433,16 @@ const AIChatBot = () => {
               bounceStiffness: 250,
               bounceDamping: 15,
             }}
-            whileTap={{ scale: 1.1 }}
-            whileInView={"show"}
+            transition={{ scale: { delay: 0, type: "easeInOut" } }}
+            whileTap={{
+              scale: 1.1,
+              transition: { delay: 0, type: "spring" },
+            }}
           >
             <animated.img
               src={`${process.env.PUBLIC_URL}/system-user.jpg`}
               alt="Profile"
-              className={`profile-picture img-responsive img-circle${frames[frameIndex]}`}
+              className={` img-responsive img-circle${frames[frameIndex]}`}
               draggable="false"
               style={{
                 boxShadow,
@@ -419,13 +450,8 @@ const AIChatBot = () => {
                   ? `translate3d(${mousePosition.x}px, ${mousePosition.y}px, 0) scale3d(1.03, 1.03, 1.03)`
                   : "translate3d(0px, 0px, 0) scale3d(1, 1, 1)",
                 transition: "transform 0.1s ease-out",
-                border: "4px solid #edeeef",
-                height: "200px",
-                width: "200px",
-                filter:
-                  "grayscale(0%) brightness(0.9) contrast(1) saturate(0.6) hue-rotate(-30deg)",
               }}
-              onHover={{ border: "4px solid #fcbc1d !important" }}
+              // onHover={{ border: "4px solid #fcbc1d !important" }}
               onMouseMove={handleMouseMove}
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
@@ -443,7 +469,7 @@ const AIChatBot = () => {
           <motion.h2
             initial={{ opacity: 0, scale: 0 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.3 }}
+            transition={{ delay: 0.7, type: "ease" }}
             className="chat-title proficient"
           >
             Kartavya's AI Companion
@@ -451,7 +477,7 @@ const AIChatBot = () => {
           <motion.h4
             initial={{ opacity: 0, scale: 0 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.5 }}
+            transition={{ delay: 0.8, type: "ease" }}
             className="chat-subtitle"
           >
             Meet my AI Companion: He knows all about my journey and loves to
@@ -460,172 +486,351 @@ const AIChatBot = () => {
           <motion.p
             initial={{ opacity: 0, scale: 0 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.7 }}
+            transition={{ delay: 0.9, type: "ease" }}
             className="suggestion-header"
           >
             Try asking:
           </motion.p>
-          <AnimatePresence>
-            <ul className="suggestions-list">
-              {starterQuestions.map((q, i) => (
-                <motion.li
-                  initial={{ opacity: 0, scale: 0 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.8 + i * 0.1 }}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  key={i}
-                  className="suggestion-item"
-                  onClick={() => {
-                    handleSuggestionClick(q);
-                    setChatStarted(true);
-                    localStorage.setItem(
-                      "conversationHistory",
-                      JSON.stringify([])
-                    );
-                    localStorage.setItem("conversationMemory", "");
-                  }}
-                >
-                  {q}
-                </motion.li>
-              ))}
-            </ul>
-          </AnimatePresence>
+          <ul className="suggestions-list">
+            {starterQuestions.map((q, i) => (
+              <motion.li
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{
+                  delay: 1 + 0.1 * i,
+                  type: "ease",
+                  scale: { delay: 0, type: "easeInOut" },
+                }}
+                whileHover={{
+                  scale: 1.05,
+                  transition: { delay: 0, type: "ease" },
+                }}
+                whileTap={{
+                  scale: 0.95,
+                  transition: { delay: 0, type: "ease" },
+                }}
+                key={i}
+                className="suggestion-item"
+                onClick={() => {
+                  handleSuggestionClick(q);
+                  setChatStarted(true);
+                  localStorage.setItem(
+                    "conversationHistory",
+                    JSON.stringify([])
+                  );
+                  localStorage.setItem("conversationMemory", "");
+                }}
+              >
+                {q}
+              </motion.li>
+            ))}
+          </ul>
           <motion.form
             initial={{ opacity: 0, scale: 0 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 1.2 }}
+            transition={{ delay: 1.3, scale: { delay: 0, type: "ease" } }}
+            whileHover={{
+              scale: 1.1,
+              transition: { delay: 0, type: "easeInOut" },
+            }}
+            whileTap={{
+              scale: 1.075,
+              transition: { delay: 0, type: "easeInOut" },
+            }}
             onSubmit={handleSubmit}
             className="input-form glass"
-            style={{ position: "relative" }}
+            style={{ position: "relative", background: "#343a40" }}
           >
             <motion.div
               className="mic-btn-container"
-              whileInView={listening ? { scale: 1.2 } : { scale: 1 }}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              drag
+              dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+              dragElastic={0.3}
+              dragTransition={{
+                bounceStiffness: 250,
+                bounceDamping: 15,
+              }}
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
             >
-              <button
+              <motion.button
                 type="button"
                 className={`mic-btn glass ${listening ? "active" : ""}`}
-                onMouseDown={start}
-                onMouseUp={stop}
-                onTouchStart={start}
-                onTouchEnd={stop}
-                aria-label={listening ? "Release to stop" : "Hold to talk"}
+                // onMouseDown={start}
+                // onMouseUp={stop}
+                // onTouchStart={start}
+                // onTouchEnd={stop}
+                style={
+                  listening
+                    ? { background: "#fcbc1d" }
+                    : { background: "#5a6268" }
+                }
+                whileHover={{ background: "#fcbc1d" }}
+                onClick={() => (listening ? stop() : start())}
+                aria-label={listening ? "Click to stop" : "Click to talk"}
+                disabled={loading || micDisabled}
               >
-                <i className={`fa fa-microphone${listening ? "" : "-slash"}`} />
-              </button>
+                <i
+                  style={
+                    listening ? { color: "#212529" } : { color: "#edeeef" }
+                  }
+                  className={`fa fa-microphone${listening ? "" : "-slash"}`}
+                />
+              </motion.button>
             </motion.div>
             <input
               ref={inputRef}
               type="text"
-              value={query}
+              value={listening ? interimQuery : query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Ask me anything..."
+              placeholder={`${
+                loading
+                  ? "Generating Response..."
+                  : listening
+                  ? "Transcribing... Please ask!"
+                  : "Ask any question about me!"
+              }`}
+              onKeyDown={(e) => {
+                // Enter=send, Shift+Enter=newline
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSubmit(e);
+                }
+              }}
               className="query-input"
+              disabled={loading}
             />
-            <button
+            <motion.button
               type="button"
               className="send-float-btn"
+              animate={{ translateY: "-50%" }}
+              drag
+              dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+              dragElastic={0.3}
+              dragTransition={{
+                bounceStiffness: 250,
+                bounceDamping: 15,
+              }}
+              whileHover={{
+                scale: 1.1,
+                translateY: "-50%",
+                transition: { delay: 0 },
+              }}
+              whileTap={{
+                scale: 0.9,
+                translateY: "-50%",
+                transition: { delay: 0 },
+              }}
               onClick={() => (loading ? stopGenerating() : sendQuery(query))}
             >
-              <i className={`fa ${loading ? "fa-stop" : "fa-arrow-up"}`} />
-            </button>
+              <motion.i
+                drag="false"
+                className={`fa ${loading ? "fa-stop" : "fa-arrow-up"}`}
+              />
+            </motion.button>
           </motion.form>
         </div>
       ) : (
         <>
           <div className="chat-messages">
             <div className="message-window">
-              {chatHistory.map((msg) => (
-                <div key={msg.id} className={`message ${msg.sender}`}>
-                  <img
+              {chatHistory.map((msg, id) => (
+                <motion.div
+                  whileHover={{ scale: 1.01 }}
+                  transition={{ scale: { delay: 0, type: "spring" } }}
+                  key={msg.id}
+                  className={`message ${msg.sender}`}
+                >
+                  <motion.img
                     src={`${process.env.PUBLIC_URL}/${
                       msg.sender === "ai" ? "system-user.jpg" : "user-icon.svg"
                     }`}
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{
+                      delay: msg.sender === "ai" ? 0.5 : 0.3,
+                      type: "ease",
+                      scale: { delay: 0, type: "ease" },
+                    }}
+                    whileHover={{
+                      scale: 1.05,
+                      transition: { delay: 0 },
+                    }}
+                    whileTap={{
+                      scale: 0.95,
+                      transition: { delay: 0 },
+                    }}
                     alt={msg.sender}
                     className={`avatar ${msg.sender}-avatar`}
                   />
-                  <div className="bubble-container">
+                  <motion.div
+                    className="bubble-container"
+                    initial={{
+                      opacity: 0,
+                      x: msg.sender === "ai" ? -40 : 40,
+                      y: 10,
+                      scale: 0.8,
+                    }}
+                    animate={{ opacity: 1, x: 0, y: 0, scale: 1 }}
+                    transition={{
+                      delay: msg.sender === "ai" ? 0.55 : 0.35,
+                      type: "easeInOut",
+                      duration: 0.2,
+                      scale: { delay: 0, type: "ease" },
+                    }}
+                  >
                     <div className="bubble">
-                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                        {msg.text}
-                      </ReactMarkdown>
+                      <ReactMarkdown>{msg.text}</ReactMarkdown>
                     </div>
                     <div
-                      className={`actions ${msg.sender} ${
-                        msg.id === latestAIId ? "always-show" : ""
-                      }`}
+                      className={`actions ${
+                        msg.sender === "ai" ? "ai" : "user"
+                      } ${msg.id === latestAIId ? "always-show" : ""}`}
+                      initial={
+                        msg.id === latestAIId ? { opacity: 1 } : { opacity: 0 }
+                      }
+                      animate={
+                        msg.id === latestAIId ? { opacity: 1 } : { opacity: 0 }
+                      }
                     >
                       {msg.sender === "user" ? (
                         <>
-                          <i
+                          <motion.i
                             className="fa fa-copy"
                             title="Copy"
                             onClick={() => handleCopy(msg.text)}
+                            style={{ display: "inline-block" }}
+                            initial={{ opacity: 0, scale: 0 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: 0.05, type: "ease" }}
+                            whileHover={{
+                              scale: 1.1,
+                              transition: { type: "ease", delay: 0 },
+                            }}
+                            whileTap={{
+                              scale: 0.9,
+                              transition: { type: "ease", delay: 0 },
+                            }}
                           />
-                          <i
+                          <motion.i
                             className="fa fa-pencil"
                             title="Edit"
                             onClick={() => handleEdit(msg.text)}
+                            style={{ display: "inline-block" }}
+                            initial={{ opacity: 0, scale: 0 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: 0.1, type: "ease" }}
+                            whileHover={{
+                              scale: 1.1,
+                              transition: { type: "ease", delay: 0 },
+                            }}
+                            whileTap={{
+                              scale: 0.9,
+                              transition: { type: "ease", delay: 0 },
+                            }}
                           />
                         </>
                       ) : (
                         <>
-                          <i
-                            className="fa fa-copy"
-                            title="Copy"
-                            onClick={() => handleCopy(msg.text)}
-                          />
-                          <i
-                            className="fa fa-thumbs-up"
-                            title="Like"
-                            onClick={() => handleThumb(true)}
-                          />
-                          <i
-                            className="fa fa-thumbs-down"
-                            title="Dislike"
-                            onClick={() => handleThumb(false)}
-                          />
-                          <i
-                            className="fa fa-volume-up"
-                            title="Read Aloud"
-                            onClick={() => handleReadAloud(msg.text)}
-                          />
-                          <i
-                            className="fa fa-sync"
-                            title="Regenerate"
-                            onClick={() => handleRegenerate(msg.id)}
-                          />
+                          {[
+                            "copy",
+                            "thumbs-up",
+                            "thumbs-down",
+                            "volume-up",
+                            "sync",
+                          ].map((icon, id) => (
+                            <motion.i
+                              key={icon}
+                              className={`fa fa-${icon}`}
+                              title={icon}
+                              onClick={() => {
+                                if (icon === "copy") handleCopy(msg.text);
+                                if (icon === "thumbs-up") handleThumb(true);
+                                if (icon === "thumbs-down") handleThumb(false);
+                                if (icon === "volume-up")
+                                  handleReadAloud(msg.text);
+                                if (icon === "sync") handleRegenerate(msg.id);
+                              }}
+                              style={{ display: "inline-block" }}
+                              initial={{ opacity: 0, scale: 0 }}
+                              whileInView={{ opacity: 1, scale: 1 }}
+                              exit={{
+                                opacity: 0,
+                                transition: {
+                                  delay: 0,
+                                  type: "ease",
+                                },
+                              }}
+                              transition={{ delay: 0.25 - 0.05 * id }}
+                              whileHover={{
+                                scale: 1.1,
+                                transition: { type: "ease", delay: 0 },
+                              }}
+                              whileTap={{
+                                scale: 0.9,
+                                transition: { type: "ease", delay: 0 },
+                              }}
+                            />
+                          ))}
                         </>
                       )}
                     </div>
-                  </div>
-                </div>
+                  </motion.div>
+                </motion.div>
               ))}
 
               {followUpSuggestions.length > 0 && (
-                <div className="message followup-suggestions">
-                  <div className="bubble suggestions-bubble">
-                    Here are some follow‑up questions you can ask:
+                <motion.div
+                  whileHover={{ scale: 1.01 }}
+                  transition={{ scale: { delay: 0, type: "spring" } }}
+                  className="message followup-suggestions"
+                >
+                  <motion.div
+                    className="bubble suggestions-bubble"
+                    initial={{ opacity: 0, scale: 0.8, x: 40, y: 10 }}
+                    animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
+                    transition={{
+                      delay: 0.35,
+                      type: "easeInOut",
+                      duration: 0.2,
+                      scale: { delay: 0, type: "ease" },
+                    }}
+                  >
+                    Here are some follow-up questions you can ask:
                     <div className="followups">
                       {followUpSuggestions.map((q, i) => (
-                        <span
+                        <motion.span
+                          initial={{ opacity: 0, scale: 0 }}
+                          whileInView={{ opacity: 1, scale: 1 }}
+                          transition={{
+                            delay: 0.1 + 0.1 * i,
+                            scale: { delay: 0, type: "ease" },
+                          }}
+                          viewport={{ once: true }}
+                          whileHover={{
+                            scale: 1.01,
+                            transition: { delay: 0 },
+                          }}
+                          whileTap={{
+                            scale: 0.99,
+                            transition: { delay: 0 },
+                          }}
                           key={i}
                           className="suggestion-chip"
                           onClick={() => handleSuggestionClick(q)}
                         >
                           {q}
-                        </span>
+                        </motion.span>
                       ))}
                     </div>
-                  </div>
+                  </motion.div>
                   <img
                     src={`${process.env.PUBLIC_URL}/user-icon.svg`}
                     alt="You"
                     className="avatar user-avatar-followup"
                   />
-                </div>
+                </motion.div>
               )}
 
               {errorMsg && <div className="error">{errorMsg}</div>}
@@ -633,24 +838,79 @@ const AIChatBot = () => {
             </div>
           </div>
 
-          <form
+          <motion.form
+            initial={{ opacity: 0, scale: 0 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.5, scale: { delay: 0, type: "ease" } }}
+            whileHover={{
+              scale: 1.01,
+              transition: { delay: 0, type: "easeInOut" },
+            }}
+            whileTap={{ scale: 1, transition: { delay: 0, type: "easeInOut" } }}
             onSubmit={handleSubmit}
-            className="input-form"
-            style={{ position: "relative" }}
+            className="input-form glass"
+            style={{ position: "relative", background: "#343a40" }}
+            disabled={loading}
           >
+            {audioPlaying && (
+              <div className="audio-playbar">
+                <span>
+                  {Math.floor(audioCurrent)} / {Math.ceil(audioDuration)} sec
+                </span>
+                <div className="audio-controls">
+                  {audioPaused ? (
+                    <motion.i
+                      drag="false"
+                      className="fa fa-play"
+                      title="Play"
+                      onClick={handleAudioResume}
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                    />
+                  ) : (
+                    <motion.i
+                      drag="false"
+                      className="fa fa-pause"
+                      title="Pause"
+                      onClick={handleAudioPause}
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                    />
+                  )}
+                  <motion.i
+                    drag="false"
+                    className="fa fa-stop"
+                    title="Stop"
+                    onClick={handleAudioStop}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                  />
+                </div>
+              </div>
+            )}
             <motion.div
               className="mic-btn-container"
-              whileInView={listening ? { scale: 1.2 } : { scale: 1 }}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              drag
+              dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+              dragElastic={0.3}
+              dragTransition={{
+                bounceStiffness: 250,
+                bounceDamping: 15,
+              }}
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
             >
               <button
                 type="button"
                 className={`mic-btn ${listening ? "active" : ""}`}
-                onMouseDown={start}
-                onMouseUp={stop}
-                onTouchStart={start}
-                onTouchEnd={stop}
-                aria-label={listening ? "Release to stop" : "Hold to talk"}
+                // onMouseDown={start}
+                // onMouseUp={stop}
+                // onTouchStart={start}
+                // onTouchEnd={stop}
+                onClick={() => (listening ? stop() : start())}
+                aria-label={listening ? "Click to stop" : "Click to talk"}
+                disabled={loading || micDisabled}
               >
                 <i className={`fa fa-microphone${listening ? "" : "-slash"}`} />
               </button>
@@ -660,18 +920,45 @@ const AIChatBot = () => {
               type="text"
               value={listening ? interimQuery : query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Ask another question..."
+              placeholder={`${
+                loading
+                  ? "Generating Response..."
+                  : listening
+                  ? "Transcribing... Please ask!"
+                  : "Ask another question!"
+              }`}
               className="query-input"
               disabled={loading}
             />
-            <button
+            <motion.button
               type="button"
               className="send-float-btn"
+              animate={{ translateY: "-50%" }}
+              drag
+              dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+              dragElastic={0.3}
+              dragTransition={{
+                bounceStiffness: 250,
+                bounceDamping: 15,
+              }}
+              whileHover={{
+                scale: 1.1,
+                translateY: "-50%",
+                transition: { delay: 0 },
+              }}
+              whileTap={{
+                scale: 0.9,
+                translateY: "-50%",
+                transition: { delay: 0 },
+              }}
               onClick={() => (loading ? stopGenerating() : sendQuery(query))}
             >
-              <i className={`send fa ${loading ? "fa-stop" : "fa-arrow-up"}`} />
-            </button>
-          </form>
+              <motion.i
+                drag="false"
+                className={`fa ${loading ? "fa-stop" : "fa-arrow-up"}`}
+              />
+            </motion.button>
+          </motion.form>
         </>
       )}
     </div>

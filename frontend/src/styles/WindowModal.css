@@ -222,6 +222,35 @@
   background-color: #fcbc1d;
 }
 
+.toast-item {
+  background-color: #333;
+  color: #edeeef;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  font-size: 14px;
+  margin-bottom: 0.5rem;
+}
+
+.toast-message {
+  flex: 1; /* take up all available space */
+}
+
+.toast-close-btn {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 1.2rem;
+  line-height: 1;
+  padding: 0 0.25rem;
+  cursor: pointer;
+  margin-left: 0.5rem;
+}
+
+.toast-close-btn:hover {
+  color: lightcoral;
+}
+
 @media (max-width: 768px) {
   .control-btn {
     padding: 0.2rem 0.5rem;

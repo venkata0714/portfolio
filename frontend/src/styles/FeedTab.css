@@ -189,6 +189,11 @@
   -webkit-text-fill-color: transparent;
   text-fill-color: transparent;
   width: 100%;
+  text-align: justify;
+  /* let long words break with hyphens instead of huge gaps */
+  hyphens: auto;
+  /* force the last line of each paragraph back to left alignment */
+  text-align-last: left;
 }
 
 .read-more-btn {
@@ -288,7 +293,7 @@
 .feed-link {
   color: #fcbc1d;
   text-decoration: none;
-  word-break: break-all;
+  /* word-break: break-all; */
 }
 
 .feed-link:hover {

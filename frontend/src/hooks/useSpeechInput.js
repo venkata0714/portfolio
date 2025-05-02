@@ -1,3 +1,4 @@
+// useSpeechInput.js
 import { useState, useEffect, useRef, useCallback } from "react";
 
 const SpeechRecognition =
@@ -5,57 +6,106 @@ const SpeechRecognition =
 
 export function useSpeechInput({ onResult, lang = "en-US" } = {}) {
   const [listening, setListening] = useState(false);
+  const [supported, setSupported] = useState(!!SpeechRecognition);
+  const [permission, setPermission] = useState("prompt");
+  const [error, setError] = useState(null);
   const recognitionRef = useRef(null);
+  const onResultRef = useRef(onResult);
 
-  // Initialize recognition once
+  /**
+   * Simple post‐processor to capitalize & punctuate final results
+   */
+  function punctuate(text) {
+    // capitalize first letter
+    text = text.charAt(0).toUpperCase() + text.slice(1);
+    // add a period if missing
+    if (!/[.!?]$/.test(text.trim())) text += ".";
+    return text;
+  }
+
+  // keep the ref up to date
   useEffect(() => {
-    if (!SpeechRecognition) return;
+    onResultRef.current = onResult;
+  }, [onResult]);
+
+  useEffect(() => {
+    if (!SpeechRecognition) {
+      console.warn("[useSpeechInput] not supported");
+      setSupported(false);
+      return;
+    }
+
     const recog = new SpeechRecognition();
-    recog.continuous = true; // keep listening until stopped
-    recog.interimResults = true; // get partial transcripts
+    recog.continuous = true;
+    recog.interimResults = true;
     recog.lang = lang;
+
+    recog.onstart = () => setListening(true);
+    recog.onend = () => setListening(false);
+
+    recog.onresult = (evt) => {
+      const result = evt.results[evt.resultIndex];
+      const text = punctuate(result[0].transcript.trim());
+      const isFinal = result.isFinal;
+      onResultRef.current(text, isFinal);
+      if (isFinal) recog.stop();
+    };
+
+    recog.onerror = (e) => {
+      setError(e.error);
+      if (/not-allowed|service-not-allowed/.test(e.error)) {
+        setPermission("denied");
+      }
+      recog.stop();
+    };
+
     recognitionRef.current = recog;
 
-    recog.onresult = (event) => {
-      let transcript = "";
-      for (let i = 0; i < event.results.length; i++) {
-        transcript += event.results[i][0].transcript;
-      }
-      const isFinal = event.results[event.resultIndex].isFinal;
-      onResult(transcript, isFinal);
-      if (isFinal) {
-        // auto-stop on final result
-        recog.stop();
-        setListening(false);
-      }
-    };
-
-    recog.onerror = () => {
-      recog.stop();
-      setListening(false);
-    };
-    recog.onend = () => setListening(false);
+    // check microphone permission once
+    if (navigator.permissions) {
+      navigator.permissions
+        .query({ name: "microphone" })
+        .then((status) => {
+          setPermission(status.state);
+          status.onchange = () => setPermission(status.state);
+        })
+        .catch(() => {});
+    }
 
     return () => {
       recog.abort?.();
+      recog.onstart = recog.onresult = recog.onerror = recog.onend = null;
     };
-  }, [onResult, lang]);
+  }, [lang]); // <-- only re-run if language changes
 
-  const start = useCallback(() => {
-    const recog = recognitionRef.current;
-    if (recog && !listening) {
-      recog.start();
-      setListening(true);
+  const start = useCallback(async () => {
+    if (!supported || listening) return;
+
+    if (permission === "prompt" && navigator.mediaDevices?.getUserMedia) {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+        });
+        stream.getTracks().forEach((t) => t.stop());
+        setPermission("granted");
+      } catch {
+        setPermission("denied");
+        return;
+      }
     }
-  }, [listening]);
+
+    try {
+      recognitionRef.current.start();
+    } catch (err) {
+      setError(err.message || err);
+    }
+  }, [supported, listening, permission]);
 
   const stop = useCallback(() => {
-    const recog = recognitionRef.current;
-    if (recog && listening) {
-      recog.stop();
-      setListening(false);
+    if (recognitionRef.current && listening) {
+      recognitionRef.current.stop();
     }
   }, [listening]);
 
-  return { listening, start, stop };
+  return { listening, supported, permission, error, start, stop };
 }

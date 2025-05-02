@@ -6,7 +6,7 @@
   scroll-snap-type: y mandatory;
   align-items: center;
   justify-content: center;
-  height: calc(100dvh - 52px);
+  height: calc(100vh - 52px);
   background: transparent; /* Allow the beams to show through */
   font-family: "Montserrat", sans-serif;
   color: #212529;
@@ -140,6 +140,11 @@
   border-radius: 0.75rem;
   text-align: left;
   padding: 1rem 1.25rem;
+  text-align: justify;
+  /* let long words break with hyphens instead of huge gaps */
+  hyphens: auto;
+  /* force the last line of each paragraph back to left alignment */
+  text-align-last: left;
 }
 
 .about-name {
@@ -326,5 +331,10 @@
   .about-description {
     font-size: clamp(0.6rem, 2vw, 2rem); /* Adjusted for smaller screens */
     padding: 2px;
+    text-align: justify;
+    /* let long words break with hyphens instead of huge gaps */
+    hyphens: auto;
+    /* force the last line of each paragraph back to left alignment */
+    text-align-last: left;
   }
 }

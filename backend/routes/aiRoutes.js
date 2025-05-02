@@ -9,6 +9,7 @@ const {
   // Add references to new controller functions:
   suggestFollowUpQuestions,
   snapshotMemoryUpdate,
+  optimizeQuery,
 } = require("../controllers/aiContextManager");
 
 async function aiRoutes(fastify, options) {
@@ -56,13 +57,17 @@ async function aiRoutes(fastify, options) {
   // **New** endpoint to get suggested follow-up questions
   fastify.post("/suggestFollowUpQuestions", async (request, reply) => {
     try {
-      const { query, response } = request.body;
+      const { query, response, conversationMemory } = request.body;
       if (!query || !response) {
         return reply
           .code(400)
           .send({ error: "Both query and response are required." });
       }
-      const suggestions = await suggestFollowUpQuestions(query, response);
+      const suggestions = await suggestFollowUpQuestions(
+        query,
+        response,
+        conversationMemory
+      );
       reply.send({ suggestions });
     } catch (error) {
       console.error("Error handling /suggestFollowUpQuestions:", error);
@@ -75,11 +80,9 @@ async function aiRoutes(fastify, options) {
     try {
       const { previousMemory, query, response } = request.body;
       if (!query || !response) {
-        return reply
-          .code(400)
-          .send({
-            error: "Query and response are required for memory update.",
-          });
+        return reply.code(400).send({
+          error: "Query and response are required for memory update.",
+        });
       }
       const updatedMemory = await snapshotMemoryUpdate(
         previousMemory || "",
@@ -90,6 +93,24 @@ async function aiRoutes(fastify, options) {
     } catch (error) {
       console.error("Error handling /snapshotMemoryUpdate:", error);
       reply.code(500).send({ error: error.message });
+    }
+  });
+
+  // New endpoint:
+  fastify.post("/optimize-query", async (request, reply) => {
+    try {
+      const { query, conversationMemory } = request.body;
+      if (!query) {
+        return reply.code(400).send({ error: "Query is required." });
+      }
+      const optimizedQuery = await optimizeQuery(
+        conversationMemory || "",
+        query
+      );
+      reply.send({ optimizedQuery });
+    } catch (err) {
+      console.error("Error /optimize-query:", err);
+      reply.code(500).send({ error: err.message });
     }
   });
 }

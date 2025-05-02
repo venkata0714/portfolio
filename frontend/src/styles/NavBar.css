@@ -30,6 +30,16 @@ html {
     font-size 0.3s ease-in-out, x 0.3s ease-in-out, background 0.3s ease-in-out;
 }
 
+.navbar-container {
+  transform-origin: top center;
+  transition: transform 0.2s ease-out;
+}
+@media (max-height: 825px) and (min-width: 577px) {
+  .navbar-container {
+    transform: scale(calc(100vh / 826));
+  }
+}
+
 .fixed-top {
   position: fixed;
   z-index: 9999;

@@ -29,23 +29,23 @@ const NavBar = ({ isBatterySavingOn, addTab }) => {
     // onUpdateActiveLink(id);
   };
 
-  useEffect(() => {
-    const updateScale = () => {
-      const homeRow = document.querySelector(".navbar-container");
-      if (!homeRow) return;
-      const screenHeight = window.innerHeight;
-      const screenWidth = window.innerWidth;
-      let scaleValue = 1;
-      if (screenHeight < 826 && screenWidth > 576) {
-        scaleValue = screenHeight / 826;
-      }
-      homeRow.style.zoom = `${scaleValue}`;
-    };
+  // useEffect(() => {
+  //   const updateScale = () => {
+  //     const homeRow = document.querySelector(".navbar-container");
+  //     if (!homeRow) return;
+  //     const screenHeight = window.innerHeight;
+  //     const screenWidth = window.innerWidth;
+  //     let scaleValue = 1;
+  //     if (screenHeight < 826 && screenWidth > 576) {
+  //       scaleValue = screenHeight / 826;
+  //     }
+  //     homeRow.style.zoom = `${scaleValue}`;
+  //   };
 
-    updateScale();
-    window.addEventListener("resize", updateScale);
-    return () => window.removeEventListener("resize", updateScale);
-  }, []);
+  //   updateScale();
+  //   window.addEventListener("resize", updateScale);
+  //   return () => window.removeEventListener("resize", updateScale);
+  // }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -379,7 +379,7 @@ const NavBar = ({ isBatterySavingOn, addTab }) => {
                   setMenuOpen(false);
                 }}
               >
-                <span className="navbar-text">FEED</span>
+                <span className="navbar-text feed-nav">FEED</span>
               </a>
             </motion.li>
             <motion.li
@@ -406,15 +406,16 @@ const NavBar = ({ isBatterySavingOn, addTab }) => {
             >
               <a
                 href="#feed"
-                className={"navbar-link"}
+                className={"navbar-link ai-chat-nav"}
                 onClick={(e) => {
                   e.preventDefault();
-                  addTab("AIChatTab", { title: "Kartavya's AI Chat" });
+                  addTab("AIChatTab", { title: "Kartavya's AI Companion" });
                   setMenuOpen(false);
                 }}
               >
                 <span className="navbar-text">
-                  <i className="fa fa-search"></i> {menuOpen ? "AI Chat" : ""}
+                  <i className="fa fa-search"></i>{" "}
+                  {menuOpen ? "AI COMPANION" : ""}
                 </span>
               </a>
             </motion.li>

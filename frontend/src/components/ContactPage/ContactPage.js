@@ -11,6 +11,20 @@ function ContactPage({ isBatterySavingOn, addTab }) {
   const [isTouchDevice, setIsTouchDevice] = useState(false);
   const [isSent, setIsSent] = useState(null); // null for no status, true for success, false for error
   const containerRef = useRef(null);
+  // 1. Disable state and Toast state
+  const [isDisabled, setIsDisabled] = useState(false);
+  const [toasts, setToasts] = useState([]);
+
+  const addToast = (message, type) => {
+    const id = Date.now();
+    setToasts((prev) => [...prev, { id, message, type }]);
+    // Auto-remove after 60 seconds
+    setTimeout(() => removeToast(id), 60000);
+  };
+
+  const removeToast = (id) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id));
+  };
   const sendEmail = (e) => {
     e.preventDefault();
     const formData = new FormData(form.current);
@@ -37,14 +51,12 @@ function ContactPage({ isBatterySavingOn, addTab }) {
         )
         .then(
           (result) => {
-            // console.log(result);
-            setIsSent(true); // Set success status
-            setTimeout(() => setIsSent(null), 3000); // Reset status after 2 seconds
+            addToast("Message sent successfully", "success");
+            setIsDisabled(true);
+            setTimeout(() => setIsDisabled(false), 120000); // re-enable after 2 min
           },
           (error) => {
-            console.log(error.text);
-            setIsSent(false); // Set error status
-            setTimeout(() => setIsSent(null), 3000); // Reset status after 2 seconds
+            addToast("Failed to send message", "error");
           }
         );
 
@@ -78,6 +90,25 @@ function ContactPage({ isBatterySavingOn, addTab }) {
 
   return (
     <>
+      <AnimatePresence>
+        <ToastContainer>
+          {toasts.map((toast) => (
+            <motion.div
+              key={toast.id}
+              initial={{ x: -300, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: -300, opacity: 0 }}
+            >
+              <ToastItem type={toast.type}>
+                <span>{toast.message}</span>
+                <CloseButton onClick={() => removeToast(toast.id)}>
+                  ×
+                </CloseButton>
+              </ToastItem>
+            </motion.div>
+          ))}
+        </ToastContainer>
+      </AnimatePresence>
       <AnimatePresence>
         <motion.section
           id="contact"
@@ -277,15 +308,16 @@ function ContactPage({ isBatterySavingOn, addTab }) {
                     isBatterySavingOn ? {} : { delay: 0, type: "spring" }
                   }
                 >
-                  <StyledButton type="submit">
+                  <StyledButton type="submit" disabled={isDisabled}>
                     <ButtonShadow />
                     <ButtonEdge />
                     <ButtonLabel isSent={isSent}>
-                      {isSent === true
+                      {/* {isSent === true
                         ? "Message Sent ☑"
                         : isSent === false
                         ? "Failed to Send ☒"
-                        : "Send Message"}
+                        : "Send Message"} */}
+                      Send Message
                     </ButtonLabel>
                   </StyledButton>
                 </motion.div>
@@ -406,6 +438,50 @@ const StyledButton = styled("button", {
       transform: "translateY(1px)",
       transition: "transform 34ms",
     },
+  },
+  "&:disabled": {
+    opacity: 0.6,
+    cursor: "not-allowed",
+  },
+});
+
+// 5. Toast Styled Components
+const ToastContainer = styled("div", {
+  position: "fixed",
+  top: "65px",
+  right: "20px",
+  display: "flex",
+  flexDirection: "column",
+  gap: "0.5rem",
+  zIndex: 9999,
+});
+
+const ToastItem = styled("div", {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  padding: "0.5rem 0.8rem",
+  borderRadius: "5px",
+  minWidth: "250px",
+  boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+  fontSize: "14px",
+  variants: {
+    type: {
+      success: { backgroundColor: "lightseagreen", color: "#212529" },
+      error: { backgroundColor: "lightcoral", color: "#212529" },
+    },
+  },
+});
+
+const CloseButton = styled("button", {
+  marginLeft: "1rem",
+  background: "transparent",
+  border: "none",
+  fontSize: "24px",
+  cursor: "pointer",
+  color: "inherit",
+  "&:hover": {
+    color: "lightcoral",
   },
 });
 
