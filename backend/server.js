@@ -22,11 +22,12 @@ app.register(require("@fastify/cors"), {
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 });
 
-app.addHook("onResponse", (req, reply, done) => {
+// set no-store for any /api/* response
+app.addHook("onSend", (req, reply, payload, done) => {
   if (req.raw.url.startsWith("/api")) {
     reply.header("Cache-Control", "no-store");
   }
-  done();
+  done(null, payload);
 });
 
 
