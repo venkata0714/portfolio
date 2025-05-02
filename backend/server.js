@@ -21,6 +21,15 @@ app.register(require("@fastify/cors"), {
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 });
+
+app.addHook("onResponse", (req, reply, done) => {
+  if (req.raw.url.startsWith("/api")) {
+    reply.header("Cache-Control", "no-store");
+  }
+  done();
+});
+
+
 app.register(require("@fastify/cookie"), {
   cookie: { path: "/", secure: true, httpOnly: true, sameSite: "none" },
 });
