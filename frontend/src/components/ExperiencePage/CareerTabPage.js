@@ -178,14 +178,23 @@ const CareerTabPage = ({ addTab, isBatterySavingOn }) => {
                         </h2>
                         <div className="career-subtitle-area">
                           <h4 className="career-subtitle">
-                            {experience.experienceSubTitle}
+                            {experience.experienceSubTitle &&
+                            experience.experienceSubTitle !== "NA"
+                              ? experience.experienceSubTitle
+                              : null}
                           </h4>
                           <p className="career-timeline">
-                            {experience.experienceTimeline}
+                            {experience.experienceTimeline &&
+                            experience.experienceTimeline !== "NA"
+                              ? experience.experienceTimeline
+                              : null}
                           </p>
                         </div>
                         <p className="career-tagline">
-                          {experience.experienceTagline}
+                          {experience.experienceTagline &&
+                          experience.experienceTagline !== "NA"
+                            ? experience.experienceTagline
+                            : null}
                         </p>
                         <motion.div
                           className="career-learn-button-motioned"

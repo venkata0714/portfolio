@@ -179,14 +179,23 @@ const InvolvementTabPage = ({ addTab, isBatterySavingOn }) => {
                         </h2>
                         <div className="career-subtitle-area">
                           <h4 className="career-subtitle">
-                            {involvement.involvementSubTitle}
+                            {involvement.involvementSubTitle &&
+                            involvement.involvementSubTitle !== "NA"
+                              ? involvement.involvementSubTitle
+                              : null}
                           </h4>
                           <p className="career-timeline">
-                            {involvement.involvementTimeline}
+                            {involvement.involvementTimeline &&
+                            involvement.involvementTimeline !== "NA"
+                              ? involvement.involvementTimeline
+                              : null}
                           </p>
                         </div>
                         <p className="career-tagline">
-                          {involvement.involvementTagline}
+                          {involvement.involvementTagline &&
+                          involvement.involvementTagline !== "NA"
+                            ? involvement.involvementTagline
+                            : null}
                         </p>
                         <motion.div
                           className="career-learn-button-motioned"

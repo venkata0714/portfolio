@@ -223,18 +223,36 @@ const HonorsTabPage = ({ addTab, isBatterySavingOn }) => {
                         <div className="career-subtitle-area">
                           <h4 className="career-subtitle">
                             {type === "honor"
-                              ? data.honorsExperienceSubTitle
-                              : data.yearInReviewSubTitle}
+                              ? data.honorsExperienceSubTitle &&
+                                data.honorsExperienceSubTitle !== "NA"
+                                ? data.honorsExperienceSubTitle
+                                : null
+                              : data.yearInReviewSubTitle &&
+                                data.yearInReviewSubTitle !== "NA"
+                              ? data.yearInReviewSubTitle
+                              : null}
                           </h4>
                           <p className="career-timeline">
                             {type === "honor"
-                              ? data.honorsExperienceTimeline
-                              : data.yearInReviewTimeline}
+                              ? data.honorsExperienceTimeline &&
+                                data.honorsExperienceTimeline !== "NA"
+                                ? data.honorsExperienceTimeline
+                                : null
+                              : data.yearInReviewTimeline &&
+                                data.yearInReviewTimeline !== "NA"
+                              ? data.yearInReviewTimeline
+                              : null}
                           </p>
                           <p className="career-tagline">
                             {type === "honor"
-                              ? data.honorsExperienceTagline
-                              : data.yearInReviewTagline}
+                              ? data.honorsExperienceTagline &&
+                                data.honorsExperienceTagline !== "NA"
+                                ? data.honorsExperienceTagline
+                                : null
+                              : data.yearInReviewTagline &&
+                                data.yearInReviewTagline !== "NA"
+                              ? data.yearInReviewTagline
+                              : null}
                           </p>
                         </div>
                         <motion.div

@@ -110,7 +110,7 @@ const ProjectTab = ({ data, isBatterySavingOn }) => {
             </motion.h2>
           )}
 
-          {data.projectSubTitle && (
+          {data.projectSubTitle && data.projectSubTitle !== "NA" && (
             <motion.h3
               className="project-window-subtitle"
               initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
@@ -122,7 +122,7 @@ const ProjectTab = ({ data, isBatterySavingOn }) => {
             </motion.h3>
           )}
 
-          {data.projectTimeline && (
+          {data.projectTimeline && data.projectTimeline !== "NA" && (
             <motion.h4
               className="project-window-timeline"
               initial={isBatterySavingOn ? {} : { opacity: 0 }}
@@ -134,7 +134,7 @@ const ProjectTab = ({ data, isBatterySavingOn }) => {
             </motion.h4>
           )}
 
-          {data.projectTagline && (
+          {data.projectTagline && data.projectTagline !== "NA" && (
             <motion.h4
               className="project-window-tagline"
               initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}

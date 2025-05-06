@@ -105,7 +105,7 @@ const YearInReviewTab = ({ data, isBatterySavingOn }) => {
             </motion.h2>
           )}
 
-          {data.yearInReviewSubTitle && (
+          {data.yearInReviewSubTitle && data.yearInReviewSubTitle !== "NA" && (
             <motion.h3
               className="project-window-subtitle"
               initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
@@ -117,7 +117,7 @@ const YearInReviewTab = ({ data, isBatterySavingOn }) => {
             </motion.h3>
           )}
 
-          {data.yearInReviewTimeline && (
+          {data.yearInReviewTimeline && data.yearInReviewTimeline !== "NA" && (
             <motion.h4
               className="project-window-timeline"
               initial={isBatterySavingOn ? {} : { opacity: 0 }}
@@ -129,7 +129,7 @@ const YearInReviewTab = ({ data, isBatterySavingOn }) => {
             </motion.h4>
           )}
 
-          {data.yearInReviewTagline && (
+          {data.yearInReviewTagline && data.yearInReviewTagline !== "NA" && (
             <motion.h4
               className="project-window-tagline"
               initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}

@@ -93,7 +93,7 @@ const InvolvementTab = ({ data, isBatterySavingOn }) => {
             </motion.h2>
           )}
 
-          {data.involvementSubTitle && (
+          {data.involvementSubTitle && data.involvementSubTitle !== "NA" && (
             <motion.h3
               className="project-window-subtitle"
               initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
@@ -105,7 +105,7 @@ const InvolvementTab = ({ data, isBatterySavingOn }) => {
             </motion.h3>
           )}
 
-          {data.involvementTimeline && (
+          {data.involvementTimeline && data.involvementTimeline !== "NA" && (
             <motion.h4
               className="project-window-timeline"
               initial={isBatterySavingOn ? {} : { opacity: 0 }}
@@ -117,7 +117,7 @@ const InvolvementTab = ({ data, isBatterySavingOn }) => {
             </motion.h4>
           )}
 
-          {data.involvementTagline && (
+          {data.involvementTagline && data.involvementTagline !== "NA" && (
             <motion.h4
               className="project-window-tagline"
               initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}

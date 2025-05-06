@@ -328,10 +328,14 @@ function ProjectsListView({ addTab, isBatterySavingOn, showFeatured }) {
                 >
                   <div className="project-info" id={project.projectLink}>
                     <div className="project-header">
-                      {project.projectSubTitle && (
-                        <span>{project.projectSubTitle} | </span>
-                      )}
-                      <span>{project.projectTimeline}</span>
+                      {project.projectSubTitle &&
+                        project.projectSubTitle !== "NA" && (
+                          <span>{project.projectSubTitle}</span>
+                        )}
+                      {project.projectTimeline &&
+                        project.projectTimeline !== "NA" && (
+                          <span> | {project.projectTimeline}</span>
+                        )}
                     </div>
                     <a
                       className="project-title"
@@ -344,7 +348,12 @@ function ProjectsListView({ addTab, isBatterySavingOn, showFeatured }) {
                       {project.projectTitle}
                     </a>
                     <hr />
-                    <p className="project-tagline">{project.projectTagline}</p>
+                    {project.projectTagline &&
+                      project.projectTagline !== "NA" && (
+                        <p className="project-tagline">
+                          {project.projectTagline}
+                        </p>
+                      )}
 
                     <motion.div
                       className="learn-button-motioned"

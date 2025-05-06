@@ -105,7 +105,7 @@ const ExperienceTab = ({ data, isBatterySavingOn }) => {
             </motion.h2>
           )}
 
-          {data.experienceSubTitle && (
+          {data.experienceSubTitle && data.experienceSubTitle !== "NA" && (
             <motion.h3
               className="project-window-subtitle"
               initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
@@ -117,7 +117,7 @@ const ExperienceTab = ({ data, isBatterySavingOn }) => {
             </motion.h3>
           )}
 
-          {data.experienceTimeline && (
+          {data.experienceTimeline && data.experienceTimeline !== "NA" && (
             <motion.h4
               className="project-window-timeline"
               initial={isBatterySavingOn ? {} : { opacity: 0 }}
@@ -129,7 +129,7 @@ const ExperienceTab = ({ data, isBatterySavingOn }) => {
             </motion.h4>
           )}
 
-          {data.experienceTagline && (
+          {data.experienceTagline && data.experienceTagline !== "NA" && (
             <motion.h4
               className="project-window-tagline"
               initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}

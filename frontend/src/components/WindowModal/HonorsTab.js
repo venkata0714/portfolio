@@ -105,58 +105,67 @@ const HonorsTab = ({ data, isBatterySavingOn }) => {
             </motion.h2>
           )}
 
-          {data.honorsExperienceSubTitle && (
-            <motion.h3
-              className="project-window-subtitle"
-              initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
-              animate={isBatterySavingOn ? {} : { opacity: 1, scale: 1 }}
-              transition={isBatterySavingOn ? {} : { delay: 0.9, type: "ease" }}
-              viewport={{ once: true }}
-            >
-              {data.honorsExperienceSubTitle}
-            </motion.h3>
-          )}
+          {data.honorsExperienceSubTitle &&
+            data.honorsExperienceSubTitle !== "NA" && (
+              <motion.h3
+                className="project-window-subtitle"
+                initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
+                animate={isBatterySavingOn ? {} : { opacity: 1, scale: 1 }}
+                transition={
+                  isBatterySavingOn ? {} : { delay: 0.9, type: "ease" }
+                }
+                viewport={{ once: true }}
+              >
+                {data.honorsExperienceSubTitle}
+              </motion.h3>
+            )}
 
-          {data.honorsExperienceTimeline && (
-            <motion.h4
-              className="project-window-timeline"
-              initial={isBatterySavingOn ? {} : { opacity: 0 }}
-              animate={isBatterySavingOn ? {} : { opacity: 1 }}
-              transition={isBatterySavingOn ? {} : { delay: 1.1, type: "ease" }}
-              viewport={{ once: true }}
-            >
-              {data.honorsExperienceTimeline}
-            </motion.h4>
-          )}
+          {data.honorsExperienceTimeline &&
+            data.honorsExperienceTimeline !== "NA" && (
+              <motion.h4
+                className="project-window-timeline"
+                initial={isBatterySavingOn ? {} : { opacity: 0 }}
+                animate={isBatterySavingOn ? {} : { opacity: 1 }}
+                transition={
+                  isBatterySavingOn ? {} : { delay: 1.1, type: "ease" }
+                }
+                viewport={{ once: true }}
+              >
+                {data.honorsExperienceTimeline}
+              </motion.h4>
+            )}
 
-          {data.honorsExperienceTagline && (
-            <motion.h4
-              className="project-window-tagline"
-              initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
-              animate={isBatterySavingOn ? {} : { opacity: 1, scale: 1 }}
-              // drag
-              // dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-              // dragElastic={0.3}
-              // dragTransition={{
-              //   bounceStiffness: 250,
-              //   bounceDamping: 15,
-              // }}
-              whileHover={isBatterySavingOn ? {} : { scale: 1.01 }}
-              whileTap={
-                isBatterySavingOn
-                  ? {}
-                  : {
-                      scale: 0.98,
-                      boxsizing: "border-box",
-                      outline: "1px solid limegreen !important",
-                    }
-              }
-              transition={isBatterySavingOn ? {} : { delay: 1.3, type: "ease" }}
-              viewport={{ once: true }}
-            >
-              {data.honorsExperienceTagline}
-            </motion.h4>
-          )}
+          {data.honorsExperienceTagline &&
+            data.honorsExperienceTagline !== "NA" && (
+              <motion.h4
+                className="project-window-tagline"
+                initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
+                animate={isBatterySavingOn ? {} : { opacity: 1, scale: 1 }}
+                // drag
+                // dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+                // dragElastic={0.3}
+                // dragTransition={{
+                //   bounceStiffness: 250,
+                //   bounceDamping: 15,
+                // }}
+                whileHover={isBatterySavingOn ? {} : { scale: 1.01 }}
+                whileTap={
+                  isBatterySavingOn
+                    ? {}
+                    : {
+                        scale: 0.98,
+                        boxsizing: "border-box",
+                        outline: "1px solid limegreen !important",
+                      }
+                }
+                transition={
+                  isBatterySavingOn ? {} : { delay: 1.3, type: "ease" }
+                }
+                viewport={{ once: true }}
+              >
+                {data.honorsExperienceTagline}
+              </motion.h4>
+            )}
 
           {data.honorsExperienceURLs.length > 0 && (
             <motion.div

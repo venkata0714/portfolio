@@ -68,11 +68,11 @@ async function fetchRepoLanguages(languagesUrl) {
 
 // 1) Define your static must-load images
 const MUST_LOAD_IMAGES = [
-  "/home-bg.jpg",
-  "/Kartavya.jpg",
-  "/Kartavya-Profile-Photo.jpg",
-  "/contact-bg.png",
-  "/system-user.jpg",
+  "/home-bg.webp",
+  "/Kartavya.webp",
+  "/Kartavya-Profile-Photo.webp",
+  "/contact-bg.webp",
+  "/system-user.webp",
   "/user-icon.svg",
 
   // "/favicon.ico",
@@ -129,7 +129,7 @@ async function updateDynamicImagesCache(retryInterval = 1000) {
     for (const { name, field } of collections) {
       const docs = await db
         .collection(name)
-        .find({ [field]: { $exists: true } })
+        .find({ [field]: { $exists: true }, deleted: { $ne: true } })
         .toArray();
       docs.forEach((doc) => {
         let url = null;

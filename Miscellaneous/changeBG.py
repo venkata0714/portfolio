@@ -45,6 +45,6 @@ def add_gradient_overlay(image_path, output_path):
     combined.convert("RGB").save(output_path, "JPEG")
 
 # Example usage
-input_image_path = "Miscellaneous\home-bg.jpg"  # Replace with your input image path
+input_image_path = "Miscellaneous\home-bg.webp"  # Replace with your input image path
 output_image_path = "Miscellaneous\home-bg-overlay.jpg"  # Replace with desired output path
 add_gradient_overlay(input_image_path, output_image_path)

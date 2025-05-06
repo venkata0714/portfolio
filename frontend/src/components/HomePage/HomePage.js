@@ -13,7 +13,7 @@ import {
 } from "framer-motion";
 import { zoomIn } from "../../services/variants";
 import "../../styles/HomePage.css";
-// import ProfilePhoto from `${process.env.PUBLIC_URL}/Kartavya.jpg`;
+// import ProfilePhoto from `${process.env.PUBLIC_URL}/Kartavya.webp`;
 
 function HomePage({ isBatterySavingOn, scrolled, addTab, sendQuery }) {
   const [clicked, setClicked] = useState(false);
@@ -179,7 +179,7 @@ function HomePage({ isBatterySavingOn, scrolled, addTab, sendQuery }) {
                 rgba(0, 0, 0, 0.25),
                 rgba(0, 0, 0, 0.1),
                 rgba(0, 0, 0, 0.1)
-              ), url('${process.env.PUBLIC_URL}/home-bg.jpg'))`,
+              ), url('${process.env.PUBLIC_URL}/home-bg.webp'))`,
                   backgroundRepeat: "no-repeat",
                   backgroundAttachment: "fixed",
                   backgroundPosition: "center",
@@ -196,7 +196,7 @@ function HomePage({ isBatterySavingOn, scrolled, addTab, sendQuery }) {
                   rgba(0, 0, 0, 0.25),
                   rgba(0, 0, 0, 0.1),
                   rgba(0, 0, 0, 0.1)
-                ), url('${process.env.PUBLIC_URL}/home-bg.jpg')`,
+                ), url('${process.env.PUBLIC_URL}/home-bg.webp')`,
                   backgroundRepeat: "no-repeat",
                   backgroundAttachment: "fixed",
                   backgroundPosition: "center",
@@ -235,7 +235,7 @@ function HomePage({ isBatterySavingOn, scrolled, addTab, sendQuery }) {
                 whileInView={"show"}
               >
                 <animated.img
-                  src={`${process.env.PUBLIC_URL}/Kartavya.jpg`}
+                  src={`${process.env.PUBLIC_URL}/Kartavya.webp`}
                   alt="Profile"
                   className={`profile-picture img-circle${frames[frameIndex]}`}
                   draggable="false"

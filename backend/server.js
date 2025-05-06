@@ -30,7 +30,6 @@ app.addHook("onSend", (req, reply, payload, done) => {
   done(null, payload);
 });
 
-
 app.register(require("@fastify/cookie"), {
   cookie: { path: "/", secure: true, httpOnly: true, sameSite: "none" },
 });
@@ -209,6 +208,9 @@ setInterval(async () => {
 
     const aiRoutes = require("./routes/aiRoutes");
     app.register(aiRoutes, { prefix: "/api/ai" });
+
+    const imagesRoutes = require("./routes/imagesRoutes");
+    app.register(imagesRoutes, { prefix: "/api/images" });
 
     const aiContextManager = require("./controllers/aiContextManager");
     await aiContextManager.initContext();

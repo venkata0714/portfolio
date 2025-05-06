@@ -54,11 +54,11 @@ func init() {
 // updateMustLoadImagesCache loads the static list of image URLs into cache.
 func updateMustLoadImagesCache() {
 	mustLoadImages := []string{
-		"/home-bg.jpg",
-		"/Kartavya.jpg",
-		"/Kartavya-Profile-Photo.jpg",
-		"/contact-bg.png",
-		"/system-user.jpg",
+		"/home-bg.webp",
+		"/Kartavya.webp",
+		"/Kartavya-Profile-Photo.webp",
+		"/contact-bg.webp",
+		"/system-user.webp",
 		"/user-icon.svg",
 	}
 	mustLoadImagesCache.data = append([]string{}, mustLoadImages...)
