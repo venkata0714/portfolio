@@ -230,6 +230,20 @@ setInterval(async () => {
     console.log("✅ AI context initialized");
 
     const PORT = process.env.PORT || 5000;
+    const path = require('path');
+    const fastifyStatic = require('@fastify/static');
+    
+    // Serve frontend build
+    app.register(fastifyStatic, {
+      root: path.join(__dirname, 'build'),
+      prefix: '/',
+    });
+    
+    // Catch-all to serve index.html for React routing
+    app.setNotFoundHandler((req, reply) => {
+      reply.sendFile('index.html');
+    });
+
     await app.listen({ port: PORT, host: "0.0.0.0" });
     console.log(`🚀 Server listening on port ${PORT}`);
   } catch (err) {
