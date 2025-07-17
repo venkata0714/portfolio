@@ -2,6 +2,7 @@
 const os = require("os");
 const fastify = require("fastify");
 const dotenv = require("dotenv");
+const path = require("path");
 const useragent = require("express-useragent");
 
 dotenv.config();
@@ -83,6 +84,18 @@ app.addHook("onResponse", (req, reply, done) => {
   memorySampleCount++;
   done();
 });
+
+// Serve static frontend from public/
+app.register(require("@fastify/static"), {
+  root: path.join(__dirname, "public"),
+  prefix: "/",
+});
+
+// Serve index.html for all unknown routes (for React Router support)
+app.setNotFoundHandler((req, reply) => {
+  reply.sendFile("index.html");
+});
+
 
 // Global endpoints
 app.get("/", (req, reply) =>
