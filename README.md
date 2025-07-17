@@ -1,5 +1,3 @@
-
-
 # AI-Powered Portfolio Website
 
 An interactive portfolio built with the MERN stack, featuring an AI Companion powered by GPT-4 for real-time Q\&A.
@@ -45,4 +43,3 @@ Visit: `http://localhost:3000`
 
 ---
 
-Let me know if you want this saved as a `README.md` file.
