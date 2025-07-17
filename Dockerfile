@@ -1,38 +1,32 @@
-# ---------- Stage 1: Build React frontend ----------
-FROM node:18 AS frontend-builder
-
-WORKDIR /frontend
-
-# Copy and install frontend dependencies
-COPY frontend/package*.json ./
-COPY frontend/.env .env
-RUN npm install
-
-# Copy the rest of the frontend code
-COPY frontend/ ./
-
-# Build the frontend
-RUN npm run build
-
-
-# ---------- Stage 2: Build backend and serve frontend ----------
-FROM node:18
+# ---------- Base image ----------
+FROM node:18 AS base
 
 WORKDIR /app
 
-# Copy and install backend dependencies
-COPY backend/package*.json ./backend/
-RUN cd backend && npm install
+# ---------- Install frontend ----------
+FROM base AS frontend-builder
+COPY frontend ./frontend
+WORKDIR /app/frontend
+RUN npm install
+RUN npm run build
 
-# Copy backend code and .env
+# ---------- Install backend ----------
+FROM base AS backend-builder
 COPY backend ./backend
-COPY backend/.env ./backend/.env
+WORKDIR /app/backend
+COPY --from=frontend-builder /app/frontend/build ./build
+RUN npm install
 
-# Copy built frontend into backend/public
-COPY --from=frontend-builder /frontend/build ./backend/public
+# ---------- Final stage ----------
+FROM node:18-slim
+WORKDIR /app
+COPY --from=backend-builder /app/backend .
 
-# Expose backend port
+# Install only production dependencies
+RUN npm install --omit=dev
+
+# Expose port
 EXPOSE 5000
 
-# Start backend server
-CMD ["node", "backend/server.js"]
+# Start backend
+CMD ["node", "server.js"]
