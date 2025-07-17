@@ -4,10 +4,13 @@ FROM node:18 AS frontend-builder
 WORKDIR /frontend
 
 COPY frontend/package*.json ./
+COPY frontend/.env .env  # <-- Include frontend .env for build-time vars
+
 RUN npm install
 
 COPY frontend/ ./
 RUN npm run build
+
 
 # ---------- Stage 2: Setup backend and serve frontend ----------
 FROM node:18
@@ -18,8 +21,9 @@ WORKDIR /app
 COPY backend/package*.json ./backend/
 RUN cd backend && npm install
 
-# Copy backend source
+# Copy backend source and backend .env
 COPY backend ./backend
+COPY backend/.env ./backend/.env
 
 # Copy built frontend into backend/public
 COPY --from=frontend-builder /frontend/build ./backend/public
