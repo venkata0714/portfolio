@@ -1,124 +1,119 @@
-import React, { useState } from "react";
+import React from "react";
 import { motion } from "framer-motion";
 import { zoomIn } from "../../services/variants";
-import { styled, keyframes } from "@stitches/react";
 import "../../styles/ProjectPage.css";
-import GradientBG from "./GradientBG"; // Adjust the path as necessary
-import ProjectsListView from "./ProjectsListView";
 
-function ProjectPage({ addTab, isBatterySavingOn, isWindowModalVisible }) {
-  const [showFeatured, setShowFeatured] = useState(false);
+const projects = [
+  {
+    title: "CI/CD Pipeline for Streamlit Fake News Detection Application",
+    timeline: "Jan 2025 - Apr 2025",
+    description:
+      "Automated CI/CD with GitHub Actions to build, push, and deploy a containerized Streamlit app to AWS ECS Fargate. Integrated Docker, ECR, secure secrets, and scalable infrastructure.",
+    tools: ["GitHub Actions", "Docker", "AWS ECS Fargate", "Amazon ECR", "CloudFormation"],
+    image: "https://picsum.photos/seed/fakenews/800/600",
+    github: "https://github.com/venkata0714/fake-news-app",
+  },
+  {
+    title: "WordPress Hosting on AWS (3-Tier Architecture)",
+    timeline: "Jan 2025",
+    description:
+      "Designed a secure, scalable WordPress deployment on AWS with VPC, EC2 Auto Scaling, RDS, and EFS, automating infrastructure using Launch Templates and CloudFormation.",
+    tools: ["EC2", "SSM", "Parameter Store", "RDS", "EFS", "CloudFormation"],
+    image: "https://picsum.photos/seed/wordpress/800/600",
+    github: "", // no GitHub link
+  },
+  {
+    title: "AWS Site-to-Site VPN Simulation",
+    timeline: "Dec 2024",
+    description:
+      "Simulated on-premise using pfSense on AWS, established Site-to-Site VPN, configured static routes, propagation, and firewall rules for bidirectional connectivity.",
+    tools: ["VPC", "Customer Gateway", "Virtual Private Gateway", "pfSense", "CloudFormation"],
+    image: "https://picsum.photos/seed/vpn/800/600",
+    github: "https://github.com/venkata0714/Network-Routing-Simulation",
+  },
+  {
+    title: "Serverless Reminder Notification System (PetCuddleOTron)",
+    timeline: "Nov 2024",
+    description:
+      "Built serverless notification system using AWS Lambda, API Gateway, SES, SNS, S3, and Step Functions for email/SMS reminders with secure IAM role management.",
+    tools: ["Lambda", "API Gateway", "SES", "SNS", "S3", "CloudFormation"],
+    image: "https://picsum.photos/seed/serverless/800/600",
+    github: "", // no GitHub link
+  },
+  {
+    title: "Intelligent Navigation and Obstacle Avoidance for Autonomous Systems",
+    timeline: "Jan 2025 - Present",
+    description:
+      "Developed robot navigation system using OpenCV, Q-learning, PID control, and Deep RL for real-time obstacle avoidance and improved energy efficiency.",
+    tools: ["OpenCV", "Q-learning", "PID", "Deep RL"],
+    image: "https://picsum.photos/seed/navigation/800/600",
+    github: "https://github.com/venkata0714/Intelligent_Navigation_and_Obstacle_Avoidance_for_Autonomous_Systems",
+  },
+  {
+    title: "Privacy-Preserving Voting with zk-SNARKs",
+    timeline: "Aug 2024 - Dec 2024",
+    description:
+      "Implemented zk-SNARKs with Groth16 over BN254 curves to enable confidential voting on blockchain, developing smart contracts and full-stack UI for secure submissions.",
+    tools: ["Python", "Groth16", "BN254", "Blockchain", "Smart Contracts"],
+    image: "https://picsum.photos/seed/zkproof/800/600",
+    github: "https://github.com/venkata0714/Implementation-and-Application-of-Zero-Knowledge-Proof-Systems-zk-SNARKs-in-Decentralized-Networks",
+  },
+];
+
+function ProjectPage() {
   return (
-    <motion.section className="project-page-container" id="projects">
-      {/* <div className="gradient-bg-container">
-        <GradientBG />
-      </div> */}
-      <motion.div
-        className="project-page-div"
-        style={
-          isWindowModalVisible
-            ? { opacity: 0, transition: "opacity 0.5s ease-in-out" }
-            : { opacity: 1, transition: "opacity 0.5s ease-in-out" }
-        }
-        variants={isBatterySavingOn ? {} : zoomIn(0)}
-        initial="show"
-        whileInView="show"
-        exit="hidden"
-        viewport={{ once: true }}
-      >
-        <ProjectsListView
-          addTab={addTab}
-          isBatterySavingOn={isBatterySavingOn}
-          showFeatured={showFeatured}
-        />
-      </motion.div>
+    <motion.section
+      className="project-container"
+      id="projects"
+      variants={zoomIn(0)}
+      initial="hidden"
+      whileInView="show"
+      exit="hidden"
+      viewport={{ once: true }}
+    >
+      <motion.h2 className="project-heading">Projects</motion.h2>
+      <div className="projects-grid">
+        {projects.map((project, index) => (
+          <motion.div
+            key={index}
+            className="project-card"
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.1, type: "spring" }}
+          >
+            <div className="project-info">
+              <p className="project-timeline">{project.timeline}</p>
+              <h3 className="project-title">{project.title}</h3>
+              <p className="project-description">{project.description}</p>
+              <div className="project-tools">
+                {project.tools.map((tool, idx) => (
+                  <span key={idx} className="project-tool">
+                    {tool}
+                  </span>
+                ))}
+              </div>
+              {project.github && (
+                <a
+                  className="github-link"
+                  href={project.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  View on GitHub →
+                </a>
+              )}
+            </div>
+            <div
+              className="project-image"
+              style={{
+                backgroundImage: `url(${project.image})`,
+              }}
+            ></div>
+          </motion.div>
+        ))}
+      </div>
     </motion.section>
   );
 }
 
 export default ProjectPage;
-
-// Styled Components for Button Parts
-const ButtonPart = styled("span", {
-  position: "absolute",
-  top: 0,
-  left: 0,
-  width: "100%",
-  height: "100%",
-  borderRadius: 8,
-});
-
-const ButtonShadow = styled(ButtonPart, {
-  background: "hsl(0deg 0% 0% / 0.1)",
-  transform: "translateY(2px)",
-  transition: "transform 250ms ease-out",
-});
-
-const ButtonEdge = styled(ButtonPart, {
-  background: `linear-gradient(
-      to left,
-      hsl(0deg 0% 69%) 0%,
-      hsl(0deg 0% 85%) 8%,
-      hsl(0deg 0% 85%) 92%,
-      hsl(0deg 0% 69%) 100%
-    )`,
-});
-
-// Label inside the button, with conditional background based on isSent state
-const ButtonLabel = styled("span", {
-  fontFamily: "Montserrat",
-  fontSize: "14px",
-  display: "block",
-  position: "relative",
-  borderRadius: 5,
-  color: "#212529",
-  padding: "1.25rem 2.5rem",
-  background: "#f8f9fa",
-  transform: "translateY(-4px)",
-  width: "100%",
-  userSelect: "none",
-  transition:
-    "transform 250ms ease-out, background-color 0.3s ease, color 0.3s ease",
-  "&:hover": {
-    backgroundColor: "#fcbc1d",
-    color: "#212529",
-    transform: "scale(1.05)",
-  },
-});
-
-// Main Styled Button
-const StyledButton = styled("button", {
-  border: "none",
-  fontWeight: 600,
-  cursor: "pointer",
-  background: "transparent",
-  position: "relative",
-  padding: 0,
-  transition: "filter 250ms ease-out",
-
-  "&:hover": {
-    filter: "brightness(110%)",
-
-    [`& ${ButtonLabel}`]: {
-      transform: "translateY(-6px)",
-    },
-
-    [`& ${ButtonShadow}`]: {
-      transform: "translateY(4px)",
-    },
-  },
-
-  "&:active": {
-    [`& ${ButtonLabel}`]: {
-      transform: "translateY(-2px)",
-      transition: "transform 34ms",
-    },
-
-    [`& ${ButtonShadow}`]: {
-      transform: "translateY(1px)",
-      transition: "transform 34ms",
-    },
-  },
-});
-
-export { StyledButton, ButtonLabel, ButtonShadow, ButtonEdge };

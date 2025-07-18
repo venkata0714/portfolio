@@ -5,7 +5,7 @@
               href="#home"
               style={{ fontFamily: 'Montserrat, Helvetica Neue, Helvetica, Arial, sans-serif' }}
             >
-              <b>Kartavya Singh</b>
+              <b>Srimannarayana</b>
             </a>
             <button
               className="navbar-toggler navbar-toggler-right"

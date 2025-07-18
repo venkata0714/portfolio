@@ -439,7 +439,7 @@ function App({ isBatterySavingOn, setIsBatterySavingOn }) {
             <motion.div
               className={`ai-chat-btn`}
               onClick={() => {
-                addTab("AIChatTab", { title: "Kartavya's AI Companion" });
+                addTab("AIChatTab", { title: "Venkata AI Companion" });
               }}
               title="Links"
               initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}

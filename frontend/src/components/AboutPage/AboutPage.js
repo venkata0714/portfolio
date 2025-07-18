@@ -5,23 +5,23 @@ import { styled } from "@stitches/react";
 import "../../styles/AboutPage.css";
 import { SpotlightBG } from "./SpotlightBG";
 // import AboutImg from "../../../public/Kartavya-Profile-Photo.webp";
-import Resume from "../../assets/Singh_Kartavya_Resume2025.pdf";
+import Resume from "../../assets/Venkata-Resume-2025.pdf";
 
 const aboutData = [
   {
     icon: "bx bxs-hourglass about-icon",
     title: "Coding Hours",
-    subtitle: "1300+ Hours",
+    subtitle: "800+ Hours",
   },
   {
     icon: "bx bx-trophy about-icon",
     title: "Completed",
-    subtitle: "42+ Projects",
+    subtitle: "5+ Projects",
   },
   {
     icon: "bx bx-support about-icon",
     title: "LeetCode",
-    subtitle: "246+ Solutions",
+    subtitle: "150+ Solutions",
   },
 ];
 
@@ -114,19 +114,13 @@ function AboutPage({ isBatterySavingOn, isWindowModalVisible, addTab }) {
                 whileInView="show"
                 exit="hidden"
               >
-                <span className="about-name">Kartavya Singh</span>
+                <span className="about-name">Venkata Srimannarayana Yasam</span>
                 <p className="about-role">
-                  UC '26, B.S & M.Eng in Computer Science, Full Stack Software
-                  Developer
+                   M.S in Computer Science
                 </p>
                 <p className="about-description">
-                  I'm Kartavya Singh, a Computer Science senior at the
-                  University of Cincinnati, passionate about creating impactful
-                  AI solutions, experienced in Full Stack Development. My
-                  journey is driven by curiosity and a commitment to continuous
-                  learning through hackathons, personal projects, and real-world
-                  applications.
-                </p>
+                  I'm Venkata Srimannarayana Yasam, a passionate Cloud Engineer and Master’s student at Kennesaw State University, specializing in AWS cloud technologies, DevOps, and automation. With hands-on experience in full-stack cloud solutions, containerization, serverless architectures, and CI/CD pipelines, I thrive on building scalable, efficient systems. My journey is driven by continuous learning, problem-solving, and applying real-world solutions through projects, certifications, and academic research.
+                  </p>
               </motion.div>
               <motion.h2
                 className="about-page-subtitle"
@@ -135,7 +129,6 @@ function AboutPage({ isBatterySavingOn, isWindowModalVisible, addTab }) {
                 whileInView="show"
                 exit="hidden"
               >
-                Learn More About Me From My:
               </motion.h2>
               <motion.div
                 className="button-container"
@@ -170,7 +163,7 @@ function AboutPage({ isBatterySavingOn, isWindowModalVisible, addTab }) {
                 </motion.a>
                 <motion.a
                   href={Resume}
-                  download="Kartavya-Singh-Resume-2025.pdf"
+                  download="Venkata-Resume-2025.pdf"
                   className="download-cv"
                   style={{ userSelect: "none" }}
                   draggable={false}
@@ -199,26 +192,14 @@ function AboutPage({ isBatterySavingOn, isWindowModalVisible, addTab }) {
                   >
                     <ButtonShadow />
                     <ButtonEdge />
-                    <ButtonLabel>Experience</ButtonLabel>
+                    <ButtonLabel>Education</ButtonLabel>
                   </StyledButton>
                 </motion.a>
                 <motion.a>
                   <StyledButton
                     onClick={(e) => {
                       e.preventDefault();
-                      addTab("FeedTab", { title: "Kartavya's Feed" });
-                    }}
-                  >
-                    <ButtonShadow />
-                    <ButtonEdge />
-                    <ButtonLabel>Feed</ButtonLabel>
-                  </StyledButton>
-                </motion.a>
-                <motion.a>
-                  <StyledButton
-                    onClick={(e) => {
-                      e.preventDefault();
-                      addTab("AIChatTab", { title: "Kartavya's AI Companion" });
+                      addTab("AIChatTab", { title: "Venkata AI Companion" });
                     }}
                   >
                     <ButtonShadow />

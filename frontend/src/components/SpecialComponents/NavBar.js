@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import Resume from "../../assets/Singh_Kartavya_Resume2025.pdf";
+import Resume from "../../assets/Venkata-Resume-2025.pdf";
 import { motion } from "framer-motion";
 import { fadeIn } from "../../services/variants";
 import "../../styles/NavBar.css";
@@ -214,7 +214,7 @@ const NavBar = ({ isBatterySavingOn, addTab }) => {
             // }
           }}
         >
-          <b>Kartavya Singh</b>
+          <b>Venkata Srimannarayana</b>
         </motion.a>
 
         {/* Toggle button for menu */}
@@ -338,7 +338,7 @@ const NavBar = ({ isBatterySavingOn, addTab }) => {
                   // setScrolled(true);
                 }}
               >
-                <span className="navbar-text">EXPERIENCE</span>
+                <span className="navbar-text">EDUCATION</span>
               </a>
             </motion.li>
             <motion.li
@@ -366,29 +366,12 @@ const NavBar = ({ isBatterySavingOn, addTab }) => {
               </a>
             </motion.li>
             <motion.li
-              className={activeLink === "feed" ? "active nav-item" : "nav-item"}
-              whileHover={screenWidth > 992 ? { scale: 1.1, rotate: -2 } : {}}
-              whileTap={screenWidth > 992 ? { scale: 0.9, rotate: 2 } : {}}
-            >
-              <a
-                href="#feed"
-                className={"navbar-link"}
-                onClick={(e) => {
-                  e.preventDefault();
-                  addTab("FeedTab", { title: "Kartavya's Feed" });
-                  setMenuOpen(false);
-                }}
-              >
-                <span className="navbar-text feed-nav">FEED</span>
-              </a>
-            </motion.li>
-            <motion.li
               className="nav-item"
               whileHover={screenWidth > 992 ? { scale: 1.1, rotate: -2 } : {}}
               whileTap={screenWidth > 992 ? { scale: 0.9, rotate: 2 } : {}}
             >
               <a
-                download="Kartavya-Singh-Resume-2025.pdf"
+                download="Venkata-Resume-2025.pdf"
                 href={Resume}
                 className="navbar-link"
                 target="_blank"
@@ -409,7 +392,7 @@ const NavBar = ({ isBatterySavingOn, addTab }) => {
                 className={"navbar-link ai-chat-nav"}
                 onClick={(e) => {
                   e.preventDefault();
-                  addTab("AIChatTab", { title: "Kartavya's AI Companion" });
+                  addTab("AIChatTab", { title: "Venkata AI Companion" });
                   setMenuOpen(false);
                 }}
               >

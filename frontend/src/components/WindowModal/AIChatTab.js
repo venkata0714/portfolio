@@ -369,7 +369,7 @@ const AIChatBot = ({
             }}
           />
           <h2 className="chat-title proficient" style={{ flexGrow: 1 }}>
-            Kartavya's AI Companion
+            Venkata AI Companion
           </h2>
         </motion.div>
       )}
@@ -472,7 +472,7 @@ const AIChatBot = ({
             transition={{ delay: 0.7, type: "ease" }}
             className="chat-title proficient"
           >
-            Kartavya's AI Companion
+            Venkata AI Companion
           </motion.h2>
           <motion.h4
             initial={{ opacity: 0, scale: 0 }}

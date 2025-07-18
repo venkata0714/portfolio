@@ -143,13 +143,9 @@ function ContactPage({ isBatterySavingOn, addTab }) {
                 }
               >
                 Email:{" "}
-                <a href="mailto:singhk6@mail.uc.edu" className="lead">
-                  singhk6@mail.uc.edu
+                <a href="mailto:venkatayasam0714@gmail.com" className="lead">
+                  venkatayasam0714@gmail.com
                 </a>{" "}
-                ||{" "}
-                <a href="mailto:kartavya.singh17@yahoo.com" className="lead">
-                  kartavya.singh17@yahoo.com
-                </a>
               </motion.h5>
               <motion.h5
                 className="contact-info"
@@ -160,169 +156,12 @@ function ContactPage({ isBatterySavingOn, addTab }) {
                 }
               >
                 Phone:{" "}
-                <a href="tel:5138377683" className="lead">
-                  513-837-7683
+                <a href="tel: (770) 657-8278" className="lead">
+                   (770) 657-8278
                 </a>
               </motion.h5>
-              <br />
-              <motion.h5
-                className="form-subheading"
-                initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
-                whileInView={isBatterySavingOn ? {} : { opacity: 1, scale: 1 }}
-                transition={
-                  isBatterySavingOn ? {} : { delay: 0, type: "spring" }
-                }
-              >
-                ...or feel free to get in touch with me by filling the form.
-              </motion.h5>
             </div>
-            <motion.div className="contact-form-container">
-              <form ref={form} onSubmit={sendEmail} className="contact-form">
-                <motion.div
-                  className="input-group"
-                  variants={isBatterySavingOn ? {} : fadeIn("right", 200, 0)}
-                  initial="hidden"
-                  whileInView="show"
-                >
-                  <motion.input
-                    type="text"
-                    name="from_name"
-                    placeholder="Your Name *"
-                    required
-                    initial={
-                      isBatterySavingOn ? {} : { opacity: 0, scale: 0.75 }
-                    }
-                    drag={isTouchDevice ? false : true}
-                    dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-                    dragElastic={0.3}
-                    dragTransition={{
-                      bounceStiffness: 250,
-                      bounceDamping: 15,
-                    }}
-                    whileInView={
-                      isBatterySavingOn ? {} : { opacity: 1, scale: 1 }
-                    }
-                    whileHover={isBatterySavingOn ? {} : { scale: 1.01 }}
-                    whileTap={isBatterySavingOn ? {} : { scale: 0.99 }}
-                    transition={
-                      isBatterySavingOn ? {} : { delay: 0, type: "spring" }
-                    }
-                  />
-                  <motion.input
-                    type="email"
-                    name="from_email"
-                    placeholder="Your Email *"
-                    required
-                    initial={
-                      isBatterySavingOn ? {} : { opacity: 0, scale: 0.75 }
-                    }
-                    drag={isTouchDevice ? false : true}
-                    dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-                    dragElastic={0.3}
-                    dragTransition={{
-                      bounceStiffness: 250,
-                      bounceDamping: 15,
-                    }}
-                    whileInView={
-                      isBatterySavingOn ? {} : { opacity: 1, scale: 1 }
-                    }
-                    whileHover={isBatterySavingOn ? {} : { scale: 1.01 }}
-                    whileTap={isBatterySavingOn ? {} : { scale: 0.99 }}
-                    transition={
-                      isBatterySavingOn ? {} : { delay: 0, type: "spring" }
-                    }
-                  />
-                  <motion.input
-                    type="tel"
-                    name="from_phone"
-                    placeholder="Your Phone"
-                    initial={
-                      isBatterySavingOn ? {} : { opacity: 0, scale: 0.75 }
-                    }
-                    drag={isTouchDevice ? false : true}
-                    dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-                    dragElastic={0.3}
-                    dragTransition={{
-                      bounceStiffness: 250,
-                      bounceDamping: 15,
-                    }}
-                    whileInView={
-                      isBatterySavingOn ? {} : { opacity: 1, scale: 1 }
-                    }
-                    whileHover={isBatterySavingOn ? {} : { scale: 1.01 }}
-                    whileTap={isBatterySavingOn ? {} : { scale: 0.99 }}
-                    transition={
-                      isBatterySavingOn ? {} : { delay: 0, type: "spring" }
-                    }
-                  />
-                </motion.div>
-                <motion.div
-                  className="textarea-group"
-                  variants={isBatterySavingOn ? {} : fadeIn("left", 200, 0)}
-                  whileHover={isBatterySavingOn ? {} : { scale: 1.01 }}
-                  whileTap={isBatterySavingOn ? {} : { scale: 0.99 }}
-                  initial="hidden"
-                  whileInView="show"
-                  exit="hidden"
-                >
-                  <motion.textarea
-                    name="message"
-                    placeholder="Your Message *"
-                    required
-                    initial={
-                      isBatterySavingOn ? {} : { opacity: 0, scale: 0.75 }
-                    }
-                    drag={isTouchDevice ? false : true}
-                    dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-                    dragElastic={0.3}
-                    dragTransition={{
-                      bounceStiffness: 250,
-                      bounceDamping: 15,
-                    }}
-                    whileInView={
-                      isBatterySavingOn ? {} : { opacity: 1, scale: 1 }
-                    }
-                    whileHover={isBatterySavingOn ? {} : { scale: 1.01 }}
-                    whileTap={isBatterySavingOn ? {} : { scale: 0.99 }}
-                    transition={
-                      isBatterySavingOn ? {} : { delay: 0, type: "spring" }
-                    }
-                  ></motion.textarea>
-                </motion.div>
-                <motion.div
-                  className="button-group"
-                  initial={isBatterySavingOn ? {} : { opacity: 0, scale: 0 }}
-                  drag
-                  dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-                  dragElastic={0.3}
-                  dragTransition={{
-                    bounceStiffness: 250,
-                    bounceDamping: 15,
-                  }}
-                  whileInView={
-                    isBatterySavingOn ? {} : { opacity: 1, scale: 1 }
-                  }
-                  whileHover={isBatterySavingOn ? {} : { scale: 1.1 }}
-                  whileTap={isBatterySavingOn ? {} : { scale: 0.9 }}
-                  transition={
-                    isBatterySavingOn ? {} : { delay: 0, type: "spring" }
-                  }
-                >
-                  <StyledButton type="submit" disabled={isDisabled}>
-                    <ButtonShadow />
-                    <ButtonEdge />
-                    <ButtonLabel isSent={isSent}>
-                      {/* {isSent === true
-                        ? "Message Sent ☑"
-                        : isSent === false
-                        ? "Failed to Send ☒"
-                        : "Send Message"} */}
-                      Send Message
-                    </ButtonLabel>
-                  </StyledButton>
-                </motion.div>
-              </form>
-            </motion.div>
+           
           </div>
           <Footer isBatterySavingOn={isBatterySavingOn} addTab={addTab} />
         </motion.section>
