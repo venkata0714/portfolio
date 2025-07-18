@@ -1,17 +1,25 @@
-// server.js
 const os = require("os");
-const fastify = require("fastify");
-const dotenv = require("dotenv");
 const path = require("path");
+const dotenv = require("dotenv");
+const fastify = require("fastify");
 const useragent = require("express-useragent");
+const fastifyStatic = require("@fastify/static");
 
+// Load environment variables
 dotenv.config();
 
-const { connectDB, getDBMetrics, resetDBMetrics } = require("./config/mongodb");
+const {
+  connectDB,
+  getDBMetrics,
+  resetDBMetrics,
+} = require("./config/mongodb");
 
-const app = fastify({ logger: false, bodyLimit: 50 * 1024 * 1024 });
+const app = fastify({
+  logger: false,
+  bodyLimit: 50 * 1024 * 1024,
+});
 
-// CORS, Cookies, Formbody
+// CORS, Cookie, and Formbody
 app.register(require("@fastify/cors"), {
   origin: [
     "https://kartavya-portfolio-mern-frontend.onrender.com",
@@ -23,7 +31,17 @@ app.register(require("@fastify/cors"), {
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 });
 
-// set no-store for any /api/* response
+app.register(require("@fastify/cookie"), {
+  cookie: {
+    path: "/",
+    secure: true,
+    httpOnly: true,
+    sameSite: "none",
+  },
+});
+app.register(require("@fastify/formbody"));
+
+// Add no-store cache header for API responses
 app.addHook("onSend", (req, reply, payload, done) => {
   if (req.raw.url.startsWith("/api")) {
     reply.header("Cache-Control", "no-store");
@@ -31,12 +49,7 @@ app.addHook("onSend", (req, reply, payload, done) => {
   done(null, payload);
 });
 
-app.register(require("@fastify/cookie"), {
-  cookie: { path: "/", secure: true, httpOnly: true, sameSite: "none" },
-});
-app.register(require("@fastify/formbody"));
-
-// Metrics state
+// Metrics setup
 let totalApiCalls = 0;
 let uniqueIPs = new Set();
 let memorySumRSS = 0,
@@ -46,11 +59,11 @@ let memorySumRSS = 0,
 let routeStats = {};
 let prevCpuUsage = process.cpuUsage();
 
-// Request/Response hooks for metrics
 app.addHook("onRequest", (req, reply, done) => {
   req.startTime = process.hrtime.bigint();
   done();
 });
+
 app.addHook("onResponse", (req, reply, done) => {
   const elapsed = process.hrtime.bigint() - req.startTime;
   const latMs = Number(elapsed) / 1e6;
@@ -85,24 +98,24 @@ app.addHook("onResponse", (req, reply, done) => {
   done();
 });
 
-// Serve static frontend from public/
-app.register(require("@fastify/static"), {
-  root: path.join(__dirname, "public"),
+// Static frontend (React build)
+app.register(fastifyStatic, {
+  root: path.join(__dirname, "build"),
   prefix: "/",
 });
 
-// Serve index.html for all unknown routes (for React Router support)
+// Catch-all route to serve index.html for React Router
 app.setNotFoundHandler((req, reply) => {
   reply.sendFile("index.html");
 });
 
-
-// Global endpoints
+// Health endpoints
 app.get("/", (req, reply) =>
-  reply.send("Welcome to Kartavya's MERN Portfolio Backend")
+  reply.send("Welcome to MERN Portfolio Backend")
 );
+
 app.get("/api", (req, reply) =>
-  reply.send("This is the API track for Kartavya's MERN Portfolio Backend.")
+  reply.send("This is the API track for MERN Portfolio Backend.")
 );
 
 // Error handler
@@ -111,22 +124,14 @@ app.setErrorHandler((err, req, reply) => {
   reply.code(500).send({ error: "Internal Server Error" });
 });
 
-// Hourly metrics dump
+// Hourly server stats logging
 setInterval(async () => {
   try {
     const avgRSS = memorySampleCount ? memorySumRSS / memorySampleCount : 0;
-    const avgHeap = memorySampleCount
-      ? memorySumHeapUsed / memorySampleCount
-      : 0;
-    const totalHeap = memorySampleCount
-      ? memorySumHeapTotal / memorySampleCount
-      : 0;
-    const rssPct = os.totalmem()
-      ? ((avgRSS / os.totalmem()) * 100).toFixed(2)
-      : "0.00";
-    const heapPct = totalHeap
-      ? ((avgHeap / totalHeap) * 100).toFixed(2)
-      : "0.00";
+    const avgHeap = memorySampleCount ? memorySumHeapUsed / memorySampleCount : 0;
+    const totalHeap = memorySampleCount ? memorySumHeapTotal / memorySampleCount : 0;
+    const rssPct = os.totalmem() ? ((avgRSS / os.totalmem()) * 100).toFixed(2) : "0.00";
+    const heapPct = totalHeap ? ((avgHeap / totalHeap) * 100).toFixed(2) : "0.00";
     const cpuNow = process.cpuUsage();
     const userDelta = cpuNow.user - prevCpuUsage.user;
     const sysDelta = cpuNow.system - prevCpuUsage.system;
@@ -136,7 +141,6 @@ setInterval(async () => {
     const handles = process._getActiveHandles().length;
     const uptimeSec = process.uptime().toFixed(0);
 
-    // DB metrics
     const dbMet = getDBMetrics();
     let conn = "N/A",
       dbUp = "N/A",
@@ -201,49 +205,30 @@ setInterval(async () => {
   } finally {
     totalApiCalls = 0;
     uniqueIPs.clear();
-    memorySumRSS =
-      memorySumHeapUsed =
-      memorySumHeapTotal =
-      memorySampleCount =
-        0;
+    memorySumRSS = memorySumHeapUsed = memorySumHeapTotal = memorySampleCount = 0;
     routeStats = {};
     resetDBMetrics();
   }
 }, 3600 * 1000);
 
-// Startup
+// Server Start
 (async () => {
   try {
     await connectDB();
-    // now that both DBs are ready, mount your routes and AI
+
     const dataRoutes = require("./routes/dataRoutes");
-    app.register(dataRoutes, { prefix: "/api" });
-
     const aiRoutes = require("./routes/aiRoutes");
-    app.register(aiRoutes, { prefix: "/api/ai" });
-
     const imagesRoutes = require("./routes/imagesRoutes");
+    const aiContextManager = require("./controllers/aiContextManager");
+
+    app.register(dataRoutes, { prefix: "/api" });
+    app.register(aiRoutes, { prefix: "/api/ai" });
     app.register(imagesRoutes, { prefix: "/api/images" });
 
-    const aiContextManager = require("./controllers/aiContextManager");
     await aiContextManager.initContext();
     console.log("✅ AI context initialized");
 
     const PORT = process.env.PORT || 5000;
-    const path = require('path');
-    const fastifyStatic = require('@fastify/static');
-    
-    // Serve frontend build
-    app.register(fastifyStatic, {
-      root: path.join(__dirname, 'build'),
-      prefix: '/',
-    });
-    
-    // Catch-all to serve index.html for React routing
-    app.setNotFoundHandler((req, reply) => {
-      reply.sendFile('index.html');
-    });
-
     await app.listen({ port: PORT, host: "0.0.0.0" });
     console.log(`🚀 Server listening on port ${PORT}`);
   } catch (err) {
