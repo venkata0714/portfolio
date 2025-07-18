@@ -12,8 +12,7 @@ const app = fastify({ logger: false, bodyLimit: 50 * 1024 * 1024 });
 
 app.register(require("@fastify/cors"), {
   origin: [
-    "https://kartavya-portfolio-mern-frontend.onrender.com",
-    "https://kartavya-singh.com",
+    "https://portfolio-xv93.onrender.com/",
     "http://localhost:3000",
     "http://localhost:3001",
   ],
