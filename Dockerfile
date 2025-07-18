@@ -1,32 +1,26 @@
-# ---------- Base image ----------
-FROM node:18 AS base
-
+# Stage 1: Build frontend
+FROM node:18 AS builder
 WORKDIR /app
 
-# ---------- Install frontend ----------
-FROM base AS frontend-builder
+# Copy frontend first and install+build
 COPY frontend ./frontend
 WORKDIR /app/frontend
-RUN npm install
-RUN npm run build
+RUN npm install && npm run build
 
-# ---------- Install backend ----------
-FROM base AS backend-builder
-COPY backend ./backend
-WORKDIR /app/backend
-COPY --from=frontend-builder /app/frontend/build ./build
-RUN npm install
-
-# ---------- Final stage ----------
-FROM node:18-slim
+# Stage 2: Run backend
+FROM node:18
 WORKDIR /app
-COPY --from=backend-builder /app/backend .
 
-# Install only production dependencies
-RUN npm install --omit=dev
+# Copy backend and built frontend
+COPY backend ./backend
+COPY --from=builder /app/frontend/build ./backend/build
+
+# Install backend dependencies
+WORKDIR /app/backend
+RUN npm install
 
 # Expose port
 EXPOSE 5000
 
-# Start backend
+# Start backend (which also serves frontend)
 CMD ["node", "server.js"]
